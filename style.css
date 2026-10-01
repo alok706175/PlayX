@@ -2767,3 +2767,267 @@ body.live-video-active .bg-overlay {
     margin-bottom: calc(4px + var(--safe-bottom));
   }
 }
+
+/* =========================================================
+   PWA & OFFLINE SONGS SYSTEM STYLES
+   ========================================================= */
+
+/* Floating Network Status Banner */
+.pwa-network-banner {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-70px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.pwa-network-banner.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pwa-network-banner.online {
+  background: rgba(18, 48, 28, 0.95);
+  border: 1px solid rgba(42, 231, 114, 0.5);
+  color: #a8f5c4;
+  box-shadow: 0 8px 30px rgba(20, 120, 60, 0.4);
+}
+
+.pwa-network-banner.offline {
+  background: rgba(54, 22, 12, 0.95);
+  border: 1px solid rgba(255, 140, 50, 0.55);
+  color: #ffd29d;
+  box-shadow: 0 8px 30px rgba(200, 80, 20, 0.4);
+}
+
+.pwa-banner-icon {
+  font-size: 15px;
+}
+
+/* PWA Install Button in Header */
+.btn-pwa-install {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.22), rgba(255, 112, 67, 0.22));
+  border: 1px solid rgba(255, 184, 77, 0.45);
+  color: var(--marigold-bright);
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-pwa-install.visible {
+  display: inline-flex;
+}
+
+.btn-pwa-install:hover {
+  background: linear-gradient(135deg, rgba(255, 184, 77, 0.35), rgba(255, 112, 67, 0.35));
+  border-color: var(--marigold-bright);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(255, 184, 77, 0.3);
+}
+
+/* Nav Item Downloads Badge */
+.btn-nav-downloads {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.downloads-nav-badge {
+  background: var(--marigold-bright);
+  color: #1a0408;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
+  line-height: 14px;
+}
+
+/* Playlist Drawer Tabs */
+.playlist-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 10px 18px 8px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.playlist-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--cream-dim);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.playlist-tab:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--cream);
+}
+
+.playlist-tab.active {
+  background: rgba(255, 184, 77, 0.16);
+  border-color: rgba(255, 184, 77, 0.45);
+  color: var(--marigold-bright);
+  font-weight: 700;
+}
+
+.playlist-tab-badge {
+  background: rgba(255, 255, 255, 0.14);
+  color: currentColor;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.playlist-tab.active .playlist-tab-badge {
+  background: var(--marigold-bright);
+  color: #1a0408;
+}
+
+/* Storage Management Bar */
+.storage-mgmt-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin: 10px 16px 8px 16px;
+  background: rgba(255, 184, 77, 0.08);
+  border: 1px solid rgba(255, 184, 77, 0.2);
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.storage-mgmt-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--cream);
+}
+
+.storage-mgmt-val {
+  font-weight: 700;
+  color: var(--marigold-bright);
+}
+
+.btn-clear-storage {
+  background: rgba(211, 47, 47, 0.18);
+  border: 1px solid rgba(211, 47, 47, 0.35);
+  color: #ff8a80;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-clear-storage:hover {
+  background: rgba(211, 47, 47, 0.35);
+  color: #ffffff;
+}
+
+/* Playlist Item Action Buttons */
+.playlist-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.btn-song-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--cream-dim);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.btn-song-action:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--cream);
+  transform: scale(1.08);
+}
+
+.btn-song-action.downloaded {
+  background: rgba(46, 204, 113, 0.18);
+  border-color: rgba(46, 204, 113, 0.45);
+  color: #2ecc71;
+}
+
+.btn-song-action.downloading {
+  background: rgba(255, 184, 77, 0.18);
+  border-color: rgba(255, 184, 77, 0.45);
+  color: var(--marigold-bright);
+  font-size: 10.5px;
+  font-weight: 800;
+  width: auto;
+  padding: 0 9px;
+  border-radius: 12px;
+  height: 28px;
+}
+
+.btn-song-action.btn-delete-song:hover {
+  background: rgba(231, 76, 60, 0.25);
+  border-color: rgba(231, 76, 60, 0.5);
+  color: #ff6b6b;
+}
+
+.offline-playback-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  background: rgba(46, 204, 113, 0.18);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+  vertical-align: middle;
+}

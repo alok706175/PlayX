@@ -187,6 +187,7 @@
     }
 
     .top-bar {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 10px 16px;
@@ -355,6 +356,15 @@
     .share-menu-item:hover {
       background: var(--bg-surface-hover);
       color: var(--accent-color);
+    }
+
+    .share-menu-item.btn-instagram:hover {
+      color: #e6683c;
+    }
+
+    .share-menu-item .insta-icon {
+      flex-shrink: 0;
+      border-radius: 4px;
     }
 
     .theme-menu-item.active {
@@ -712,12 +722,6 @@
       gap: 14px;
       padding-top: 14px;
       border-top: 1px solid var(--border-subtle);
-    }
-
-    @media (max-width: 600px) {
-      .offline-controls {
-        justify-content: center;
-      }
     }
 
     .controls-left-cluster,
@@ -1710,32 +1714,276 @@
       visibility: visible;
     }
 
-    /* Responsive Tweaks */
-    @media (max-width: 600px) {
-      .app-container {
-        padding-top: 68px;
-        padding-left: 12px;
-        padding-right: 12px;
-      }
+    /* =========================================================
+       COMPREHENSIVE RESPONSIVE STYLING (MOBILE / TABLET / DESKTOP)
+       ========================================================= */
+
+    /* Tablet / Narrow Desktop (<= 920px) */
+    @media (max-width: 920px) {
       .time-widget {
-        display: none;
+        display: none !important;
+      }
+      #shortcutsBtn {
+        display: none !important;
+      }
+      .top-bar {
+        padding: 8px 14px;
+        gap: 8px;
+      }
+      .top-center {
+        gap: 6px;
+      }
+      .top-actions {
+        gap: 6px;
+      }
+      .share-dropdown-menu,
+      .theme-dropdown-menu {
+        max-width: calc(100vw - 20px);
+      }
+    }
+
+    /* Small Tablets & Large Phones (<= 768px) */
+    @media (max-width: 768px) {
+      .top-bar {
+        padding: 8px 12px;
+        gap: 6px;
+      }
+      .btn-nav-item,
+      .btn-lang-toggle,
+      .btn-theme-toggle,
+      .btn-action,
+      .btn-pwa-install {
+        padding: 6px 11px;
+        font-size: 12px;
+        gap: 4px;
+      }
+      .btn-pwa-install {
+        padding: 6px 10px;
+        font-size: 11.5px;
       }
       .songs-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+      }
+
+      /* Responsive Player Controls: [⏮ ▶ ⏭] centered at top, secondary buttons underneath */
+      .offline-controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        padding-top: 14px;
+      }
+
+      .controls-center-cluster {
+        order: 1;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 2px;
+      }
+
+      .offline-play-btn {
+        width: 58px;
+        height: 58px;
+        font-size: 24px;
+        box-shadow: 0 8px 25px var(--accent-glow);
+      }
+
+      .controls-center-cluster .offline-control-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
+      }
+
+      .controls-left-cluster {
+        order: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .controls-right-cluster {
+        order: 3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .offline-volume {
+        display: none !important;
+      }
+
+      .mode-btn,
+      .playlist-toggle-btn,
+      .offline-speed-btn {
+        width: 38px;
+        height: 38px;
+        font-size: 14px;
+      }
+    }
+
+    /* Mobile Phones (<= 600px) */
+    @media (max-width: 600px) {
+      .app-container {
+        padding-top: 60px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 110px;
+      }
+      .top-bar {
+        padding: 6px 8px;
+        gap: 4px;
+      }
+      .top-center {
+        gap: 4px;
+      }
+      .top-actions {
+        gap: 4px;
+      }
+
+      /* Compact icon-first mode for mobile header buttons */
+      #navBackText {
+        display: none !important;
+      }
+      .btn-go-back {
+        padding: 0 !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+      }
+      #themeBtnText {
+        display: none !important;
+      }
+      .btn-theme-toggle {
+        padding: 0 !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+      }
+      .btn-lang-toggle {
+        padding: 5px 9px !important;
+        font-size: 11.5px !important;
+        border-radius: 16px !important;
+        flex-shrink: 0;
+      }
+      .btn-pwa-install {
+        padding: 5px 9px !important;
+        font-size: 11px !important;
+        border-radius: 16px !important;
+        flex-shrink: 0;
+      }
+      #shareBtnLabel {
+        display: none !important;
+      }
+      .btn-share-main {
+        padding: 0 !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        justify-content: center !important;
+        flex-shrink: 0;
+      }
+      .btn-share-main .share-icon-svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      /* Content Area */
+      .songs-cards-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
       }
       .hero-section {
-        padding: 16px 0;
+        padding: 12px 0 16px;
+      }
+      .main-title {
+        font-size: clamp(22px, 6vw, 28px);
+      }
+      .hero-badge {
+        font-size: 10.5px;
+        padding: 4px 10px;
+      }
+      .tagline {
+        font-size: 12px;
+      }
+      .hero-features-bar {
+        gap: 6px;
+      }
+      .hero-feat-pill {
+        font-size: 10.5px;
+        padding: 3px 8px;
       }
       .offline-volume {
-        display: none;
+        display: none !important;
+      }
+      .offline-controls {
+        gap: 10px;
+        padding-top: 10px;
+      }
+      .controls-center-cluster {
+        gap: 16px;
+      }
+      .controls-left-cluster,
+      .controls-right-cluster {
+        gap: 7px;
+      }
+      .mode-btn,
+      .playlist-toggle-btn,
+      .offline-speed-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 13px;
+      }
+      .mini-player-dock {
+        bottom: 12px;
+        width: calc(100% - 16px);
+        padding: 8px 12px;
+        border-radius: 20px;
+      }
+      .mini-details {
+        max-width: 150px;
       }
       .toast {
-        bottom: 74px;
-        right: 16px;
+        bottom: 80px;
+        right: 12px;
+        font-size: 12.5px;
+        padding: 8px 14px;
       }
       .toast.pos-left {
-        left: 16px !important;
+        left: 12px !important;
         right: auto !important;
+      }
+    }
+
+    /* Ultra-compact phones (<= 380px) */
+    @media (max-width: 380px) {
+      .top-bar {
+        padding: 5px 6px;
+        gap: 3px;
+      }
+      #pwaInstallBtnText {
+        display: none !important;
+      }
+      .btn-pwa-install {
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        justify-content: center !important;
+        border-radius: 50% !important;
+      }
+      .btn-lang-toggle {
+        padding: 4px 7px !important;
+        font-size: 10.5px !important;
       }
     }
 
@@ -1772,3 +2020,188 @@
   font-size: 16px;
   line-height: 1;
 }
+
+/* =========================================================
+   PWA & OFFLINE STYLES FOR HINDI SONGS
+   ========================================================= */
+
+/* Floating Network Status Banner */
+.pwa-network-banner {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-70px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 22px;
+  border-radius: 999px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.pwa-network-banner.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pwa-network-banner.online {
+  background: rgba(18, 48, 28, 0.95);
+  border: 1px solid rgba(42, 231, 114, 0.5);
+  color: #a8f5c4;
+  box-shadow: 0 8px 30px rgba(20, 120, 60, 0.4);
+}
+
+.pwa-network-banner.offline {
+  background: rgba(54, 22, 12, 0.95);
+  border: 1px solid rgba(255, 140, 50, 0.55);
+  color: #ffd29d;
+  box-shadow: 0 8px 30px rgba(200, 80, 20, 0.4);
+}
+
+.pwa-banner-icon {
+  font-size: 15px;
+}
+
+/* PWA Install Button */
+.btn-pwa-install {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 6px 13px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.btn-pwa-install.visible {
+  display: inline-flex;
+}
+
+.btn-pwa-install:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px var(--accent-glow);
+}
+
+/* Song Card Download Button */
+.song-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.song-card-download-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.song-card-download-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-medium);
+  transform: scale(1.08);
+}
+
+.song-card-download-btn.downloaded {
+  background: rgba(46, 204, 113, 0.16);
+  border-color: rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+}
+
+.song-card-download-btn.downloading {
+  width: auto;
+  padding: 0 10px;
+  border-radius: 12px;
+  background: var(--accent-subtle);
+  border-color: var(--border-accent);
+  color: var(--accent-color);
+  font-size: 11px;
+  font-weight: 700;
+  height: 30px;
+}
+
+.offline-playback-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  background: rgba(46, 204, 113, 0.18);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.35);
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.storage-mgmt-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  margin: 10px 0 16px 0;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  font-size: 12.5px;
+}
+
+.storage-mgmt-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+}
+
+.storage-mgmt-val {
+  font-weight: 700;
+  color: var(--accent-color);
+}
+
+.btn-clear-storage {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-clear-storage:hover {
+  background: rgba(239, 68, 68, 0.35);
+  color: #ffffff;
+}
+

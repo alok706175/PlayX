@@ -1,9 +1,10 @@
 /* =========================================================
-   CHHATH PUJA & DEVOTIONAL MEDIA - ULTRA-FAST SERVICE WORKER
-   Zero-lag audio streaming cache & offline resilience
+   CHHATH PUJA & HINDI SONGS - ULTRA-FAST PWA SERVICE WORKER
+   App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-media-cache-v2";
+const CACHE_NAME = "chhath-pwa-v7";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v7";
 
 const STATIC_ASSETS = [
   "./",
@@ -13,36 +14,54 @@ const STATIC_ASSETS = [
   "./hindi-song.css",
   "./script.js",
   "./hindi-song.js",
+  "./offline-manager.js",
   "./site.webmanifest",
+  "./hindi-songs.webmanifest",
   "./songs.json",
   "./data/cloudinary/cloudinary_songs.json",
   "./data/youtube/youtube_songs.json",
   "./data/hindi_songs/hindi_songs.json",
   "./favicon.io/favicon-32x32.png",
+  "./favicon.io/favicon-16x16.png",
   "./favicon.io/apple-touch-icon.png",
   "./favicon.io/android-chrome-192x192.png",
-  "./favicon.io/android-chrome-512x512.png"
+  "./favicon.io/android-chrome-512x512.png",
+  "./favicon.io/favicon.svg",
+  "./favicon.io/favicon.ico",
+  "./favicon.io/hindi-icon-16x16.png",
+  "./favicon.io/hindi-icon-32x32.png",
+  "./favicon.io/hindi-icon-192x192.png",
+  "./favicon.io/hindi-icon-512x512.png",
+  "./favicon.io/hindi-apple-touch-icon.png",
+  "./images/image_background.png",
+  "./images/chhath_puja_400x838.png"
 ];
 
-// Install Event - Pre-cache core assets
+// Install Event - Pre-cache core app shell assets
 self.addEventListener("install", (event) => {
   self.skipWaiting();
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn("[SW] Static asset pre-caching non-fatal error:", err);
-      });
+    caches.open(CACHE_NAME).then(async (cache) => {
+      // Resilient pre-caching: each asset is added individually so one missing file never breaks caching
+      await Promise.allSettled(
+        STATIC_ASSETS.map((asset) =>
+          cache.add(asset).catch((err) => {
+            console.warn(`[SW] Pre-cache failed for ${asset}:`, err.message || err);
+          })
+        )
+      );
     })
   );
 });
 
-// Activate Event - Clean up stale caches and claim clients immediately
+// Activate Event - Clean up stale caches & claim clients immediately
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          if (key !== CACHE_NAME) {
+          if (key !== CACHE_NAME && key !== DYNAMIC_CACHE_NAME) {
+            console.log("[SW] Deleting old cache:", key);
             return caches.delete(key);
           }
         })
@@ -51,22 +70,85 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch Event - Smart Audio Range Caching & Fast Stale-While-Revalidate
+// Fetch Event - Strategic Routing
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // 1. Audio Streaming Requests (MP3s from Cloudinary / CDN / Local)
+  // 1. Audio Streaming Requests (Online MP3s from Cloudinary / CDN / Local)
+  // Per Requirement 10: DO NOT automatically cache all streamed audio to avoid filling user storage!
+  // Offline audio is explicitly downloaded to IndexedDB by the user.
   if (
     url.pathname.endsWith(".mp3") ||
     req.destination === "audio" ||
-    url.hostname.includes("res.cloudinary.com")
+    (url.hostname.includes("res.cloudinary.com") && url.pathname.includes("/video/upload/"))
   ) {
-    event.respondWith(handleAudioFetch(req));
+    event.respondWith(
+      fetch(req).catch(() => {
+        // If offline and somehow request wasn't resolved by IndexedDB blob URL
+        return caches.match(req).then((cached) => {
+          if (cached) return cached;
+          return new Response(null, {
+            status: 503,
+            statusText: "Audio unavailable offline. Please download track while online."
+          });
+        });
+      })
+    );
     return;
   }
 
-  // 2. JSON Song Data & Static Assets - Fast Cache-First with Background Update
+  // 2. Navigation Requests (HTML pages) - Network-first with Cache fallback
+  if (req.mode === "navigate") {
+    event.respondWith(
+      fetch(req)
+        .then((networkRes) => {
+          if (networkRes && networkRes.status === 200) {
+            const copy = networkRes.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
+          return networkRes;
+        })
+        .catch(async () => {
+          const cachedRes = await caches.match(req);
+          if (cachedRes) return cachedRes;
+
+          // Fallback based on URL path
+          if (url.pathname.includes("hindi-songs")) {
+            const hindiCached = await caches.match("./hindi-songs.html");
+            if (hindiCached) return hindiCached;
+          }
+          return caches.match("./index.html");
+        })
+    );
+    return;
+  }
+
+  // 3. Google Fonts & External Web Fonts - Stale-While-Revalidate in dynamic cache
+  if (
+    url.hostname.includes("fonts.googleapis.com") ||
+    url.hostname.includes("fonts.gstatic.com")
+  ) {
+    event.respondWith(
+      caches.open(DYNAMIC_CACHE_NAME).then((cache) => {
+        return cache.match(req).then((cachedRes) => {
+          const fetchPromise = fetch(req)
+            .then((networkRes) => {
+              if (networkRes && networkRes.status === 200) {
+                cache.put(req, networkRes.clone());
+              }
+              return networkRes;
+            })
+            .catch(() => cachedRes);
+
+          return cachedRes || fetchPromise;
+        });
+      })
+    );
+    return;
+  }
+
+  // 4. Static App Shell Assets & JSON Data - Cache-First with Background Revalidation
   if (
     STATIC_ASSETS.some((asset) => req.url.includes(asset.replace("./", ""))) ||
     req.destination === "style" ||
@@ -76,13 +158,15 @@ self.addEventListener("fetch", (event) => {
   ) {
     event.respondWith(
       caches.match(req).then((cachedResponse) => {
-        const fetchPromise = fetch(req).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const copy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          }
-          return networkResponse;
-        }).catch(() => cachedResponse);
+        const fetchPromise = fetch(req)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const copy = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
 
         return cachedResponse || fetchPromise;
       })
@@ -90,79 +174,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 3. Default Network-First for other navigation/API requests
+  // 5. Default Fallback - Network with Cache Fallback
   event.respondWith(
     fetch(req).catch(() => caches.match(req))
   );
 });
-
-/**
- * Handles Audio Fetch with Range-Request slicing and Cache support
- */
-async function handleAudioFetch(req) {
-  const cache = await caches.open(CACHE_NAME);
-  
-  // Clean URL without range query params for caching key
-  const cleanUrl = req.url.split("?")[0];
-  const cachedResponse = await cache.match(cleanUrl);
-
-  const rangeHeader = req.headers.get("Range");
-
-  if (cachedResponse) {
-    if (!rangeHeader) {
-      return cachedResponse;
-    }
-
-    // Synthesize partial content 206 response from cached blob for smooth scrubbing
-    try {
-      const blob = await cachedResponse.blob();
-      const totalSize = blob.size;
-      const rangeParts = rangeHeader.replace(/bytes=/, "").split("-");
-      const start = parseInt(rangeParts[0], 10) || 0;
-      const end = rangeParts[1] ? parseInt(rangeParts[1], 10) : totalSize - 1;
-
-      if (start >= totalSize || end >= totalSize) {
-        return new Response(null, {
-          status: 416,
-          headers: { "Content-Range": `bytes */${totalSize}` }
-        });
-      }
-
-      const slicedBlob = blob.slice(start, end + 1);
-      return new Response(slicedBlob, {
-        status: 206,
-        statusText: "Partial Content",
-        headers: {
-          "Content-Type": "audio/mpeg",
-          "Content-Range": `bytes ${start}-${end}/${totalSize}`,
-          "Content-Length": slicedBlob.size,
-          "Accept-Ranges": "bytes",
-          "Cache-Control": "public, max-age=31536000, immutable"
-        }
-      });
-    } catch (e) {
-      // If range synthesis fails, fall back to direct cached response
-      return cachedResponse;
-    }
-  }
-
-  // Not in cache: fetch from network and store full audio in background cache
-  try {
-    const networkResponse = await fetch(req);
-    
-    // In background, fetch full stream to cache for instant future playbacks
-    if (networkResponse && (networkResponse.status === 200 || networkResponse.status === 206)) {
-      fetch(cleanUrl, { mode: "cors" }).then((fullRes) => {
-        if (fullRes.ok) {
-          cache.put(cleanUrl, fullRes);
-        }
-      }).catch(() => {});
-    }
-
-    return networkResponse;
-  } catch (err) {
-    // If network fails and cached response is available
-    if (cachedResponse) return cachedResponse;
-    throw err;
-  }
-}

@@ -109,7 +109,22 @@
       toastMuted: "🔇 म्यूट किया गया",
       toastUnmuted: "🔊 ध्वनि चालू",
       toastSpeed: "⚡ प्लेबैक गति: ",
-      nowPlayingPrefix: "🎶 अब बज रहा है: "
+      nowPlayingPrefix: "🎶 अब बज रहा है: ",
+      downloadsTitle: "डाउनलोड्स",
+      downloadsNavTitle: "डाउनलोड किए गए गीत देखें",
+      allSongsTab: "सभी गीत",
+      downloadedTab: "डाउनलोड्स",
+      noDownloadsFound: "अभी कोई गीत डाउनलोड नहीं किया गया है। ऑफ़लाइन सुनने के लिए किसी भी गीत के पास ↓ बटन दबाएं।",
+      storageLabel: "ऑफ़लाइन स्टोरेज:",
+      clearStorageConfirm: "क्या आप सभी डाउनलोड किए गए गीतों को हटाना चाहते हैं?",
+      clearStorageSuccess: "🗑 सभी डाउनलोड किए गए गीत हटा दिए गए हैं।",
+      downloadingToast: "डाउनलोड हो रहा है: ",
+      downloadCompleteToast: "ऑफ़लाइन सुनने के लिए डाउनलोड पूरा हुआ ✓",
+      downloadFailedToast: "डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।",
+      songDeletedToast: "🗑 गीत स्टोरेज से हटा दिया गया।",
+      offlineSongPlaying: "ऑफ़लाइन लोकल कॉपी चल रही है",
+      installAppBtn: "ऐप इंस्टॉल करें",
+      offlinePlaybackWarning: "📴 आप ऑफ़लाइन हैं। बिना इंटरनेट सुनने के लिए इस गीत को ऑनलाइन रहते हुए डाउनलोड करें।"
     },
     en: {
       langBtnText: "English",
@@ -209,7 +224,22 @@
       toastMuted: "🔇 Volume Muted",
       toastUnmuted: "🔊 Volume Unmuted",
       toastSpeed: "⚡ Playback Speed: ",
-      nowPlayingPrefix: "🎶 Now Playing: "
+      nowPlayingPrefix: "🎶 Now Playing: ",
+      downloadsTitle: "Downloads",
+      downloadsNavTitle: "View Downloaded Songs",
+      allSongsTab: "All Songs",
+      downloadedTab: "Downloads",
+      noDownloadsFound: "No downloaded songs yet. Click ↓ on any song to download for offline listening.",
+      storageLabel: "Offline Storage:",
+      clearStorageConfirm: "Do you want to delete all downloaded songs?",
+      clearStorageSuccess: "🗑 All downloaded songs have been removed.",
+      downloadingToast: "Downloading: ",
+      downloadCompleteToast: "Downloaded for offline listening ✓",
+      downloadFailedToast: "Download failed. Please try again.",
+      songDeletedToast: "🗑 Song removed from storage.",
+      offlineSongPlaying: "Playing local offline copy",
+      installAppBtn: "Install App",
+      offlinePlaybackWarning: "📴 You're offline. Download this song while online to listen offline!"
     }
   };
 
@@ -648,6 +678,26 @@
   const playlistSearch = document.getElementById("playlistSearch");
   const searchClearBtn = document.getElementById("searchClearBtn");
 
+  const navDownloadsBtn = document.getElementById("navDownloadsBtn");
+  const navDownloadsBadge = document.getElementById("navDownloadsBadge");
+  const navDownloadsText = document.getElementById("navDownloadsText");
+  const pwaInstallBtn = document.getElementById("pwaInstallBtn");
+  const pwaInstallBtnText = document.getElementById("pwaInstallBtnText");
+
+  const tabAllSongs = document.getElementById("tabAllSongs");
+  const tabDownloadedSongs = document.getElementById("tabDownloadedSongs");
+  const tabAllSongsText = document.getElementById("tabAllSongsText");
+  const tabAllSongsCount = document.getElementById("tabAllSongsCount");
+  const tabDownloadedText = document.getElementById("tabDownloadedText");
+  const tabDownloadedCount = document.getElementById("tabDownloadedCount");
+
+  const storageMgmtBar = document.getElementById("storageMgmtBar");
+  const storageLabel = document.getElementById("storageLabel");
+  const storageUsedVal = document.getElementById("storageUsedVal");
+  const btnClearStorage = document.getElementById("btnClearStorage");
+
+  let currentPlaylistTab = "all"; // "all" | "downloaded"
+
   const modeToggleBtn = document.getElementById("modeToggleBtn");
   const modeText = document.getElementById("modeText");
   const bgVideoContainer = document.getElementById("bgVideoContainer");
@@ -976,9 +1026,39 @@
   }
 
   // ---------------------------------------------------------
-  // SONG LOADING (loadSong)
+  // SONG LOADING (loadSong with Smart Offline Resolving)
   // ---------------------------------------------------------
-  function loadSong(index, autoplay = false) {
+  async function displaySongInfo(index) {
+    if (!songs[index]) return;
+    const s = songs[index];
+    const isEn = currentLang === "en";
+
+    let title = isEn ? (s.titleEn || s.title) : s.title;
+    let singer = isEn ? (s.artistEn || s.artist) : s.artist;
+
+    if (isOnlineMode) {
+      title = isEn ? (s.ytNameEn || title) : (s.ytName || title);
+      singer = isEn ? (s.ytSingerEn || singer) : (s.ytSinger || singer);
+    }
+
+    const fullSinger = singer || (isEn ? "Chhath Devotional" : "छठ भक्ति");
+
+    let isOfflineReady = false;
+    if (window.OfflineManager) {
+      isOfflineReady = await window.OfflineManager.isSongDownloaded(s);
+    }
+
+    if (songName) {
+      songName.innerHTML = `${escapeHTML(title)} ${
+        isOfflineReady
+          ? '<span class="offline-playback-badge" title="Offline Local Audio">💾 Offline</span>'
+          : ""
+      }`;
+    }
+    if (songSinger) songSinger.textContent = fullSinger;
+  }
+
+  async function loadSong(index, autoplay = false) {
     if (!songs || songs.length === 0) return;
 
     // 1. Validate index with wrap-around
@@ -987,8 +1067,8 @@
     const song = songs[validIndex];
     if (!song) return;
 
-    // 2. Update song title, artist, and UI text
-    displaySongInfo(validIndex);
+    // 2. Update song title, artist, and UI text with offline status
+    await displaySongInfo(validIndex);
 
     // 3. Reset progress
     if (progress) progress.value = 0;
@@ -1014,10 +1094,29 @@
       }
     } else {
       if (offlineAudio) {
-        const fileSrc = song.src || song.file;
+        // Smart Playback Logic: Check IndexedDB offline copy first
+        let playback = { isOffline: false, canPlay: true, src: song.src || song.file };
+        if (window.OfflineManager) {
+          playback = await window.OfflineManager.resolvePlaybackSource(song);
+        }
+
+        if (!playback.canPlay) {
+          setPlayerState("paused");
+          const msg = i18n[currentLang] && i18n[currentLang].offlinePlaybackWarning
+            ? i18n[currentLang].offlinePlaybackWarning
+            : "📴 You're offline. Download this song while online to listen offline!";
+          showToast(msg);
+          return;
+        }
+
+        const fileSrc = playback.src;
         if (!fileSrc) {
           handlePlaybackError({ message: "Audio URL is missing for this track." });
           return;
+        }
+
+        if (playback.isOffline) {
+          showToast("💾 " + (i18n[currentLang].offlineSongPlaying || "Playing offline local copy"));
         }
 
         if (offlineAudio.src !== fileSrc) {
@@ -1052,25 +1151,6 @@
 
     // Save selected song index in localStorage
     safeStorageSet(STORAGE_KEYS.LAST_SONG, validIndex.toString());
-  }
-
-  function displaySongInfo(index) {
-    if (!songs[index]) return;
-    const s = songs[index];
-    const isEn = currentLang === "en";
-
-    let title = isEn ? (s.titleEn || s.title) : s.title;
-    let singer = isEn ? (s.artistEn || s.artist) : s.artist;
-
-    if (isOnlineMode) {
-      title = isEn ? (s.ytNameEn || title) : (s.ytName || title);
-      singer = isEn ? (s.ytSingerEn || singer) : (s.ytSinger || singer);
-    }
-
-    const fullSinger = singer || (isEn ? "Chhath Devotional" : "छठ भक्ति");
-
-    if (songName) songName.textContent = title;
-    if (songSinger) songSinger.textContent = fullSinger;
   }
 
   // ---------------------------------------------------------
@@ -1614,13 +1694,151 @@
   });
 
   // ---------------------------------------------------------
-  // PLAYLIST UI (Rendering, Search & Active Item Highlight)
+  // PLAYLIST UI & OFFLINE DOWNLOADS SYSTEM
   // ---------------------------------------------------------
-  function renderPlaylist(filterQuery = "") {
+  async function refreshOfflineBadgesAndStorage() {
+    if (!window.OfflineManager) return;
+    try {
+      const allDownloaded = await window.OfflineManager.getAllDownloadedSongs();
+      const count = allDownloaded.length;
+
+      if (navDownloadsBadge) navDownloadsBadge.textContent = count.toString();
+      if (tabDownloadedCount) tabDownloadedCount.textContent = count.toString();
+      if (tabAllSongsCount) tabAllSongsCount.textContent = songs.length.toString();
+
+      const storageInfo = await window.OfflineManager.getStorageInfo();
+      if (storageUsedVal) {
+        storageUsedVal.textContent = storageInfo.formattedUsed;
+      }
+    } catch (e) {
+      console.warn("Storage refresh notice:", e);
+    }
+  }
+
+  async function renderPlaylist(filterQuery = "") {
     if (!playlistList) return;
     const query = filterQuery.toLowerCase().trim();
     const t = i18n[currentLang] || i18n.en;
 
+    // Refresh badge counts in background
+    refreshOfflineBadgesAndStorage();
+
+    // ---------------------------------------------------------
+    // VIEW A: OFFLINE DOWNLOADS TAB
+    // ---------------------------------------------------------
+    if (currentPlaylistTab === "downloaded") {
+      let downloadedList = [];
+      if (window.OfflineManager) {
+        downloadedList = await window.OfflineManager.getAllDownloadedSongs();
+      }
+
+      const filteredDownloaded = downloadedList.filter((s) => {
+        if (!query) return true;
+        const title = (s.title || "").toLowerCase();
+        const titleEn = (s.titleEn || "").toLowerCase();
+        const artist = (s.artist || "").toLowerCase();
+        const artistEn = (s.artistEn || "").toLowerCase();
+        return (
+          title.includes(query) ||
+          titleEn.includes(query) ||
+          artist.includes(query) ||
+          artistEn.includes(query)
+        );
+      });
+
+      if (filteredDownloaded.length === 0) {
+        playlistList.innerHTML = `
+          <li class="no-songs-found" role="alert">
+            <span style="font-size: 24px;">📥</span>
+            <span class="no-songs-text">${escapeHTML(
+              t.noDownloadsFound || "No downloaded songs yet. Click ↓ on any song to listen offline."
+            )}</span>
+          </li>
+        `;
+        return;
+      }
+
+      playlistList.innerHTML = filteredDownloaded
+        .map((s, idx) => {
+          const isEn = currentLang === "en";
+          const title = isEn ? (s.titleEn || s.title) : s.title;
+          const singer = isEn ? (s.artistEn || s.artist) : s.artist;
+          const formattedSize = window.OfflineManager ? window.OfflineManager.formatBytes(s.size) : "";
+
+          // Check if this downloaded track is currently playing
+          const isActive = offlineAudio && (offlineAudio.src.includes(s.key) || (songs[currentSong] && (songs[currentSong].src === s.src)));
+
+          return `
+            <li class="playlist-item ${isActive ? "active" : ""}" data-key="${escapeHTML(s.key)}" role="button" tabindex="0">
+              <span class="playlist-item-num">${idx + 1}</span>
+              <div class="playlist-item-details">
+                <div class="playlist-item-name">${escapeHTML(title)}</div>
+                <div class="playlist-item-singer">${escapeHTML(singer)} • <span style="color:var(--marigold-bright);font-weight:600;">${formattedSize}</span></div>
+              </div>
+              <div class="playlist-item-actions">
+                <button class="btn-song-action btn-play-downloaded" type="button" title="Play track" aria-label="Play ${escapeHTML(title)}">▶</button>
+                <button class="btn-song-action btn-delete-song" type="button" title="Delete offline copy" aria-label="Delete ${escapeHTML(title)}">🗑</button>
+              </div>
+            </li>
+          `;
+        })
+        .join("");
+
+      // Attach handlers for downloaded list items
+      playlistList.querySelectorAll(".playlist-item").forEach((item) => {
+        const key = item.getAttribute("data-key");
+        const songRecord = filteredDownloaded.find((x) => x.key === key);
+
+        const playTrack = async (e) => {
+          if (e) e.stopPropagation();
+          if (!songRecord) return;
+
+          // Find matching song in songs array if available
+          const foundIdx = songs.findIndex((x) => (x.src === songRecord.src || x.file === songRecord.file));
+          if (foundIdx >= 0) {
+            await loadSong(foundIdx, true);
+          } else {
+            // Play directly from offline blob
+            if (offlineAudio) {
+              const playback = await window.OfflineManager.resolvePlaybackSource(songRecord);
+              if (playback && playback.src) {
+                offlineAudio.src = playback.src;
+                offlineAudio.load();
+                offlineAudio.play().then(() => setPlayerState("playing")).catch(() => setPlayerState("paused"));
+                if (songName) songName.innerHTML = `${escapeHTML(songRecord.title)} <span class="offline-playback-badge">💾 Offline</span>`;
+                if (songSinger) songSinger.textContent = songRecord.artist;
+                showToast("💾 " + (t.offlineSongPlaying || "Playing offline local copy"));
+              }
+            }
+          }
+          if (playlistModal) playlistModal.classList.remove("open");
+        };
+
+        item.addEventListener("click", playTrack);
+
+        const playBtn = item.querySelector(".btn-play-downloaded");
+        if (playBtn) playBtn.addEventListener("click", playTrack);
+
+        const delBtn = item.querySelector(".btn-delete-song");
+        if (delBtn) {
+          delBtn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            if (window.OfflineManager) {
+              await window.OfflineManager.deleteDownloadedSong(key);
+              showToast(t.songDeletedToast || "🗑 Song removed from storage.");
+              await refreshOfflineBadgesAndStorage();
+              renderPlaylist(playlistSearch ? playlistSearch.value : "");
+            }
+          });
+        }
+      });
+
+      return;
+    }
+
+    // ---------------------------------------------------------
+    // VIEW B: ALL SONGS PLAYLIST TAB
+    // ---------------------------------------------------------
     const sourceSongs = isOnlineMode
       ? songs.filter((s) => Boolean(s.videoId))
       : songs.filter((s) => Boolean(s.src || s.file));
@@ -1660,6 +1878,13 @@
       return;
     }
 
+    // Pre-check downloaded status in bulk
+    const downloadedMap = new Map();
+    if (window.OfflineManager) {
+      const allD = await window.OfflineManager.getAllDownloadedSongs();
+      allD.forEach((d) => downloadedMap.set(d.key, true));
+    }
+
     playlistList.innerHTML = filtered
       .map((s) => {
         const idx = s.originalIndex;
@@ -1673,6 +1898,21 @@
           ? (isEn ? (s.ytSingerEn || s.artistEn || s.artist) : (s.ytSinger || s.artist || (isEn ? "Devotional Song" : "भक्ति गीत")))
           : (isEn ? (s.artistEn || s.artist) : (s.artist || (isEn ? "Devotional Song" : "भक्ति गीत")));
 
+        const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : (s.src || s.file);
+        const isDownloaded = downloadedMap.has(songKey);
+        const isDownloading = window.OfflineManager && window.OfflineManager.isDownloading(songKey);
+
+        let actionBtnHtml = "";
+        if (!isOnlineMode) {
+          if (isDownloaded) {
+            actionBtnHtml = `<button class="btn-song-action downloaded" type="button" title="Downloaded offline ✓" aria-label="Downloaded">✓</button>`;
+          } else if (isDownloading) {
+            actionBtnHtml = `<button class="btn-song-action downloading" type="button">⏳</button>`;
+          } else {
+            actionBtnHtml = `<button class="btn-song-action btn-download-track" type="button" title="Download for offline listening" aria-label="Download ${escapeHTML(songTitle)}">↓</button>`;
+          }
+        }
+
         return `
           <li class="playlist-item ${isActive ? "active" : ""}" data-index="${idx}" role="button" tabindex="0" aria-label="Play ${escapeHTML(songTitle)}">
             <span class="playlist-item-num">${displayNum}</span>
@@ -1681,23 +1921,28 @@
               <div class="playlist-item-singer">${escapeHTML(songSingerName)}</div>
             </div>
             ${isActive && isPlaying
-            ? `
-              <div class="equalizer playing" aria-hidden="true">
-                <span class="equalizer-bar"></span>
-                <span class="equalizer-bar"></span>
-                <span class="equalizer-bar"></span>
-              </div>
-            `
-            : ""
-          }
+              ? `
+                <div class="equalizer playing" aria-hidden="true">
+                  <span class="equalizer-bar"></span>
+                  <span class="equalizer-bar"></span>
+                  <span class="equalizer-bar"></span>
+                </div>
+              `
+              : ""
+            }
+            <div class="playlist-item-actions">
+              ${actionBtnHtml}
+            </div>
           </li>
         `;
       })
       .join("");
 
-    // Safe event listeners for playlist items
+    // Event listeners for playlist items and download buttons
     playlistList.querySelectorAll(".playlist-item").forEach((item) => {
       const playHandler = (e) => {
+        // If click was on download button, don't trigger play
+        if (e.target.closest(".btn-song-action")) return;
         e.stopPropagation();
         const songIdx = parseInt(item.getAttribute("data-index"), 10);
         if (!isNaN(songIdx)) {
@@ -1713,6 +1958,44 @@
           playHandler(e);
         }
       });
+
+      // Download button click listener
+      const dlBtn = item.querySelector(".btn-download-track");
+      if (dlBtn) {
+        dlBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          const songIdx = parseInt(item.getAttribute("data-index"), 10);
+          const songToDownload = songs[songIdx];
+          if (!songToDownload || !window.OfflineManager) return;
+
+          dlBtn.className = "btn-song-action downloading";
+          dlBtn.textContent = "0%";
+          const t = i18n[currentLang] || i18n.hi;
+          showToast((t.downloadingToast || "Downloading: ") + (songToDownload.title || "Track"));
+
+          try {
+            await window.OfflineManager.downloadSong(songToDownload, (prog) => {
+              if (prog.percent >= 0) {
+                dlBtn.textContent = `${prog.percent}%`;
+              } else {
+                dlBtn.textContent = "⏳";
+              }
+            });
+
+            dlBtn.className = "btn-song-action downloaded";
+            dlBtn.textContent = "✓";
+            dlBtn.title = "Downloaded offline ✓";
+            showToast(t.downloadCompleteToast || "Downloaded for offline listening ✓");
+            await refreshOfflineBadgesAndStorage();
+          } catch (err) {
+            console.error("Download failed:", err);
+            dlBtn.className = "btn-song-action btn-download-track";
+            dlBtn.textContent = "↓";
+            dlBtn.title = "Download for offline listening";
+            showToast(t.downloadFailedToast || "Download failed. Please try again.");
+          }
+        });
+      }
     });
   }
 
@@ -1790,11 +2073,96 @@
       playlistModal.classList.contains("open") &&
       !playlistModal.contains(e.target) &&
       e.target !== playlistToggleBtn &&
-      !playlistToggleBtn.contains(e.target)
+      !playlistToggleBtn.contains(e.target) &&
+      e.target !== navDownloadsBtn &&
+      !(navDownloadsBtn && navDownloadsBtn.contains(e.target))
     ) {
       playlistModal.classList.remove("open");
     }
   });
+
+  // ---------------------------------------------------------
+  // OFFLINE TABS & STORAGE ACTIONS WIRING
+  // ---------------------------------------------------------
+  if (tabAllSongs) {
+    tabAllSongs.addEventListener("click", () => {
+      currentPlaylistTab = "all";
+      tabAllSongs.classList.add("active");
+      if (tabDownloadedSongs) tabDownloadedSongs.classList.remove("active");
+      if (storageMgmtBar) storageMgmtBar.style.display = "none";
+      renderPlaylist(playlistSearch ? playlistSearch.value : "");
+    });
+  }
+
+  if (tabDownloadedSongs) {
+    tabDownloadedSongs.addEventListener("click", () => {
+      currentPlaylistTab = "downloaded";
+      tabDownloadedSongs.classList.add("active");
+      if (tabAllSongs) tabAllSongs.classList.remove("active");
+      if (storageMgmtBar) storageMgmtBar.style.display = "flex";
+      renderPlaylist(playlistSearch ? playlistSearch.value : "");
+    });
+  }
+
+  if (navDownloadsBtn) {
+    navDownloadsBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (playlistModal) playlistModal.classList.add("open");
+      currentPlaylistTab = "downloaded";
+      if (tabDownloadedSongs) tabDownloadedSongs.classList.add("active");
+      if (tabAllSongs) tabAllSongs.classList.remove("active");
+      if (storageMgmtBar) storageMgmtBar.style.display = "flex";
+      renderPlaylist();
+    });
+  }
+
+  if (btnClearStorage) {
+    btnClearStorage.addEventListener("click", async () => {
+      const t = i18n[currentLang] || i18n.hi;
+      if (confirm(t.clearStorageConfirm || "Delete all downloaded songs?")) {
+        if (window.OfflineManager) {
+          await window.OfflineManager.clearAllDownloadedSongs();
+          await refreshOfflineBadgesAndStorage();
+          renderPlaylist(playlistSearch ? playlistSearch.value : "");
+          showToast(t.clearStorageSuccess || "🗑 All downloaded songs have been removed.");
+        }
+      }
+    });
+  }
+
+  // ---------------------------------------------------------
+  // PWA INSTALLATION PROMPT HANDLER
+  // ---------------------------------------------------------
+  if (pwaInstallBtn && window.OfflineManager) {
+    if (window.OfflineManager.canInstallPwa()) {
+      pwaInstallBtn.classList.add("visible");
+    }
+
+    pwaInstallBtn.addEventListener("click", async () => {
+      const accepted = await window.OfflineManager.promptPwaInstall();
+      if (accepted) {
+        pwaInstallBtn.classList.remove("visible");
+        showToast(currentLang === "en" ? "🎉 App installed successfully!" : "🎉 ऐप सफलतापूर्वक इंस्टॉल हो गया!");
+      }
+    });
+  }
+
+  // Subscribe to OfflineManager global events
+  if (window.OfflineManager) {
+    window.OfflineManager.subscribe((type) => {
+      if (type === "installable" && pwaInstallBtn) {
+        pwaInstallBtn.classList.add("visible");
+      } else if (type === "installed" && pwaInstallBtn) {
+        pwaInstallBtn.classList.remove("visible");
+      } else if (type === "download-complete" || type === "delete" || type === "clear") {
+        refreshOfflineBadgesAndStorage();
+        if (playlistModal && playlistModal.classList.contains("open")) {
+          renderPlaylist(playlistSearch ? playlistSearch.value : "");
+        }
+      }
+    });
+    refreshOfflineBadgesAndStorage();
+  }
 
   // ---------------------------------------------------------
   // MEDIA SESSION API INTEGRATION
@@ -2239,6 +2607,13 @@
       hindiSongBtn.setAttribute("aria-label", t.navHindiSongAria);
     }
     if (hindiSongTxt) hindiSongTxt.textContent = t.navHindiSongText;
+
+    if (navDownloadsText) navDownloadsText.textContent = t.downloadsTitle || "Downloads";
+    if (navDownloadsBtn) navDownloadsBtn.title = t.downloadsNavTitle || "Offline Downloads";
+    if (tabAllSongsText) tabAllSongsText.textContent = t.allSongsTab || "All Songs";
+    if (tabDownloadedText) tabDownloadedText.textContent = t.downloadedTab || "Downloads";
+    if (storageLabel) storageLabel.textContent = t.storageLabel || "Offline Storage:";
+    if (pwaInstallBtnText) pwaInstallBtnText.textContent = t.installAppBtn || "Install App";
 
     if (prevBtn) prevBtn.title = t.prevSongTitle;
     if (playButton) playButton.title = t.playBtnTitle;

@@ -9,14 +9,16 @@
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/hindi-songs.html">
 
-  <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
-  <link rel="icon" type="image/x-icon" href="favicon.io/favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="favicon.io/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="favicon.io/android-chrome-512x512.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon.io/android-chrome-192x192.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.io/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon.io/favicon-16x16.png">
-  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.io/hindi-apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.io/hindi-icon-512x512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.io/hindi-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.io/hindi-icon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.io/hindi-icon-16x16.png">
+  <link rel="manifest" href="hindi-songs.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="हिंदी सुपरहिट गीत">
 
   <meta name="description"
     content="70 सुपरहिट हिंदी बॉलीवुड गीत, 90s क्लासिक्स, रोमांटिक मेलोडीज, और डांस ट्रैक्स ऑनलाइन सुनें। सोनू निगम, उदित नारायण, कुमार सानु, अरिजीत सिंह, लता मंगेशकर और अलका याग्निक के सदाबहार गीत।">
@@ -128,6 +130,11 @@
           <span>⌨️</span>
         </button>
 
+        <!-- PWA Install Button -->
+        <button class="btn-pwa-install" id="pwaInstallBtn" type="button" title="ऐप इंस्टॉल करें / Install App" aria-label="Install App">
+          📲 <span id="pwaInstallBtnText">Install App</span>
+        </button>
+
         <!-- Share Dropdown -->
         <div class="share-dropdown" id="shareDropdown">
           <button class="btn-action btn-share-main" id="shareMainBtn" type="button" aria-haspopup="true"
@@ -151,6 +158,22 @@
             <button class="share-menu-item btn-facebook" id="facebookShareBtn" type="button" role="menuitem">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
               <span id="facebookShareText">Facebook</span>
+            </button>
+            <button class="share-menu-item btn-instagram" id="instagramShareBtn" type="button" role="menuitem"
+              title="Instagram पर शेयर करें / Share on Instagram" aria-label="Share on Instagram">
+              <svg class="insta-icon" viewBox="0 0 24 24" width="16" height="16">
+                <defs>
+                  <linearGradient id="instaGradHindi" x1="0%" y1="100%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#f09433"/>
+                    <stop offset="25%" stop-color="#e6683c"/>
+                    <stop offset="50%" stop-color="#dc2743"/>
+                    <stop offset="75%" stop-color="#cc2366"/>
+                    <stop offset="100%" stop-color="#bc1888"/>
+                  </linearGradient>
+                </defs>
+                <path fill="url(#instaGradHindi)"
+                  d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+              <span id="instagramShareText">Instagram</span>
             </button>
             <button class="share-menu-item btn-copy-link" id="copyLinkBtn" type="button" role="menuitem">
               <span>🔗</span>
@@ -356,6 +379,10 @@
           <span>❤️ Favorites</span>
           <span class="chip-count" id="countFavs">0</span>
         </button>
+        <button class="category-chip" data-cat="downloads" type="button" id="catDownloadsBtn">
+          <span>📥 Offline Downloads</span>
+          <span class="chip-count" id="countDownloads">0</span>
+        </button>
       </div>
     </section>
 
@@ -467,6 +494,7 @@
   <div class="toast" id="toastNotification" role="alert" aria-live="polite"></div>
 
   <!-- Interactive JavaScript for Hindi Songs -->
+  <script src="offline-manager.js"></script>
   <script src="hindi-song.js"></script>
 </body>
 

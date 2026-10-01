@@ -18,6 +18,10 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon.io/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon.io/favicon-16x16.png">
   <link rel="manifest" href="site.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="छठ घाट">
 
     <meta name="description"
     content="छठ महापर्व 2026 के पावन अवसर पर सुनें और देखें शारदा सिन्हा, पवन सिंह, खेसारी लाल यादव, अनुराधा पौडवाल और कल्पना पटवारी के पारंपरिक सुपरहिट छठ गीत, छठी मईया के भजन, सूर्य गायत्री मंत्र और चार दिवसीय पूजा विधि ऑनलाइन छठ घाट पर।">
@@ -740,6 +744,19 @@
           <span id="navHindiSongText">Hindi Song</span>
         </a>
 
+        <!-- Downloads Button -->
+        <button class="btn-nav-item btn-nav-downloads" id="navDownloadsBtn" type="button"
+          title="डाउनलोड्स / Offline Downloads" aria-label="Offline Downloads">
+          <svg class="nav-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span id="navDownloadsText">Downloads</span>
+          <span class="downloads-nav-badge" id="navDownloadsBadge">0</span>
+        </button>
+
         <!-- Mode Toggle Button -->
         <button class="btn-mode-toggle" id="modeToggleBtn" type="button" title="मोड बदलें: Offline / Online"
           aria-label="Toggle Online/Offline Mode" data-mode="offline">
@@ -753,8 +770,13 @@
         </button>
       </div>
 
-      <!-- Top Right Action Controls: Share Dropdown -->
+      <!-- Top Right Action Controls: PWA Install & Share Dropdown -->
       <div class="top-actions">
+        <!-- PWA Install Button -->
+        <button class="btn-pwa-install" id="pwaInstallBtn" type="button" title="ऐप इंस्टॉल करें / Install App" aria-label="Install App">
+          📲 <span id="pwaInstallBtnText">Install App</span>
+        </button>
+
         <div class="share-dropdown" id="shareDropdown">
           <button class="btn-action btn-share-main" id="shareMainBtn" type="button" aria-haspopup="true"
             aria-expanded="false" title="शेयर करें / Share" aria-label="Share options">
@@ -959,6 +981,31 @@
         </div>
         <button class="playlist-close" id="playlistCloseBtn" aria-label="Close Playlist" title="बंद करें">
           ✕
+        </button>
+      </div>
+
+      <!-- Playlist Tabs: All Songs vs Offline Downloads -->
+      <div class="playlist-tabs">
+        <button class="playlist-tab active" id="tabAllSongs" type="button">
+          <span id="tabAllSongsText">All Songs</span>
+          <span class="playlist-tab-badge" id="tabAllSongsCount">0</span>
+        </button>
+        <button class="playlist-tab" id="tabDownloadedSongs" type="button">
+          <span>📥</span>
+          <span id="tabDownloadedText">Downloads</span>
+          <span class="playlist-tab-badge" id="tabDownloadedCount">0</span>
+        </button>
+      </div>
+
+      <!-- Offline Storage Management Bar (Shown in Downloads tab) -->
+      <div class="storage-mgmt-bar" id="storageMgmtBar" style="display:none;">
+        <div class="storage-mgmt-info">
+          <span>💾</span>
+          <span id="storageLabel">Offline Storage:</span>
+          <span class="storage-mgmt-val" id="storageUsedVal">0 MB</span>
+        </div>
+        <button class="btn-clear-storage" id="btnClearStorage" type="button" title="Clear all downloads">
+          🗑 Clear All
         </button>
       </div>
 
@@ -1222,6 +1269,7 @@
   <!-- Toast Notification Message -->
   <div id="toastNotification" class="toast-notification" role="status" aria-live="polite"></div>
 
+  <script src="offline-manager.js"></script>
   <script src="script.js"></script>
 </body>
 

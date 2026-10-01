@@ -1,0 +1,51 @@
+{
+  "name": "हिंदी सुपरहिट बॉलीवुड गीत | Superhit Hindi Songs",
+  "short_name": "हिंदी गीत",
+  "description": "70 सुपरहिट हिंदी बॉलीवुड गीत, 90s क्लासिक्स और रोमांटिक हिट्स - ऑनलाइन व ऑफलाइन म्यूजिक वेब ऐप",
+  "id": "/hindi-songs",
+  "start_url": "./hindi-songs.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#0c0f17",
+  "background_color": "#0c0f17",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "favicon.io/hindi-icon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/hindi-icon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/hindi-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/hindi-icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "favicon.io/hindi-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/hindi-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

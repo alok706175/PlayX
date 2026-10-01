@@ -60,6 +60,7 @@
       shareBtnTitle: "हिंदी गीत संग्रह शेयर करें",
       whatsappLabel: "WhatsApp",
       facebookLabel: "Facebook",
+      instagramLabel: "Instagram",
       copyLinkText: "लिंक कॉपी करें",
       toastLangSwitched: "भाषा बदलकर हिंदी कर दी गई है",
       toastMuted: "🔇 ध्वनि म्यूट की गई",
@@ -109,6 +110,7 @@
       shareBtnTitle: "Share Hindi Songs Collection",
       whatsappLabel: "WhatsApp",
       facebookLabel: "Facebook",
+      instagramLabel: "Instagram",
       copyLinkText: "Copy Link",
       toastLangSwitched: "Language switched to English",
       toastMuted: "🔇 Volume Muted",
@@ -324,6 +326,23 @@
     fbShareBtn.addEventListener("click", () => {
       const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}&quote=${encodeURIComponent("🎶 70 सुपरहिट हिंदी बॉलीवुड गीत संग्रह ऑनलाइन सुनें 🎧")}`;
       window.open(fbUrl, "_blank", "noopener,noreferrer,width=600,height=500");
+    });
+  }
+
+  /* Instagram Share */
+  const instaShareBtn = document.getElementById("instagramShareBtn");
+  if (instaShareBtn) {
+    instaShareBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(SHARE_URL);
+        showToast(currentLang === "en" ? "✨ Link copied! Share on Instagram 📸" : "✨ लिंक कॉपी हुआ! Instagram पर शेयर करें 📸");
+      } catch (err) {
+        showToast(currentLang === "en" ? "✨ Opening Instagram..." : "✨ Instagram खोला जा रहा है...");
+      }
+      if (shareDropdown) shareDropdown.classList.remove("open");
+      setTimeout(() => {
+        window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+      }, 500);
     });
   }
 
@@ -555,7 +574,22 @@
     }
   }
 
-  function displaySongInfo(index) {
+  let downloadedHindiSongs = new Set();
+  async function refreshDownloadedHindiSongs() {
+    if (window.OfflineManager) {
+      try {
+        const list = await window.OfflineManager.getAllDownloadedSongs();
+        downloadedHindiSongs = new Set(list.map(x => x.key));
+        const countDownloadsEl = document.getElementById("countDownloads");
+        if (countDownloadsEl) {
+          const pageDownloadedCount = songs.filter(s => downloadedHindiSongs.has(window.OfflineManager.getSongKey(s))).length;
+          countDownloadsEl.textContent = pageDownloadedCount.toString();
+        }
+      } catch (e) {}
+    }
+  }
+
+  async function displaySongInfo(index) {
     if (!songs[index]) return;
     currentSong = index;
     const s = songs[index];
@@ -564,7 +598,14 @@
     const title = isEn ? (s.nameEn || s.name) : s.name;
     const singer = isEn ? (s.singerEn || s.singer) : s.singer;
 
-    if (songName) songName.textContent = title;
+    let isOffline = false;
+    if (window.OfflineManager) {
+      isOffline = await window.OfflineManager.isSongDownloaded(s);
+    }
+
+    if (songName) {
+      songName.innerHTML = `${escapeHTML(title)} ${isOffline ? '<span class="offline-playback-badge" title="Offline Local Audio">💾 Offline</span>' : ''}`;
+    }
     if (songSinger) songSinger.textContent = `🎤 ${singer}`;
 
     if (miniTitle) miniTitle.textContent = title;
@@ -584,16 +625,32 @@
     updateFavoriteUI();
   }
 
-  function playSong(index) {
+  async function playSong(index) {
     if (!songs[index]) return;
     currentSong = index;
-    displaySongInfo(index);
+    await displaySongInfo(index);
 
     if (offlineAudio) {
       const s = songs[index];
-      if (offlineAudio.src !== s.file) {
-        offlineAudio.src = s.file;
+      let playback = { isOffline: false, canPlay: true, src: s.file };
+      if (window.OfflineManager) {
+        playback = await window.OfflineManager.resolvePlaybackSource(s);
+      }
+
+      if (!playback.canPlay) {
+        setPlaybackState(false);
+        showToast(currentLang === "en" ? "📴 You're offline. Download this song while online to listen offline!" : "📴 आप ऑफ़लाइन हैं। बिना इंटरनेट सुनने के लिए इस गीत को ऑनलाइन रहते हुए डाउनलोड करें।");
+        return;
+      }
+
+      const fileSrc = playback.src;
+      if (offlineAudio.src !== fileSrc) {
+        offlineAudio.src = fileSrc;
         offlineAudio.load();
+      }
+
+      if (playback.isOffline) {
+        showToast("💾 " + (currentLang === "en" ? "Playing local offline copy" : "ऑफ़लाइन लोकल कॉपी बज रही है"));
       }
 
       const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
@@ -1055,6 +1112,9 @@
       // Filter by category
       if (selectedCategory === "favorites") {
         if (!likedSongs.has(s.id)) return false;
+      } else if (selectedCategory === "downloads") {
+        const key = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
+        if (!downloadedHindiSongs.has(key)) return false;
       } else if (selectedCategory !== "all" && s.category !== selectedCategory) {
         return false;
       }
@@ -1146,7 +1206,7 @@
       grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--bg-surface); border: 1px dashed var(--border-medium); border-radius: 20px;">
           <div style="font-size: 38px; margin-bottom: 8px;">🎵</div>
-          <h3 style="color: var(--text-primary); margin-bottom: 6px;">${selectedCategory === "favorites" ? t.noFavsFound : t.noSongsFound}</h3>
+          <h3 style="color: var(--text-primary); margin-bottom: 6px;">${selectedCategory === "favorites" ? t.noFavsFound : (selectedCategory === "downloads" ? (isEn ? "No downloaded songs found. Click ↓ on any song to listen offline!" : "कोई डाउनलोड किया हुआ गीत नहीं मिला। ऑफ़लाइन सुनने के लिए किसी गीत पर ↓ बटन दबाएं!") : t.noSongsFound)}</h3>
           <p style="color: var(--text-muted); font-size: 13.5px;">Try selecting 'All Songs' or searching with another keyword.</p>
         </div>
       `;
@@ -1162,6 +1222,8 @@
       const title = isEn ? (s.nameEn || s.name) : s.name;
       const singer = isEn ? (s.singerEn || s.singer) : s.singer;
       const isLiked = likedSongs.has(s.id);
+      const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
+      const isDownloaded = downloadedHindiSongs.has(songKey);
 
       card.innerHTML = `
         <div class="song-card-header">
@@ -1179,10 +1241,15 @@
 
         <div class="song-card-footer">
           <div class="song-card-duration">⏱️ ${s.duration || "320 Kbps"}</div>
-          <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
-            <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
-            <span>${isCardPlaying && isPlaying ? (isEn ? "Pause" : "रोकें") : (isEn ? "Play" : "सुनें")}</span>
-          </button>
+          <div class="song-card-actions">
+            <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
+              ${isDownloaded ? '✓' : '↓'}
+            </button>
+            <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
+              <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
+              <span>${isCardPlaying && isPlaying ? (isEn ? "Pause" : "रोकें") : (isEn ? "Play" : "सुनें")}</span>
+            </button>
+          </div>
         </div>
       `;
 
@@ -1194,8 +1261,42 @@
         });
       }
 
+      // Download button listener
+      const dlBtn = card.querySelector(".song-card-download-btn");
+      if (dlBtn) {
+        dlBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          if (!window.OfflineManager) return;
+          dlBtn.className = "song-card-download-btn downloading";
+          dlBtn.textContent = "0%";
+          showToast((currentLang === "en" ? "Downloading: " : "डाउनलोड हो रहा है: ") + (s.name || "Song"));
+
+          try {
+            await window.OfflineManager.downloadSong(s, (prog) => {
+              if (prog.percent >= 0) {
+                dlBtn.textContent = `${prog.percent}%`;
+              } else {
+                dlBtn.textContent = "⏳";
+              }
+            });
+            dlBtn.className = "song-card-download-btn downloaded";
+            dlBtn.textContent = "✓";
+            dlBtn.title = "Downloaded ✓";
+            showToast(currentLang === "en" ? "Downloaded for offline listening ✓" : "ऑफ़लाइन सुनने के लिए डाउनलोड पूरा हुआ ✓");
+            await refreshDownloadedHindiSongs();
+            renderSongCardsGrid();
+          } catch (err) {
+            console.error("Download failed:", err);
+            dlBtn.className = "song-card-download-btn";
+            dlBtn.textContent = "↓";
+            showToast(currentLang === "en" ? "Download failed. Please try again." : "डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।");
+          }
+        });
+      }
+
       // Card click listener
-      card.addEventListener("click", () => {
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".song-card-download-btn") || e.target.closest(".card-like-btn")) return;
         if (s.originalIdx === currentSong) {
           togglePlayback();
         } else {
@@ -1361,6 +1462,9 @@
 
     const facebookShareText = document.getElementById("facebookShareText");
     if (facebookShareText && t.facebookLabel) facebookShareText.textContent = t.facebookLabel;
+
+    const instagramShareText = document.getElementById("instagramShareText");
+    if (instagramShareText && t.instagramLabel) instagramShareText.textContent = t.instagramLabel;
 
     const copyLinkText = document.getElementById("copyLinkText");
     if (copyLinkText && t.copyLinkText) copyLinkText.textContent = t.copyLinkText;
@@ -1585,6 +1689,39 @@
      ========================================================= */
   setLanguage("en", false);
   loadHindiSongs();
+
+  // PWA Install prompt handling
+  const pwaInstallBtn = document.getElementById("pwaInstallBtn");
+  if (pwaInstallBtn && window.OfflineManager) {
+    if (window.OfflineManager.canInstallPwa()) {
+      pwaInstallBtn.classList.add("visible");
+    }
+
+    pwaInstallBtn.addEventListener("click", async () => {
+      const accepted = await window.OfflineManager.promptPwaInstall();
+      if (accepted) {
+        pwaInstallBtn.classList.remove("visible");
+        showToast(currentLang === "en" ? "🎉 App installed successfully!" : "🎉 ऐप सफलतापूर्वक इंस्टॉल हो गया!");
+      }
+    });
+  }
+
+  // Subscribe to offline manager updates
+  if (window.OfflineManager) {
+    window.OfflineManager.subscribe((type) => {
+      if (type === "installable" && pwaInstallBtn) {
+        pwaInstallBtn.classList.add("visible");
+      } else if (type === "installed" && pwaInstallBtn) {
+        pwaInstallBtn.classList.remove("visible");
+      } else if (type === "download-complete" || type === "delete" || type === "clear") {
+        refreshDownloadedHindiSongs().then(() => {
+          renderSongCardsGrid();
+          renderPlaylist(playlistSearch ? playlistSearch.value : "");
+        });
+      }
+    });
+    refreshDownloadedHindiSongs();
+  }
 
   // Register High-Performance Service Worker for instant offline audio caching
   if ("serviceWorker" in navigator) {
