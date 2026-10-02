@@ -8,7 +8,7 @@
   <title>PlayX | A Largest Music Library Website.</title>
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
-  <link rel="stylesheet" href="home.css?v=24">
+  <link rel="stylesheet" href="home.css?v=27">
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
@@ -87,9 +87,10 @@
 
         <!-- Nav Actions: Live IST Clock & Theme Toggle -->
         <div class="nav-actions">
-          <div class="live-clock-widget" title="भारतीय मानक समय (IST)">
-            <span class="live-dot" aria-hidden="true"></span>
-            <span id="liveIstTime">--:-- --</span>
+          <div class="live-clock-widget" id="liveClockWidget" title="भारतीय मानक समय (IST) / Indian Standard Time">
+            <span class="clock-time" id="liveIstTime">--:-- --</span>
+            <span class="clock-divider" aria-hidden="true">|</span>
+            <span class="clock-date" id="liveIstDate">--</span>
           </div>
           <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Switch Light / Dark Mode"
             title="लाइट मोड में बदलें / Switch to Light Mode">
@@ -228,7 +229,10 @@
         <a href="durga-puja-songs.html" class="category-card-btn card-durga" data-category="durga"
           title="दुर्गा पूजा व नवरात्रि भक्ति गीत सुनें">
           <div class="card-btn-header">
-            <div class="card-icon-emblem">🪔</div>
+            <div class="card-icon-emblem card-icon-durga" title="दुर्गा पूजा व नवरात्रि">
+              <img src="images/durga_puja_logo.png" alt="दुर्गा पूजा व नवरात्रि" class="durga-card-icon-img" width="46"
+                height="46">
+            </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -406,7 +410,7 @@
   </footer>
 
   <!-- Interactive Scripts -->
-  <script src="home.js?v=25"></script>
+  <script src="home.js?v=27"></script>
 </body>
 
 </html>

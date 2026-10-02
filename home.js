@@ -395,16 +395,15 @@
 
     updateClockDisplay = function update() {
       const now = new Date();
-      // Format IST Time
-      const timeStr = now.toLocaleTimeString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true
-      });
-      // Format Date with active language locale
-      const locale = currentLang === "en" ? "en-IN" : "hi-IN";
+      // Format 12-hour Time: "7:08 PM" (no seconds, 12-hour format)
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const ampm = hours >= 12 ? "PM" : "AM";
+      hours = hours % 12 || 12;
+      const timeStr = `${hours}:${minutes} ${ampm}`;
+
+      // Format Date: "Fri, 2 Oct"
+      const locale = currentLang === "hi" ? "hi-IN" : "en-IN";
       const dateStr = now.toLocaleDateString(locale, {
         timeZone: "Asia/Kolkata",
         weekday: "short",

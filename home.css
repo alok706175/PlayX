@@ -101,9 +101,21 @@
 }
 
 [data-theme="light"] .live-clock-widget {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #334155;
+  background: #ffffff;
+  border: 1.5px solid #d97706;
+  box-shadow: 0 3px 12px rgba(217, 119, 6, 0.12);
+}
+
+[data-theme="light"] .clock-time {
+  color: #0f172a;
+}
+
+[data-theme="light"] .clock-divider {
+  color: #d97706;
+}
+
+[data-theme="light"] .clock-date {
+  color: #1e293b;
 }
 
 [data-theme="light"] .theme-toggle-btn {
@@ -592,29 +604,42 @@ body {
 }
 
 .live-clock-widget {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.4rem 0.85rem;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-  font-size: 0.8rem;
-  color: var(--text-muted);
+  padding: 0.35rem 1.05rem;
+  background: #140d12;
+  border: 1.5px solid #8e622b;
+  border-radius: 9999px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  font-family: var(--font-body);
+  user-select: none;
+  white-space: nowrap;
 }
 
-.live-dot {
-  width: 8px;
-  height: 8px;
-  background: #22c55e;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #22c55e;
-  animation: pulse 2s infinite ease-in-out;
+.clock-time {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
+.clock-divider {
+  display: inline-block;
+  color: #c28b38;
+  margin: 0 0.55rem;
+  font-size: 0.95rem;
+  font-weight: 300;
+  opacity: 0.85;
+  line-height: 1;
+}
+
+.clock-date {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
 .theme-toggle-btn {
@@ -1094,6 +1119,28 @@ body {
 .category-card-btn:hover .hindi-card-icon-img {
   transform: scale(1.16) rotate(4deg);
   filter: drop-shadow(0 4px 14px rgba(236, 72, 153, 0.9)) drop-shadow(0 0 18px rgba(59, 130, 246, 0.75));
+}
+
+.card-icon-durga {
+  background: #ffffff !important;
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.4), 0 0 16px rgba(251, 191, 36, 0.25) !important;
+  border: 1.5px solid rgba(244, 63, 94, 0.5) !important;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.durga-card-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), filter 0.35s ease;
+}
+
+.category-card-btn:hover .durga-card-icon-img {
+  transform: scale(1.15) rotate(2deg);
+  filter: contrast(1.05) saturate(1.1);
 }
 
 /* Card Body */

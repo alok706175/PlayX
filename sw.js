@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v25";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v25";
+const CACHE_NAME = "chhath-pwa-v28";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v28";
 
 const STATIC_ASSETS = [
   "./",
@@ -52,8 +52,10 @@ const STATIC_ASSETS = [
   "./images/chhath_puja_400x838.png",
   "./images/trishul_damru.svg",
   "./images/playx_icon.png",
+  "./images/playx_icon.svg",
   "./images/playx_full_logo.png",
-  "./images/hindi_song_icon.png"
+  "./images/hindi_song_icon.png",
+  "./images/durga_puja_logo.png"
 ];
 
 // Install Event - Pre-cache core app shell assets
