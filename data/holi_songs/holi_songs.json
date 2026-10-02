@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "रंग बरसे भीगे चुनर वाली",
+    "nameEn": "Rang Barse Bheege Chunarwali (Silsila)",
+    "singer": "अमिताभ बच्चन",
+    "singerEn": "Amitabh Bachchan",
+    "category": "Bollywood All-Time Hit",
+    "duration": "6:05",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Didi_Tera_Devar_Deewana_Hum_Aapke_Hain_Koun_320_Kbps.mp3",
+    "youtubeId": "Jf92ey4xO1M",
+    "tag": "ऑल टाइम क्लासिक"
+  },
+  {
+    "id": 2,
+    "name": "होली खेले रघुवीरा अवध में",
+    "nameEn": "Holi Khele Raghuveera (Baghban)",
+    "singer": "अमिताभ बच्चन, उदित नारायण & अलका याग्निक",
+    "singerEn": "Amitabh Bachchan & Udit Narayan",
+    "category": "Bollywood Classic",
+    "duration": "5:38",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788094000/Jo_Bhi_Kasmein_-_Raaz_320_kbps.mp3",
+    "youtubeId": "z0KjL0kLwZs",
+    "tag": "अवध की होली"
+  },
+  {
+    "id": 3,
+    "name": "बलम पिचकारी जो तूने मुझे मारी",
+    "nameEn": "Balam Pichkari (YJHD)",
+    "singer": "विशाल ददलानी & शाल्मली खोलगड़े",
+    "singerEn": "Vishal Dadlani & Shalmali Kholgade",
+    "category": "Youth Dance Hit",
+    "duration": "4:49",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788093998/Aashiq_Banaya_Aapne_Himesh_Reshammiya_320_Kbps.mp3",
+    "youtubeId": "0WtRNGubWmA",
+    "tag": "पार्टी एंथम"
+  },
+  {
+    "id": 4,
+    "name": "बबुनी तेरे रंग में",
+    "nameEn": "Babuni Tere Rang Mein (Holi)",
+    "singer": "पवन सिंह & शारवी यादव",
+    "singerEn": "Pawan Singh & Sharvi Yadav",
+    "category": "Bhojpuri Holi",
+    "duration": "4:15",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972344/Jal_Beech_Khada_Hoee_Jode_Jode_Phalwa_-_Daras_Dekhava_Ae_Deenanath_320_kbps.mp3",
+    "youtubeId": "L0yX1qW_6tQ",
+    "tag": "पवन सिंह होली"
+  },
+  {
+    "id": 5,
+    "name": "होली के दिन दिल खिल जाते हैं",
+    "nameEn": "Holi Ke Din Dil Khil Jaate Hain (Sholay)",
+    "singer": "किशोर कुमार & लता मंगेशकर",
+    "singerEn": "Kishore Kumar & Lata Mangeshkar",
+    "category": "Golden Era Classic",
+    "duration": "5:42",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788093985/Pardesi_Pardesi_Kumar_Sanu_Alka_Yagnik_Raja_Hindustani_320_Kbps.mp3",
+    "youtubeId": "0rW8P-N66k8",
+    "tag": "शोले सुपरहिट"
+  },
+  {
+    "id": 6,
+    "name": "दुई रुपया के रंगवा",
+    "nameEn": "Dui Rupya (Holi Blast)",
+    "singer": "खेसारी लाल यादव & अंतरा सिंह प्रियंका",
+    "singerEn": "Khesari Lal Yadav & Antra Singh",
+    "category": "Bhojpuri Holi Blast",
+    "duration": "4:30",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972335/%E0%A4%95%E0%A5%87%E0%A4%B0%E0%A4%B5%E0%A4%BE_%E0%A4%95%E0%A5%87_%E0%A4%AA%E0%A4%BE%E0%A4%A4%E0%A4%B5%E0%A4%BE_%E0%A4%AA%E0%A5%87_%E0%A4%A8%E0%A5%87%E0%A4%B5%E0%A4%A4%E0%A4%BE_-_Pawan_Singh_-_Bhojpuri_Chhath_Geet_-_Kerwa_Ke_Patwa_Pe_Newta_Pethawani_uWtMR3iQT-I.mp3",
+    "youtubeId": "Jg5_b9WlM8A",
+    "tag": "खेसारी होली"
+  },
+  {
+    "id": 7,
+    "name": "आज ना छोड़ेंगे बस हमजोली",
+    "nameEn": "Aaj Na Chhodenge (Kati Patang)",
+    "singer": "किशोर कुमार & लता मंगेशकर",
+    "singerEn": "Kishore Kumar & Lata Mangeshkar",
+    "category": "Retro Evergreen",
+    "duration": "5:15",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788093987/Kash_Koi_Ladka_Mujhe_Pyar_Karta_128_Kbps_-_SongsPk.Com.Se.mp3",
+    "youtubeId": "mN_F8Gz2d7U",
+    "tag": "राजेश खन्ना हिट"
+  },
+  {
+    "id": 8,
+    "name": "बद्री की दुल्हनिया",
+    "nameEn": "Badri Ki Dulhania (Title Track)",
+    "singer": "देव नेगी, नेहा कक्कड़ & इक्का",
+    "singerEn": "Dev Negi, Neha Kakkar & Ikka",
+    "category": "Bollywood Dance",
+    "duration": "3:26",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Kabhi_Jo_Baadal_Barse_-_Jackpot_320_kbps.mp3",
+    "youtubeId": "1YBl3Zbt80A",
+    "tag": "डीजे होली डांस"
+  }
+]

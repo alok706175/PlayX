@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="midnight">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>हरियाणवी सुपरहिट गाने | Haryanvi Hit Songs - 52 गज का दामन, सपना चौधरी</title>
+  <link rel="canonical" href="https://www.mahaparvchhathpuja.me/haryanvi-songs.html">
+  <link rel="stylesheet" href="festival-player.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.io/favicon-32x32.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="description" content="सपना चौधरी, रेणुका पंवार, गुलज़ार छानीवाला और दिलेर खरकिया के सुपरहिट हरियाणवी डीजे सांग्स, डांस नंबर्स व रागनी 320 Kbps HD में सुनें।">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+</head>
+
+<body data-songs-file="data/haryanvi_songs/haryanvi_songs.json" data-festival-title="Haryanvi Songs">
+  <!-- Navigation Header -->
+  <header class="player-navbar">
+    <div class="container navbar-inner">
+      <a href="home.html" class="btn-back-home" title="मुख्य पृष्ठ पर जाएं">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>मुख्य पृष्ठ (Home)</span>
+      </a>
+
+      <div class="page-title-badge" style="color: #34d399;">
+        <span>⚡</span>
+        <span>हरियाणवी सुपरहिट गाने (Haryanvi Hits)</span>
+      </div>
+
+      <div class="nav-right-actions">
+        <div class="time-box">
+          <span id="currentTime">--:-- --</span>
+        </div>
+        <button class="btn-theme" id="themeToggleBtn" type="button" title="Theme">🎨 Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Player Layout -->
+  <main class="container">
+    <div class="player-page-grid">
+      <!-- Left Audio Deck -->
+      <section class="audio-deck-card">
+        <div class="vinyl-deck" id="vinylDisc" style="box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(16, 185, 129, 0.4);">
+          <div class="vinyl-center-label" style="background: linear-gradient(135deg, #10b981, #06b6d4);">⚡</div>
+        </div>
+
+        <div class="deck-track-info">
+          <span class="deck-tag" id="playerTrackTag" style="color: #34d399;">डीजे बास बूस्टेड</span>
+          <h2 class="deck-title" id="playerTrackTitle">52 गज का दामन</h2>
+          <div class="deck-singer" id="playerTrackSinger">रेणुका पंवार</div>
+        </div>
+
+        <div class="deck-seek-wrap">
+          <input type="range" class="seek-slider" id="playerSeekSlider" min="0" max="100" value="0">
+          <div class="seek-time-row">
+            <span id="playerCurrentTime">00:00</span>
+            <span id="playerTotalDuration">00:00</span>
+          </div>
+        </div>
+
+        <div class="deck-controls">
+          <button class="ctrl-btn" id="playerPrevBtn" type="button" title="पिछला गीत">⏮</button>
+          <button class="ctrl-btn btn-play-main" id="playerPlayPauseBtn" type="button" title="चलाएं / रोकें">▶</button>
+          <button class="ctrl-btn" id="playerNextBtn" type="button" title="अगला गीत">⏭</button>
+        </div>
+
+        <div class="deck-audio-badge">
+          <span>⚡ 320 Kbps HD Audio</span>
+          <span>•</span>
+          <span>सपना चौधरी & रेणुका पंवार</span>
+        </div>
+      </section>
+
+      <!-- Right Song Playlist Deck -->
+      <section class="playlist-deck-card">
+        <div class="playlist-header">
+          <div>
+            <h3>हरियाणवी गीत संकलन</h3>
+            <span class="playlist-count" id="playlistTotalCount">6 सुपरहिट गाने</span>
+          </div>
+          <div class="playlist-search">
+            <input type="text" id="playlistSearchInput" placeholder="गाना या गायक खोजें...">
+          </div>
+        </div>
+
+        <div class="playlist-items" id="playlistContainer">
+          <!-- Populated dynamically by festival-player.js -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="festival-player.js"></script>
+</body>
+
+</html>

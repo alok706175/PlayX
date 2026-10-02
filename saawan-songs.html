@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="midnight">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>सावन शिव भजन व बोल बम गीत | Saawan Songs & Shiv Bhajan - हर हर महादेव</title>
+  <link rel="canonical" href="https://www.mahaparvchhathpuja.me/saawan-songs.html">
+  <link rel="stylesheet" href="festival-player.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="description" content="सावन सोमवार, काँवर यात्रा और शिव तांडव स्तोत्रम् के पावन भक्ति गीत। हर हर शंभू, नमो नमो जी शंकरा, पवन सिंह और मनोज तिवारी के बोल बम भजन 320 Kbps HD में सुनें।">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+</head>
+
+<body data-songs-file="data/saawan_songs/saawan_songs.json" data-festival-title="Saawan Songs">
+  <!-- Navigation Header -->
+  <header class="player-navbar">
+    <div class="container navbar-inner">
+      <a href="home.html" class="btn-back-home" title="मुख्य पृष्ठ पर जाएं">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        <span>मुख्य पृष्ठ (Home)</span>
+      </a>
+
+      <div class="page-title-badge">
+        <span>🔱</span>
+        <span>सावन शिव भजन व बोल बम</span>
+      </div>
+
+      <div class="nav-right-actions">
+        <div class="time-box">
+          <span id="currentTime">--:-- --</span>
+        </div>
+        <button class="btn-theme" id="themeToggleBtn" type="button" title="Theme">🎨 Theme</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Player Layout -->
+  <main class="container">
+    <div class="player-page-grid">
+      <!-- Left Audio Deck -->
+      <section class="audio-deck-card">
+        <div class="vinyl-deck" id="vinylDisc">
+          <div class="vinyl-center-label">🔱</div>
+        </div>
+
+        <div class="deck-track-info">
+          <span class="deck-tag" id="playerTrackTag">सावन स्पेशल</span>
+          <h2 class="deck-title" id="playerTrackTitle">शिव तांडव स्तोत्रम्</h2>
+          <div class="deck-singer" id="playerTrackSinger">शंकर महादेवन</div>
+        </div>
+
+        <div class="deck-seek-wrap">
+          <input type="range" class="seek-slider" id="playerSeekSlider" min="0" max="100" value="0">
+          <div class="seek-time-row">
+            <span id="playerCurrentTime">00:00</span>
+            <span id="playerDuration">00:00</span>
+          </div>
+        </div>
+
+        <div class="deck-controls-row">
+          <button class="control-btn" id="playerShuffleBtn" type="button" title="Shuffle">🔀</button>
+          <button class="control-btn" id="playerPrevBtn" type="button" title="Previous">⏮</button>
+          <button class="control-btn btn-main-play" id="playerPlayBtn" type="button" title="Play/Pause">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+          <button class="control-btn" id="playerNextBtn" type="button" title="Next">⏭</button>
+          <button class="control-btn" id="playerRepeatBtn" type="button" title="Repeat">🔁</button>
+        </div>
+
+        <div class="deck-extra-controls">
+          <div class="volume-group">
+            <button class="btn-mute" id="playerMuteBtn" type="button" title="Mute">🔊</button>
+            <input type="range" class="volume-slider" id="playerVolumeSlider" min="0" max="100" value="85">
+          </div>
+          <button class="btn-speed" id="playerSpeedBtn" type="button" title="Speed">1x</button>
+        </div>
+      </section>
+
+      <!-- Right Playlist Card -->
+      <section class="playlist-card">
+        <div class="playlist-header">
+          <h3>सावन भजन संग्रह (<span id="playlistSongCount">0</span>)</h3>
+          <div class="playlist-search-box">
+            <input type="text" id="playlistSearchInput" placeholder="भजन या गायक खोजें...">
+          </div>
+        </div>
+
+        <div class="song-items-list" id="playlistContainer">
+          <!-- Dynamic Song Rows -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="festival-player.js"></script>
+</body>
+
+</html>

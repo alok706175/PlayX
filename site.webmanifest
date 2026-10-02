@@ -1,9 +1,9 @@
 {
-  "name": "छठ घाट | Chhath Puja Geet & Devotional Songs",
-  "short_name": "छठ घाट",
-  "description": "छठ महापर्व और हिंदी गीतों का ऑनलाइन व ऑफलाइन म्यूजिक वेब ऐप",
+  "name": "PlayX | Festival & Music Web Portal",
+  "short_name": "PlayX",
+  "description": "छठ महापर्व, हिंदी, सावन, दुर्गा पूजा व होली गीतों का ऑनलाइन व ऑफलाइन म्यूजिक वेब ऐप",
   "id": "/",
-  "start_url": "./index.html",
+  "start_url": "./home.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

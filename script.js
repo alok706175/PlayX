@@ -2538,7 +2538,7 @@
   }
 
   const navHomeBtn = document.getElementById("navHomeBtn");
-  if (navHomeBtn) {
+  if (navHomeBtn && navHomeBtn.tagName === "BUTTON") {
     navHomeBtn.addEventListener("click", () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });

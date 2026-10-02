@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>PlayX | A Largest Music Library Website.</title>
+
+  <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
+  <link rel="stylesheet" href="home.css?v=24">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.io/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon.io/favicon-16x16.png">
+  <link rel="icon" type="image/x-icon" href="favicon.io/favicon.ico">
+  <link rel="shortcut icon" href="favicon.ico">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.io/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="favicon.io/android-chrome-512x512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon.io/android-chrome-192x192.png">
+  <link rel="manifest" href="site.webmanifest">
+
+  <!-- SEO Meta -->
+  <meta name="description"
+    content="छठ पूजा गीत, हिंदी सुपरहिट बॉलीवुड गाने, सावन शिव भजन, दुर्गा पूजा व नवरात्रि गीत, होली के रंग-बिरंगे गाने, भोजपुरी सुपरहिट गाने और हरियाणवी डीजे गानों का संपूर्ण ऑनलाइन व ऑफलाइन संगीत पोर्टल। 320 Kbps HD ऑडियो में सुनें।">
+  <meta name="keywords"
+    content="छठ पूजा गीत, Chhath Puja Songs, हिंदी गाने, Hindi Songs, भोजपुरी गाने, Bhojpuri Songs, हरियाणवी गाने, Haryanvi Songs, सावन गीत, Saawan Songs, Shiv Bhajan, दुर्गा पूजा गीत, Durga Puja Songs, होली के गाने, Holi Songs, पवन सिंह, खेसारी लाल, सपना चौधरी, रेणुका पंवार">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#0a0712">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PlayX | छठ पूजा, हिंदी, सावन, दुर्गा पूजा व होली गीत पोर्टल">
+  <meta property="og:description"
+    content="छठ महापर्व, बॉलीवुड क्लासिक्स, शिव भजन, माता की भेंट और होली के सुपरहिट गानों का ऑल-इन-वन म्यूजिक हब।">
+  <meta property="og:url" content="https://www.mahaparvchhathpuja.me/">
+  <meta property="og:image" content="https://www.mahaparvchhathpuja.me/images/image_background.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=Rozha+One&family=Yatra+One&display=swap"
+    rel="stylesheet">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "PlayX - Chhath Ghat Festival & Music Portal",
+    "url": "https://www.mahaparvchhathpuja.me/",
+    "description": "छठ पूजा, हिंदी गाने, सावन भजन, दुर्गा पूजा और होली गीतों का ऑनलाइन व ऑफलाइन म्यूजिक वेब पोर्टल",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.mahaparvchhathpuja.me/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <!-- Ambient Particle & Glow Canvas -->
+  <div class="bg-canvas-container" aria-hidden="true">
+    <canvas id="particleCanvas"></canvas>
+    <div class="bg-ambient-layer"></div>
+    <div class="bg-pattern-overlay"></div>
+  </div>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="navbar-wrapper" id="topNavbar">
+    <div class="container">
+      <nav class="navbar" aria-label="Main Navigation">
+        <!-- Brand Logo -->
+        <a href="home.html" class="brand-logo" title="PlayX">
+          <img src="images/playx_icon.png" alt="PlayX" class="brand-logo-icon" width="44" height="44">
+          <div class="brand-text">
+            <h1>Play<span class="brand-x"
+                style="font-size: 2.85rem !important; line-height: 0.85 !important; font-weight: 900 !important; vertical-align: middle !important;">X</span>
+            </h1>
+          </div>
+        </a>
+
+
+
+        <!-- Nav Actions: Live IST Clock & Theme Toggle -->
+        <div class="nav-actions">
+          <div class="live-clock-widget" title="भारतीय मानक समय (IST)">
+            <span class="live-dot" aria-hidden="true"></span>
+            <span id="liveIstTime">--:-- --</span>
+          </div>
+          <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Switch Light / Dark Mode"
+            title="लाइट मोड में बदलें / Switch to Light Mode">
+            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <span id="themeBtnText">Light Mode</span>
+          </button>
+          <button class="lang-toggle-btn" id="langToggleBtn" type="button" aria-label="Switch Language / भाषा बदलें"
+            title="भाषा बदलें / Switch Language" data-lang="hi">
+            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span id="langBtnText">हिंदी</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Portal Content -->
+  <main>
+
+
+    <!-- SECTION: FEATURED FESTIVAL & SONG CARDS GRID (THE 5 MAIN CATEGORIES) -->
+    <section class="container" id="categoriesSection">
+      <div class="category-grid" id="categoryGrid">
+
+        <!-- 1. CHHATH PUJA SONGS CARD BUTTON -->
+        <a href="chhath-puja.html" class="category-card-btn card-chhath" data-category="chhath"
+          title="छठ पूजा महापर्व गीत सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem">🌅</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>छठ पूजा महापर्व गीत</h3>
+              <div class="card-subtitle-en">Chhath Puja Mahaparv Geet</div>
+            </div>
+            <p class="card-description">
+              उगी हे दीनानाथ, केलवा के पात पर, काँच ही बाँस के बहंगिया सहित शारदा सिन्हा,
+              पवन सिंह, खेसारी लाल यादव और अनुराधा पौडवाल के पावन अर्घ्य गीत।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">25+ पारंपरिक गीत</span>
+              <span class="highlight-pill">सूर्य गायत्री मंत्र</span>
+              <span class="highlight-pill">लाइव घाट वीडियो</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 2. HINDI SONGS CARD BUTTON -->
+        <a href="hindi-songs.html" class="category-card-btn card-hindi" data-category="hindi"
+          title="हिंदी सुपरहिट बॉलीवुड गीत सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem card-icon-hindi-music" title="हिंदी सुपरहिट संगीत">
+              <img src="images/hindi_song_icon.png" alt="हिंदी सुपरहिट संगीत" class="hindi-card-icon-img" width="40"
+                height="40">
+            </div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>हिंदी सुपरहिट बॉलीवुड गीत</h3>
+              <div class="card-subtitle-en">Superhit Hindi Songs</div>
+            </div>
+            <p class="card-description">
+              90s के सदाबहार क्लासिक्स, रोमांटिक मेलोडीज, और डांस ट्रैक्स। अरिजीत सिंह, सोनू निगम,
+              लता मंगेशकर, कुमार सानु, उदित नारायण और अलका याग्निक के बेहतरीन नगमे।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">70 क्लासिक हिट्स</span>
+              <span class="highlight-pill">320 Kbps HD</span>
+              <span class="highlight-pill">डार्क मोड प्लेयर</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 3. SAAWAN SONGS CARD BUTTON -->
+        <a href="saawan-songs.html" class="category-card-btn card-saawan" data-category="saawan"
+          title="सावन शिव भजन व बोल बम सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem card-icon-trishul" title="त्रिशूल और डमरू">
+              <img src="images/trishul_damru.svg" alt="त्रिशूल और डमरू" class="trishul-damru-img" width="36"
+                height="44">
+            </div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>सावन शिव भजन व बोल बम</h3>
+              <div class="card-subtitle-en">Saawan Songs & Shiv Bhajan</div>
+            </div>
+            <p class="card-description">
+              पवित्र सावन सोमवार व काँवर यात्रा स्पेशल। शिव तांडव स्तोत्रम्, हर हर शंभू,
+              नमो नमो जी शंकरा, गेरुआ रंग के सड़िया और बोल बम के सुपरहिट भक्ति भजन।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">शिव तांडव व स्तुति</span>
+              <span class="highlight-pill">काँवरिया डीजे भजन</span>
+              <span class="highlight-pill">मनोज तिवारी & पवन सिंह</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 4. DURGA PUJA SONGS CARD BUTTON -->
+        <a href="durga-puja-songs.html" class="category-card-btn card-durga" data-category="durga"
+          title="दुर्गा पूजा व नवरात्रि भक्ति गीत सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem">🪔</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>दुर्गा पूजा व नवरात्रि भक्ति</h3>
+              <div class="card-subtitle-en">Durga Puja & Navratri Bhakti Geet</div>
+            </div>
+            <p class="card-description">
+              माता रानी के पावन जगराता, पारंपरिक पचरा गीत, आरती और भेंटें। चलो बुलावा आया है,
+              निमिया के डाढ़ि मईया, प्यारा सजा है तेरा द्वार और देवी दुर्गा की महाआरती।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">नवरात्रि विशेष भेंट</span>
+              <span class="highlight-pill">पारंपरिक पचरा</span>
+              <span class="highlight-pill">नरेंद्र चंचल & लक्खा</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 5. HOLI SONGS CARD BUTTON -->
+        <a href="holi-songs.html" class="category-card-btn card-holi" data-category="holi"
+          title="होली के रंग-बिरंगे गाने सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem">🎨</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>होली के रंग-बिरंगे गाने</h3>
+              <div class="card-subtitle-en">Holi Songs & Fhag Special</div>
+            </div>
+            <p class="card-description">
+              होली के सुपरहिट बॉलीवुड डांस नंबर्स और भोजपुरी जोगिरा-फाग गीत। रंग बरसे भीगे चुनर वाली,
+              होली खेले रघुवीरा, बलम पिचकारी, और बबुनी तेरे रंग में।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">बॉलीवुड एवरग्रीन होली</span>
+              <span class="highlight-pill">भोजपुरी फाग व जोगिरा</span>
+              <span class="highlight-pill">डीजे डांस ट्रैक्स</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 6. BHOJPURI SONGS CARD BUTTON -->
+        <a href="bhojpuri-songs.html" class="category-card-btn card-bhojpuri" data-category="bhojpuri"
+          title="भोजपुरी सुपरहिट गाने सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem card-icon-bhojpuri" title="भोजपुरी सुपरहिट गाने">🪕</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>भोजपुरी सुपरहिट गाने</h3>
+              <div class="card-subtitle-en">Bhojpuri Superhit Songs & Desi Hits</div>
+            </div>
+            <p class="card-description">
+              पवन सिंह, खेसारी लाल यादव, मनोज तिवारी, शिल्पी राज और अक्षरा सिंह के सुपरहिट गाने।
+              लॉलीपॉप लागेलू, ठीक हैं, कमरिया लपका लोप और देहाती लोकगीत।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">पवन & खेसारी धमाका</span>
+              <span class="highlight-pill">320 Kbps HD</span>
+              <span class="highlight-pill">देहाती व डीजे डांस</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- 7. HARYANVI SONGS CARD BUTTON -->
+        <a href="haryanvi-songs.html" class="category-card-btn card-haryanvi" data-category="haryanvi"
+          title="हरियाणवी सुपरहिट गाने सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem card-icon-haryanvi" title="हरियाणवी डीजे सांग्स">⚡</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>हरियाणवी सुपरहिट गाने</h3>
+              <div class="card-subtitle-en">Haryanvi Superhit Songs </div>
+            </div>
+            <p class="card-description">
+              सपना चौधरी, रेणुका पंवार, गुलज़ार छानीवाला और दिलेर खरकिया के ऑल-टाइम हिट डीजे सांग्स।
+              52 गज का दामन, तेरी आख्या का यो काजल, मोटो, और चटक मटक।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">सपना चौधरी स्पेशल</span>
+              <span class="highlight-pill">डीजे बास बूस्टेड</span>
+              <span class="highlight-pill">वायरल डांस ट्रैक्स</span>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+
+
+
+  </main>
+
+
+
+  <!-- FOOTER -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>
+            <img src="images/playx_icon.png" alt="PlayX" class="footer-brand-icon" width="36" height="36">
+            <span class="footer-brand-text">Play<span class="brand-x"
+                style="font-size: 2.6rem !important; line-height: 0.85 !important; font-weight: 900 !important; vertical-align: middle !important; margin-left: 1px !important;">X</span></span>
+          </h3>
+          <p id="footerBrandTagline">
+            A Largest Music Library Website.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5 id="footerCol1Title">पर्व श्रेणियां</h5>
+          <ul class="footer-links">
+            <li><a href="chhath-puja.html" id="footerLinkChhath">छठ पूजा महापर्व</a></li>
+            <li><a href="saawan-songs.html" id="footerLinkSaawan">सावन शिव भजन</a></li>
+            <li><a href="durga-puja-songs.html" id="footerLinkDurga">दुर्गा पूजा व नवरात्रि</a></li>
+            <li><a href="holi-songs.html" id="footerLinkHoli">होली के गाने व फाग</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5 id="footerCol2Title">संगीत संकलन</h5>
+          <ul class="footer-links">
+            <li><a href="hindi-songs.html" id="footerLinkHindi">हिंदी सुपरहिट बॉलीवुड</a></li>
+            <li><a href="bhojpuri-songs.html" id="footerLinkBhojpuri">भोजपुरी सुपरहिट गाने</a></li>
+            <li><a href="haryanvi-songs.html" id="footerLinkHaryanvi">हरियाणवी सुपरहिट गाने</a></li>
+            <li><a href="chhath-puja.html#mantra" id="footerLinkMantra">सूर्य गायत्री मंत्र</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5 id="footerCol3Title">सुविधाएं</h5>
+          <ul class="footer-links">
+            <li><a href="chhath-puja.html" id="footerLinkOffline">ऑफ़लाइन डाउनलोड्स</a></li>
+            <li><a href="site.webmanifest" id="footerLinkPwa">PWA इंस्टॉल करें</a></li>
+            <li><a href="sitemap.xml" id="footerLinkSitemap">साइटमैप</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p id="footerCopyright">Copyright © 2026 <strong>PlayX</strong> . All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Scripts -->
+  <script src="home.js?v=25"></script>
+</body>
+
+</html>

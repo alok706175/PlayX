@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "शिव तांडव स्तोत्रम्",
+    "nameEn": "Shiv Tandav Stotram",
+    "singer": "शंकर महादेवन",
+    "singerEn": "Shankar Mahadevan",
+    "category": "Shiv Stotram",
+    "duration": "9:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Kabhi_Jo_Baadal_Barse_-_Jackpot_320_kbps.mp3",
+    "youtubeId": "hMBKmQ3QK6A",
+    "tag": "सावन स्पेशल"
+  },
+  {
+    "id": 2,
+    "name": "हर हर शंभू शिव महादेवा",
+    "nameEn": "Har Har Shambhu Shiv Mahadeva",
+    "singer": "अभिलिप्सा पांडा & जीतू शर्मा",
+    "singerEn": "Abhilipsa Panda & Jeetu Sharma",
+    "category": "Bol Bam Hits",
+    "duration": "6:20",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788094000/Jo_Bhi_Kasmein_-_Raaz_320_kbps.mp3",
+    "youtubeId": "VwG_kLqUa24",
+    "tag": "ट्रेंडिंग भजन"
+  },
+  {
+    "id": 3,
+    "name": "नमो नमो जी शंकरा",
+    "nameEn": "Namo Namo Ji Shankara (Kedarnath)",
+    "singer": "अमित त्रिवेदी",
+    "singerEn": "Amit Trivedi",
+    "category": "Devotional Hits",
+    "duration": "5:32",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788093985/Pardesi_Pardesi_Kumar_Sanu_Alka_Yagnik_Raja_Hindustani_320_Kbps.mp3",
+    "youtubeId": "dx4Teh-nv3A",
+    "tag": "सदाबहार"
+  },
+  {
+    "id": 4,
+    "name": "गेरुआ रंग के सड़िया",
+    "nameEn": "Gerua Rang Ke Sadiya (Bol Bam)",
+    "singer": "पवन सिंह",
+    "singerEn": "Pawan Singh",
+    "category": "Bhojpuri Bol Bam",
+    "duration": "4:45",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972344/Jal_Beech_Khada_Hoee_Jode_Jode_Phalwa_-_Daras_Dekhava_Ae_Deenanath_320_kbps.mp3",
+    "youtubeId": "z7fX8k3qP9E",
+    "tag": "काँवरिया हिट"
+  },
+  {
+    "id": 5,
+    "name": "बम बम बोल रहा है काशी",
+    "nameEn": "Bam Bam Bol Raha Hai Kashi",
+    "singer": "मनोज तिवारी 'मृदुल'",
+    "singerEn": "Manoj Tiwari",
+    "category": "Bhojpuri Bol Bam",
+    "duration": "5:10",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972335/%E0%A4%95%E0%A5%87%E0%A4%B0%E0%A4%B5%E0%A4%BE_%E0%A4%95%E0%A5%87_%E0%A4%AA%E0%A4%BE%E0%A4%A4%E0%A4%B5%E0%A4%BE_%E0%A4%AA%E0%A5%87_%E0%A4%A8%E0%A5%87%E0%A4%B5%E0%A4%A4%E0%A4%BE_-_Pawan_Singh_-_Bhojpuri_Chhath_Geet_-_Kerwa_Ke_Patwa_Pe_Newta_Pethawani_uWtMR3iQT-I.mp3",
+    "youtubeId": "y1bM_0BqZPw",
+    "tag": "क्लासिक बोल बम"
+  },
+  {
+    "id": 6,
+    "name": "भोले की दीवानी",
+    "nameEn": "Bhole Ki Deewani",
+    "singer": "हंसराज रघुवंशी",
+    "singerEn": "Hansraj Raghuwanshi",
+    "category": "Shiv Bhakti",
+    "duration": "4:15",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1788093987/Kash_Koi_Ladka_Mujhe_Pyar_Karta_128_Kbps_-_SongsPk.Com.Se.mp3",
+    "youtubeId": "b6fWjT7gZlE",
+    "tag": "युवा भजन"
+  },
+  {
+    "id": 7,
+    "name": "काँवरिया बोले बम बम",
+    "nameEn": "Kanwariya Bole Bam Bam",
+    "singer": "खेसारी लाल यादव",
+    "singerEn": "Khesari Lal Yadav",
+    "category": "Bhojpuri Bol Bam",
+    "duration": "4:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972359/Kalpana_%E0%A4%95_%E0%A4%B8%E0%A4%AC%E0%A4%B8_%E0%A4%B9%E0%A4%9F_Chhath_Song_-_Ugi_Hey_Dinanath_Superhit_Chhath_Geet_2023.mp3",
+    "youtubeId": "uW0W3mX9_kI",
+    "tag": "डीजे रीमिक्स"
+  },
+  {
+    "id": 8,
+    "name": "सुबह सुबह ले शिव का नाम",
+    "nameEn": "Subah Subah Le Shiv Ka Naam",
+    "singer": "हरिहरन",
+    "singerEn": "Hariharan",
+    "category": "Morning Bhajan",
+    "duration": "6:05",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1786972340/Uga_Ho_Surujdev_Bhel_Bhinsarva_-_Chhath_Pooja_Ke_Geet_320_kbps.mp3",
+    "youtubeId": "7z5X6e_P9-A",
+    "tag": "प्रातः स्मरण"
+  }
+]

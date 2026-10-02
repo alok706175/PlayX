@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="100%" height="100%">
+  <defs>
+    <!-- Metallic Trishul Gradient -->
+    <linearGradient id="trishulGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="30%" stop-color="#ffe082"/>
+      <stop offset="60%" stop-color="#ffb300"/>
+      <stop offset="100%" stop-color="#ff6f00"/>
+    </linearGradient>
+
+    <!-- Metallic Steel / Silver Shadow Gradient -->
+    <linearGradient id="trishulShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fff9c4"/>
+      <stop offset="100%" stop-color="#bf360c"/>
+    </linearGradient>
+
+    <!-- Damru Body Gradient -->
+    <linearGradient id="damruGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e0e0e0"/>
+      <stop offset="50%" stop-color="#757575"/>
+      <stop offset="100%" stop-color="#212121"/>
+    </linearGradient>
+
+    <!-- Damru Skin Drumhead Gradient -->
+    <linearGradient id="skinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff8e1"/>
+      <stop offset="100%" stop-color="#ffe082"/>
+    </linearGradient>
+
+    <!-- Ribbon / Cloth Gradient -->
+    <linearGradient id="clothGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff8a80"/>
+      <stop offset="50%" stop-color="#d50000"/>
+      <stop offset="100%" stop-color="#b71c1c"/>
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="divineGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.5" flood-color="#ffb300" flood-opacity="0.8"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#divineGlow)">
+    <!-- STAFF (Trishul Rod) -->
+    <rect x="47.5" y="44" width="5" height="72" rx="2" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="0.8"/>
+
+    <!-- TRISHUL HEAD -->
+    <!-- Center Spearhead -->
+    <path d="M 50 3 L 57 26 C 54 28, 52 32, 50 38 C 48 32, 46 28, 43 26 Z" 
+          fill="url(#trishulGold)" stroke="#3e2723" stroke-width="1.2" stroke-linejoin="round"/>
+    <!-- Center Ridge -->
+    <line x1="50" y1="5" x2="50" y2="38" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Left Prong -->
+    <path d="M 45 36 C 36 34, 25 24, 25 10 C 27 18, 33 28, 42 30 C 37 24, 35 15, 37 8 C 39 17, 43 26, 47 34 Z" 
+          fill="url(#trishulGold)" stroke="#3e2723" stroke-width="1.2" stroke-linejoin="round"/>
+    
+    <!-- Right Prong -->
+    <path d="M 55 36 C 64 34, 75 24, 75 10 C 73 18, 67 28, 58 30 C 63 24, 65 15, 63 8 C 61 17, 57 26, 53 34 Z" 
+          fill="url(#trishulGold)" stroke="#3e2723" stroke-width="1.2" stroke-linejoin="round"/>
+
+    <!-- Base Connector Lotus/Rings -->
+    <path d="M 42 37 C 46 41, 54 41, 58 37 C 56 42, 44 42, 42 37 Z" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="0.8"/>
+    <ellipse cx="50" cy="42" rx="7" ry="2.5" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="1"/>
+    <ellipse cx="50" cy="46" rx="5.5" ry="2" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="0.8"/>
+
+    <!-- DAMRU (Tied to the Staff) -->
+    <!-- Left Drum Body (Cone) -->
+    <polygon points="34,48 48,56 48,64 34,72" fill="url(#damruGrad)" stroke="#212121" stroke-width="1"/>
+    <!-- Right Drum Body (Cone) -->
+    <polygon points="66,48 52,56 52,64 66,72" fill="url(#damruGrad)" stroke="#212121" stroke-width="1"/>
+    <!-- Left Drum Head (Skin membrane) -->
+    <ellipse cx="34" cy="60" rx="3.5" ry="12" fill="url(#skinGrad)" stroke="#3e2723" stroke-width="1.2"/>
+    <ellipse cx="34" cy="60" rx="1" ry="3" fill="#5d4037"/>
+
+    <!-- Right Drum Head (Skin membrane) -->
+    <ellipse cx="66" cy="60" rx="3.5" ry="12" fill="url(#skinGrad)" stroke="#3e2723" stroke-width="1.2"/>
+
+    <!-- Damru Cords (Criss-Cross Patterns) -->
+    <g stroke="#ffecb3" stroke-width="1" stroke-linecap="round">
+      <line x1="34" y1="48" x2="48" y2="64"/>
+      <line x1="34" y1="72" x2="48" y2="56"/>
+      <line x1="34" y1="56" x2="48" y2="60"/>
+      <line x1="34" y1="64" x2="48" y2="60"/>
+      
+      <line x1="66" y1="48" x2="52" y2="64"/>
+      <line x1="66" y1="72" x2="52" y2="56"/>
+      <line x1="66" y1="56" x2="52" y2="60"/>
+      <line x1="66" y1="64" x2="52" y2="60"/>
+    </g>
+
+    <!-- Center Waist Band / Binding -->
+    <rect x="47" y="55" width="6" height="10" rx="2" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="1"/>
+
+    <!-- Striker Strings with Beads -->
+    <!-- Left String & Bead -->
+    <path d="M 47 60 Q 30 55 24 64" fill="none" stroke="#ffe082" stroke-width="1.3" stroke-linecap="round"/>
+    <circle cx="23" cy="65" r="3" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="0.8"/>
+
+    <!-- Right String & Bead -->
+    <path d="M 53 60 Q 68 68 76 77" fill="none" stroke="#ffe082" stroke-width="1.3" stroke-linecap="round"/>
+    <circle cx="77" cy="78" r="3" fill="url(#trishulGold)" stroke="#3e2723" stroke-width="0.8"/>
+
+    <!-- Flowing Ceremonial Cloth / Ribbon Below Damru -->
+    <path d="M 48 65 Q 40 76 32 85 Q 26 95 28 112 Q 35 98 42 90 Q 50 82 52 70 Z" 
+          fill="url(#clothGrad)" stroke="#880e4f" stroke-width="0.8" opacity="0.95"/>
+    <path d="M 50 67 Q 45 78 38 88 Q 33 97 34 108" fill="none" stroke="#ffcdd2" stroke-width="0.7"/>
+  </g>
+</svg>

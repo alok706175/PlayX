@@ -3,17 +3,27 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v7";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v7";
+const CACHE_NAME = "chhath-pwa-v25";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v25";
 
 const STATIC_ASSETS = [
   "./",
-  "./index.html",
+  "./home.html",
+  "./chhath-puja.html",
   "./hindi-songs.html",
+  "./saawan-songs.html",
+  "./durga-puja-songs.html",
+  "./holi-songs.html",
+  "./bhojpuri-songs.html",
+  "./haryanvi-songs.html",
+  "./home.css",
+  "./home.js",
   "./style.css",
   "./hindi-song.css",
+  "./festival-player.css",
   "./script.js",
   "./hindi-song.js",
+  "./festival-player.js",
   "./offline-manager.js",
   "./site.webmanifest",
   "./hindi-songs.webmanifest",
@@ -21,6 +31,11 @@ const STATIC_ASSETS = [
   "./data/cloudinary/cloudinary_songs.json",
   "./data/youtube/youtube_songs.json",
   "./data/hindi_songs/hindi_songs.json",
+  "./data/saawan_songs/saawan_songs.json",
+  "./data/durga_puja_songs/durga_puja_songs.json",
+  "./data/holi_songs/holi_songs.json",
+  "./data/bhojpuri_songs/bhojpuri_songs.json",
+  "./data/haryanvi_songs/haryanvi_songs.json",
   "./favicon.io/favicon-32x32.png",
   "./favicon.io/favicon-16x16.png",
   "./favicon.io/apple-touch-icon.png",
@@ -34,7 +49,11 @@ const STATIC_ASSETS = [
   "./favicon.io/hindi-icon-512x512.png",
   "./favicon.io/hindi-apple-touch-icon.png",
   "./images/image_background.png",
-  "./images/chhath_puja_400x838.png"
+  "./images/chhath_puja_400x838.png",
+  "./images/trishul_damru.svg",
+  "./images/playx_icon.png",
+  "./images/playx_full_logo.png",
+  "./images/hindi_song_icon.png"
 ];
 
 // Install Event - Pre-cache core app shell assets
@@ -118,7 +137,7 @@ self.addEventListener("fetch", (event) => {
             const hindiCached = await caches.match("./hindi-songs.html");
             if (hindiCached) return hindiCached;
           }
-          return caches.match("./index.html");
+          return caches.match("./home.html");
         })
     );
     return;
