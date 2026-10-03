@@ -352,4 +352,13 @@
     });
   }
 
+  // Register High-Performance Service Worker for instant offline audio caching
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("../sw.js").catch((err) => {
+        console.debug("ServiceWorker registration notice:", err);
+      });
+    });
+  }
+
 })();

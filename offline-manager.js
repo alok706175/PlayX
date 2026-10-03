@@ -571,8 +571,14 @@
   function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
+        // Compute correct path to root sw.js regardless of folder depth
+        const pathname = window.location.pathname || "";
+        const isSubdir = /[\/\\](bhojpuri-songs|chhath-puja|durga-puja-songs|haryanvi-songs|hindi-songs|holi-songs|saawan-songs)[\/\\]/i.test(pathname) ||
+          (pathname.split("/").filter(Boolean).length > 1 && !pathname.endsWith("/home.html") && !pathname.endsWith("/index.html"));
+        const swPath = isSubdir ? "../sw.js" : "./sw.js";
+
         navigator.serviceWorker
-          .register("./sw.js")
+          .register(swPath)
           .then((registration) => {
             console.log("[PWA] Service Worker registered with scope:", registration.scope);
 

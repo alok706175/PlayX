@@ -824,7 +824,7 @@
     const artistEn = item.artistEn || item.singerEn || artist;
     const album = item.album || (currentLang === "en" ? "Chhath Ghat" : "छठ घाट");
     const src = item.src || item.file || "";
-    const cover = item.cover || item.artwork || "favicon.io/android-chrome-512x512.png";
+    const cover = item.cover || item.artwork || "../favicon.io/android-chrome-512x512.png";
     const videoId = item.videoId || "";
     const embedUrl = item.embedUrl || "";
 
@@ -868,10 +868,10 @@
         console.warn("Primary songs.json fetch notice, trying fallback:", e);
       }
 
-      // 2. Fallback to data/cloudinary/cloudinary_songs.json if needed
+      // 2. Fallback to cloudinary_songs.json if needed
       if (!rawList || rawList.length === 0) {
         try {
-          const res = await fetch("data/cloudinary/cloudinary_songs.json", { cache: "no-store" });
+          const res = await fetch("cloudinary_songs.json", { cache: "no-store" });
           if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data) && data.length > 0) {
@@ -886,7 +886,7 @@
       // 3. Fetch YouTube metadata for dual online video mode
       let ytList = [];
       try {
-        const ytRes = await fetch("data/youtube/youtube_songs.json", { cache: "no-store" });
+        const ytRes = await fetch("youtube_songs.json", { cache: "no-store" });
         if (ytRes.ok) ytList = await ytRes.json();
       } catch (e) { }
 
@@ -917,7 +917,11 @@
 
       // Restore last selected song and position (respecting browser autoplay rules)
       const savedSongIdx = parseInt(safeStorageGet(STORAGE_KEYS.LAST_SONG, "0"), 10);
-      const targetIdx = (!isNaN(savedSongIdx) && savedSongIdx >= 0 && savedSongIdx < songs.length) ? savedSongIdx : 0;
+      let targetIdx = (!isNaN(savedSongIdx) && savedSongIdx >= 0 && savedSongIdx < songs.length) ? savedSongIdx : 0;
+      if (!isOnlineMode && (!songs[targetIdx] || (!songs[targetIdx].src && !songs[targetIdx].file))) {
+        const firstPlayable = songs.findIndex(s => Boolean(s.src || s.file));
+        targetIdx = firstPlayable >= 0 ? firstPlayable : 0;
+      }
       currentSong = targetIdx;
 
       updatePlaylistHeaderUI();
@@ -1288,7 +1292,20 @@
     isActionLocked = true;
     setTimeout(() => { isActionLocked = false; }, 250);
 
-    const prevIndex = (currentSong - 1 + songs.length) % songs.length;
+    let prevIndex = (currentSong - 1 + songs.length) % songs.length;
+    if (!isOnlineMode) {
+      let count = 0;
+      while ((!songs[prevIndex] || (!songs[prevIndex].src && !songs[prevIndex].file)) && count < songs.length) {
+        prevIndex = (prevIndex - 1 + songs.length) % songs.length;
+        count++;
+      }
+    } else {
+      let count = 0;
+      while ((!songs[prevIndex] || !songs[prevIndex].videoId) && count < songs.length) {
+        prevIndex = (prevIndex - 1 + songs.length) % songs.length;
+        count++;
+      }
+    }
     loadSong(prevIndex, true);
   }
 
@@ -1298,7 +1315,20 @@
     isActionLocked = true;
     setTimeout(() => { isActionLocked = false; }, 250);
 
-    const nextIndex = (currentSong + 1) % songs.length;
+    let nextIndex = (currentSong + 1) % songs.length;
+    if (!isOnlineMode) {
+      let count = 0;
+      while ((!songs[nextIndex] || (!songs[nextIndex].src && !songs[nextIndex].file)) && count < songs.length) {
+        nextIndex = (nextIndex + 1) % songs.length;
+        count++;
+      }
+    } else {
+      let count = 0;
+      while ((!songs[nextIndex] || !songs[nextIndex].videoId) && count < songs.length) {
+        nextIndex = (nextIndex + 1) % songs.length;
+        count++;
+      }
+    }
     loadSong(nextIndex, true);
   }
 
@@ -2187,11 +2217,11 @@
         artist: songArtist || (isEn ? "Chhath Mahaparv" : "छठ महापर्व"),
         album: albumName,
         artwork: [
-          { src: makeUrl("favicon.io/favicon-32x32.png"), sizes: "96x96", type: "image/png" },
-          { src: makeUrl("favicon.io/apple-touch-icon.png"), sizes: "128x128", type: "image/png" },
-          { src: makeUrl("favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
-          { src: makeUrl("favicon.io/android-chrome-512x512.png"), sizes: "256x256", type: "image/png" },
-          { src: makeUrl("favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" }
+          { src: makeUrl("../favicon.io/favicon-32x32.png"), sizes: "96x96", type: "image/png" },
+          { src: makeUrl("../favicon.io/apple-touch-icon.png"), sizes: "128x128", type: "image/png" },
+          { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
+          { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "256x256", type: "image/png" },
+          { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" }
         ]
       });
       navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
@@ -2885,7 +2915,7 @@
   // Register High-Performance Service Worker for instant offline audio caching
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch((err) => {
+      navigator.serviceWorker.register("../sw.js").catch((err) => {
         console.debug("ServiceWorker registration notice:", err);
       });
     });

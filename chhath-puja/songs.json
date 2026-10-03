@@ -6,7 +6,7 @@
     "artistEn": "Kalpana Patowary",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972359/Kalpana_%E0%A4%95_%E0%A4%B8%E0%A4%AC%E0%A4%B8_%E0%A4%B9%E0%A4%9F_Chhath_Song_-_Ugi_Hey_Dinanath_Superhit_Chhath_Geet_2023.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "केलवा के पात पर",
@@ -15,7 +15,7 @@
     "artistEn": "Sharda Sinha",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972354/Kelwa_Ke_Paat_Par_-_Arag_Ke_Bela_320_kbps.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "जल बीच खड़ा होई जोड़े जोड़े फलवा",
@@ -24,7 +24,7 @@
     "artistEn": "Pawan Singh",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972344/Jal_Beech_Khada_Hoee_Jode_Jode_Phalwa_-_Daras_Dekhava_Ae_Deenanath_320_kbps.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "उगा हो सुरुजदेव भेल भिनसरवा",
@@ -33,7 +33,7 @@
     "artistEn": "Anuradha Paudwal",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972340/Uga_Ho_Surujdev_Bhel_Bhinsarva_-_Chhath_Pooja_Ke_Geet_320_kbps.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "केरवा के पातवा पे नेवता",
@@ -42,7 +42,7 @@
     "artistEn": "Pawan Singh",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972335/%E0%A4%95%E0%A5%87%E0%A4%B0%E0%A4%B5%E0%A4%BE_%E0%A4%95%E0%A5%87_%E0%A4%AA%E0%A4%BE%E0%A4%A4%E0%A4%B5%E0%A4%BE_%E0%A4%AA%E0%A5%87_%E0%A4%A8%E0%A5%87%E0%A4%B5%E0%A4%A4%E0%A4%BE_-_Pawan_Singh_-_Bhojpuri_Chhath_Geet_-_Kerwa_Ke_Patwa_Pe_Newta_Pethawani_uWtMR3iQT-I.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "दिही दर्शन सुरुज गोसइया",
@@ -51,7 +51,7 @@
     "artistEn": "Devi",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972315/Dihi_Darshan_Suruj_Gosaiya.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "काँच ही बाँस के बहंगिया",
@@ -60,7 +60,7 @@
     "artistEn": "Sharda Sinha",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972314/Kaanch_Hi_Baans_Ke_Bahangiya_-_Chhath_Pooja_Ke_Geet_320_kbps.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   },
   {
     "title": "कोशिया भराये लागल",
@@ -69,6 +69,6 @@
     "artistEn": "Neelkamal Singh & Priyanka Singh",
     "album": "छठ महापर्व",
     "src": "https://res.cloudinary.com/pelthrid/video/upload/v1786972299/Video_-_Neelkamal_Singh___%E0%A4%95%E0%A5%8B%E0%A4%B6%E0%A4%BF%E0%A4%AF%E0%A4%BE_%E0%A4%AD%E0%A4%B0%E0%A4%BE%E0%A4%AF%E0%A5%87_%E0%A4%B2%E0%A4%BE%E0%A4%97%E0%A4%B2___Priyanka_Singh___Bhojpuri_Chhath_Song_2024_72Whc_v4J6o.mp3",
-    "cover": "favicon.io/android-chrome-512x512.png"
+    "cover": "../favicon.io/android-chrome-512x512.png"
   }
 ]

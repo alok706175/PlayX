@@ -709,4 +709,13 @@
     }
   }
 
+  // Register High-Performance Service Worker for instant offline app shell caching
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js").catch((err) => {
+        console.debug("ServiceWorker registration notice:", err);
+      });
+    });
+  }
+
 })();

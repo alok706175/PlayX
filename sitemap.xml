@@ -13,11 +13,11 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.mahaparvchhathpuja.me/" />
     <image:image>
-      <image:loc>https://www.mahaparvchhathpuja.me/images/image_background.png</image:loc>
+      <image:loc>https://www.mahaparvchhathpuja.me/chhath-puja/images/image_background.png</image:loc>
       <image:title>छठ घाट - महापर्व छठ पूजा सूर्य उपासना एवं छठी मईया</image:title>
     </image:image>
     <image:image>
-      <image:loc>https://www.mahaparvchhathpuja.me/images/chhath_puja_400x838.png</image:loc>
+      <image:loc>https://www.mahaparvchhathpuja.me/chhath-puja/images/chhath_puja_400x838.png</image:loc>
       <image:title>छठ पूजा मोबाइल बैकग्राउंड विज़ुअल</image:title>
     </image:image>
     <video:video>
@@ -222,68 +222,68 @@
     </video:video>
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/hindi-songs.html</loc>
-    <lastmod>2026-08-30</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/hindi-songs/hindi-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/hindi-songs.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/hindi-songs.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.mahaparvchhathpuja.me/hindi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/hindi-songs/hindi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/hindi-songs/hindi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.mahaparvchhathpuja.me/hindi-songs/hindi-songs.html" />
     <image:image>
-      <image:loc>https://www.mahaparvchhathpuja.me/images/image_background.png</image:loc>
+      <image:loc>https://www.mahaparvchhathpuja.me/hindi-songs/images/hindi_song_icon.png</image:loc>
       <image:title>हिंदी सुपरहिट बॉलीवुड गीत संग्रह - Superhit Hindi Songs Collection</image:title>
     </image:image>
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/chhath-puja.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/chhath-puja/chhath-puja.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/chhath-puja.html" />
-    <xhtml:link rel="alternate" hreflang="bho" href="https://www.mahaparvchhathpuja.me/chhath-puja.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/chhath-puja.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/chhath-puja/chhath-puja.html" />
+    <xhtml:link rel="alternate" hreflang="bho" href="https://www.mahaparvchhathpuja.me/chhath-puja/chhath-puja.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/chhath-puja/chhath-puja.html" />
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/saawan-songs.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/saawan-songs/saawan-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/saawan-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/saawan-songs/saawan-songs.html" />
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/durga-puja-songs.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/durga-puja-songs/durga-puja-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/durga-puja-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/durga-puja-songs/durga-puja-songs.html" />
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/holi-songs.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/holi-songs/holi-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/holi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/holi-songs/holi-songs.html" />
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/bhojpuri-songs.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/bhojpuri-songs/bhojpuri-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs.html" />
-    <xhtml:link rel="alternate" hreflang="bho" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs/bhojpuri-songs.html" />
+    <xhtml:link rel="alternate" hreflang="bho" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs/bhojpuri-songs.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/bhojpuri-songs/bhojpuri-songs.html" />
   </url>
   <url>
-    <loc>https://www.mahaparvchhathpuja.me/haryanvi-songs.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <loc>https://www.mahaparvchhathpuja.me/haryanvi-songs/haryanvi-songs.html</loc>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/haryanvi-songs.html" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/haryanvi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/haryanvi-songs/haryanvi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/haryanvi-songs/haryanvi-songs.html" />
   </url>
   <url>
     <loc>https://www.mahaparvchhathpuja.me/home.html</loc>
-    <lastmod>2026-10-02</lastmod>
+    <lastmod>2026-10-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/home.html" />

@@ -529,7 +529,7 @@
   /* Load Hindi Songs dataset */
   async function loadHindiSongs() {
     try {
-      const res = await fetch("data/hindi_songs/hindi_songs.json", { cache: "no-store" });
+      const res = await fetch("hindi_songs.json", { cache: "no-store" });
       if (res.ok) {
         songs = await res.json();
       }
@@ -1519,11 +1519,11 @@
     const makeUrl = (rel) => new URL(rel, origin + basePath).href;
 
     return [
-      { src: makeUrl("favicon.io/favicon-32x32.png"), sizes: "32x32", type: "image/png" },
-      { src: makeUrl("favicon.io/apple-touch-icon.png"), sizes: "180x180", type: "image/png" },
-      { src: makeUrl("favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
-      { src: makeUrl("favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" },
-      { src: makeUrl("images/image_background.png"), sizes: "1200x630", type: "image/png" }
+      { src: makeUrl("favicon.io/hindi-icon-32x32.png"), sizes: "32x32", type: "image/png" },
+      { src: makeUrl("favicon.io/hindi-apple-touch-icon.png"), sizes: "180x180", type: "image/png" },
+      { src: makeUrl("favicon.io/hindi-icon-192x192.png"), sizes: "192x192", type: "image/png" },
+      { src: makeUrl("favicon.io/hindi-icon-512x512.png"), sizes: "512x512", type: "image/png" },
+      { src: makeUrl("images/hindi_song_icon.png"), sizes: "512x512", type: "image/png" }
     ];
   }
 
@@ -1728,7 +1728,7 @@
   // Register High-Performance Service Worker for instant offline audio caching
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js").catch((err) => {
+      navigator.serviceWorker.register("../sw.js").catch((err) => {
         console.debug("ServiceWorker registration notice:", err);
       });
     });
