@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hi" data-theme="dark">
+<html lang="en" data-theme="dark">
 
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
   <title>PlayX | A Largest Music Library Website.</title>
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
-  <link rel="stylesheet" href="home.css?v=27">
+  <link rel="stylesheet" href="home.css?v=30">
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
@@ -87,34 +87,27 @@
 
         <!-- Nav Actions: Live IST Clock & Theme Toggle -->
         <div class="nav-actions">
-          <div class="live-clock-widget" id="liveClockWidget" title="भारतीय मानक समय (IST) / Indian Standard Time">
-            <span class="clock-time" id="liveIstTime">--:-- --</span>
-            <span class="clock-divider" aria-hidden="true">|</span>
-            <span class="clock-date" id="liveIstDate">--</span>
-          </div>
-          <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Switch Light / Dark Mode"
-            title="लाइट मोड में बदलें / Switch to Light Mode">
-            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="5"></circle>
-              <line x1="12" y1="1" x2="12" y2="3"></line>
-              <line x1="12" y1="21" x2="12" y2="23"></line>
-              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-              <line x1="1" y1="12" x2="3" y2="12"></line>
-              <line x1="21" y1="12" x2="23" y2="12"></line>
-              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
-            <span id="themeBtnText">Light Mode</span>
-          </button>
-          <button class="lang-toggle-btn" id="langToggleBtn" type="button" aria-label="Switch Language / भाषा बदलें"
-            title="भाषा बदलें / Switch Language" data-lang="hi">
+          <!-- Live Clock on Homepage (Matches Language & Theme Button Style) -->
+          <div class="time-widget live-clock-widget" id="timeWidget" title="भारतीय मानक समय (IST)" role="button" tabindex="0" aria-label="Indian Standard Time Clock">
             <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
-              <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            <span id="langBtnText">हिंदी</span>
+            <div class="time-content">
+              <span class="time-main clock-time" id="currentTime">--:-- --</span>
+              <span class="date-sub clock-date" id="currentDate">--</span>
+            </div>
+          </div>
+          <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Switch to Light Mode"
+            title="Switch to Light Mode">
+            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <span id="themeBtnText">Dark Mode</span>
+          </button>
+          <button class="lang-toggle-btn" id="langToggleBtn" type="button" aria-label="Switch to Hindi Language"
+            title="Switch to Hindi Language" data-lang="en">
+            <span id="langBtnText">English</span>
           </button>
         </div>
       </nav>
@@ -410,7 +403,7 @@
   </footer>
 
   <!-- Interactive Scripts -->
-  <script src="home.js?v=27"></script>
+  <script src="home.js?v=30"></script>
 </body>
 
 </html>

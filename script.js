@@ -8,7 +8,7 @@
   /* =========================================================
      0. BILINGUAL INTERNATIONALIZATION (HINDI / ENGLISH)
      ========================================================= */
-  let currentLang = "en"; // Default English
+  let currentLang = localStorage.getItem("playx_lang") || "en"; // Default English
 
   const i18n = {
     hi: {
@@ -2571,6 +2571,7 @@
   function setLanguage(lang, showToastMsg = false) {
     if (!i18n[lang]) return;
     currentLang = lang;
+    localStorage.setItem("playx_lang", lang);
     const t = i18n[lang];
 
     document.documentElement.lang = currentLang;

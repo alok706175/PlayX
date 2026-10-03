@@ -100,34 +100,39 @@
   background: rgba(0, 0, 0, 0.08);
 }
 
-[data-theme="light"] .live-clock-widget {
-  background: #ffffff;
-  border: 1.5px solid #d97706;
-  box-shadow: 0 3px 12px rgba(217, 119, 6, 0.12);
-}
-
-[data-theme="light"] .clock-time {
-  color: #0f172a;
-}
-
-[data-theme="light"] .clock-divider {
-  color: #d97706;
-}
-
-[data-theme="light"] .clock-date {
-  color: #1e293b;
-}
-
-[data-theme="light"] .theme-toggle-btn {
+[data-theme="light"] .time-widget,
+[data-theme="light"] .live-clock-widget,
+[data-theme="light"] .theme-toggle-btn,
+[data-theme="light"] .lang-toggle-btn {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.12);
   color: #0f172a;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-[data-theme="light"] .theme-toggle-btn:hover {
+[data-theme="light"] .time-widget:hover,
+[data-theme="light"] .live-clock-widget:hover,
+[data-theme="light"] .theme-toggle-btn:hover,
+[data-theme="light"] .lang-toggle-btn:hover {
   background: #f1f5f9;
   border-color: #f59e0b;
+}
+
+[data-theme="light"] .time-main,
+[data-theme="light"] .clock-time {
+  color: #0f172a;
+}
+
+[data-theme="light"] .date-sub,
+[data-theme="light"] .clock-date {
+  color: #475569;
+  border-left: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .time-widget:hover .date-sub,
+[data-theme="light"] .live-clock-widget:hover .clock-date {
+  border-left-color: #f59e0b;
+  color: #0f172a;
 }
 
 [data-theme="light"] .hero-title {
@@ -590,7 +595,7 @@ body {
   z-index: 5;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     justify-content: center;
@@ -600,46 +605,93 @@ body {
     position: static;
     transform: none;
     justify-content: center;
+    flex-wrap: wrap;
   }
 }
 
+/* Time Widget (Matching Homepage Language & Theme Button Theme & Colors) */
+.time-widget,
 .live-clock-widget {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 1.05rem;
-  background: #140d12;
-  border: 1.5px solid #8e622b;
-  border-radius: 9999px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
-  font-family: var(--font-body);
-  user-select: none;
+  gap: 0.45rem;
   white-space: nowrap;
+  user-select: none;
+  transition: all 0.25s;
+  z-index: 3;
 }
 
+.time-widget:hover,
+.live-clock-widget:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-glow);
+  transform: translateY(-1px);
+}
+
+.time-widget:active,
+.live-clock-widget:active {
+  transform: translateY(0px) scale(0.98);
+}
+
+.time-content {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.time-main,
 .clock-time {
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
-}
-
-.clock-divider {
-  display: inline-block;
-  color: #c28b38;
-  margin: 0 0.55rem;
-  font-size: 0.95rem;
-  font-weight: 300;
-  opacity: 0.85;
-  line-height: 1;
-}
-
-.clock-date {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.01em;
-  line-height: 1.2;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  line-height: 1;
+  letter-spacing: 0.2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.date-sub,
+.clock-date {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  line-height: 1;
+  border-left: 1px solid var(--border-subtle);
+  padding-left: 0.45rem;
+  margin-left: 0.1rem;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.time-widget:hover .date-sub,
+.live-clock-widget:hover .clock-date {
+  border-left-color: var(--border-glow);
+  color: var(--text-main);
+}
+
+@media (max-width: 580px) {
+  .time-widget,
+  .live-clock-widget {
+    padding: 0.4rem 0.75rem;
+    gap: 0.35rem;
+  }
+  .time-main,
+  .clock-time {
+    font-size: 0.8rem;
+  }
+  .date-sub,
+  .clock-date {
+    font-size: 0.75rem;
+    padding-left: 0.35rem;
+  }
 }
 
 .theme-toggle-btn {

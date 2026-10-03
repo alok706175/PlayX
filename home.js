@@ -12,7 +12,7 @@
   if (currentTheme !== "light" && currentTheme !== "dark") {
     currentTheme = "dark";
   }
-  let currentLang = localStorage.getItem("playx_lang") || "hi";
+  let currentLang = localStorage.getItem("playx_lang") || "en";
   let activeFilter = "all";
   let currentPlayingTrack = null;
   let audioPlayer = new Audio();
@@ -22,6 +22,7 @@
     hi: {
       btnText: "हिंदी",
       btnTitle: "वर्तमान भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)",
+      timeWidgetTitle: "भारतीय मानक समय (IST)",
       sectionTag: "POPULAR COLLECTIONS",
       sectionTitle: "त्यौहार व संगीत श्रेणियां",
       sectionSubtitle: "अपनी पसंदीदा श्रेणी चुनें और बेहतरीन गीतों के विशेष प्लेयर का आनंद लें।",
@@ -77,6 +78,7 @@
     en: {
       btnText: "English",
       btnTitle: "Current Language: English (Click to switch to Hindi)",
+      timeWidgetTitle: "Indian Standard Time (IST)",
       sectionTag: "POPULAR COLLECTIONS",
       sectionTitle: "Festivals & Music Categories",
       sectionSubtitle: "Choose your favorite category and enjoy specialized HD music players.",
@@ -208,18 +210,16 @@
     }
     if (!themeBtn) return;
 
-    const themeLabel = currentTheme === "light"
-      ? (currentLang === "hi" ? "डार्क मोड" : "Dark Mode")
-      : (currentLang === "hi" ? "लाइट मोड" : "Light Mode");
-
-    if (currentTheme === "light") {
+    if (currentTheme === "dark") {
+      const themeLabel = currentLang === "hi" ? "डार्क मोड" : "Dark Mode";
       themeBtn.innerHTML = `${SVG_MOON} <span id="themeBtnText">${themeLabel}</span>`;
-      themeBtn.setAttribute("title", currentLang === "hi" ? "डार्क मोड में बदलें" : "Switch to Dark Mode");
-      themeBtn.setAttribute("aria-label", "Switch to Dark Mode");
-    } else {
-      themeBtn.innerHTML = `${SVG_SUN} <span id="themeBtnText">${themeLabel}</span>`;
-      themeBtn.setAttribute("title", currentLang === "hi" ? "लाइट मोड में बदलें" : "Switch to Light Mode");
+      themeBtn.setAttribute("title", currentLang === "hi" ? "लाइट मोड में बदलें / Switch to Light Mode" : "Switch to Light Mode");
       themeBtn.setAttribute("aria-label", "Switch to Light Mode");
+    } else {
+      const themeLabel = currentLang === "hi" ? "लाइट मोड" : "Light Mode";
+      themeBtn.innerHTML = `${SVG_SUN} <span id="themeBtnText">${themeLabel}</span>`;
+      themeBtn.setAttribute("title", currentLang === "hi" ? "डार्क मोड में बदलें / Switch to Dark Mode" : "Switch to Dark Mode");
+      themeBtn.setAttribute("aria-label", "Switch to Dark Mode");
     }
   }
 
@@ -232,14 +232,15 @@
 
     if (!langBtn) return;
     langBtn.addEventListener("click", () => {
-      currentLang = currentLang === "hi" ? "en" : "hi";
+      currentLang = currentLang === "en" ? "hi" : "en";
       localStorage.setItem("playx_lang", currentLang);
       applyLanguage(currentLang);
     });
   }
 
   function applyLanguage(lang) {
-    const t = TRANSLATIONS[lang] || TRANSLATIONS.hi;
+    const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+    document.documentElement.lang = lang;
     const langBtn = document.getElementById("langToggleBtn");
     const langBtnText = document.getElementById("langBtnText");
 
@@ -384,35 +385,72 @@
   }
 
   /* =========================================================
-     3. LIVE INDIAN STANDARD TIME (IST) CLOCK
+     3. LIVE INDIAN STANDARD TIME (IST) CLOCK (CHHATH PUJA STYLE)
      ========================================================= */
+  const langDays = {
+    hi: ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"],
+    en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  };
+  const langMonths = {
+    hi: [
+      "जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून",
+      "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+    ],
+    en: [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ]
+  };
+
   let updateClockDisplay = null;
+  let isClockHovered = false;
 
   function initClock() {
-    const timeEl = document.getElementById("liveIstTime");
-    const dateEl = document.getElementById("liveIstDate");
-    if (!timeEl) return;
+    const timeWidget = document.getElementById("timeWidget") || document.getElementById("liveClockWidget");
+
+    if (timeWidget) {
+      timeWidget.addEventListener("mouseenter", () => {
+        isClockHovered = true;
+        if (typeof updateClockDisplay === "function") updateClockDisplay();
+      });
+      timeWidget.addEventListener("mouseleave", () => {
+        isClockHovered = false;
+        if (typeof updateClockDisplay === "function") updateClockDisplay();
+      });
+      timeWidget.addEventListener("click", () => {
+        isClockHovered = !isClockHovered;
+        if (typeof updateClockDisplay === "function") updateClockDisplay();
+      });
+    }
 
     updateClockDisplay = function update() {
       const now = new Date();
-      // Format 12-hour Time: "7:08 PM" (no seconds, 12-hour format)
       let hours = now.getHours();
       const minutes = String(now.getMinutes()).padStart(2, "0");
+      const seconds = String(now.getSeconds()).padStart(2, "0");
       const ampm = hours >= 12 ? "PM" : "AM";
       hours = hours % 12 || 12;
-      const timeStr = `${hours}:${minutes} ${ampm}`;
 
-      // Format Date: "Fri, 2 Oct"
-      const locale = currentLang === "hi" ? "hi-IN" : "en-IN";
-      const dateStr = now.toLocaleDateString(locale, {
-        timeZone: "Asia/Kolkata",
-        weekday: "short",
-        day: "numeric",
-        month: "short"
-      });
+      const lang = currentLang === "en" ? "en" : "hi";
+      const days = langDays[lang] || langDays.hi;
+      const months = langMonths[lang] || langMonths.hi;
 
-      timeEl.textContent = timeStr;
-      if (dateEl) dateEl.textContent = dateStr;
+      const timeEl = document.getElementById("currentTime") || document.getElementById("liveIstTime");
+      const dateEl = document.getElementById("currentDate") || document.getElementById("liveIstDate");
+
+      if (timeEl) {
+        if (isClockHovered) {
+          timeEl.textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        } else {
+          timeEl.textContent = `${hours}:${minutes} ${ampm}`;
+        }
+      }
+      if (dateEl) {
+        dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
+      }
+      if (timeWidget && TRANSLATIONS[lang]) {
+        timeWidget.title = TRANSLATIONS[lang].timeWidgetTitle || "भारतीय मानक समय (IST)";
+      }
     };
 
     updateClockDisplay();

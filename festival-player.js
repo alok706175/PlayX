@@ -17,6 +17,8 @@
   let isShuffle = false;
   let repeatMode = 0; // 0: None, 1: Repeat All, 2: Repeat One
   let likedSongs = new Set();
+  let currentLang = localStorage.getItem("playx_lang") || "en";
+  document.documentElement.lang = currentLang;
 
   try {
     const saved = localStorage.getItem("fav_" + festivalTitle);
@@ -130,7 +132,7 @@
         hour12: true
       });
       if (dateEl) {
-        dateEl.textContent = now.toLocaleDateString("hi-IN", {
+        dateEl.textContent = now.toLocaleDateString(currentLang === "hi" ? "hi-IN" : "en-IN", {
           timeZone: "Asia/Kolkata",
           weekday: "short",
           day: "numeric",
