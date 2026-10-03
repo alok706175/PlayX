@@ -2847,6 +2847,12 @@ body.live-video-active .bg-overlay {
   box-shadow: 0 4px 16px rgba(255, 184, 77, 0.3);
 }
 
+.btn-pwa-install svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+  vertical-align: middle;
+}
+
 /* Nav Item Downloads Badge */
 .btn-nav-downloads {
   position: relative;

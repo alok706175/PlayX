@@ -2099,6 +2099,12 @@
   box-shadow: 0 6px 20px var(--accent-glow);
 }
 
+.btn-pwa-install svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+  vertical-align: middle;
+}
+
 /* Song Card Download Button */
 .song-card-actions {
   display: flex;
