@@ -1,0 +1,601 @@
+/* =========================================================
+   REALISTIC HANGING LIGHT-BULB THEME TRANSITION
+   Cinematic Incandescent Light Bulb Animation for PlayX
+   ========================================================= */
+
+/* 1. Transition Viewport Overlay */
+.bulb-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+
+.bulb-transition-overlay.is-active {
+  display: block;
+  opacity: 1;
+}
+
+/* Flash layer for smooth seamless theme shift */
+.bulb-light-flash {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at calc(100% - 90px) 240px, rgba(255, 236, 175, 0.45) 0%, rgba(255, 190, 70, 0.2) 40%, rgba(255, 140, 20, 0.05) 70%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bulb-transition-overlay.flash-active .bulb-light-flash {
+  opacity: 1;
+}
+
+/* 2. Hanging Rig & Cable Wrap (Fixed top-right position) */
+.bulb-cable-wrap {
+  position: absolute;
+  top: 0;
+  right: 7%;
+  width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+  transform: translateY(-120%);
+  will-change: transform, height;
+}
+
+/* Physical Drop Animation: Descends, overshoots, swings, settles */
+.bulb-transition-overlay.anim-descend .bulb-cable-wrap {
+  animation: bulbDropAndSwing 1.15s cubic-bezier(0.28, 0.84, 0.42, 1) forwards;
+}
+
+/* Physical Retract Animation: Pulls back up smoothly into ceiling */
+.bulb-transition-overlay.anim-retract .bulb-cable-wrap {
+  animation: bulbRetractUp 0.85s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+}
+
+/* 3. Heavy-Duty Realistic Electrical Wire */
+.bulb-cable {
+  width: 3.5px;
+  height: 180px;
+  background: linear-gradient(
+    90deg,
+    #141414 0%,
+    #2c2c2c 25%,
+    #4a4a4a 50%,
+    #222222 75%,
+    #0d0d0d 100%
+  );
+  box-shadow: 
+    1.5px 0 4px rgba(0, 0, 0, 0.6),
+    -1px 0 2px rgba(255, 255, 255, 0.08) inset;
+  position: relative;
+  z-index: 10;
+  transform-origin: top center;
+  transition: height 0.3s ease;
+}
+
+/* 4. Bulb Assembly (Holder, Screw Base, Glass) */
+.bulb-assembly {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: top center;
+}
+
+/* Rubber Strain Relief Collar */
+.bulb-holder {
+  width: 13px;
+  height: 12px;
+  background: linear-gradient(90deg, #181818 0%, #303030 50%, #111111 100%);
+  border-radius: 3px 3px 1px 1px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+  position: relative;
+  z-index: 11;
+}
+
+/* 5. Metallic Edison Screw Base (E27) */
+.bulb-cap {
+  width: 28px;
+  height: 26px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 1px 0;
+  background: linear-gradient(
+    90deg,
+    #3c2f16 0%,
+    #7a5e29 12%,
+    #b89445 28%,
+    #f3dc92 48%,
+    #fef7d8 52%,
+    #b89445 68%,
+    #694e20 86%,
+    #281e0c 100%
+  );
+  border-radius: 2px 2px 4px 4px;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.7);
+  z-index: 12;
+}
+
+/* Metallic Threads */
+.cap-thread {
+  height: 4.5px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #4a3b1c 0%,
+    #8e6e30 15%,
+    #d1a94e 35%,
+    #fff2ba 50%,
+    #caa146 65%,
+    #684e1f 85%,
+    #31240f 100%
+  );
+  border-radius: 3px;
+  box-shadow: 
+    0 1.5px 2px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.cap-contact {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 4px;
+  background: #1a1a1a;
+  border-radius: 0 0 3px 3px;
+}
+
+/* 6. Realistic Incandescent Glass Bulb Body */
+.glass-bulb {
+  position: relative;
+  width: 78px;
+  height: 104px;
+  margin-top: -1px;
+  border-radius: 50% 50% 42% 42% / 40% 40% 60% 60%;
+  background: radial-gradient(
+    circle at 45% 40%,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.08) 35%,
+    rgba(255, 245, 220, 0.03) 65%,
+    rgba(180, 180, 190, 0.12) 95%
+  );
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 
+    inset 0 0 18px rgba(255, 255, 255, 0.12),
+    inset 2px 0 10px rgba(255, 255, 255, 0.2),
+    inset -2px 0 10px rgba(0, 0, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(0.6px);
+  -webkit-backdrop-filter: blur(0.6px);
+  z-index: 15;
+  transition: all 0.35s ease;
+  overflow: visible;
+}
+
+/* Glass Bulb Neck transition to screw base */
+.glass-bulb::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  z-index: 14;
+}
+
+/* Primary Curved Specular Reflection on Glass */
+.glass-reflection-left {
+  position: absolute;
+  top: 14px;
+  left: 9px;
+  width: 14px;
+  height: 48px;
+  border-left: 2.5px solid rgba(255, 255, 255, 0.65);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  filter: blur(0.5px);
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Secondary Softer Rim Reflection */
+.glass-reflection-right {
+  position: absolute;
+  top: 18px;
+  right: 10px;
+  width: 10px;
+  height: 40px;
+  border-right: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  transform: rotate(16deg);
+  filter: blur(0.6px);
+  pointer-events: none;
+}
+
+/* Specular Highlight Dot */
+.glass-reflection-dot {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  width: 6px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  filter: blur(0.8px);
+}
+
+/* 7. Inner Mount Stem & Support Wires */
+.bulb-stem {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  height: 68px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 16;
+}
+
+/* Central Glass Pillar */
+.stem-mount {
+  width: 7px;
+  height: 22px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    rgba(255, 255, 255, 0.15) 100%
+  );
+  border-radius: 2px 2px 4px 4px;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+/* Two Nickel-Iron Filament Support Wire Legs */
+.support-wire {
+  position: absolute;
+  top: 18px;
+  width: 1.5px;
+  height: 30px;
+  background: linear-gradient(180deg, #5c554e 0%, #3e3833 100%);
+  border-radius: 1px;
+}
+
+.support-wire.wire-left {
+  left: 12px;
+  transform: rotate(14deg);
+  transform-origin: top center;
+}
+
+.support-wire.wire-right {
+  right: 12px;
+  transform: rotate(-14deg);
+  transform-origin: top center;
+}
+
+/* 8. Coiled Tungsten Filament Loop */
+.bulb-filament {
+  position: absolute;
+  top: 42px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 14px;
+  z-index: 18;
+}
+
+.filament-loop {
+  width: 100%;
+  height: 100%;
+  border-top: 2.5px solid #4a3e35;
+  border-left: 2px solid #4a3e35;
+  border-right: 2px solid #4a3e35;
+  border-radius: 12px 12px 0 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.filament-loop::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 5px;
+  border-top: 2px solid #4a3e35;
+  border-radius: 6px 6px 0 0;
+}
+
+/* 9. Internal Warm Glass Glow (Initial State: OFF) */
+.bulb-internal-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 42% 42% / 40% 40% 60% 60%;
+  background: radial-gradient(
+    circle at 50% 55%,
+    rgba(255, 215, 100, 0.95) 0%,
+    rgba(255, 160, 40, 0.75) 30%,
+    rgba(255, 110, 10, 0.45) 55%,
+    rgba(255, 70, 0, 0.15) 75%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  mix-blend-mode: screen;
+  z-index: 17;
+  pointer-events: none;
+}
+
+/* 10. Multi-Layer Ambient Radiance (Outer Glow) */
+.bulb-ambient-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 210, 80, 0.55) 0%,
+    rgba(255, 160, 30, 0.35) 25%,
+    rgba(255, 110, 10, 0.18) 50%,
+    rgba(255, 80, 0, 0.05) 70%,
+    transparent 85%
+  );
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
+  pointer-events: none;
+  z-index: 5;
+  filter: blur(12px);
+}
+
+/* Soft Downward Light Cone */
+.bulb-light-cone {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 380px;
+  height: 480px;
+  background: radial-gradient(
+    ellipse at top,
+    rgba(255, 220, 130, 0.28) 0%,
+    rgba(255, 180, 70, 0.12) 35%,
+    rgba(255, 140, 40, 0.04) 65%,
+    transparent 85%
+  );
+  clip-path: polygon(42% 0%, 58% 0%, 100% 100%, 0% 100%);
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* =========================================================
+   11. ACTIVE ILLUMINATION STATES (FILAMENT IGNITION & GLOW)
+   ========================================================= */
+
+/* State: Bulb ON */
+.bulb-transition-overlay.bulb-is-lit .glass-bulb {
+  border-color: rgba(255, 230, 150, 0.7);
+  box-shadow: 
+    inset 0 0 25px rgba(255, 220, 120, 0.75),
+    inset 0 0 45px rgba(255, 140, 20, 0.5),
+    0 0 35px rgba(255, 190, 60, 0.65),
+    0 0 70px rgba(255, 120, 10, 0.35);
+}
+
+.bulb-transition-overlay.bulb-is-lit .support-wire {
+  background: linear-gradient(180deg, #ff9933 0%, #cc5500 100%);
+  box-shadow: 0 0 4px #ff7700;
+}
+
+/* Filament Ignited - Blazing White Core with Fiery Amber Radiance */
+.bulb-transition-overlay.bulb-is-lit .filament-loop {
+  border-top-color: #ffffff;
+  border-left-color: #ffeedd;
+  border-right-color: #ffeedd;
+  filter: 
+    drop-shadow(0 0 2px #ffffff)
+    drop-shadow(0 0 5px #ffee55)
+    drop-shadow(0 0 12px #ff8800)
+    drop-shadow(0 0 22px #ff4400);
+  animation: filamentVibration 0.08s infinite alternate;
+}
+
+.bulb-transition-overlay.bulb-is-lit .filament-loop::after {
+  border-top-color: #ffffff;
+}
+
+.bulb-transition-overlay.bulb-is-lit .bulb-internal-glow {
+  opacity: 1;
+}
+
+.bulb-transition-overlay.bulb-is-lit .bulb-ambient-glow {
+  opacity: 1;
+  transform: translate(-50%, -40%) scale(1.08);
+}
+
+.bulb-transition-overlay.bulb-is-lit .bulb-light-cone {
+  opacity: 1;
+}
+
+/* Subtle Realistic Warm Filament Micro-Flicker */
+@keyframes filamentVibration {
+  0% {
+    filter: 
+      drop-shadow(0 0 2px #ffffff)
+      drop-shadow(0 0 5px #ffee55)
+      drop-shadow(0 0 12px #ff8800)
+      drop-shadow(0 0 22px #ff4400);
+  }
+  100% {
+    filter: 
+      drop-shadow(0 0 2.5px #ffffff)
+      drop-shadow(0 0 6px #fff277)
+      drop-shadow(0 0 14px #ffa011)
+      drop-shadow(0 0 25px #ff5500);
+  }
+}
+
+/* =========================================================
+   12. PHYSICAL DESCENT, SWING & RETRACT KEYFRAMES
+   ========================================================= */
+
+/* Real pendulum physics: Drop -> overshoot -> counter-swing -> settle */
+@keyframes bulbDropAndSwing {
+  0% {
+    transform: translateY(-120%) rotate(0deg);
+  }
+  48% {
+    transform: translateY(32vh) rotate(-3.5deg);
+  }
+  68% {
+    transform: translateY(34.5vh) rotate(2.2deg);
+  }
+  84% {
+    transform: translateY(33.6vh) rotate(-1.1deg);
+  }
+  94% {
+    transform: translateY(34vh) rotate(0.4deg);
+  }
+  100% {
+    transform: translateY(34vh) rotate(0deg);
+  }
+}
+
+/* Smooth realistic retraction upward to ceiling */
+@keyframes bulbRetractUp {
+  0% {
+    transform: translateY(34vh) rotate(0deg);
+  }
+  20% {
+    transform: translateY(35vh) rotate(0.8deg); /* slight pull tension dip */
+  }
+  100% {
+    transform: translateY(-130%) rotate(-1.5deg);
+  }
+}
+
+/* =========================================================
+   13. THEME TOGGLE BUTTON LOCK & FEEDBACK
+   ========================================================= */
+.theme-toggle-btn.is-animating {
+  pointer-events: none !important;
+  cursor: wait !important;
+  opacity: 0.82;
+  transition: opacity 0.2s ease;
+}
+
+/* =========================================================
+   14. MOBILE RESPONSIVENESS
+   ========================================================= */
+@media (max-width: 768px) {
+  .bulb-cable-wrap {
+    right: 12%;
+    width: 70px;
+  }
+
+  .bulb-cable {
+    width: 3px;
+    height: 140px;
+  }
+
+  .glass-bulb {
+    width: 66px;
+    height: 88px;
+  }
+
+  .bulb-cap {
+    width: 24px;
+    height: 22px;
+  }
+
+  .bulb-ambient-glow {
+    width: 240px;
+    height: 240px;
+  }
+
+  .bulb-light-cone {
+    width: 280px;
+    height: 360px;
+  }
+
+  @keyframes bulbDropAndSwing {
+    0% {
+      transform: translateY(-120%) rotate(0deg);
+    }
+    48% {
+      transform: translateY(28vh) rotate(-3deg);
+    }
+    68% {
+      transform: translateY(30.5vh) rotate(1.8deg);
+    }
+    84% {
+      transform: translateY(29.8vh) rotate(-0.8deg);
+    }
+    100% {
+      transform: translateY(30vh) rotate(0deg);
+    }
+  }
+
+  @keyframes bulbRetractUp {
+    0% {
+      transform: translateY(30vh) rotate(0deg);
+    }
+    20% {
+      transform: translateY(31vh) rotate(0.5deg);
+    }
+    100% {
+      transform: translateY(-130%) rotate(-1deg);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .bulb-cable-wrap {
+    right: 14%;
+  }
+}
+
+/* =========================================================
+   15. ACCESSIBILITY: REDUCED MOTION PREFERENCE
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .bulb-transition-overlay {
+    display: none !important;
+  }
+  .theme-toggle-btn.is-animating {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+}

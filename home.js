@@ -191,10 +191,25 @@
     if (!themeBtn) return;
 
     themeBtn.addEventListener("click", () => {
-      currentTheme = currentTheme === "dark" ? "light" : "dark";
-      document.documentElement.setAttribute("data-theme", currentTheme);
-      localStorage.setItem("playx_theme", currentTheme);
-      updateThemeToggleUI();
+      const nextTheme = currentTheme === "dark" ? "light" : "dark";
+
+      if (window.BulbThemeTransition) {
+        window.BulbThemeTransition.trigger({
+          targetTheme: nextTheme,
+          toggleBtn: themeBtn,
+          onApplyTheme: () => {
+            currentTheme = nextTheme;
+            document.documentElement.setAttribute("data-theme", currentTheme);
+            localStorage.setItem("playx_theme", currentTheme);
+            updateThemeToggleUI();
+          }
+        });
+      } else {
+        currentTheme = nextTheme;
+        document.documentElement.setAttribute("data-theme", currentTheme);
+        localStorage.setItem("playx_theme", currentTheme);
+        updateThemeToggleUI();
+      }
     });
   }
 
