@@ -46,7 +46,6 @@
     initElements();
     initClock();
     initTheme();
-    ensureYouTubeAPI();
     loadSongs();
   });
 
@@ -139,6 +138,7 @@
   }
 
   function toggleViewMode() {
+    if (songs.length === 0) return;
     currentViewMode = currentViewMode === "vinyl" ? "video" : "vinyl";
     applyViewMode();
   }
@@ -167,6 +167,7 @@
      ========================================================= */
   let isYtScriptLoading = false;
   function ensureYouTubeAPI() {
+    if (songs.length === 0) return;
     if (window.YT && window.YT.Player) {
       if (!ytPlayer) initYouTubePlayer();
       return;
@@ -192,9 +193,10 @@
   }
 
   function initYouTubePlayer() {
-    if (ytPlayer || !window.YT || !window.YT.Player) return;
+    if (ytPlayer || !window.YT || !window.YT.Player || songs.length === 0) return;
     const initialSong = songs[currentIndex];
-    const initialId = (initialSong && initialSong.youtubeId) || "hMBKmQ3QK6A";
+    const initialId = (initialSong && initialSong.youtubeId) || "";
+    if (!initialId) return;
 
     const targetEl = document.getElementById("ytFestivalPlayer");
     if (!targetEl) return;
@@ -239,12 +241,12 @@
             }
           },
           onError: (err) => {
-            console.warn("YouTube Player error:", err);
+            console.warn("YouTube Player notice:", err);
           }
         }
       });
     } catch (e) {
-      console.warn("YouTube player init error:", e);
+      console.warn("YouTube player init notice:", e);
     }
   }
 
@@ -253,15 +255,71 @@
     try {
       const res = await fetch(dataFile, { cache: "no-store" });
       songs = await res.json();
-      if (songCountEl) {
-        songCountEl.textContent = `${songs.length} ${currentLang === "hi" ? "सुपरहिट गाने" : "Songs"}`;
-      }
+
       if (songs.length > 0) {
+        ensureYouTubeAPI();
+        if (songCountEl) {
+          songCountEl.textContent = `${songs.length} ${currentLang === "hi" ? "गाने" : "Songs"}`;
+        }
         loadTrack(0, false);
         renderPlaylist();
+      } else {
+        // Empty state - coming soon
+        displayComingSoonState();
       }
     } catch (e) {
       console.error("Failed to load songs from:", dataFile, e);
+      displayComingSoonState();
+    }
+  }
+
+  function displayComingSoonState() {
+    if (songCountEl) {
+      songCountEl.textContent = currentLang === "hi" ? "0 गाने (जल्द आ रहे हैं)" : "Coming Soon";
+    }
+    if (trackTitle) {
+      trackTitle.textContent = currentLang === "hi" ? "गाने जल्द आ रहे हैं" : "Songs Coming Soon";
+    }
+    if (trackSinger) {
+      trackSinger.textContent = currentLang === "hi" ? "PlayX म्यूज़िक लाइब्रेरी" : "PlayX Music Library";
+    }
+    if (trackTag) {
+      trackTag.textContent = currentLang === "hi" ? "⏳ जल्द आ रहा है" : "⏳ Coming Soon";
+    }
+    if (durationEl) {
+      durationEl.textContent = "--:--";
+    }
+    if (currentTimeEl) {
+      currentTimeEl.textContent = "00:00";
+    }
+    if (viewToggleBtn) {
+      viewToggleBtn.style.display = "none";
+    }
+    if (videoStage) {
+      videoStage.style.display = "none";
+    }
+    if (vinylDisc) {
+      vinylDisc.style.display = "flex";
+      setVinylSpinning(false);
+    }
+
+    if (playlistContainer) {
+      playlistContainer.innerHTML = `
+        <div style="text-align: center; padding: 3rem 1.5rem; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.12);">
+          <div style="font-size: 3rem; margin-bottom: 0.75rem;">⏳</div>
+          <h4 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">
+            ${currentLang === "hi" ? "इस श्रेणी में गाने जल्द जोड़े जाएंगे" : "Songs for this category are coming soon!"}
+          </h4>
+          <p style="font-size: 0.9rem; color: #94a3b8; max-width: 380px; margin: 0 auto 1.5rem; line-height: 1.5;">
+            ${currentLang === "hi" 
+              ? "यहाँ कोई डमी या नकली गाना नहीं रखा गया है। जब मूल गाने उपलब्ध होंगे, वे यहाँ स्वतः जुड़ जाएंगे।" 
+              : "No dummy songs are included here. Original songs will be added here as soon as they become available."}
+          </p>
+          <a href="../home.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: #fff; text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: all 0.2s;">
+            <span>←</span> <span>${currentLang === "hi" ? "होम पर जाएं (Go Home)" : "Go Back Home"}</span>
+          </a>
+        </div>
+      `;
     }
   }
 
@@ -275,11 +333,11 @@
     if (trackTag) trackTag.textContent = song.tag || song.category || festivalTitle;
 
     // Update cover artwork
-    const coverUrl = `https://i.ytimg.com/vi/${song.youtubeId}/hqdefault.jpg`;
+    const coverUrl = song.youtubeId ? `https://i.ytimg.com/vi/${song.youtubeId}/hqdefault.jpg` : "";
     if (trackCoverImg) {
       trackCoverImg.src = coverUrl;
       trackCoverImg.alt = song.name;
-    } else {
+    } else if (coverUrl) {
       const label = document.querySelector(".vinyl-center-label");
       if (label) {
         label.innerHTML = `<img id="vinylCoverImg" src="${coverUrl}" alt="${song.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
@@ -319,6 +377,10 @@
   }
 
   function togglePlay() {
+    if (songs.length === 0) {
+      alert(currentLang === "hi" ? "इस श्रेणी में अभी कोई गाना उपलब्ध नहीं है। गाने जल्द जोड़े जाएंगे!" : "No songs available in this category yet. Coming soon!");
+      return;
+    }
     if (!songs[currentIndex]) return;
     if (!ytPlayer || !ytPlayer.playVideo) {
       ensureYouTubeAPI();
@@ -471,6 +533,10 @@
 
   function renderPlaylist(query = "") {
     if (!playlistContainer) return;
+    if (songs.length === 0) {
+      displayComingSoonState();
+      return;
+    }
     playlistContainer.innerHTML = "";
 
     songs.forEach((song, idx) => {
@@ -481,13 +547,11 @@
       row.className = `song-item-row ${idx === currentIndex ? "active" : ""}`;
 
       const isFav = likedSongs.has(song.id);
-      const thumbUrl = `https://i.ytimg.com/vi/${song.youtubeId}/default.jpg`;
+      const thumbUrl = song.youtubeId ? `https://i.ytimg.com/vi/${song.youtubeId}/default.jpg` : "";
 
       row.innerHTML = `
         <span class="song-num">${idx + 1 < 10 ? "0" : ""}${idx + 1}</span>
-        <div class="song-thumb-col">
-          <img src="${thumbUrl}" alt="${song.name}" class="song-row-thumb" loading="lazy">
-        </div>
+        ${thumbUrl ? `<div class="song-thumb-col"><img src="${thumbUrl}" alt="${song.name}" class="song-row-thumb" loading="lazy"></div>` : ""}
         <div class="song-info-col">
           <div class="song-name-text">${song.name}</div>
           <div class="song-singer-text">${song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
