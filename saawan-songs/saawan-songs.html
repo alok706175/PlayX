@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 
 <body data-songs-file="saawan_songs.json" data-festival-title="Saawan Songs">
@@ -47,8 +48,21 @@
     <div class="player-page-grid">
       <!-- Left Audio Deck -->
       <section class="audio-deck-card">
+        <!-- View Mode Switcher -->
+        <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch to YouTube Video View">
+          <span>🎬</span> <span>Video View</span>
+        </button>
+
+        <!-- Video Stage (YouTube Player) -->
+        <div class="video-stage" id="videoStage">
+          <div id="ytFestivalPlayer"></div>
+        </div>
+
+        <!-- Vinyl Deck Record -->
         <div class="vinyl-deck" id="vinylDisc">
-          <div class="vinyl-center-label">🔱</div>
+          <div class="vinyl-center-label">
+            <img id="vinylCoverImg" src="https://i.ytimg.com/vi/hMBKmQ3QK6A/hqdefault.jpg" alt="Shiv Tandav">
+          </div>
         </div>
 
         <div class="deck-track-info">

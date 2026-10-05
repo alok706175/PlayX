@@ -149,6 +149,47 @@ body {
   text-align: center;
 }
 
+/* Video Stage & View Switcher */
+.video-stage {
+  width: 100%;
+  max-width: 360px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  background: #000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
+  border: 1px solid var(--border-subtle);
+  display: none;
+}
+
+.video-stage iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.btn-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 1.25rem;
+  transition: all 0.2s;
+}
+
+.btn-view-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent);
+}
+
 /* Vinyl Record Animation */
 .vinyl-deck {
   width: 200px;
@@ -160,7 +201,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
   animation: rotateDisc 10s linear infinite;
   animation-play-state: paused;
 }
@@ -417,6 +458,23 @@ body {
   font-weight: 700;
   color: var(--text-muted);
   width: 24px;
+}
+
+.song-thumb-col {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #111;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.song-row-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .song-info-col {

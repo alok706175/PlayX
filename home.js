@@ -133,39 +133,8 @@
     }
   };
 
-  // Curated Songs for Direct Homepage Preview
-  const PREVIEW_SONGS = {
-    chhath: {
-      title: "उगी हे दीनानाथ",
-      artist: "कल्पना पटवारी • छठ महापर्व",
-      file: "https://res.cloudinary.com/pelthrid/video/upload/v1786972359/Kalpana_%E0%A4%95_%E0%A4%B8%E0%A4%AC%E0%A4%B8_%E0%A4%B9%E0%A4%9F_Chhath_Song_-_Ugi_Hey_Dinanath_Superhit_Chhath_Geet_2023.mp3",
-      icon: "🌅"
-    },
-    hindi: {
-      title: "कभी जो बादल बरसे",
-      artist: "अरिजीत सिंह • बॉलीवुड हिट्स",
-      file: "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Kabhi_Jo_Baadal_Barse_-_Jackpot_320_kbps.mp3",
-      icon: "🎵"
-    },
-    saawan: {
-      title: "हर हर शंभू शिव महादेवा",
-      artist: "अभिलिप्सा पांडा • सावन भजन",
-      file: "https://res.cloudinary.com/pelthrid/video/upload/v1788094000/Jo_Bhi_Kasmein_-_Raaz_320_kbps.mp3",
-      icon: "🔱"
-    },
-    durga: {
-      title: "चलो बुलावा आया है",
-      artist: "नरेंद्र चंचल • दुर्गा पूजा व नवरात्रि",
-      file: "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Didi_Tera_Devar_Deewana_Hum_Aapke_Hain_Koun_320_Kbps.mp3",
-      icon: "🪔"
-    },
-    holi: {
-      title: "रंग बरसे भीगे चुनर वाली",
-      artist: "अमिताभ बच्चन • होली स्पेशल",
-      file: "https://res.cloudinary.com/pelthrid/video/upload/v1788094006/Didi_Tera_Devar_Deewana_Hum_Aapke_Hain_Koun_320_Kbps.mp3",
-      icon: "🎨"
-    }
-  };
+  // Preview songs configuration (isolated per category)
+  const PREVIEW_SONGS = {};
 
   /* =========================================================
      1. INITIALIZATION ON DOM LOADED

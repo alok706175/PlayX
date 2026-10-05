@@ -14,6 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 
 <body data-songs-file="durga_puja_songs.json" data-festival-title="Durga Puja Songs">
@@ -47,9 +48,19 @@
     <div class="player-page-grid">
       <!-- Left Audio Deck -->
       <section class="audio-deck-card">
+        <!-- View Mode Switcher -->
+        <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch to YouTube Video View">
+          <span>🎬</span> <span>Video View</span>
+        </button>
+
+        <!-- Video Stage (YouTube Player) -->
+        <div class="video-stage" id="videoStage">
+          <div id="ytFestivalPlayer"></div>
+        </div>
+
         <div class="vinyl-deck" id="vinylDisc" style="box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px rgba(225, 29, 72, 0.4);">
           <div class="vinyl-center-label" style="background: #ffffff; padding: 0; overflow: hidden; border: 2.5px solid #e11d48; box-shadow: 0 0 12px rgba(225, 29, 72, 0.6);">
-            <img src="images/durga_puja_logo.png" alt="दुर्गा पूजा" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            <img id="vinylCoverImg" src="https://i.ytimg.com/vi/QkX9l0tWf28/hqdefault.jpg" alt="दुर्गा पूजा" style="width: 100%; height: 100%; object-fit: cover; display: block;">
           </div>
         </div>
 
