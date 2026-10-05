@@ -1839,3 +1839,478 @@ body {
     padding: 0.6rem 0.9rem;
   }
 }
+
+/* =========================================================
+   NAVBAR 3-DOT MORE MENU & ADMIN LOGIN
+   ========================================================= */
+.nav-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  z-index: 10;
+}
+
+.more-menu-wrapper {
+  position: relative;
+}
+
+.btn-more-menu {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.btn-more-menu:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--border-glow);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.2);
+}
+
+.btn-more-menu:active {
+  transform: scale(0.96);
+}
+
+.btn-more-menu.active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--accent-gold);
+}
+
+.more-dots-icon {
+  fill: currentColor;
+}
+
+/* Dropdown Menu */
+.more-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 190px;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6);
+  padding: 0.4rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 200;
+  transform-origin: top right;
+  animation: menuDropAnim 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.more-dropdown-menu.active {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+@keyframes menuDropAnim {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.dropdown-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.65rem 0.95rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropdown-item-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent-gold);
+  transform: translateX(2px);
+}
+
+.dropdown-item-btn svg {
+  color: var(--accent-gold);
+  flex-shrink: 0;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: rgba(255, 215, 0, 0.2);
+  margin: 0.3rem 0.4rem;
+}
+
+.dropdown-item-btn.install-app-btn svg {
+  color: #38bdf8;
+}
+
+.dropdown-item-btn.install-app-btn:hover {
+  color: #38bdf8;
+}
+
+.dropdown-item-btn.admin-logout-btn {
+  color: #fca5a5;
+}
+
+.dropdown-item-btn.admin-logout-btn svg {
+  color: #ef4444;
+}
+
+.dropdown-item-btn.admin-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.16);
+  color: #ef4444;
+}
+
+/* User Profile Badge in Navbar */
+.user-profile-badge {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: linear-gradient(135deg, rgba(255, 184, 0, 0.18), rgba(255, 87, 34, 0.18));
+  border: 1px solid rgba(255, 184, 0, 0.45);
+  border-radius: 999px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-right: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 0 14px rgba(255, 184, 0, 0.2);
+  user-select: none;
+}
+
+.user-profile-badge:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow: 0 0 20px rgba(255, 184, 0, 0.35);
+  border-color: #ffb800;
+}
+
+.user-avatar-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb800, #ff5722);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+/* Dropdown Profile Header */
+.dropdown-profile-header {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  background: rgba(255, 184, 0, 0.08);
+  border: 1px solid rgba(255, 184, 0, 0.25);
+  border-radius: 10px;
+  margin-bottom: 0.35rem;
+}
+
+.dropdown-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb800, #ff5722);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
+}
+
+.dropdown-profile-info {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-profile-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: #fff;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.dropdown-profile-role {
+  font-size: 0.72rem;
+  color: #ffb800;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Light Mode Overrides for 3-Dot & Dropdown */
+[data-theme="light"] .btn-more-menu {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-more-menu:hover {
+  background: rgba(0, 0, 0, 0.09);
+  border-color: #d97706;
+}
+
+[data-theme="light"] .more-dropdown-menu {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .dropdown-item-btn {
+  color: #0f172a;
+}
+
+[data-theme="light"] .dropdown-item-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #ea580c;
+}
+
+/* =========================================================
+   ADMIN LOGIN MODAL
+   ========================================================= */
+.admin-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.admin-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.admin-modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 35px rgba(255, 184, 0, 0.2);
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.admin-modal-overlay.active .admin-modal-card {
+  transform: translateY(0) scale(1);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.admin-modal-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-shield-icon {
+  font-size: 1.6rem;
+}
+
+.admin-modal-title-group h3 {
+  font-family: var(--font-heading);
+  font-size: 1.45rem;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.admin-modal-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.admin-modal-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.admin-login-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.admin-login-form label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.admin-login-form .input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.admin-login-form .input-with-icon svg:first-child {
+  position: absolute;
+  left: 14px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.admin-login-form input {
+  width: 100%;
+  padding: 0.75rem 2.8rem 0.75rem 2.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.admin-login-form input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 15px rgba(255, 184, 0, 0.25);
+}
+
+.btn-toggle-pwd {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-toggle-pwd:hover {
+  opacity: 1;
+}
+
+.admin-form-msg {
+  min-height: 24px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: none;
+  padding: 0.45rem 0.75rem;
+  border-radius: 6px;
+}
+
+.admin-form-msg.error {
+  display: block;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.admin-form-msg.success {
+  display: block;
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  color: #86efac;
+}
+
+.btn-admin-submit {
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-gold));
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #000;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(255, 87, 34, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-admin-submit:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 87, 34, 0.5);
+}
+
+.btn-admin-submit:active {
+  transform: translateY(0);
+}
+
+/* Light mode for modal */
+[data-theme="light"] .admin-modal-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="light"] .admin-modal-title-group h3 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-login-form input {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-login-form input:focus {
+  background: #ffffff;
+  border-color: #ea580c;
+  box-shadow: 0 0 15px rgba(234, 88, 12, 0.2);
+}

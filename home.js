@@ -139,7 +139,7 @@
   /* =========================================================
      1. INITIALIZATION ON DOM LOADED
      ========================================================= */
-  document.addEventListener("DOMContentLoaded", () => {
+  function initAll() {
     initTheme();
     initLanguage();
     initClock();
@@ -147,7 +147,13 @@
     initCategoryFilters();
     initSearch();
     initPreviewAudio();
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAll);
+  } else {
+    initAll();
+  }
 
   /* =========================================================
      2. LIGHT / DARK MODE THEME CONTROLLER

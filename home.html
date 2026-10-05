@@ -8,8 +8,461 @@
   <title>PlayX | A Largest Music Library Website.</title>
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
-  <link rel="stylesheet" href="home.css?v=30">
+  <link rel="stylesheet" href="home.css?v=42">
   <link rel="stylesheet" href="dark-light-mode.css">
+
+  <style>
+    /* Critical Navbar 3-Dot Dropdown & Admin Modal Styles */
+    .nav-right {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+      z-index: 100;
+    }
+
+    .more-menu-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .btn-more-menu {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .btn-more-menu:hover,
+    .btn-more-menu.active {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: #ffb800;
+      transform: scale(1.05);
+      box-shadow: 0 0 16px rgba(255, 184, 0, 0.3);
+    }
+
+    .more-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 190px;
+      background: #140d24;
+      background: rgba(20, 13, 36, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 184, 0, 0.4);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 184, 0, 0.2);
+      padding: 0.5rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.3rem;
+      z-index: 99999;
+    }
+
+    .more-dropdown-menu.active {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .dropdown-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      color: #fdfaf6;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-item-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffb800;
+      transform: translateX(3px);
+    }
+
+    .dropdown-item-btn svg {
+      color: #ffb800;
+      flex-shrink: 0;
+    }
+
+    [data-theme="light"] .btn-more-menu {
+      background: rgba(0, 0, 0, 0.05);
+      border-color: rgba(0, 0, 0, 0.15);
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .more-dropdown-menu {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.12);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
+    }
+
+    [data-theme="light"] .dropdown-item-btn {
+      color: #0f172a;
+    }
+
+    [data-theme="light"] .dropdown-item-btn:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: #d97706;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: rgba(255, 215, 0, 0.2);
+      margin: 0.3rem 0.4rem;
+    }
+
+    .dropdown-item-btn.install-app-btn svg {
+      color: #38bdf8;
+    }
+
+    .dropdown-item-btn.install-app-btn:hover {
+      color: #38bdf8;
+    }
+
+    [data-theme="light"] .dropdown-divider {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="light"] .dropdown-item-btn.install-app-btn svg {
+      color: #0284c7;
+    }
+
+    [data-theme="light"] .dropdown-item-btn.install-app-btn:hover {
+      color: #0284c7;
+    }
+
+    /* Logged In User Profile Styles */
+    .user-profile-badge {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: linear-gradient(135deg, rgba(255, 184, 0, 0.18), rgba(255, 87, 34, 0.18));
+      border: 1px solid rgba(255, 184, 0, 0.45);
+      border-radius: 999px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-right: 0.5rem;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 14px rgba(255, 184, 0, 0.2);
+      user-select: none;
+    }
+
+    .user-profile-badge:hover {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 0 20px rgba(255, 184, 0, 0.35);
+      border-color: #ffb800;
+    }
+
+    .user-avatar-circle {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb800, #ff5722);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    [data-theme="light"] .user-profile-badge {
+      background: #fef3c7;
+      border-color: #f59e0b;
+      color: #92400e;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+    }
+
+    .dropdown-profile-header {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      background: rgba(255, 184, 0, 0.08);
+      border: 1px solid rgba(255, 184, 0, 0.25);
+      border-radius: 10px;
+      margin-bottom: 0.35rem;
+    }
+
+    .dropdown-profile-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffb800, #ff5722);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.3);
+    }
+
+    .dropdown-profile-info {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dropdown-profile-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: #fff;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .dropdown-profile-role {
+      font-size: 0.72rem;
+      color: #ffb800;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    [data-theme="light"] .dropdown-profile-header {
+      background: #fef3c7;
+      border-color: #fde68a;
+    }
+
+    [data-theme="light"] .dropdown-profile-name {
+      color: #1e293b;
+    }
+
+    [data-theme="light"] .dropdown-profile-role {
+      color: #b45309;
+    }
+
+    .dropdown-item-btn.admin-logout-btn {
+      color: #fca5a5;
+    }
+
+    .dropdown-item-btn.admin-logout-btn svg {
+      color: #ef4444;
+    }
+
+    .dropdown-item-btn.admin-logout-btn:hover {
+      background: rgba(239, 68, 68, 0.16);
+      color: #ef4444;
+    }
+
+    [data-theme="light"] .dropdown-item-btn.admin-logout-btn {
+      color: #dc2626;
+    }
+
+    [data-theme="light"] .dropdown-item-btn.admin-logout-btn:hover {
+      background: #fee2e2;
+    }
+
+    .btn-more-menu svg,
+    .btn-more-menu svg * {
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .nav-right {
+        position: absolute;
+        top: 0.85rem;
+        right: 1.25rem;
+        margin-left: 0;
+      }
+    }
+
+    /* Admin Login Modal Critical CSS */
+    .admin-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .admin-modal-overlay.active {
+      display: flex !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+
+    .admin-modal-card {
+      width: 100%;
+      max-width: 420px;
+      background: #140d24;
+      background: var(--bg-card, #140d24);
+      border: 1px solid rgba(255, 184, 0, 0.45);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 184, 0, 0.25);
+      position: relative;
+    }
+
+    [data-theme="light"] .admin-modal-card {
+      background: #ffffff;
+      border-color: rgba(0, 0, 0, 0.12);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+
+  <!-- Early Navbar Dropdown & PWA Controller -->
+  <script>
+    var deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    window.updateAdminAuthState = function () {
+      var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
+      var storedUser = localStorage.getItem("playx_admin_user");
+      var userName = (storedUser && storedUser !== "Admin" && storedUser !== "Playx") ? storedUser : "Deepak Singh Rajput";
+      if (isLoggedIn && storedUser !== userName) {
+        localStorage.setItem("playx_admin_user", userName);
+      }
+
+      var navBadge = document.getElementById("navProfileBadge");
+      var navName = document.getElementById("navProfileName");
+      var dropHeader = document.getElementById("dropdownProfileHeader");
+      var dropName = document.getElementById("dropdownProfileName");
+      var loginBtn = document.getElementById("adminLoginBtn");
+      var logoutBtn = document.getElementById("adminLogoutBtn");
+
+      if (isLoggedIn) {
+        if (navBadge) navBadge.style.display = "inline-flex";
+        if (navName) navName.textContent = userName;
+        if (dropHeader) dropHeader.style.display = "flex";
+        if (dropName) dropName.textContent = userName;
+        if (loginBtn) loginBtn.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "flex";
+      } else {
+        if (navBadge) navBadge.style.display = "none";
+        if (dropHeader) dropHeader.style.display = "none";
+        if (loginBtn) loginBtn.style.display = "flex";
+        if (logoutBtn) logoutBtn.style.display = "none";
+      }
+    };
+
+    window.handleAdminLogout = function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      localStorage.removeItem("playx_admin_logged_in");
+      localStorage.removeItem("playx_admin_user");
+      localStorage.removeItem("playx_admin_email");
+      window.closeAdminMenu();
+      window.updateAdminAuthState();
+      alert("आप सफलतापूर्वक लॉगआउट हो गए हैं।");
+    };
+
+    var lastToggleTime = 0;
+    window.toggleAdminMenu = function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      }
+      var now = Date.now();
+      if (now - lastToggleTime < 250) return;
+      lastToggleTime = now;
+
+      var menu = document.getElementById("moreDropdownMenu");
+      var btn = document.getElementById("moreMenuBtn");
+      if (!menu) return;
+
+      var isOpen = menu.classList.toggle("active");
+      if (btn) {
+        btn.classList.toggle("active", isOpen);
+        btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      }
+    };
+
+    window.closeAdminMenu = function () {
+      var menu = document.getElementById("moreDropdownMenu");
+      var btn = document.getElementById("moreMenuBtn");
+      if (menu) menu.classList.remove("active");
+      if (btn) {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    };
+
+    window.openAdminModal = function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      }
+      window.closeAdminMenu();
+      var modal = document.getElementById("adminModalOverlay");
+      if (modal) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+        var msg = document.getElementById("adminFormMsg");
+        if (msg) {
+          msg.className = "admin-form-msg";
+          msg.textContent = "";
+        }
+        setTimeout(function () {
+          var input = document.getElementById("adminUsername");
+          if (input) input.focus();
+        }, 100);
+      }
+    };
+
+    window.closeAdminModal = function () {
+      var modal = document.getElementById("adminModalOverlay");
+      if (modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+        var form = document.getElementById("adminLoginForm");
+        if (form) form.reset();
+      }
+    };
+
+    window.handleInstallApp = async function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+        if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      }
+      window.closeAdminMenu();
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        var choice = await deferredPrompt.userChoice;
+        if (choice && choice.outcome === "accepted") {
+          alert("PlayX ऐप आपके डिवाइस पर इंस्टॉल हो रहा है!");
+        }
+        deferredPrompt = null;
+      } else {
+        alert("PlayX ऐप को अपने डिवाइस पर इंस्टॉल करने के लिए:\n1. ब्राउज़र मेनू (⋮ या Share) खोलें।\n2. 'Add to Home screen' या 'Install app' चुनें।");
+      }
+    };
+  </script>
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="favicon.io/favicon.svg">
@@ -89,8 +542,10 @@
         <!-- Nav Actions: Live IST Clock & Theme Toggle -->
         <div class="nav-actions">
           <!-- Live Clock on Homepage (Matches Language & Theme Button Style) -->
-          <div class="time-widget live-clock-widget" id="timeWidget" title="भारतीय मानक समय (IST)" role="button" tabindex="0" aria-label="Indian Standard Time Clock">
-            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <div class="time-widget live-clock-widget" id="timeWidget" title="भारतीय मानक समय (IST)" role="button"
+            tabindex="0" aria-label="Indian Standard Time Clock">
+            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
@@ -101,7 +556,8 @@
           </div>
           <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Switch to Light Mode"
             title="Switch to Light Mode">
-            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
             <span id="themeBtnText">Dark Mode</span>
@@ -110,6 +566,74 @@
             title="Switch to Hindi Language" data-lang="en">
             <span id="langBtnText">English</span>
           </button>
+        </div>
+
+        <!-- Nav Right: Profile Badge & 3 Vertical Dots (More Options) -->
+        <div class="nav-right">
+          <!-- Profile Badge (Shows Profile Name when logged in) -->
+          <div class="user-profile-badge" id="navProfileBadge" onclick="window.toggleAdminMenu(event)"
+            title="Admin Profile">
+            <span class="user-avatar-circle" id="navAvatarCircle">👨‍💻</span>
+            <span class="user-profile-name" id="navProfileName">Admin</span>
+          </div>
+
+          <div class="more-menu-wrapper" id="moreMenuWrapper">
+            <button class="btn-more-menu" id="moreMenuBtn" type="button" onclick="window.toggleAdminMenu(event)"
+              aria-haspopup="true" aria-expanded="false" title="More options" aria-label="More options">
+              <svg class="more-dots-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <circle cx="12" cy="5" r="2.2"></circle>
+                <circle cx="12" cy="12" r="2.2"></circle>
+                <circle cx="12" cy="19" r="2.2"></circle>
+              </svg>
+            </button>
+            <div class="more-dropdown-menu" id="moreDropdownMenu" role="menu">
+              <!-- Logged-in Profile Info Header -->
+              <div class="dropdown-profile-header" id="dropdownProfileHeader">
+                <div class="dropdown-profile-avatar" id="dropdownProfileAvatar">👨‍💻</div>
+                <div class="dropdown-profile-info">
+                  <div class="dropdown-profile-name" id="dropdownProfileName">Admin</div>
+                  <div class="dropdown-profile-role">Adminstrator</div>
+                </div>
+              </div>
+
+              <!-- 1. Admin Login Button (Logged Out state) -->
+              <button class="dropdown-item-btn admin-login-btn" id="adminLoginBtn" type="button"
+                onclick="window.openAdminModal(event)" role="menuitem">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Admin Login</span>
+              </button>
+
+              <!-- 2. Admin Logout Button (Logged In state) -->
+              <button class="dropdown-item-btn admin-logout-btn" id="adminLogoutBtn" type="button"
+                style="display: none;" onclick="window.handleAdminLogout(event)" role="menuitem">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Logout</span>
+              </button>
+
+              <div class="dropdown-divider"></div>
+
+              <!-- 3. Install App Button -->
+              <button class="dropdown-item-btn install-app-btn" id="installAppBtn" type="button"
+                onclick="window.handleInstallApp(event)" role="menuitem">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Install App</span>
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
     </div>
@@ -158,8 +682,8 @@
           title="हिंदी सुपरहिट बॉलीवुड गीत सुनें">
           <div class="card-btn-header">
             <div class="card-icon-emblem card-icon-hindi-music" title="हिंदी सुपरहिट संगीत">
-              <img src="hindi-songs/images/hindi_song_icon.png" alt="हिंदी सुपरहिट संगीत" class="hindi-card-icon-img" width="40"
-                height="40">
+              <img src="hindi-songs/images/hindi_song_icon.png" alt="हिंदी सुपरहिट संगीत" class="hindi-card-icon-img"
+                width="40" height="40">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -191,8 +715,8 @@
           title="सावन शिव भजन व बोल बम सुनें">
           <div class="card-btn-header">
             <div class="card-icon-emblem card-icon-trishul" title="त्रिशूल और डमरू">
-              <img src="saawan-songs/images/trishul_damru.svg" alt="त्रिशूल और डमरू" class="trishul-damru-img" width="36"
-                height="44">
+              <img src="saawan-songs/images/trishul_damru.svg" alt="त्रिशूल और डमरू" class="trishul-damru-img"
+                width="36" height="44">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -223,8 +747,8 @@
           title="दुर्गा पूजा व नवरात्रि भक्ति गीत सुनें">
           <div class="card-btn-header">
             <div class="card-icon-emblem card-icon-durga" title="दुर्गा पूजा व नवरात्रि">
-              <img src="durga-puja-songs/images/durga_puja_logo.png" alt="दुर्गा पूजा व नवरात्रि" class="durga-card-icon-img" width="46"
-                height="46">
+              <img src="durga-puja-songs/images/durga_puja_logo.png" alt="दुर्गा पूजा व नवरात्रि"
+                class="durga-card-icon-img" width="46" height="46">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -398,9 +922,157 @@
     </div>
   </footer>
 
+  <!-- Admin Login Modal -->
+  <div class="admin-modal-overlay" id="adminModalOverlay" role="dialog" aria-modal="true"
+    aria-labelledby="adminModalTitle">
+    <div class="admin-modal-card">
+      <div class="admin-modal-header">
+        <div class="admin-modal-title-group">
+          <span class="admin-shield-icon" aria-hidden="true">🛡️</span>
+          <h3 id="adminModalTitle">Admin Login</h3>
+        </div>
+        <button class="admin-modal-close" id="adminModalCloseBtn" type="button"
+          onclick="window.closeAdminModal && window.closeAdminModal()" aria-label="Close Admin Modal">✕</button>
+      </div>
+      <form class="admin-login-form" id="adminLoginForm" autocomplete="off">
+        <div class="form-group">
+          <label for="adminUsername">Admin Email / ID</label>
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <input type="text" id="adminUsername" name="username" placeholder="deepaksinghrajput8747@gmail.com" required autocomplete="username">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <div class="input-with-icon">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <input type="password" id="adminPassword" name="password" placeholder="••••••••" required
+              autocomplete="current-password">
+            <button type="button" class="btn-toggle-pwd" id="togglePwdBtn"
+              aria-label="Toggle password visibility">👁️</button>
+          </div>
+        </div>
+        <div class="admin-form-msg" id="adminFormMsg" role="alert"></div>
+        <button type="submit" class="btn-admin-submit" id="adminSubmitBtn">
+          <span>Login to Admin Portal</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- Interactive Scripts -->
   <script src="dark-light-mode.js"></script>
-  <script src="home.js?v=30"></script>
+  <script src="home.js?v=42"></script>
+
+  <!-- Event Bindings for Modal & Dropdown -->
+  <script>
+    (function () {
+
+      // Password toggle
+      var togglePwdBtn = document.getElementById("togglePwdBtn");
+      var adminPassword = document.getElementById("adminPassword");
+      if (togglePwdBtn && adminPassword) {
+        togglePwdBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var isPwd = adminPassword.type === "password";
+          adminPassword.type = isPwd ? "text" : "password";
+          togglePwdBtn.textContent = isPwd ? "🙈" : "👁️";
+        });
+      }
+
+      // Admin Form Submit
+      var adminForm = document.getElementById("adminLoginForm");
+      if (adminForm) {
+        adminForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var user = (document.getElementById("adminUsername")?.value || "").trim();
+          var pwd = (document.getElementById("adminPassword")?.value || "");
+          var msg = document.getElementById("adminFormMsg");
+          if (!user || !pwd) {
+            if (msg) {
+              msg.className = "admin-form-msg error";
+              msg.textContent = "कृपया एडमिन ईमेल और पासवर्ड दोनों दर्ज करें।";
+            }
+            return;
+          }
+
+          var validEmail = "deepaksinghrajput8747@gmail.com";
+          var validPassword = "Deep@k8747";
+          var profileName = "Deepak Singh Rajput";
+
+          if (user.toLowerCase() === validEmail.toLowerCase() && pwd === validPassword) {
+            if (msg) {
+              msg.className = "admin-form-msg success";
+              msg.textContent = "✅ नमस्ते " + profileName + "! एडमिन लॉगिन सफल रहा।";
+            }
+            localStorage.setItem("playx_admin_logged_in", "true");
+            localStorage.setItem("playx_admin_user", profileName);
+            localStorage.setItem("playx_admin_email", validEmail);
+            if (window.updateAdminAuthState) window.updateAdminAuthState();
+
+            setTimeout(function () {
+              if (window.closeAdminModal) window.closeAdminModal();
+              if (adminForm) adminForm.reset();
+              if (msg) {
+                msg.textContent = "";
+                msg.className = "admin-form-msg";
+              }
+            }, 750);
+          } else {
+            if (msg) {
+              msg.className = "admin-form-msg error";
+              msg.textContent = "❌ अमान्य क्रेडेंशियल! केवल अधिकृत एडमिन ही लॉगिन कर सकते हैं।";
+            }
+          }
+        });
+      }
+
+      // Initialize auth state
+      if (window.updateAdminAuthState) {
+        window.updateAdminAuthState();
+      }
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (e) {
+        var menu = document.getElementById("moreDropdownMenu");
+        var btn = document.getElementById("moreMenuBtn");
+        if (menu && btn && menu.classList.contains("active")) {
+          if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.classList.remove("active");
+            btn.classList.remove("active");
+            btn.setAttribute("aria-expanded", "false");
+          }
+        }
+      });
+
+      // Escape key to close
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          window.closeAdminModal();
+          var menu = document.getElementById("moreDropdownMenu");
+          var btn = document.getElementById("moreMenuBtn");
+          if (menu) menu.classList.remove("active");
+          if (btn) {
+            btn.classList.remove("active");
+            btn.setAttribute("aria-expanded", "false");
+          }
+        }
+      });
+    })();
+  </script>
 </body>
 
 </html>
