@@ -573,7 +573,7 @@
       window.addEventListener("load", () => {
         // Compute correct path to root sw.js regardless of folder depth
         const pathname = window.location.pathname || "";
-        const isSubdir = /[\/\\](bhojpuri-songs|chhath-puja|durga-puja-songs|haryanvi-songs|hindi-songs|holi-songs|saawan-songs)[\/\\]/i.test(pathname) ||
+        const isSubdir = /[\/\\](bhojpuri-songs|chhath-puja|durga-puja-songs|haryanvi-songs|hindi-songs|holi-songs|punjabi-songs|saawan-songs)[\/\\]/i.test(pathname) ||
           (pathname.split("/").filter(Boolean).length > 1 && !pathname.endsWith("/home.html") && !pathname.endsWith("/index.html"));
         const swPath = isSubdir ? "../sw.js" : "./sw.js";
 

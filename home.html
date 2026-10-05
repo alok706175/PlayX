@@ -150,47 +150,6 @@
     }
 
     /* Logged In User Profile Styles */
-    .user-profile-badge {
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 0.85rem;
-      background: linear-gradient(135deg, rgba(255, 184, 0, 0.18), rgba(255, 87, 34, 0.18));
-      border: 1px solid rgba(255, 184, 0, 0.45);
-      border-radius: 999px;
-      cursor: pointer;
-      color: #fff;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-right: 0.5rem;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 14px rgba(255, 184, 0, 0.2);
-      user-select: none;
-    }
-
-    .user-profile-badge:hover {
-      transform: translateY(-1px) scale(1.03);
-      box-shadow: 0 0 20px rgba(255, 184, 0, 0.35);
-      border-color: #ffb800;
-    }
-
-    .user-avatar-circle {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ffb800, #ff5722);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-    }
-
-    [data-theme="light"] .user-profile-badge {
-      background: #fef3c7;
-      border-color: #f59e0b;
-      color: #92400e;
-      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
-    }
 
     .dropdown-profile-header {
       display: none;
@@ -331,10 +290,101 @@
   <!-- Early Navbar Dropdown & PWA Controller -->
   <script>
     var deferredPrompt = null;
+
+    // Check if app is already installed on this device/browser
+    window.isAppInstalled = function () {
+      // 1. Standalone display mode (Installed PWA running on Desktop or Mobile)
+      if (window.matchMedia) {
+        if (
+          window.matchMedia("(display-mode: standalone)").matches ||
+          window.matchMedia("(display-mode: fullscreen)").matches ||
+          window.matchMedia("(display-mode: minimal-ui)").matches ||
+          window.matchMedia("(display-mode: window-controls-overlay)").matches
+        ) {
+          return true;
+        }
+      }
+      // 2. iOS Safari standalone
+      if (window.navigator && window.navigator.standalone === true) {
+        return true;
+      }
+      // 3. Android TWA / WebAPK referrer
+      if (document.referrer && document.referrer.startsWith("android-app://")) {
+        return true;
+      }
+      // 4. Stored persistent flag after install completed
+      if (localStorage.getItem("playx_pwa_installed") === "true") {
+        return true;
+      }
+      return false;
+    };
+
+    // Update visibility of the Install button:
+    // "jab app install na ho tabhi button show ho" (Show button ONLY when NOT installed)
+    window.updateInstallButtonVisibility = function (forceInstalled) {
+      var isInstalled = typeof forceInstalled === "boolean" ? forceInstalled : window.isAppInstalled();
+      var btn = document.getElementById("installAppBtn");
+      var divider = document.getElementById("installAppDivider");
+      var footerPwa = document.getElementById("footerLinkPwa");
+
+      var show = !isInstalled;
+
+      if (btn) {
+        btn.style.display = show ? "flex" : "none";
+      }
+      if (divider) {
+        divider.style.display = show ? "block" : "none";
+      }
+      if (footerPwa) {
+        var li = footerPwa.closest ? footerPwa.closest("li") : footerPwa.parentElement;
+        if (li) {
+          li.style.display = show ? "" : "none";
+        }
+      }
+    };
+
+    // BeforeInstallPrompt: browser confirms app is NOT installed and can be installed
     window.addEventListener("beforeinstallprompt", function (e) {
       e.preventDefault();
       deferredPrompt = e;
+      localStorage.removeItem("playx_pwa_installed");
+      window.updateInstallButtonVisibility(false);
     });
+
+    // AppInstalled: fired when user successfully completes installation
+    window.addEventListener("appinstalled", function () {
+      deferredPrompt = null;
+      localStorage.setItem("playx_pwa_installed", "true");
+      window.updateInstallButtonVisibility(true);
+    });
+
+    // Query browser's installed related apps API (Chromium / Chrome / Edge)
+    if (navigator.getInstalledRelatedApps) {
+      navigator.getInstalledRelatedApps().then(function (relatedApps) {
+        if (relatedApps && relatedApps.length > 0) {
+          localStorage.setItem("playx_pwa_installed", "true");
+          window.updateInstallButtonVisibility(true);
+        }
+      }).catch(function () {});
+    }
+
+    // Listen to standalone media query change
+    if (window.matchMedia) {
+      try {
+        var standaloneQuery = window.matchMedia("(display-mode: standalone)");
+        var onModeChange = function (e) {
+          if (e.matches) {
+            localStorage.setItem("playx_pwa_installed", "true");
+            window.updateInstallButtonVisibility(true);
+          }
+        };
+        if (standaloneQuery.addEventListener) {
+          standaloneQuery.addEventListener("change", onModeChange);
+        } else if (standaloneQuery.addListener) {
+          standaloneQuery.addListener(onModeChange);
+        }
+      } catch (err) {}
+    }
 
     window.updateAdminAuthState = function () {
       var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
@@ -344,22 +394,17 @@
         localStorage.setItem("playx_admin_user", userName);
       }
 
-      var navBadge = document.getElementById("navProfileBadge");
-      var navName = document.getElementById("navProfileName");
       var dropHeader = document.getElementById("dropdownProfileHeader");
       var dropName = document.getElementById("dropdownProfileName");
       var loginBtn = document.getElementById("adminLoginBtn");
       var logoutBtn = document.getElementById("adminLogoutBtn");
 
       if (isLoggedIn) {
-        if (navBadge) navBadge.style.display = "inline-flex";
-        if (navName) navName.textContent = userName;
         if (dropHeader) dropHeader.style.display = "flex";
         if (dropName) dropName.textContent = userName;
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "flex";
       } else {
-        if (navBadge) navBadge.style.display = "none";
         if (dropHeader) dropHeader.style.display = "none";
         if (loginBtn) loginBtn.style.display = "flex";
         if (logoutBtn) logoutBtn.style.display = "none";
@@ -455,6 +500,8 @@
         deferredPrompt.prompt();
         var choice = await deferredPrompt.userChoice;
         if (choice && choice.outcome === "accepted") {
+          localStorage.setItem("playx_pwa_installed", "true");
+          window.updateInstallButtonVisibility(true);
           alert("PlayX ऐप आपके डिवाइस पर इंस्टॉल हो रहा है!");
         }
         deferredPrompt = null;
@@ -477,9 +524,9 @@
 
   <!-- SEO Meta -->
   <meta name="description"
-    content="छठ पूजा गीत, हिंदी सुपरहिट बॉलीवुड गाने, सावन शिव भजन, दुर्गा पूजा व नवरात्रि गीत, होली के रंग-बिरंगे गाने, भोजपुरी सुपरहिट गाने और हरियाणवी डीजे गानों का संपूर्ण ऑनलाइन व ऑफलाइन संगीत पोर्टल। 320 Kbps HD ऑडियो में सुनें।">
+    content="छठ पूजा गीत, हिंदी सुपरहिट बॉलीवुड गाने, सावन शिव भजन, दुर्गा पूजा व नवरात्रि गीत, होली के रंग-बिरंगे गाने, भोजपुरी सुपरहिट गाने, हरियाणवी डीजे गाने और पंजाबी सुपरहिट गानों का संपूर्ण ऑनलाइन व ऑफलाइन संगीत पोर्टल। 320 Kbps HD ऑडियो में सुनें।">
   <meta name="keywords"
-    content="छठ पूजा गीत, Chhath Puja Songs, हिंदी गाने, Hindi Songs, भोजपुरी गाने, Bhojpuri Songs, हरियाणवी गाने, Haryanvi Songs, सावन गीत, Saawan Songs, Shiv Bhajan, दुर्गा पूजा गीत, Durga Puja Songs, होली के गाने, Holi Songs, पवन सिंह, खेसारी लाल, सपना चौधरी, रेणुका पंवार">
+    content="छठ पूजा गीत, Chhath Puja Songs, हिंदी गाने, Hindi Songs, भोजपुरी गाने, Bhojpuri Songs, हरियाणवी गाने, Haryanvi Songs, पंजाबी गाने, Punjabi Songs, सावन गीत, Saawan Songs, Shiv Bhajan, दुर्गा पूजा गीत, Durga Puja Songs, होली के गाने, Holi Songs, दिलजीत दोसांझ, सिद्धू मूसेवाला, पवन सिंह, खेसारी लाल, सपना चौधरी">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0a0712">
 
@@ -568,14 +615,8 @@
           </button>
         </div>
 
-        <!-- Nav Right: Profile Badge & 3 Vertical Dots (More Options) -->
+        <!-- Nav Right: 3 Vertical Dots (More Options) -->
         <div class="nav-right">
-          <!-- Profile Badge (Shows Profile Name when logged in) -->
-          <div class="user-profile-badge" id="navProfileBadge" onclick="window.toggleAdminMenu(event)"
-            title="Admin Profile">
-            <span class="user-avatar-circle" id="navAvatarCircle">👨‍💻</span>
-            <span class="user-profile-name" id="navProfileName">Admin</span>
-          </div>
 
           <div class="more-menu-wrapper" id="moreMenuWrapper">
             <button class="btn-more-menu" id="moreMenuBtn" type="button" onclick="window.toggleAdminMenu(event)"
@@ -619,9 +660,9 @@
                 <span>Logout</span>
               </button>
 
-              <div class="dropdown-divider"></div>
+              <div class="dropdown-divider" id="installAppDivider"></div>
 
-              <!-- 3. Install App Button -->
+              <!-- 3. Install App Button (Visible only when app is not installed) -->
               <button class="dropdown-item-btn install-app-btn" id="installAppBtn" type="button"
                 onclick="window.handleInstallApp(event)" role="menuitem">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
@@ -861,6 +902,35 @@
           </div>
         </a>
 
+        <!-- 8. PUNJABI SONGS CARD BUTTON -->
+        <a href="punjabi-songs/punjabi-songs.html" class="category-card-btn card-punjabi" data-category="punjabi"
+          title="पंजाबी सुपरहिट गाने सुनें">
+          <div class="card-btn-header">
+            <div class="card-icon-emblem card-icon-punjabi" title="पंजाबी सुपरहिट भांगड़ा सांग्स">🥁</div>
+            <span class="card-btn-arrow">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </div>
+          <div class="card-content">
+            <div class="card-title-group">
+              <h3>पंजाबी सुपरहिट गाने</h3>
+              <div class="card-subtitle-en">Punjabi Superhit Songs & Bhangra Hits</div>
+            </div>
+            <p class="card-description">
+              दिलजीत दोसांझ, सिद्धू मूसेवाला और गुरु रंधावा के सुपरहिट पंजाबी व भांगड़ा गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+            </p>
+            <div class="card-highlights">
+              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
+              <span class="highlight-pill">भांगड़ा बीट्स</span>
+              <span class="highlight-pill">PlayX स्पेशल</span>
+            </div>
+          </div>
+        </a>
+
       </div>
     </section>
 
@@ -902,6 +972,7 @@
             <li><a href="hindi-songs/hindi-songs.html" id="footerLinkHindi">हिंदी सुपरहिट बॉलीवुड</a></li>
             <li><a href="bhojpuri-songs/bhojpuri-songs.html" id="footerLinkBhojpuri">भोजपुरी सुपरहिट गाने</a></li>
             <li><a href="haryanvi-songs/haryanvi-songs.html" id="footerLinkHaryanvi">हरियाणवी सुपरहिट गाने</a></li>
+            <li><a href="punjabi-songs/punjabi-songs.html" id="footerLinkPunjabi">पंजाबी सुपरहिट गाने</a></li>
             <li><a href="chhath-puja/chhath-puja.html#mantra" id="footerLinkMantra">सूर्य गायत्री मंत्र</a></li>
           </ul>
         </div>
@@ -910,7 +981,7 @@
           <h5 id="footerCol3Title">सुविधाएं</h5>
           <ul class="footer-links">
             <li><a href="chhath-puja/chhath-puja.html" id="footerLinkOffline">ऑफ़लाइन डाउनलोड्स</a></li>
-            <li><a href="site.webmanifest" id="footerLinkPwa">PWA इंस्टॉल करें</a></li>
+            <li><a href="javascript:void(0)" id="footerLinkPwa" onclick="window.handleInstallApp(event)">PWA इंस्टॉल करें</a></li>
             <li><a href="sitemap.xml" id="footerLinkSitemap">साइटमैप</a></li>
           </ul>
         </div>
@@ -943,7 +1014,8 @@
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
               <circle cx="12" cy="7" r="4"></circle>
             </svg>
-            <input type="text" id="adminUsername" name="username" placeholder="deepaksinghrajput8747@gmail.com" required autocomplete="username">
+            <input type="text" id="adminUsername" name="username" placeholder="abc@example.com" required
+              autocomplete="username">
           </div>
         </div>
         <div class="form-group">
@@ -1040,9 +1112,12 @@
         });
       }
 
-      // Initialize auth state
+      // Initialize auth state and install button visibility
       if (window.updateAdminAuthState) {
         window.updateAdminAuthState();
+      }
+      if (window.updateInstallButtonVisibility) {
+        window.updateInstallButtonVisibility();
       }
 
       // Close dropdown when clicking outside

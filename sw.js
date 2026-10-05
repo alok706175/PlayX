@@ -68,7 +68,11 @@ const STATIC_ASSETS = [
   "./haryanvi-songs/haryanvi-songs.html",
   "./haryanvi-songs/festival-player.css",
   "./haryanvi-songs/festival-player.js",
-  "./haryanvi-songs/haryanvi_songs.json"
+  "./haryanvi-songs/haryanvi_songs.json",
+  "./punjabi-songs/punjabi-songs.html",
+  "./punjabi-songs/festival-player.css",
+  "./punjabi-songs/festival-player.js",
+  "./punjabi-songs/punjabi_songs.json"
 ];
 
 // Install Event - Pre-cache core app shell assets
@@ -162,6 +166,8 @@ self.addEventListener("fetch", (event) => {
             return (await caches.match("./bhojpuri-songs/bhojpuri-songs.html")) || caches.match("./home.html");
           } else if (url.pathname.includes("haryanvi-songs")) {
             return (await caches.match("./haryanvi-songs/haryanvi-songs.html")) || caches.match("./home.html");
+          } else if (url.pathname.includes("punjabi-songs")) {
+            return (await caches.match("./punjabi-songs/punjabi-songs.html")) || caches.match("./home.html");
           }
           return caches.match("./home.html");
         })

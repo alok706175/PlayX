@@ -15,26 +15,26 @@
   --bg-glass: rgba(18, 12, 33, 0.75);
   --border-subtle: rgba(255, 215, 0, 0.14);
   --border-glow: rgba(255, 170, 0, 0.45);
-  
+
   --accent-gold: #ffb800;
   --accent-orange: #ff5722;
   --accent-crimson: #e91e63;
   --accent-purple: #8b5cf6;
   --accent-cyan: #06b6d4;
-  
+
   --text-main: #fdfaf6;
   --text-muted: #b8afc8;
   --text-dim: #796f8c;
-  
+
   --font-heading: 'Yatra One', 'Rozha One', 'Mukta', serif;
   --font-body: 'Outfit', 'Mukta', sans-serif;
-  
+
   --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 12px 32px -4px rgba(0, 0, 0, 0.55);
   --shadow-lg: 0 20px 50px -10px rgba(0, 0, 0, 0.75);
   --glow-gold: 0 0 35px rgba(255, 184, 0, 0.3);
   --glow-crimson: 0 0 35px rgba(233, 30, 99, 0.35);
-  
+
   --radius-sm: 8px;
   --radius-md: 14px;
   --radius-lg: 22px;
@@ -50,17 +50,17 @@
   --bg-glass: rgba(255, 255, 255, 0.92);
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-glow: rgba(245, 158, 11, 0.55);
-  
+
   --accent-gold: #d97706;
   --accent-orange: #ea580c;
   --accent-crimson: #e11d48;
   --accent-purple: #7c3aed;
   --accent-cyan: #0284c7;
-  
+
   --text-main: #0f172a;
   --text-muted: #475569;
   --text-dim: #94a3b8;
-  
+
   --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 10px 25px -4px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 20px 45px -10px rgba(0, 0, 0, 0.12);
@@ -75,7 +75,7 @@
 }
 
 [data-theme="light"] .bg-ambient-layer {
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, rgba(255, 152, 0, 0.12) 0%, transparent 45%),
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
     radial-gradient(circle at 50% 80%, rgba(255, 184, 0, 0.08) 0%, transparent 50%);
@@ -234,6 +234,7 @@
 [data-theme="light"] .card-chhath {
   border-color: rgba(245, 158, 11, 0.25);
 }
+
 [data-theme="light"] .card-chhath:hover {
   border-color: #f59e0b;
   box-shadow: 0 18px 40px rgba(245, 158, 11, 0.16);
@@ -242,6 +243,7 @@
 [data-theme="light"] .card-hindi {
   border-color: rgba(99, 102, 241, 0.25);
 }
+
 [data-theme="light"] .card-hindi:hover {
   border-color: #6366f1;
   box-shadow: 0 18px 40px rgba(99, 102, 241, 0.16);
@@ -250,6 +252,7 @@
 [data-theme="light"] .card-saawan {
   border-color: rgba(14, 165, 233, 0.25);
 }
+
 [data-theme="light"] .card-saawan:hover {
   border-color: #0ea5e9;
   box-shadow: 0 18px 40px rgba(14, 165, 233, 0.16);
@@ -258,6 +261,7 @@
 [data-theme="light"] .card-durga {
   border-color: rgba(244, 63, 94, 0.25);
 }
+
 [data-theme="light"] .card-durga:hover {
   border-color: #f43f5e;
   box-shadow: 0 18px 40px rgba(244, 63, 94, 0.16);
@@ -266,9 +270,37 @@
 [data-theme="light"] .card-holi {
   border-color: rgba(236, 72, 153, 0.25);
 }
+
 [data-theme="light"] .card-holi:hover {
   border-color: #ec4899;
   box-shadow: 0 18px 40px rgba(236, 72, 153, 0.16);
+}
+
+[data-theme="light"] .card-bhojpuri {
+  border-color: rgba(249, 115, 22, 0.25);
+}
+
+[data-theme="light"] .card-bhojpuri:hover {
+  border-color: #f97316;
+  box-shadow: 0 18px 40px rgba(249, 115, 22, 0.16);
+}
+
+[data-theme="light"] .card-haryanvi {
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+[data-theme="light"] .card-haryanvi:hover {
+  border-color: #10b981;
+  box-shadow: 0 18px 40px rgba(16, 185, 129, 0.16);
+}
+
+[data-theme="light"] .card-punjabi {
+  border-color: rgba(234, 179, 8, 0.28);
+}
+
+[data-theme="light"] .card-punjabi:hover {
+  border-color: #d97706;
+  box-shadow: 0 18px 40px rgba(217, 119, 6, 0.18);
 }
 
 [data-theme="light"] .btn-preview-action {
@@ -427,7 +459,7 @@ body {
 .bg-ambient-layer {
   position: absolute;
   inset: 0;
-  background: 
+  background:
     radial-gradient(circle at 10% 20%, rgba(255, 87, 34, 0.15) 0%, transparent 45%),
     radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.14) 0%, transparent 45%),
     radial-gradient(circle at 50% 80%, rgba(255, 184, 0, 0.12) 0%, transparent 50%),
@@ -516,7 +548,8 @@ body {
 }
 
 .brand-x {
-  font-size: 2.85rem !important; /* Prominent BAADA X */
+  font-size: 2.85rem !important;
+  /* Prominent BAADA X */
   font-weight: 900 !important;
   text-transform: uppercase !important;
   line-height: 0.85 !important;
@@ -535,6 +568,7 @@ body {
     filter: drop-shadow(0 0 10px rgba(255, 23, 68, 0.7));
     transform: scale(1);
   }
+
   100% {
     filter: drop-shadow(0 0 20px rgba(255, 145, 0, 0.95)) drop-shadow(0 0 32px rgba(255, 23, 68, 0.7));
     transform: scale(1.08);
@@ -571,7 +605,8 @@ body {
   transition: all 0.25s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--text-main);
   background: rgba(255, 255, 255, 0.09);
   border-color: var(--border-glow);
@@ -595,17 +630,35 @@ body {
   z-index: 5;
 }
 
+@media (max-width: 900px) {
+  .nav-actions {
+    gap: 0.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     justify-content: center;
     gap: 0.75rem;
+    position: relative;
+    padding: 0.75rem 0;
   }
+
   .nav-actions {
     position: static;
     transform: none;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .nav-right {
+    position: absolute;
+    top: 0.85rem;
+    right: 0;
+    margin-left: 0;
   }
 }
 
@@ -624,6 +677,7 @@ body {
   align-items: center;
   gap: 0.45rem;
   white-space: nowrap;
+  -webkit-user-select: none;
   user-select: none;
   transition: all 0.25s;
   z-index: 3;
@@ -678,15 +732,18 @@ body {
 }
 
 @media (max-width: 580px) {
+
   .time-widget,
   .live-clock-widget {
     padding: 0.4rem 0.75rem;
     gap: 0.35rem;
   }
+
   .time-main,
   .clock-time {
     font-size: 0.8rem;
   }
+
   .date-sub,
   .clock-date {
     font-size: 0.75rem;
@@ -767,17 +824,7 @@ body {
   transform: scale(1.12);
 }
 
-[data-theme="light"] .lang-toggle-btn {
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  color: #0f172a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-}
-
-[data-theme="light"] .lang-toggle-btn:hover {
-  background: #f1f5f9;
-  border-color: #f59e0b;
-}
+/* Note: Light mode for .lang-toggle-btn is defined in the consolidated theme block above */
 
 /* =========================================================
    HERO BANNER SECTION
@@ -805,8 +852,15 @@ body {
 }
 
 @keyframes floatBadge {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 .hero-title {
@@ -942,6 +996,7 @@ body {
   background: rgba(20, 14, 36, 0.6);
   border: 1px solid var(--border-subtle);
   border-radius: 999px;
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
 }
 
@@ -980,11 +1035,45 @@ body {
 }
 
 /* Specific Festival Pill Hover Accents */
-.cat-btn-chhath:hover { border-color: #f59e0b; color: #fde68a; }
-.cat-btn-hindi:hover { border-color: #818cf8; color: #c7d2fe; }
-.cat-btn-saawan:hover { border-color: #38bdf8; color: #bae6fd; }
-.cat-btn-durga:hover { border-color: #f43f5e; color: #fecdd3; }
-.cat-btn-holi:hover { border-color: #ec4899; color: #fbcfe8; }
+.cat-btn-chhath:hover {
+  border-color: #f59e0b;
+  color: #fde68a;
+}
+
+.cat-btn-hindi:hover {
+  border-color: #818cf8;
+  color: #c7d2fe;
+}
+
+.cat-btn-saawan:hover {
+  border-color: #38bdf8;
+  color: #bae6fd;
+}
+
+.cat-btn-durga:hover {
+  border-color: #f43f5e;
+  color: #fecdd3;
+}
+
+.cat-btn-holi:hover {
+  border-color: #ec4899;
+  color: #fbcfe8;
+}
+
+.cat-btn-bhojpuri:hover {
+  border-color: #f97316;
+  color: #fed7aa;
+}
+
+.cat-btn-haryanvi:hover {
+  border-color: #10b981;
+  color: #a7f3d0;
+}
+
+.cat-btn-punjabi:hover {
+  border-color: #eab308;
+  color: #fef08a;
+}
 
 /* =========================================================
    FEATURED CATEGORY CARDS GRID (THE 5 MAIN BUTTONS)
@@ -1038,6 +1127,7 @@ body {
   border: 1.5px solid var(--border-subtle);
   border-radius: var(--radius-lg);
   overflow: hidden;
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: var(--shadow-md);
@@ -1118,6 +1208,7 @@ body {
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 700;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   z-index: 2;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -1300,18 +1391,22 @@ body {
 .card-chhath {
   border-color: rgba(245, 158, 11, 0.3);
 }
+
 .card-chhath:hover {
   border-color: #f59e0b;
   box-shadow: 0 16px 40px -4px rgba(245, 158, 11, 0.35);
 }
+
 .card-chhath .card-icon-emblem {
   background: linear-gradient(135deg, #f59e0b, #d97706);
 }
+
 .card-chhath .card-floating-badge {
   background: rgba(245, 158, 11, 0.25);
   color: #fef3c7;
   border: 1px solid rgba(245, 158, 11, 0.4);
 }
+
 .card-chhath .btn-primary-action {
   background: linear-gradient(135deg, #f59e0b, #b45309);
   box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
@@ -1321,18 +1416,22 @@ body {
 .card-hindi {
   border-color: rgba(99, 102, 241, 0.3);
 }
+
 .card-hindi:hover {
   border-color: #818cf8;
   box-shadow: 0 16px 40px -4px rgba(99, 102, 241, 0.35);
 }
+
 .card-hindi .card-icon-emblem {
   background: linear-gradient(135deg, #6366f1, #ec4899);
 }
+
 .card-hindi .card-floating-badge {
   background: rgba(99, 102, 241, 0.25);
   color: #e0e7ff;
   border: 1px solid rgba(99, 102, 241, 0.4);
 }
+
 .card-hindi .btn-primary-action {
   background: linear-gradient(135deg, #6366f1, #ec4899);
   box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
@@ -1342,18 +1441,22 @@ body {
 .card-saawan {
   border-color: rgba(6, 182, 212, 0.3);
 }
+
 .card-saawan:hover {
   border-color: #06b6d4;
   box-shadow: 0 16px 40px -4px rgba(6, 182, 212, 0.35);
 }
+
 .card-saawan .card-icon-emblem {
   background: linear-gradient(135deg, #0284c7, #06b6d4);
 }
+
 .card-saawan .card-floating-badge {
   background: rgba(6, 182, 212, 0.25);
   color: #cffafe;
   border: 1px solid rgba(6, 182, 212, 0.4);
 }
+
 .card-saawan .btn-primary-action {
   background: linear-gradient(135deg, #0284c7, #0d9488);
   box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
@@ -1363,18 +1466,22 @@ body {
 .card-durga {
   border-color: rgba(225, 29, 72, 0.3);
 }
+
 .card-durga:hover {
   border-color: #f43f5e;
   box-shadow: 0 16px 40px -4px rgba(225, 29, 72, 0.35);
 }
+
 .card-durga .card-icon-emblem {
   background: linear-gradient(135deg, #e11d48, #fbbf24);
 }
+
 .card-durga .card-floating-badge {
   background: rgba(225, 29, 72, 0.25);
   color: #ffe4e6;
   border: 1px solid rgba(225, 29, 72, 0.4);
 }
+
 .card-durga .btn-primary-action {
   background: linear-gradient(135deg, #e11d48, #b91c1c);
   box-shadow: 0 6px 20px rgba(225, 29, 72, 0.4);
@@ -1384,18 +1491,22 @@ body {
 .card-holi {
   border-color: rgba(236, 72, 153, 0.3);
 }
+
 .card-holi:hover {
   border-color: #f472b6;
   box-shadow: 0 16px 40px -4px rgba(236, 72, 153, 0.35);
 }
+
 .card-holi .card-icon-emblem {
   background: linear-gradient(135deg, #ec4899, #8b5cf6, #10b981);
 }
+
 .card-holi .card-floating-badge {
   background: rgba(236, 72, 153, 0.25);
   color: #fce7f3;
   border: 1px solid rgba(236, 72, 153, 0.4);
 }
+
 .card-holi .btn-primary-action {
   background: linear-gradient(135deg, #ec4899, #8b5cf6);
   box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
@@ -1405,14 +1516,17 @@ body {
 .card-bhojpuri {
   border-color: rgba(249, 115, 22, 0.3);
 }
+
 .card-bhojpuri:hover {
   border-color: #f97316;
   box-shadow: 0 16px 40px -4px rgba(249, 115, 22, 0.35);
 }
+
 .card-bhojpuri .card-icon-emblem {
   background: linear-gradient(135deg, #f97316, #e11d48);
   box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45);
 }
+
 .card-bhojpuri .card-subtitle-en {
   color: #fb923c;
 }
@@ -1421,16 +1535,38 @@ body {
 .card-haryanvi {
   border-color: rgba(16, 185, 129, 0.3);
 }
+
 .card-haryanvi:hover {
   border-color: #10b981;
   box-shadow: 0 16px 40px -4px rgba(16, 185, 129, 0.35);
 }
+
 .card-haryanvi .card-icon-emblem {
   background: linear-gradient(135deg, #10b981, #06b6d4);
   box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
 }
+
 .card-haryanvi .card-subtitle-en {
   color: #34d399;
+}
+
+/* 8. Punjabi Songs Card */
+.card-punjabi {
+  border-color: rgba(234, 179, 8, 0.35);
+}
+
+.card-punjabi:hover {
+  border-color: #eab308;
+  box-shadow: 0 16px 40px -4px rgba(234, 179, 8, 0.4);
+}
+
+.card-punjabi .card-icon-emblem {
+  background: linear-gradient(135deg, #eab308, #ea580c);
+  box-shadow: 0 8px 24px rgba(234, 179, 8, 0.45);
+}
+
+.card-punjabi .card-subtitle-en {
+  color: #fbbf24;
 }
 
 /* =========================================================
@@ -1573,8 +1709,13 @@ body {
 }
 
 @keyframes rotateDisc {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .dock-info {
@@ -1802,9 +1943,11 @@ body {
   .hero-title {
     font-size: 2.4rem;
   }
+
   .category-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
+
   .footer-top {
     grid-template-columns: 1fr 1fr;
   }
@@ -1814,29 +1957,89 @@ body {
   .nav-links {
     display: none;
   }
+
   .hero-title {
     font-size: 2rem;
   }
+
   .hero-subtitle {
     font-size: 0.95rem;
   }
+
   .category-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
+
   .footer-top {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
+
   .category-filter-nav {
     border-radius: var(--radius-md);
     justify-content: flex-start;
     overflow-x: auto;
     padding: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+
+  .category-filter-nav::-webkit-scrollbar {
+    display: none;
+  }
+
   .mini-player-dock {
     width: calc(100% - 1.5rem);
     bottom: 0.75rem;
     padding: 0.6rem 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-text h1 {
+    font-size: 1.6rem;
+  }
+
+  .brand-x {
+    font-size: 2.35rem !important;
+  }
+
+  .time-widget,
+  .live-clock-widget,
+  .theme-toggle-btn,
+  .lang-toggle-btn {
+    padding: 0.38rem 0.65rem;
+    font-size: 0.8rem;
+    gap: 0.35rem;
+  }
+
+  .category-card,
+  .category-card-btn {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .card-btn-arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .card-title-group h3 {
+    font-size: 1.35rem;
+  }
+
+  .card-description {
+    font-size: 0.85rem;
+  }
+
+  .admin-modal-card {
+    padding: 1.5rem 1.15rem;
+    border-radius: var(--radius-md);
+  }
+
+  .admin-modal-title-group h3 {
+    font-size: 1.25rem;
   }
 }
 
@@ -1847,11 +2050,12 @@ body {
   display: flex;
   align-items: center;
   margin-left: auto;
-  z-index: 10;
+  z-index: 100;
 }
 
 .more-menu-wrapper {
   position: relative;
+  display: inline-block;
 }
 
 .btn-more-menu {
@@ -1866,7 +2070,14 @@ body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.25s ease;
+  -webkit-user-select: none;
   user-select: none;
+  outline: none;
+}
+
+.btn-more-menu svg,
+.btn-more-menu svg * {
+  pointer-events: none;
 }
 
 .btn-more-menu:hover {
@@ -1905,7 +2116,7 @@ body {
   display: none;
   flex-direction: column;
   gap: 0.25rem;
-  z-index: 200;
+  z-index: 99999;
   transform-origin: top right;
   animation: menuDropAnim 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -1921,6 +2132,7 @@ body {
     opacity: 0;
     transform: scale(0.92) translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
@@ -1983,41 +2195,6 @@ body {
   color: #ef4444;
 }
 
-/* User Profile Badge in Navbar */
-.user-profile-badge {
-  display: none;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem;
-  background: linear-gradient(135deg, rgba(255, 184, 0, 0.18), rgba(255, 87, 34, 0.18));
-  border: 1px solid rgba(255, 184, 0, 0.45);
-  border-radius: 999px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 700;
-  margin-right: 0.5rem;
-  transition: all 0.25s ease;
-  box-shadow: 0 0 14px rgba(255, 184, 0, 0.2);
-  user-select: none;
-}
-
-.user-profile-badge:hover {
-  transform: translateY(-1px) scale(1.03);
-  box-shadow: 0 0 20px rgba(255, 184, 0, 0.35);
-  border-color: #ffb800;
-}
-
-.user-avatar-circle {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ffb800, #ff5722);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-}
 
 /* Dropdown Profile Header */
 .dropdown-profile-header {
@@ -2070,7 +2247,7 @@ body {
 /* Light Mode Overrides for 3-Dot & Dropdown */
 [data-theme="light"] .btn-more-menu {
   background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.15);
   color: #0f172a;
 }
 
@@ -2080,9 +2257,9 @@ body {
 }
 
 [data-theme="light"] .more-dropdown-menu {
-  background: rgba(255, 255, 255, 0.96);
-  border-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .dropdown-item-btn {
@@ -2094,6 +2271,45 @@ body {
   color: #ea580c;
 }
 
+[data-theme="light"] .dropdown-divider {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .dropdown-item-btn.install-app-btn svg {
+  color: #0284c7;
+}
+
+[data-theme="light"] .dropdown-item-btn.install-app-btn:hover {
+  color: #0284c7;
+}
+
+[data-theme="light"] .dropdown-item-btn.admin-logout-btn {
+  color: #dc2626;
+}
+
+[data-theme="light"] .dropdown-item-btn.admin-logout-btn svg {
+  color: #ef4444;
+}
+
+[data-theme="light"] .dropdown-item-btn.admin-logout-btn:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+
+[data-theme="light"] .dropdown-profile-header {
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+[data-theme="light"] .dropdown-profile-name {
+  color: #1e293b;
+}
+
+[data-theme="light"] .dropdown-profile-role {
+  color: #b45309;
+}
+
 /* =========================================================
    ADMIN LOGIN MODAL
    ========================================================= */
@@ -2101,10 +2317,10 @@ body {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  z-index: 1000;
-  display: flex;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100000;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 1rem;
@@ -2114,8 +2330,9 @@ body {
 }
 
 .admin-modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .admin-modal-card {
@@ -2303,6 +2520,21 @@ body {
   color: #0f172a;
 }
 
+[data-theme="light"] .admin-modal-close {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
+  color: #64748b;
+}
+
+[data-theme="light"] .admin-modal-close:hover {
+  background: rgba(0, 0, 0, 0.12);
+  color: #0f172a;
+}
+
+[data-theme="light"] .admin-login-form label {
+  color: #475569;
+}
+
 [data-theme="light"] .admin-login-form input {
   background: #f8fafc;
   border-color: #cbd5e1;
@@ -2313,4 +2545,8 @@ body {
   background: #ffffff;
   border-color: #ea580c;
   box-shadow: 0 0 15px rgba(234, 88, 12, 0.2);
+}
+
+[data-theme="light"] .btn-toggle-pwd {
+  color: #64748b;
 }

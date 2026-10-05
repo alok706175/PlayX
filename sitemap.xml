@@ -282,6 +282,15 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/haryanvi-songs/haryanvi-songs.html" />
   </url>
   <url>
+    <loc>https://www.mahaparvchhathpuja.me/punjabi-songs/punjabi-songs.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://www.mahaparvchhathpuja.me/punjabi-songs/punjabi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="pa" href="https://www.mahaparvchhathpuja.me/punjabi-songs/punjabi-songs.html" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.mahaparvchhathpuja.me/punjabi-songs/punjabi-songs.html" />
+  </url>
+  <url>
     <loc>https://www.mahaparvchhathpuja.me/home.html</loc>
     <lastmod>2026-10-03</lastmod>
     <changefreq>daily</changefreq>

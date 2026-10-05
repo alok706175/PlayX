@@ -54,6 +54,10 @@
       haryanviSub: "Haryanvi Superhit Songs",
       haryanviDesc: "हरियाणवी सुपरहिट डीजे और फोक गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
       haryanviPills: ["⏳ जल्द आ रहा है", "डीजे हिट्स", "PlayX स्पेशल"],
+      punjabiTitle: "पंजाबी सुपरहिट गाने",
+      punjabiSub: "Punjabi Superhit Songs & Bhangra Hits",
+      punjabiDesc: "दिलजीत दोसांझ, सिद्धू मूसेवाला और गुरु रंधावा के सुपरहिट पंजाबी व भांगड़ा गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
+      punjabiPills: ["⏳ जल्द आ रहा है", "भांगड़ा बीट्स", "PlayX स्पेशल"],
 
       // Footer Translations
       footerBrandTagline: "A Largest Music Library Website.",
@@ -67,6 +71,7 @@
       footerLinkHindi: "हिंदी सुपरहिट बॉलीवुड",
       footerLinkBhojpuri: "भोजपुरी सुपरहिट गाने",
       footerLinkHaryanvi: "हरियाणवी सुपरहिट गाने",
+      footerLinkPunjabi: "पंजाबी सुपरहिट गाने",
       footerLinkMantra: "सूर्य गायत्री मंत्र",
 
       footerCol3Title: "सुविधाएं",
@@ -110,6 +115,10 @@
       haryanviSub: "Sapna Choudhary & DJ Bass Hits",
       haryanviDesc: "Haryanvi party hits and folk tunes. Original songs for this category are coming soon.",
       haryanviPills: ["⏳ Coming Soon", "Haryanvi Hits", "PlayX Special"],
+      punjabiTitle: "Punjabi Superhit Songs",
+      punjabiSub: "Diljit Dosanjh, Sidhu Moose Wala & Bhangra",
+      punjabiDesc: "Top Punjabi party anthems and Bhangra beats. Original songs for this category are coming soon.",
+      punjabiPills: ["⏳ Coming Soon", "Bhangra Beats", "PlayX Special"],
 
       // Footer Translations
       footerBrandTagline: "A Largest Music Library Website.",
@@ -123,6 +132,7 @@
       footerLinkHindi: "Superhit Hindi Bollywood",
       footerLinkBhojpuri: "Bhojpuri Superhit Songs",
       footerLinkHaryanvi: "Haryanvi Superhit DJ Songs",
+      footerLinkPunjabi: "Punjabi Superhit Songs",
       footerLinkMantra: "Surya Gayatri Mantra",
 
       footerCol3Title: "Features & Links",
@@ -339,6 +349,18 @@
       updatePills(cardHaryanvi, t.haryanviPills);
     }
 
+    // Card 8: Punjabi
+    const cardPunjabi = document.querySelector(".card-punjabi");
+    if (cardPunjabi) {
+      const h3 = cardPunjabi.querySelector(".card-title-group h3");
+      const sub = cardPunjabi.querySelector(".card-subtitle-en");
+      const desc = cardPunjabi.querySelector(".card-description");
+      if (h3) h3.textContent = t.punjabiTitle;
+      if (sub) sub.textContent = t.punjabiSub;
+      if (desc) desc.textContent = t.punjabiDesc;
+      updatePills(cardPunjabi, t.punjabiPills);
+    }
+
     // Footer Translations
     const setTxt = (id, text) => {
       const el = document.getElementById(id);
@@ -360,6 +382,7 @@
     setTxt("footerLinkHindi", t.footerLinkHindi);
     setTxt("footerLinkBhojpuri", t.footerLinkBhojpuri);
     setTxt("footerLinkHaryanvi", t.footerLinkHaryanvi);
+    setTxt("footerLinkPunjabi", t.footerLinkPunjabi);
     setTxt("footerLinkMantra", t.footerLinkMantra);
 
     setTxt("footerCol3Title", t.footerCol3Title);
