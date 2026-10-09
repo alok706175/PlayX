@@ -427,18 +427,17 @@
       };
     }
 
-    // Not downloaded locally: check network connectivity
-    const online = navigator.onLine;
+    // If not in IndexedDB, use direct stream URL
     const remoteUrl = song.src || song.file;
 
-    if (online && remoteUrl) {
+    if (remoteUrl) {
       return {
         isOffline: false,
         sourceType: "network-stream",
         src: remoteUrl,
         songRecord: null,
         canPlay: true,
-        message: "Streaming online"
+        message: "Streaming directly"
       };
     }
 

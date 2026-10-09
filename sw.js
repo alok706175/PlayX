@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v42";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v42";
+const CACHE_NAME = "chhath-pwa-v43";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v43";
 
 const STATIC_ASSETS = [
   "./",
@@ -114,25 +114,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
 
   // 1. Audio Streaming Requests (Online MP3s from Cloudinary / CDN / Local)
-  // Per Requirement 10: DO NOT automatically cache all streamed audio to avoid filling user storage!
-  // Offline audio is explicitly downloaded to IndexedDB by the user.
+  // Let the browser handle audio requests natively directly via network with 0 Service Worker proxy latency.
   if (
     url.pathname.endsWith(".mp3") ||
+    url.pathname.endsWith(".m4a") ||
     req.destination === "audio" ||
     (url.hostname.includes("res.cloudinary.com") && url.pathname.includes("/video/upload/"))
   ) {
-    event.respondWith(
-      fetch(req).catch(() => {
-        // If offline and somehow request wasn't resolved by IndexedDB blob URL
-        return caches.match(req).then((cached) => {
-          if (cached) return cached;
-          return new Response(null, {
-            status: 503,
-            statusText: "Audio unavailable offline. Please download track while online."
-          });
-        });
-      })
-    );
     return;
   }
 

@@ -589,6 +589,18 @@
     }
   }
 
+  function escapeHTML(text) {
+    if (!text) return "";
+    const map = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return text.toString().replace(/[&<>"']/g, (m) => map[m]);
+  }
+
   async function displaySongInfo(index) {
     if (!songs[index]) return;
     currentSong = index;
@@ -628,13 +640,19 @@
   async function playSong(index) {
     if (!songs[index]) return;
     currentSong = index;
-    await displaySongInfo(index);
+    try {
+      await displaySongInfo(index);
+    } catch (err) {
+      console.warn("displaySongInfo error:", err);
+    }
 
     if (offlineAudio) {
       const s = songs[index];
       let playback = { isOffline: false, canPlay: true, src: s.file };
       if (window.OfflineManager) {
-        playback = await window.OfflineManager.resolvePlaybackSource(s);
+        try {
+          playback = await window.OfflineManager.resolvePlaybackSource(s);
+        } catch (e) {}
       }
 
       if (!playback.canPlay) {
@@ -644,9 +662,9 @@
       }
 
       const fileSrc = playback.src;
-      if (offlineAudio.src !== fileSrc) {
+      const targetFullUrl = new URL(fileSrc, window.location.href).href;
+      if (offlineAudio.src !== targetFullUrl) {
         offlineAudio.src = fileSrc;
-        offlineAudio.load();
       }
 
       if (playback.isOffline) {
@@ -1297,7 +1315,7 @@
       // Card click listener
       card.addEventListener("click", (e) => {
         if (e.target.closest(".song-card-download-btn") || e.target.closest(".card-like-btn")) return;
-        if (s.originalIdx === currentSong) {
+        if (s.originalIdx === currentSong && isPlaying) {
           togglePlayback();
         } else {
           playSong(s.originalIdx);
