@@ -1,0 +1,8 @@
+# PlayX Git Ignore
+node_modules/
+*.bak
+*.tmp*
+.env
+auto added songs/.env
+.DS_Store
+Thumbs.db

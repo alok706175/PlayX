@@ -138,27 +138,16 @@
   }
 
   function toggleViewMode() {
-    if (songs.length === 0) return;
-    currentViewMode = currentViewMode === "vinyl" ? "video" : "vinyl";
+    currentViewMode = "vinyl";
     applyViewMode();
   }
 
   function applyViewMode() {
     if (!videoStage || !vinylDisc) return;
-    if (currentViewMode === "video") {
-      videoStage.style.display = "block";
-      vinylDisc.style.display = "none";
-      if (viewToggleBtn) {
-        viewToggleBtn.innerHTML = `<span>💿</span> <span>Vinyl View</span>`;
-        viewToggleBtn.title = "Switch to Vinyl Record View";
-      }
-    } else {
-      videoStage.style.display = "none";
-      vinylDisc.style.display = "flex";
-      if (viewToggleBtn) {
-        viewToggleBtn.innerHTML = `<span>🎬</span> <span>Video View</span>`;
-        viewToggleBtn.title = "Switch to YouTube Video View";
-      }
+    videoStage.style.display = "block"; // Keep active in DOM for YouTube audio
+    vinylDisc.style.display = "flex";
+    if (viewToggleBtn) {
+      viewToggleBtn.style.display = "none";
     }
   }
 
@@ -195,7 +184,7 @@
   function initYouTubePlayer() {
     if (ytPlayer || !window.YT || !window.YT.Player || songs.length === 0) return;
     const initialSong = songs[currentIndex];
-    const initialId = (initialSong && initialSong.youtubeId) || "";
+    const initialId = (initialSong && (initialSong.youtubeId || initialSong.videoId)) || "";
     if (!initialId) return;
 
     const targetEl = document.getElementById("ytFestivalPlayer");
@@ -333,7 +322,8 @@
     if (trackTag) trackTag.textContent = song.tag || song.category || festivalTitle;
 
     // Update cover artwork
-    const coverUrl = song.youtubeId ? `https://i.ytimg.com/vi/${song.youtubeId}/hqdefault.jpg` : "";
+    const songVid = song.youtubeId || song.videoId;
+    const coverUrl = songVid ? `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg` : (song.thumbnail || "");
     if (trackCoverImg) {
       trackCoverImg.src = coverUrl;
       trackCoverImg.alt = song.name;
@@ -356,13 +346,13 @@
 
     if (ytPlayer && ytPlayer.loadVideoById) {
       if (autoPlay) {
-        ytPlayer.loadVideoById(song.youtubeId);
+        ytPlayer.loadVideoById(songVid);
         isPlaying = true;
         updatePlayBtn();
         setVinylSpinning(true);
         startProgressTimer();
       } else {
-        ytPlayer.cueVideoById(song.youtubeId);
+        ytPlayer.cueVideoById(songVid);
         isPlaying = false;
         updatePlayBtn();
         setVinylSpinning(false);
@@ -547,7 +537,8 @@
       row.className = `song-item-row ${idx === currentIndex ? "active" : ""}`;
 
       const isFav = likedSongs.has(song.id);
-      const thumbUrl = song.youtubeId ? `https://i.ytimg.com/vi/${song.youtubeId}/default.jpg` : "";
+      const rowVid = song.youtubeId || song.videoId;
+      const thumbUrl = rowVid ? `https://i.ytimg.com/vi/${rowVid}/default.jpg` : (song.thumbnail || "");
 
       row.innerHTML = `
         <span class="song-num">${idx + 1 < 10 ? "0" : ""}${idx + 1}</span>

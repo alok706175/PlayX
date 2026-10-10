@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Marad Na Hi Matha Ke Darad",
+    "nameEn": "Marad Na Hi Matha Ke Darad",
+    "singer": "Shivani Singh",
+    "singerEn": "Shivani Singh",
+    "category": "Bhojpuri Songs",
+    "tag": "Bhojpuri Hits",
+    "videoId": "gnaruIk5T-4",
+    "youtubeId": "gnaruIk5T-4",
+    "embedUrl": "https://www.youtube.com/embed/gnaruIk5T-4",
+    "originalUrl": "https://www.youtube.com/embed/gnaruIk5T-4?si=Ljk0ZYShV7gKyqzF",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/gnaruIk5T-4/hqdefault.jpg",
+    "addedAt": "2026-10-10T17:23:33.410Z",
+    "status": "approved",
+    "source": "youtube"
+  },
+  {
+    "id": 2,
+    "name": "Kamar Mein Dagi",
+    "nameEn": "Kamar Mein Dagi",
+    "singer": "Khesari Lal Yadav & Shilpi Raj",
+    "singerEn": "Khesari Lal Yadav & Shilpi Raj",
+    "category": "Bhojpuri Songs",
+    "tag": "देसी हिट्स",
+    "videoId": "JUhcNNwha7w",
+    "youtubeId": "JUhcNNwha7w",
+    "embedUrl": "https://www.youtube.com/embed/JUhcNNwha7w",
+    "originalUrl": "https://www.youtube.com/watch?v=JUhcNNwha7w",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/JUhcNNwha7w/hqdefault.jpg",
+    "addedAt": "2026-10-10T17:28:02.840Z",
+    "status": "approved",
+    "source": "youtube"
+  }
+]

@@ -149,18 +149,18 @@ body {
   text-align: center;
 }
 
-/* Video Stage & View Switcher */
+/* Video Stage & View Switcher - Pure Audio-Only Mode (No Video Displayed) */
 .video-stage {
-  width: 100%;
-  max-width: 360px;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  margin-bottom: 1.5rem;
-  background: #000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px var(--accent-glow);
-  border: 1px solid var(--border-subtle);
-  display: none;
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0.001 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+  display: block !important;
 }
 
 .video-stage iframe {
@@ -170,24 +170,7 @@ body {
 }
 
 .btn-view-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border-subtle);
-  color: var(--text-main);
-  padding: 0.35rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 1.25rem;
-  transition: all 0.2s;
-}
-
-.btn-view-toggle:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: var(--accent);
+  display: none !important;
 }
 
 /* Vinyl Record Animation */

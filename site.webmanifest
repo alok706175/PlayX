@@ -38,5 +38,14 @@
       "sizes": "any",
       "type": "image/svg+xml"
     }
-  ]
+  ],
+  "share_target": {
+    "action": "./home.html",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  }
 }

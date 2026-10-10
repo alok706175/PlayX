@@ -26,8 +26,8 @@
       navHindiSongTitle: "हिंदी गीत संग्रह पर जाएं",
       navHindiSongAria: "हिंदी गीत संग्रह पर जाएं",
       modeOfflineText: "ऑफलाइन",
-      modeOfflineTitle: "ऑफलाइन मोड (ऑनलाइन वीडियो मोड चालू करने के लिए क्लिक करें)",
-      modeOfflineAria: "ऑनलाइन वीडियो मोड पर जाएं",
+      modeOfflineTitle: "ऑफलाइन मोड (ऑनलाइन संगीत मोड चालू करने के लिए क्लिक करें)",
+      modeOfflineAria: "ऑनलाइन संगीत मोड पर जाएं",
       modeOnlineText: "ऑनलाइन",
       modeOnlineTitle: "ऑनलाइन मोड (ऑफलाइन ऑडियो मोड पर जाने के लिए क्लिक करें)",
       modeOnlineAria: "ऑफलाइन ऑडियो मोड पर जाएं",
@@ -43,7 +43,7 @@
       pillText4: "उषा अर्घ्य",
       loadingSong: "Loading Chhath Geet...",
       playlistTitleOffline: "छठ गीत संग्रह (ऑफलाइन)",
-      playlistTitleOnline: "छठ वीडियो संग्रह (ऑनलाइन)",
+      playlistTitleOnline: "छठ संगीत संग्रह (ऑनलाइन)",
       playlistTitle: "छठ गीत संग्रह",
       playlistSubtitle: "पसंदीदा गीत चुनें और सुनें",
       playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
@@ -102,7 +102,7 @@
       copyMantraTitle: "सूर्य गायत्री मंत्र कॉपी करें",
       shareMantraBtnText: "व्हाट्सएप पर शेयर करें",
       shareMantraTitle: "सूर्य गायत्री मंत्र व्हाट्सएप पर शेयर करें",
-      toastOnline: "🌐 ऑनलाइन वीडियो मोड चालू (YouTube Background)",
+      toastOnline: "🌐 ऑनलाइन संगीत मोड चालू (YouTube Audio)",
       toastOffline: "📴 ऑफ़लाइन ऑडियो मोड चालू (MP3 Music)",
       toastLangSwitched: "भाषा बदलकर 'हिन्दी' कर दी गई है",
       toastMantraCopied: "✅ सूर्य गायत्री मंत्र कॉपी हो गया!",
@@ -141,8 +141,8 @@
       navHindiSongTitle: "Go to Hindi Songs",
       navHindiSongAria: "Go to Hindi Songs",
       modeOfflineText: "Offline",
-      modeOfflineTitle: "Offline Mode (Click to switch to Online Video Mode)",
-      modeOfflineAria: "Switch to Online Video Mode",
+      modeOfflineTitle: "Offline Mode (Click to switch to Online Audio Mode)",
+      modeOfflineAria: "Switch to Online Audio Mode",
       modeOnlineText: "Online",
       modeOnlineTitle: "Online Mode (Click to switch to Offline Audio Mode)",
       modeOnlineAria: "Switch to Offline Audio Mode",
@@ -158,12 +158,12 @@
       pillText4: "Usha Arghya",
       loadingSong: "Loading Chhath Songs...",
       playlistTitleOffline: "Offline Chhath Songs",
-      playlistTitleOnline: "Online Live Videos",
+      playlistTitleOnline: "Online Chhath Songs",
       playlistTitle: "Chhath Songs Collection",
       playlistSubtitle: "Select & listen to devotional songs",
       playlistSearchPlaceholder: "Search song or singer name...",
       playlistSearchPlaceholderOffline: "Search song or singer name...",
-      playlistSearchPlaceholderOnline: "Search video or singer name...",
+      playlistSearchPlaceholderOnline: "Search song or singer name...",
       noSongsFound: "No songs found",
       prevSongTitle: "Previous Track",
       playBtnTitle: "Play / Pause",
@@ -217,7 +217,7 @@
       copyMantraTitle: "Copy Surya Gayatri Mantra",
       shareMantraBtnText: "Share on WhatsApp",
       shareMantraTitle: "Share Surya Gayatri Mantra on WhatsApp",
-      toastOnline: "🌐 Online Video Mode Active (YouTube Background)",
+      toastOnline: "🌐 Online Audio Mode Active (YouTube Audio)",
       toastOffline: "📴 Offline Audio Mode Active (MP3 Music)",
       toastLangSwitched: "Language switched to English",
       toastMantraCopied: "✅ Surya Gayatri Mantra copied!",
@@ -1104,7 +1104,15 @@
           playback = await window.OfflineManager.resolvePlaybackSource(song);
         }
 
-        if (!playback.canPlay) {
+        if (!playback.canPlay || !playback.src) {
+          // If song has YouTube video/embed link, play audio through embed player seamlessly!
+          if (song.videoId || song.youtubeId) {
+            isOnlineMode = true;
+            updateModeButtonUI();
+            playOnlineSong(validIndex);
+            return;
+          }
+
           setPlayerState("paused");
           const msg = i18n[currentLang] && i18n[currentLang].offlinePlaybackWarning
             ? i18n[currentLang].offlinePlaybackWarning
@@ -1114,10 +1122,6 @@
         }
 
         const fileSrc = playback.src;
-        if (!fileSrc) {
-          handlePlaybackError({ message: "Audio URL is missing for this track." });
-          return;
-        }
 
         if (playback.isOffline) {
           showToast("💾 " + (i18n[currentLang].offlineSongPlaying || "Playing offline local copy"));

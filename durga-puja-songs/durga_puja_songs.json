@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Adahul Ke Phool",
+    "nameEn": "Adahul Ke Phool",
+    "singer": "Pawan SIngh & Shivani Singh",
+    "singerEn": "Pawan SIngh & Shivani Singh",
+    "category": "Durga Puja Songs",
+    "tag": "Bhojpuri Navratri Song",
+    "videoId": "VVfG5WTB4hk",
+    "youtubeId": "VVfG5WTB4hk",
+    "embedUrl": "https://www.youtube.com/embed/VVfG5WTB4hk",
+    "originalUrl": "https://www.youtube.com/watch?v=VVfG5WTB4hk",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/VVfG5WTB4hk/hqdefault.jpg",
+    "addedAt": "2026-10-10T17:31:23.906Z",
+    "status": "approved",
+    "source": "youtube"
+  }
+]

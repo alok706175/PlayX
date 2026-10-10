@@ -1,0 +1,19 @@
+{
+  "name": "playx-auto-added-songs",
+  "version": "1.0.0",
+  "description": "Automatic YouTube & YouTube Music Song Sharing, Embed Conversion & JSON Playlist Integration for PlayX",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test-suite.js"
+  },
+  "keywords": [
+    "playx",
+    "youtube-embed",
+    "youtube-music",
+    "playlist-integration",
+    "pwa-share-target"
+  ],
+  "author": "PlayX Team",
+  "license": "ISC"
+}

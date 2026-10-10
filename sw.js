@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v43";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v43";
+const CACHE_NAME = "chhath-pwa-v44";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v44";
 
 const STATIC_ASSETS = [
   "./",
@@ -72,7 +72,11 @@ const STATIC_ASSETS = [
   "./punjabi-songs/punjabi-songs.html",
   "./punjabi-songs/festival-player.css",
   "./punjabi-songs/festival-player.js",
-  "./punjabi-songs/punjabi_songs.json"
+  "./punjabi-songs/punjabi_songs.json",
+  "./auto added songs/admin-song-importer.css",
+  "./auto added songs/url-parser.js",
+  "./auto added songs/category-detector.js",
+  "./auto added songs/admin-song-importer.js"
 ];
 
 // Install Event - Pre-cache core app shell assets

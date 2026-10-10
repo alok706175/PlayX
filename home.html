@@ -10,6 +10,7 @@
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
   <link rel="stylesheet" href="home.css?v=42">
   <link rel="stylesheet" href="dark-light-mode.css">
+  <link rel="stylesheet" href="auto added songs/admin-song-importer.css">
 
   <style>
     /* Critical Navbar 3-Dot Dropdown & Admin Modal Styles */
@@ -660,6 +661,18 @@
                 <span>Logout</span>
               </button>
 
+              <!-- Auto Song Importer Button -->
+              <button class="dropdown-item-btn admin-importer-btn" id="adminAutoImporterBtn" type="button"
+                onclick="window.handleOpenSongImporter && window.handleOpenSongImporter(event)" role="menuitem">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                <span>Auto Song Importer</span>
+              </button>
+
               <div class="dropdown-divider" id="installAppDivider"></div>
 
               <!-- 3. Install App Button (Visible only when app is not installed) -->
@@ -1147,7 +1160,32 @@
         }
       });
     })();
+
+    // Auto Song Importer Invocation
+    window.handleOpenSongImporter = function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      if (window.closeAdminMenu) window.closeAdminMenu();
+      var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
+      if (!isLoggedIn) {
+        var proceed = confirm("🔒 एडमिन सुरक्षा: गाने जोड़ने के लिए एडमिन लॉगिन आवश्यक है।\n(Admin login required to approve imports).\n\nक्या आप अभी लॉगिन करना चाहते हैं?");
+        if (proceed && window.openAdminModal) {
+          window.openAdminModal();
+        }
+        return;
+      }
+      if (window.PlayXSongImporter) {
+        window.PlayXSongImporter.openModal();
+      }
+    };
   </script>
+
+  <!-- PlayX Auto Added Songs Importer Engine -->
+  <script src="auto added songs/url-parser.js"></script>
+  <script src="auto added songs/category-detector.js"></script>
+  <script src="auto added songs/admin-song-importer.js"></script>
 </body>
 
 </html>

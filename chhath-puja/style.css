@@ -73,30 +73,30 @@ html, body {
   }
 }
 
-/* Live Background YouTube Video */
+/* Live Background YouTube Audio Bridge - Audio Only (No Video Displayed) */
 .bg-video-container {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100dvh;
-  z-index: 0;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-  background: #000000;
+  position: fixed !important;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0.001 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+  visibility: hidden !important;
+  background: transparent !important;
 }
 
 body.live-video-active .bg-video-container {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: none;
+  opacity: 0.001 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 body.live-video-active .bg-layer {
-  opacity: 0 !important;
-  visibility: hidden !important;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 body.live-video-active .bg-overlay {
