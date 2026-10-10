@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Shiv Tandav Stotram",
+    "nameEn": "Shiv Tandav Stotram",
+    "singer": "Shankar Mahadevan",
+    "singerEn": "Shankar Mahadevan",
+    "category": "Saawan Songs",
+    "tag": "बोल बम भजन",
+    "videoId": "e9KvdP6D3_U",
+    "youtubeId": "e9KvdP6D3_U",
+    "embedUrl": "https://www.youtube.com/embed/e9KvdP6D3_U",
+    "originalUrl": "https://www.youtube.com/watch?v=e9KvdP6D3_U",
+    "duration": "09:12",
+    "thumbnail": "https://i.ytimg.com/vi/e9KvdP6D3_U/hqdefault.jpg",
+    "addedAt": "2026-10-10T19:10:59.612Z",
+    "status": "approved",
+    "source": "youtube"
+  }
+]
