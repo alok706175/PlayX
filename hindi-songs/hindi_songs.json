@@ -715,5 +715,22 @@
     "addedAt": "2026-10-10T19:21:39.560Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 72,
+    "name": "Zaalima",
+    "nameEn": "Zaalima",
+    "singer": "Arijit Singh & Harshdeep Kaur",
+    "singerEn": "Arijit Singh & Harshdeep Kaur",
+    "category": "Romantic",
+    "duration": "03:45",
+    "videoId": "ZeUitP778CM",
+    "youtubeId": "ZeUitP778CM",
+    "embedUrl": "https://www.youtube.com/embed/ZeUitP778CM",
+    "originalUrl": "https://youtu.be/ZeUitP778CM?si=vcx4vFj33iHAzN1h",
+    "thumbnail": "https://i.ytimg.com/vi/ZeUitP778CM/hqdefault.jpg",
+    "addedAt": "2026-10-10T19:50:48.896Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
