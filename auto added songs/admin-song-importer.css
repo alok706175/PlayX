@@ -534,3 +534,85 @@
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 184, 0, 0.5);
 }
+
+/* GitHub Auto-Sync Bar & Settings Drawer */
+.importer-sync-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.85rem;
+  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--importer-border);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  color: var(--importer-text-muted);
+}
+
+[data-theme="light"] .importer-sync-bar {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.importer-mini-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--importer-border);
+  color: var(--importer-text-main);
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.importer-mini-btn:hover {
+  background: rgba(255, 184, 0, 0.2);
+  border-color: var(--importer-accent);
+}
+
+.importer-mini-btn.primary {
+  background: #10b981;
+  color: #fff;
+  border-color: #10b981;
+}
+
+.importer-mini-btn.primary:hover {
+  background: #059669;
+}
+
+.importer-mini-btn.danger {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.importer-mini-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.4);
+}
+
+.importer-gh-drawer {
+  background: rgba(20, 13, 36, 0.95);
+  border: 1px dashed var(--importer-border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}
+
+[data-theme="light"] .importer-gh-drawer {
+  background: #f8fafc;
+}
+
+.importer-mini-input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--importer-border);
+  border-radius: 6px;
+  color: var(--importer-text-main);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  font-family: monospace;
+}
+
+[data-theme="light"] .importer-mini-input {
+  background: #fff;
+}
+

@@ -161,12 +161,14 @@ const server = http.createServer(async (req, res) => {
   const pathname = parsedUrl.pathname;
   const method = req.method.toUpperCase();
 
+  console.log(`📡 [${new Date().toLocaleTimeString()}] ${method} ${pathname}`);
+
   // Handle CORS preflight OPTIONS request
   if (method === 'OPTIONS') {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-secret'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-secret, *'
     });
     res.end();
     return;

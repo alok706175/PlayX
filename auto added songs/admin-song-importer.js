@@ -12,13 +12,22 @@
   // Backend API URL (defaults to current origin or port 3000 if running on standard static port)
   const API_BASE = (function () {
     const origin = window.location.origin;
-    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
-      // If already on port 3000, use relative paths
-      if (window.location.port === '3000') return '';
-      // Otherwise point to backend on port 3000
+    // If already running directly on port 3000, use relative paths
+    if (window.location.port === '3000') return '';
+    // If on localhost or 127.0.0.1 on another port (e.g. 5500)
+    if (origin && (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1'))) {
       return 'http://localhost:3000';
     }
-    return '';
+    // If opened directly from file:/// or origin is null
+    if (!origin || origin === 'null' || window.location.protocol === 'file:') {
+      return 'http://localhost:3000';
+    }
+    // If custom backend configured in localStorage
+    const custom = localStorage.getItem('playx_backend_url');
+    if (custom) return custom;
+
+    // Default fallback to local server
+    return 'http://localhost:3000';
   })();
 
   let modalEl = null;
@@ -68,6 +77,27 @@
           <!-- Notification / Share Banner -->
           <div id="importerBanner" style="display: none;"></div>
 
+          <!-- GitHub Auto-Sync Status Bar -->
+          <div class="importer-sync-bar" id="importerSyncBar">
+            <span id="importerSyncIndicator">🔄 Checking Sync Engine...</span>
+            <button type="button" id="importerGhTokenBtn" class="importer-mini-btn" title="GitHub Direct Push Settings">⚙️ GitHub Token</button>
+          </div>
+
+          <!-- Collapsible GitHub Token Drawer -->
+          <div id="importerGhTokenDrawer" class="importer-gh-drawer" style="display: none;">
+            <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--importer-text-main);">
+              🐙 Direct GitHub Sync (Cloud & Offline Fallback)
+            </div>
+            <div style="font-size: 0.78rem; color: var(--importer-text-muted); margin-bottom: 0.6rem;">
+              यदि बैकएंड सर्वर बंद हो, तो आप अपना पर्सनल एक्सेस टोकन (PAT with repo access) डालकर सीधे ब्राउज़र से GitHub (alok706175/PlayX:main) पर कोड पुश कर सकते हैं।
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+              <input type="password" id="importerGhTokenInput" placeholder="ghp_xxxxxxxxxxxx" class="importer-mini-input" style="flex: 1; min-width: 200px;">
+              <button type="button" id="importerSaveTokenBtn" class="importer-mini-btn primary">Save Token</button>
+              <button type="button" id="importerClearTokenBtn" class="importer-mini-btn danger">Clear</button>
+            </div>
+          </div>
+
           <!-- URL Input Section -->
           <div class="importer-input-wrapper">
             <label for="importerUrlInput">
@@ -108,6 +138,41 @@
       if (e.target === overlay) closeModal();
     });
 
+    // GitHub Token Drawer Toggle & Actions
+    const tokenBtn = document.getElementById('importerGhTokenBtn');
+    const drawer = document.getElementById('importerGhTokenDrawer');
+    if (tokenBtn && drawer) {
+      tokenBtn.addEventListener('click', () => {
+        drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+      });
+    }
+
+    const saveTokenBtn = document.getElementById('importerSaveTokenBtn');
+    if (saveTokenBtn) {
+      saveTokenBtn.addEventListener('click', () => {
+        const val = (document.getElementById('importerGhTokenInput')?.value || '').trim();
+        if (val) {
+          localStorage.setItem('playx_github_token', val);
+          showBanner('info', '✅ GitHub Token सुरक्षित कर लिया गया है (Saved successfully)!');
+          if (drawer) drawer.style.display = 'none';
+          updateSyncBar();
+        } else {
+          showBanner('warning', 'कृपया वैध GitHub टोकन दर्ज करें (Enter a valid token).');
+        }
+      });
+    }
+
+    const clearTokenBtn = document.getElementById('importerClearTokenBtn');
+    if (clearTokenBtn) {
+      clearTokenBtn.addEventListener('click', () => {
+        localStorage.removeItem('playx_github_token');
+        const tokenInput = document.getElementById('importerGhTokenInput');
+        if (tokenInput) tokenInput.value = '';
+        showBanner('info', 'GitHub Token हटा दिया गया (Token cleared).');
+        updateSyncBar();
+      });
+    }
+
     document.getElementById('importerPasteBtn').addEventListener('click', async () => {
       try {
         if (navigator.clipboard && navigator.clipboard.readText) {
@@ -141,6 +206,37 @@
         if (val) analyzeUrl(val);
       }
     });
+  }
+
+  /**
+   * Updates the sync status bar indicator
+   */
+  async function updateSyncBar() {
+    const indicator = document.getElementById('importerSyncIndicator');
+    const tokenInput = document.getElementById('importerGhTokenInput');
+    const savedToken = localStorage.getItem('playx_github_token') || '';
+    if (tokenInput && savedToken) {
+      tokenInput.value = savedToken;
+    }
+
+    if (!indicator) return;
+
+    // Check if local backend is active
+    try {
+      const res = await fetch(`${API_BASE}/api/categories`, { method: 'GET' });
+      if (res.ok) {
+        indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Local Server Active (Auto Git Push origin/main Ready)</span>`;
+        return;
+      }
+    } catch (e) {
+      // Backend not reached
+    }
+
+    if (savedToken) {
+      indicator.innerHTML = `<span style="color: #38bdf8; font-weight: 600;">🐙 GitHub Direct API Push Active (origin/main)</span>`;
+    } else {
+      indicator.innerHTML = `<span style="color: #f59e0b; font-weight: 600;">⚠️ Server Offline & No GitHub Token (Click ⚙️ to configure)</span>`;
+    }
   }
 
   function showBanner(type, message) {
@@ -434,7 +530,9 @@
 
     try {
       let savedData = null;
+      let backendError = null;
 
+      // 1. Try Local Backend Server (which commits & pushes automatically via Git CLI)
       try {
         const res = await fetch(`${API_BASE}/api/import-song`, {
           method: 'POST',
@@ -451,42 +549,37 @@
           const errJson = await res.json().catch(() => ({}));
           throw new Error(errJson.error || `Server responded with status ${res.status}`);
         }
-      } catch (backendErr) {
-        console.warn('Backend save not available, offering JSON download/copy:', backendErr.message);
+      } catch (err) {
+        backendError = err;
+        console.warn('Local backend import failed or unreachable:', err.message);
+      }
 
-        // Fallback for static GitHub Pages / offline hosting
-        const catObj = CATEGORY_OPTIONS.find(c => c.id === category);
-        const record = {
-          id: Date.now(),
-          name: title,
-          nameEn: title,
-          singer: singer,
-          singerEn: singer,
-          category: catObj ? catObj.name : category,
-          tag: tag,
-          videoId: payload.songData.videoId,
-          youtubeId: payload.songData.videoId,
-          embedUrl: payload.songData.embedUrl,
-          originalUrl: payload.songData.originalUrl,
-          duration: duration,
-          thumbnail: payload.songData.thumbnail,
-          addedAt: new Date().toISOString(),
-          status: 'approved'
-        };
-
-        savedData = {
-          success: true,
-          isClientFallback: true,
-          song: record,
-          targetFile: catObj?.file || 'category.json',
-          categoryName: catObj?.name || category,
-          pageUrl: catObj?.page || 'home.html'
-        };
+      // 2. If Backend was not reached, attempt Direct GitHub REST API Commit if Token exists
+      if (!savedData) {
+        const ghToken = localStorage.getItem('playx_github_token');
+        if (ghToken) {
+          try {
+            if (approveBtn) {
+              approveBtn.innerHTML = `<div class="spinner"></div> <span>Pushing directly to GitHub...</span>`;
+            }
+            savedData = await saveSongDirectlyToGitHub(category, payload.songData, ghToken);
+          } catch (ghErr) {
+            throw new Error(`GitHub Direct Push Error: ${ghErr.message}`);
+          }
+        } else {
+          // Both failed: NEVER silently fake success!
+          throw new Error(
+            `बैकएंड सर्वर से कनेक्ट नहीं हो सका (${backendError ? backendError.message : 'Server unreachable'}).\n\n` +
+            `ऑटोमैटिक GitHub अपडेट के लिए:\n` +
+            `1. सुनिश्चित करें कि बैकएंड सर्वर चालू है: node "auto added songs/server.js"\n` +
+            `2. या '⚙️ GitHub Token' बटन पर क्लिक करके अपना GitHub Token दर्ज करें।`
+          );
+        }
       }
 
       renderSuccess(savedData);
     } catch (err) {
-      alert(`गाने को सुरक्षित करने में त्रुटि (Error saving song): ${err.message}`);
+      alert(`गाने को सुरक्षित करने में त्रुटि (Error saving song):\n${err.message}`);
       if (approveBtn) {
         approveBtn.disabled = false;
         approveBtn.innerHTML = `<span>Approve & Add to Playlist</span>`;
@@ -494,6 +587,122 @@
     } finally {
       isSubmitting = false;
     }
+  }
+
+  /**
+   * Commits new song directly to GitHub repository via GitHub REST API
+   * Used when running without local Node server or on static hosting
+   */
+  async function saveSongDirectlyToGitHub(categoryKey, songData, githubToken) {
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === categoryKey);
+    if (!catObj) throw new Error(`Invalid category: ${categoryKey}`);
+
+    const repo = 'alok706175/PlayX';
+    const branch = 'main';
+    const filePath = catObj.file;
+    const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`;
+
+    // 1. Fetch current file content and sha
+    const getRes = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${githubToken}`,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (!getRes.ok) {
+      if (getRes.status === 401 || getRes.status === 403) {
+        throw new Error('अमान्य GitHub Token! कृपया वैध टोकन (PAT with repo scope) दर्ज करें।');
+      }
+      throw new Error(`GitHub file fetch failed (${getRes.status})`);
+    }
+
+    const fileMeta = await getRes.json();
+    let currentSongs = [];
+    try {
+      // UTF-8 safe base64 decode
+      const decodedStr = decodeURIComponent(escape(atob(fileMeta.content.replace(/\s/g, ''))));
+      currentSongs = JSON.parse(decodedStr);
+      if (!Array.isArray(currentSongs)) currentSongs = [];
+    } catch (parseErr) {
+      currentSongs = [];
+    }
+
+    // 2. Format record
+    let maxId = 0;
+    currentSongs.forEach(s => {
+      const nid = parseInt(s.id, 10);
+      if (!isNaN(nid) && nid > maxId) maxId = nid;
+    });
+
+    const nowIso = new Date().toISOString();
+    const newRecord = {
+      id: maxId + 1,
+      name: songData.title || songData.cleanTitle || 'Untitled Song',
+      nameEn: songData.titleEn || songData.title || 'Untitled Song',
+      singer: songData.singer || 'Artist',
+      singerEn: songData.singerEn || songData.singer || 'Artist',
+      category: categoryKey === 'hindi' ? (songData.subCategory || 'Romantic') : catObj.name,
+      tag: songData.tag || 'New Song',
+      videoId: songData.videoId,
+      youtubeId: songData.videoId,
+      embedUrl: songData.embedUrl || `https://www.youtube.com/embed/${songData.videoId}`,
+      originalUrl: songData.originalUrl || `https://www.youtube.com/watch?v=${songData.videoId}`,
+      duration: songData.duration || '03:45',
+      thumbnail: songData.thumbnail || `https://i.ytimg.com/vi/${songData.videoId}/hqdefault.jpg`,
+      addedAt: nowIso,
+      status: 'approved',
+      source: 'youtube'
+    };
+
+    currentSongs.push(newRecord);
+
+    // 3. UTF-8 safe base64 encode
+    const updatedJsonStr = JSON.stringify(currentSongs, null, 2);
+    const encodedContent = btoa(unescape(encodeURIComponent(updatedJsonStr)));
+    const commitMsg = `Add '${newRecord.name.replace(/['"]/g, '')}' to ${catObj.name} playlist [PlayX Auto-Import]`;
+
+    // 4. PUT commit to GitHub
+    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${githubToken}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify({
+        message: commitMsg,
+        content: encodedContent,
+        sha: fileMeta.sha,
+        branch: branch
+      })
+    });
+
+    if (!putRes.ok) {
+      const putErr = await putRes.json().catch(() => ({}));
+      throw new Error(`GitHub Commit Error (${putRes.status}): ${putErr.message || 'Unknown error'}`);
+    }
+
+    const putData = await putRes.json();
+
+    return {
+      success: true,
+      song: newRecord,
+      targetFile: catObj.file,
+      categoryName: catObj.name,
+      pageUrl: catObj.page,
+      totalSongs: currentSongs.length,
+      githubSync: {
+        success: true,
+        committed: true,
+        method: 'github-api-browser',
+        repo: repo,
+        branch: branch,
+        commitMessage: commitMsg,
+        url: putData.commit?.html_url,
+        message: 'Code and playlist committed directly to GitHub repository (origin/main) via GitHub API!'
+      }
+    };
   }
 
   /**
@@ -558,6 +767,8 @@
     if (modalEl) {
       modalEl.classList.add('active');
       document.body.style.overflow = 'hidden';
+
+      updateSyncBar();
 
       const input = document.getElementById('importerUrlInput');
       if (input) {
