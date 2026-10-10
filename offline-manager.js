@@ -427,7 +427,7 @@
       };
     }
 
-    // If not in IndexedDB, use direct stream URL
+    // If not in IndexedDB, check for direct audio stream or YouTube embed
     const remoteUrl = song.src || song.file;
 
     if (remoteUrl) {
@@ -438,6 +438,18 @@
         songRecord: null,
         canPlay: true,
         message: "Streaming directly"
+      };
+    }
+
+    if (song.videoId || song.youtubeId || song.embedUrl) {
+      return {
+        isOffline: false,
+        sourceType: "youtube-embed",
+        src: song.embedUrl || `https://www.youtube.com/embed/${song.videoId || song.youtubeId}`,
+        songRecord: null,
+        canPlay: true,
+        isYouTube: true,
+        message: "Streaming YouTube audio stream"
       };
     }
 
