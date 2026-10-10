@@ -1,0 +1,18 @@
+{
+  "name": "playx",
+  "version": "1.0.0",
+  "description": "PlayX Music Portal with YouTube Auto Song Importer",
+  "main": "auto added songs/server.js",
+  "scripts": {
+    "start": "node \"auto added songs/server.js\"",
+    "test": "node \"auto added songs/test-suite.js\""
+  },
+  "keywords": [
+    "playx",
+    "music-player",
+    "youtube-embed",
+    "auto-importer"
+  ],
+  "author": "PlayX Team",
+  "license": "ISC"
+}
