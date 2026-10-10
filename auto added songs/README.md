@@ -185,15 +185,17 @@ GITHUB_BRANCH=main
 
 ---
 
-## 9. GitHub-Backed Persistent Storage Workflow
+## 9. Automatic GitHub Code & Playlist Auto-Update Workflow
 
-If the website is hosted on a static host (such as GitHub Pages):
-1. Create a GitHub Personal Access Token at `https://github.com/settings/tokens` with `repo` scope.
-2. Add `GITHUB_TOKEN=ghp_...` in `auto added songs/.env`.
-3. Whenever an administrator approves a song:
-   - The server writes locally.
-   - The server calls the GitHub Contents API (`PUT /repos/alok706175/PlayX/contents/<file_path>`).
-   - The file is committed directly to the `main` branch, triggering GitHub Pages automatic re-deployment!
+Whenever any new song is approved and added, the backend automatically updates your GitHub repository (`alok706175/PlayX` branch `main`):
+
+1. **Automatic Local Git CLI Push (Default & Zero-Config)**:
+   - When running on your local machine / server where `git` is installed, the server automatically stages the updated playlist JSON file (`git add <file>`), creates a clear commit message, and executes `git push origin main`.
+   - Your GitHub repository and live website immediately receive the new code and song with zero manual commands needed.
+
+2. **GitHub REST API Push (Cloud / Fallback)**:
+   - If running headless without local Git credentials, simply supply `GITHUB_TOKEN` in `.env`.
+   - The server commits directly via GitHub Contents API (`PUT /repos/alok706175/PlayX/contents/<file_path>`), automatically triggering GitHub Pages live re-deployment.
 
 ---
 
