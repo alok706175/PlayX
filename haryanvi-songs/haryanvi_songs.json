@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Kabze",
+    "nameEn": "Kabze",
+    "singer": "Bintu Pabra & Shiva Choudhary",
+    "singerEn": "Bintu Pabra & Shiva Choudhary",
+    "category": "Haryanvi Songs (हरियाणवी सुपरहिट)",
+    "tag": "Haryanvi Hits",
+    "videoId": "Oyw1Eo21q5k",
+    "youtubeId": "Oyw1Eo21q5k",
+    "embedUrl": "https://www.youtube.com/embed/Oyw1Eo21q5k",
+    "originalUrl": "https://youtu.be/Oyw1Eo21q5k?si=aDC9m1bQSkaYE9Jn",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/Oyw1Eo21q5k/hqdefault.jpg",
+    "addedAt": "2026-10-11T10:00:57.551Z",
+    "status": "approved",
+    "source": "youtube"
+  }
+]
