@@ -749,5 +749,22 @@
     "addedAt": "2026-10-11T12:27:43.734Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 74,
+    "name": "Audio Lyrical | Emraan Hashmi | Sonal Chauhan | Pritam | Sayeed Quadri | Jannat",
+    "nameEn": "Audio Lyrical | Emraan Hashmi | Sonal Chauhan | Pritam | Sayeed Quadri | Jannat",
+    "singer": "KK | Zara Sa",
+    "singerEn": "KK | Zara Sa",
+    "category": "Romantic",
+    "duration": "03:45",
+    "videoId": "-8C_2BBVWk8",
+    "youtubeId": "-8C_2BBVWk8",
+    "embedUrl": "https://www.youtube.com/embed/-8C_2BBVWk8",
+    "originalUrl": "https://youtu.be/-8C_2BBVWk8?si=OL2N-bNixaKLiKfl",
+    "thumbnail": "https://i.ytimg.com/vi/-8C_2BBVWk8/hqdefault.jpg",
+    "addedAt": "2026-10-11T12:32:39.414Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
