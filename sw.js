@@ -117,9 +117,10 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
-  // 1. Audio Streaming Requests (Online MP3s from Cloudinary / CDN / Local)
-  // Let the browser handle audio requests natively directly via network with 0 Service Worker proxy latency.
+  // 1. Audio Streaming Requests & API Endpoints
+  // Let browser handle audio and backend API requests natively directly via network
   if (
+    url.pathname.startsWith("/api/") ||
     url.pathname.endsWith(".mp3") ||
     url.pathname.endsWith(".m4a") ||
     req.destination === "audio" ||
