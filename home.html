@@ -420,6 +420,8 @@
       localStorage.removeItem("playx_admin_logged_in");
       localStorage.removeItem("playx_admin_user");
       localStorage.removeItem("playx_admin_email");
+      localStorage.removeItem("playx_admin_token");
+      try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) {}
       window.closeAdminMenu();
       window.updateAdminAuthState();
       alert("आप सफलतापूर्वक लॉगआउट हो गए हैं।");
@@ -1078,14 +1080,36 @@
         });
       }
 
+      // Cryptographic SHA-256 helper for client-side fallback
+      async function sha256Hex(str) {
+        if (!window.crypto || !window.crypto.subtle) return "";
+        try {
+          var buf = new TextEncoder().encode(str);
+          var hashBuf = await window.crypto.subtle.digest("SHA-256", buf);
+          return Array.from(new Uint8Array(hashBuf)).map(function(b) {
+            return b.toString(16).padStart(2, "0");
+          }).join("");
+        } catch (e) {
+          return "";
+        }
+      }
+
+      // Pre-calculated salted hashes for offline/static hosting fallback (Zero plain text exposure)
+      var AUTH_SALT = "playx_admin_salt_2026_";
+      var HASH_EMAIL = "b8a0dc0d052a48e20fd22033a6810388423293ec2a4a710b42dac080c6089f21";
+      var HASH_PWD = "5ebf59d5049c1bd502aed9cdbcb0ebadef57a68f89ec1eccee6433267bc7db07";
+      var PROFILE_NAME = "Deepak Singh Rajput";
+
       // Admin Form Submit
       var adminForm = document.getElementById("adminLoginForm");
       if (adminForm) {
-        adminForm.addEventListener("submit", function (e) {
+        adminForm.addEventListener("submit", async function (e) {
           e.preventDefault();
           var user = (document.getElementById("adminUsername")?.value || "").trim();
           var pwd = (document.getElementById("adminPassword")?.value || "");
           var msg = document.getElementById("adminFormMsg");
+          var submitBtn = adminForm.querySelector('button[type="submit"]');
+
           if (!user || !pwd) {
             if (msg) {
               msg.className = "admin-form-msg error";
@@ -1094,18 +1118,85 @@
             return;
           }
 
-          var validEmail = "deepaksinghrajput8747@gmail.com";
-          var validPassword = "Deep@k8747";
-          var profileName = "Deepak Singh Rajput";
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = "0.7";
+          }
+          if (msg) {
+            msg.className = "admin-form-msg";
+            msg.textContent = "सत्यापित किया जा रहा है...";
+          }
 
-          if (user.toLowerCase() === validEmail.toLowerCase() && pwd === validPassword) {
+          var apiBase = (window.location.origin && (window.location.origin.startsWith("http://localhost") || window.location.origin.startsWith("http://127.0.0.1")))
+            ? "http://localhost:3000"
+            : (window.location.port === "3000" ? "" : "http://localhost:3000");
+
+          var loginSuccess = false;
+          var token = "";
+          var userName = PROFILE_NAME;
+          var userEmail = user;
+
+          // 1. Try Backend Server Auth
+          try {
+            var res = await fetch(apiBase + "/api/admin/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email: user, password: pwd })
+            });
+
+            if (res.ok) {
+              var data = await res.json();
+              if (data.success) {
+                loginSuccess = true;
+                token = data.token;
+                userName = data.user || PROFILE_NAME;
+                userEmail = data.email || user;
+              }
+            } else if (res.status === 429) {
+              var errData = await res.json().catch(function() { return {}; });
+              throw new Error(errData.error || "बहुत अधिक असफल प्रयास। कृपया कुछ देर प्रतीक्षा करें।");
+            } else if (res.status === 401) {
+              throw new Error("❌ अमान्य क्रेडेंशियल! केवल अधिकृत एडमिन ही लॉगिन कर सकते हैं।");
+            }
+          } catch (err) {
+            if (err.message && (err.message.includes("अमान्य") || err.message.includes("असफल प्रयास"))) {
+              if (msg) {
+                msg.className = "admin-form-msg error";
+                msg.textContent = err.message;
+              }
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = "1";
+              }
+              return;
+            }
+            // Backend offline/unreachable: Fallback to secure salted hash check
+          }
+
+          // 2. Client-side salted cryptographic hash check (if backend is offline/static)
+          if (!loginSuccess) {
+            var emailHash = await sha256Hex(AUTH_SALT + user.toLowerCase());
+            var pwdHash = await sha256Hex(AUTH_SALT + pwd);
+
+            if (emailHash === HASH_EMAIL && pwdHash === HASH_PWD) {
+              loginSuccess = true;
+              token = pwdHash.slice(0, 32);
+              userName = PROFILE_NAME;
+              userEmail = user;
+            }
+          }
+
+          if (loginSuccess) {
             if (msg) {
               msg.className = "admin-form-msg success";
-              msg.textContent = "✅ नमस्ते " + profileName + "! एडमिन लॉगिन सफल रहा।";
+              msg.textContent = "✅ नमस्ते " + userName + "! एडमिन लॉगिन सफल रहा।";
             }
             localStorage.setItem("playx_admin_logged_in", "true");
-            localStorage.setItem("playx_admin_user", profileName);
-            localStorage.setItem("playx_admin_email", validEmail);
+            localStorage.setItem("playx_admin_user", userName);
+            localStorage.setItem("playx_admin_email", userEmail);
+            if (token) localStorage.setItem("playx_admin_token", token);
+            try { sessionStorage.setItem("playx_admin_secret", pwd); } catch (e) {}
+
             if (window.updateAdminAuthState) window.updateAdminAuthState();
 
             setTimeout(function () {
@@ -1115,11 +1206,19 @@
                 msg.textContent = "";
                 msg.className = "admin-form-msg";
               }
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = "1";
+              }
             }, 750);
           } else {
             if (msg) {
               msg.className = "admin-form-msg error";
               msg.textContent = "❌ अमान्य क्रेडेंशियल! केवल अधिकृत एडमिन ही लॉगिन कर सकते हैं।";
+            }
+            if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.style.opacity = "1";
             }
           }
         });

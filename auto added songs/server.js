@@ -10,6 +10,7 @@ const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 // Local modules
 const urlParser = require('./url-parser');
@@ -42,8 +43,26 @@ const songDbManager = require('./song-db-manager');
 })();
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'Deep@k8747'; // Default PlayX admin password
+const ADMIN_SECRET = process.env.ADMIN_SECRET || 'PlayX@AdminDefault2026';
+const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'deepaksinghrajput8747@gmail.com').toLowerCase();
+const ADMIN_NAME = process.env.ADMIN_NAME || 'Deepak Singh Rajput';
 const PROJECT_ROOT = songDbManager.PROJECT_ROOT;
+
+// Security: In-memory session store & rate limiters
+// activeSessions: token -> { createdAt, expiresAt }
+const activeSessions = new Map();
+// loginRateLimiter: ip -> { count, lockedUntil }
+const loginRateLimiter = new Map();
+// apiRateLimiter: ip -> { count, resetTime }
+const apiRateLimiter = new Map();
+
+// Standard Security HTTP Headers
+const SECURITY_HEADERS = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'SAMEORIGIN',
+  'X-XSS-Protection': '1; mode=block',
+  'Referrer-Policy': 'strict-origin-when-cross-origin'
+};
 
 // MIME types for serving static files
 const MIME_TYPES = {
@@ -63,20 +82,21 @@ const MIME_TYPES = {
 };
 
 /**
- * Sends JSON HTTP response with CORS headers
+ * Sends JSON HTTP response with CORS and security headers
  */
 function sendJsonResponse(res, statusCode, data) {
   res.writeHead(statusCode, {
     'Content-Type': 'application/json; charset=UTF-8',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-secret'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-admin-secret',
+    ...SECURITY_HEADERS
   });
   res.end(JSON.stringify(data, null, 2));
 }
 
 /**
- * Reads POST body JSON safely
+ * Reads POST body JSON safely with size limit
  */
 function parseRequestBody(req) {
   return new Promise((resolve, reject) => {
@@ -103,7 +123,7 @@ function parseRequestBody(req) {
 }
 
 /**
- * Checks if request has valid admin credentials
+ * Checks if request has valid admin credentials or active session
  */
 function isAuthorizedAdmin(req, body = {}) {
   const secretFromHeader = req.headers['x-admin-secret'] || '';
@@ -115,29 +135,79 @@ function isAuthorizedAdmin(req, body = {}) {
     bearerToken = authHeader.slice(7).trim();
   }
 
-  const provided = (secretFromHeader || secretFromBody || bearerToken).trim();
-  return provided === ADMIN_SECRET || provided === 'Deep@k8747';
+  const tokenToCheck = (bearerToken || secretFromHeader || secretFromBody).trim();
+  if (!tokenToCheck) return false;
+
+  // 1. Check if token is an active valid session
+  const session = activeSessions.get(tokenToCheck);
+  if (session) {
+    if (Date.now() < session.expiresAt) {
+      return true;
+    } else {
+      activeSessions.delete(tokenToCheck);
+    }
+  }
+
+  // 2. Direct match with configured ADMIN_SECRET
+  return tokenToCheck === ADMIN_SECRET;
 }
 
 /**
- * Serves static files from the PlayX project workspace
+ * Checks request rate limit (max 60 requests / minute)
+ */
+function checkApiRateLimit(req) {
+  const ip = req.socket.remoteAddress || '127.0.0.1';
+  const now = Date.now();
+  const limit = apiRateLimiter.get(ip) || { count: 0, resetTime: now + 60000 };
+
+  if (now > limit.resetTime) {
+    limit.count = 1;
+    limit.resetTime = now + 60000;
+  } else {
+    limit.count += 1;
+  }
+
+  apiRateLimiter.set(ip, limit);
+  return limit.count <= 60;
+}
+
+/**
+ * Serves static files from the PlayX project workspace securely
  */
 function serveStaticFile(req, res, pathname) {
   let relativePath = pathname === '/' ? '/home.html' : pathname;
   
   // Prevent directory traversal
   const safePath = path.normalize(decodeURIComponent(relativePath)).replace(/^(\.\.[\/\\])+/, '');
-  const absolutePath = path.join(PROJECT_ROOT, safePath);
 
+  // Security 1: Block all dotfiles (.env, .git, .gitignore, etc.)
+  const normalizedParts = safePath.split(/[\/\\]/);
+  if (normalizedParts.some(part => part.startsWith('.'))) {
+    res.writeHead(403, { 
+      'Content-Type': 'text/plain; charset=UTF-8',
+      ...SECURITY_HEADERS 
+    });
+    res.end('403 Forbidden: Access to sensitive or configuration files is strictly denied.');
+    return;
+  }
+
+  // Security 2: Prevent access outside PROJECT_ROOT
+  const absolutePath = path.join(PROJECT_ROOT, safePath);
   if (!absolutePath.startsWith(PROJECT_ROOT)) {
-    res.writeHead(403, { 'Content-Type': 'text/plain' });
-    res.end('Access Denied');
+    res.writeHead(403, { 
+      'Content-Type': 'text/plain; charset=UTF-8',
+      ...SECURITY_HEADERS 
+    });
+    res.end('403 Forbidden: Access Denied');
     return;
   }
 
   fs.stat(absolutePath, (err, stats) => {
     if (err || !stats.isFile()) {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.writeHead(404, { 
+        'Content-Type': 'text/plain; charset=UTF-8',
+        ...SECURITY_HEADERS 
+      });
       res.end(`404 Not Found: ${pathname}`);
       return;
     }
@@ -147,7 +217,8 @@ function serveStaticFile(req, res, pathname) {
 
     res.writeHead(200, {
       'Content-Type': contentType,
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
+      ...SECURITY_HEADERS
     });
 
     const stream = fs.createReadStream(absolutePath);
@@ -157,8 +228,8 @@ function serveStaticFile(req, res, pathname) {
 
 // Create HTTP Server
 const server = http.createServer(async (req, res) => {
-  const parsedUrl = url.parse(req.url, true);
-  const pathname = parsedUrl.pathname;
+  const reqUrl = new URL(req.url, 'http://' + (req.headers.host || 'localhost:3000'));
+  const pathname = reqUrl.pathname;
   const method = req.method.toUpperCase();
 
   console.log(`📡 [${new Date().toLocaleTimeString()}] ${method} ${pathname}`);
@@ -175,10 +246,81 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
+  // API ROUTE 0: Secure Administrator Login & Session Generation
+  // POST /api/admin/login
+  // -------------------------------------------------------------
+  if (pathname === '/api/admin/login' && method === 'POST') {
+    const ip = req.socket.remoteAddress || '127.0.0.1';
+    const now = Date.now();
+
+    // Check brute-force rate limiter (Max 5 attempts / 15 minutes)
+    const rateData = loginRateLimiter.get(ip) || { count: 0, lockedUntil: 0 };
+    if (rateData.lockedUntil > now) {
+      const waitMins = Math.ceil((rateData.lockedUntil - now) / 60000);
+      sendJsonResponse(res, 429, {
+        success: false,
+        error: `बहुत अधिक असफल प्रयास (Too many failed login attempts). कृपया ${waitMins} मिनट बाद पुनः प्रयास करें।`
+      });
+      return;
+    }
+
+    try {
+      const body = await parseRequestBody(req);
+      const email = (body.email || '').trim().toLowerCase();
+      const password = (body.password || '').trim();
+
+      const emailMatches = !email || email === ADMIN_EMAIL;
+      const pwdMatches = password === ADMIN_SECRET;
+
+      if (emailMatches && pwdMatches) {
+        // Reset rate limiter on successful authentication
+        loginRateLimiter.delete(ip);
+
+        // Generate cryptographically secure random session token (64 hex characters)
+        const sessionToken = crypto.randomBytes(32).toString('hex');
+        activeSessions.set(sessionToken, {
+          createdAt: now,
+          expiresAt: now + 24 * 60 * 60 * 1000 // 24 hours
+        });
+
+        sendJsonResponse(res, 200, {
+          success: true,
+          token: sessionToken,
+          user: ADMIN_NAME,
+          email: ADMIN_EMAIL
+        });
+        return;
+      }
+
+      // Record failed attempt
+      rateData.count += 1;
+      if (rateData.count >= 5) {
+        rateData.lockedUntil = now + 15 * 60 * 1000; // Lock for 15 minutes
+      }
+      loginRateLimiter.set(ip, rateData);
+
+      sendJsonResponse(res, 401, {
+        success: false,
+        error: 'अमान्य एडमिन क्रेडेंशियल (Invalid admin credentials). एक्सेस अस्वीकृत।'
+      });
+    } catch (err) {
+      sendJsonResponse(res, 500, {
+        success: false,
+        error: `Login error: ${err.message}`
+      });
+    }
+    return;
+  }
+
+  // -------------------------------------------------------------
   // API ROUTE 1: Parse Link & Retrieve Metadata Preview
   // POST /api/parse-link
   // -------------------------------------------------------------
   if (pathname === '/api/parse-link' && method === 'POST') {
+    if (!checkApiRateLimit(req)) {
+      sendJsonResponse(res, 429, { success: false, error: 'Too many requests. Please slow down.' });
+      return;
+    }
     try {
       const body = await parseRequestBody(req);
       const inputUrl = body.url;
@@ -292,7 +434,7 @@ const server = http.createServer(async (req, res) => {
   // GET /api/duplicates?videoId=...
   // -------------------------------------------------------------
   if (pathname === '/api/duplicates' && method === 'GET') {
-    const videoId = parsedUrl.query.videoId;
+    const videoId = reqUrl.searchParams.get('videoId');
     if (!videoId) {
       sendJsonResponse(res, 400, {
         success: false,
@@ -327,7 +469,7 @@ const server = http.createServer(async (req, res) => {
   // GET /share-target?title=...&text=...&url=...
   // -------------------------------------------------------------
   if (pathname === '/share-target' && method === 'GET') {
-    const sharedUrl = parsedUrl.query.url || parsedUrl.query.text || '';
+    const sharedUrl = reqUrl.searchParams.get('url') || reqUrl.searchParams.get('text') || '';
     const cleanUrl = urlParser.extractUrlFromText(sharedUrl);
     
     // Redirect user to home.html with the shared URL parameter

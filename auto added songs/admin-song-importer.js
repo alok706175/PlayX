@@ -83,13 +83,21 @@
             <button type="button" id="importerGhTokenBtn" class="importer-mini-btn" title="GitHub Direct Push Settings">⚙️ GitHub Token</button>
           </div>
 
-          <!-- Collapsible GitHub Token Drawer -->
+          <!-- Collapsible GitHub Token & GitHub Actions Drawer -->
           <div id="importerGhTokenDrawer" class="importer-gh-drawer" style="display: none;">
             <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--importer-text-main);">
-              🐙 Direct GitHub Sync (Cloud & Offline Fallback)
+              🐙 GitHub Sync (Secrets & Cloud Integration)
             </div>
             <div style="font-size: 0.78rem; color: var(--importer-text-muted); margin-bottom: 0.6rem;">
-              यदि बैकएंड सर्वर बंद हो, तो आप अपना पर्सनल एक्सेस टोकन (PAT with repo access) डालकर सीधे ब्राउज़र से GitHub (alok706175/PlayX:main) पर कोड पुश कर सकते हैं।
+              यदि आप टोकन ब्राउज़र में नहीं डालना चाहते, तो GitHub Actions का उपयोग करें जो सीधे <b>Repo Secrets & Variables</b> से टोकन लेता है।
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.75rem;">
+              <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-weight: 600;">
+                ⚡ Run via GitHub Actions (Repo Secrets)
+              </a>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--importer-text-muted); margin-bottom: 0.4rem;">
+              या वैकल्पिक रूप से ब्राउज़र में पर्सनल एक्सेस टोकन (PAT) सेव करें:
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
               <input type="password" id="importerGhTokenInput" placeholder="ghp_xxxxxxxxxxxx" class="importer-mini-input" style="flex: 1; min-width: 200px;">
@@ -503,6 +511,15 @@
       return;
     }
 
+    const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
+    const isLoggedIn = localStorage.getItem('playx_admin_logged_in') === 'true';
+
+    if (!isLoggedIn && !adminToken) {
+      alert('🔒 एडमिन सुरक्षा: केवल अधिकृत एडमिन ही गाने सेव कर सकते हैं। कृपया पहले एडमिन लॉगिन करें।');
+      if (window.openAdminModal) window.openAdminModal();
+      return;
+    }
+
     const approveBtn = document.getElementById('importerApproveBtn');
     if (approveBtn) {
       approveBtn.disabled = true;
@@ -511,7 +528,7 @@
     isSubmitting = true;
 
     const payload = {
-      adminSecret: 'Deep@k8747', // Standard PlayX admin secret
+      adminSecret: adminToken,
       category: category,
       allowDuplicate: Boolean(activeAnalysis.duplicateCheck?.exists),
       songData: {
@@ -534,12 +551,17 @@
 
       // 1. Try Local Backend Server (which commits & pushes automatically via Git CLI)
       try {
+        const reqHeaders = {
+          'Content-Type': 'application/json'
+        };
+        if (adminToken) {
+          reqHeaders['Authorization'] = `Bearer ${adminToken}`;
+          reqHeaders['x-admin-secret'] = adminToken;
+        }
+
         const res = await fetch(`${API_BASE}/api/import-song`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'x-admin-secret': 'Deep@k8747'
-          },
+          headers: reqHeaders,
           body: JSON.stringify(payload)
         });
 

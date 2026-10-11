@@ -1,0 +1,83 @@
+name: PlayX Auto Add Song
+
+on:
+  workflow_dispatch:
+    inputs:
+      youtube_url:
+        description: 'YouTube / YouTube Music URL'
+        required: true
+        type: string
+      category:
+        description: 'Category (auto, chhath, hindi, saawan, durga, holi, bhojpuri, haryanvi, punjabi)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - 'auto'
+          - 'chhath'
+          - 'hindi'
+          - 'saawan'
+          - 'durga'
+          - 'holi'
+          - 'bhojpuri'
+          - 'haryanvi'
+          - 'punjabi'
+      custom_title:
+        description: 'Custom Song Title (Optional)'
+        required: false
+        type: string
+      custom_singer:
+        description: 'Custom Singer Name (Optional)'
+        required: false
+        type: string
+      allow_duplicate:
+        description: 'Allow duplicate song import'
+        required: false
+        default: false
+        type: boolean
+
+  repository_dispatch:
+    types: [add-song]
+
+permissions:
+  contents: write
+
+jobs:
+  add-song:
+    name: Parse & Commit Song
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Song Importer CLI
+        env:
+          INPUT_YOUTUBE_URL: ${{ github.event.inputs.youtube_url || github.event.client_payload.youtube_url }}
+          INPUT_CATEGORY: ${{ github.event.inputs.category || github.event.client_payload.category || 'auto' }}
+          INPUT_CUSTOM_TITLE: ${{ github.event.inputs.custom_title || github.event.client_payload.custom_title }}
+          INPUT_CUSTOM_SINGER: ${{ github.event.inputs.custom_singer || github.event.client_payload.custom_singer }}
+          INPUT_ALLOW_DUPLICATE: ${{ github.event.inputs.allow_duplicate || github.event.client_payload.allow_duplicate }}
+          GITHUB_TOKEN: ${{ secrets.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          node "auto added songs/cli-add-song.js"
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto add song to PlayX playlist [skip ci]"
+            git push origin main
+          fi

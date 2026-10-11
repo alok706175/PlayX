@@ -367,6 +367,14 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
 }
 
 /**
+ * Sanitizes user input string against HTML injection and control characters
+ */
+function sanitizeText(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[<>\r\n]/g, '').trim().slice(0, 300);
+}
+
+/**
  * Formats a song record precisely for the target category's schema
  * @param {string} categoryKey 
  * @param {number} nextId 
@@ -375,17 +383,17 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
  */
 function formatSongRecord(categoryKey, nextId, inputData) {
   const cat = categoryDetector.CATEGORIES[categoryKey];
-  const videoId = inputData.videoId;
+  const videoId = String(inputData.videoId || '').trim();
   const embedUrl = `https://www.youtube.com/embed/${videoId}`;
   const nowIso = new Date().toISOString();
 
-  const title = inputData.title || inputData.cleanTitle || 'Untitled Song';
-  const titleEn = inputData.titleEn || inputData.title || title;
-  const singer = inputData.singer || inputData.channelTitle || 'Artist';
-  const singerEn = inputData.singerEn || singer;
-  const duration = inputData.duration && inputData.duration !== '--:--' ? inputData.duration : '03:45';
+  const title = sanitizeText(inputData.title || inputData.cleanTitle || 'Untitled Song');
+  const titleEn = sanitizeText(inputData.titleEn || inputData.title || title);
+  const singer = sanitizeText(inputData.singer || inputData.channelTitle || 'Artist');
+  const singerEn = sanitizeText(inputData.singerEn || singer);
+  const duration = sanitizeText(inputData.duration && inputData.duration !== '--:--' ? inputData.duration : '03:45');
   const thumbnail = inputData.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  const tag = inputData.tag || cat.defaultTag;
+  const tag = sanitizeText(inputData.tag || cat.defaultTag);
 
   if (categoryKey === 'chhath') {
     // Chhath Puja youtube_songs.json schema
@@ -469,9 +477,11 @@ async function addSongToCategory(categoryKey, songData, options = {}) {
     return { success: false, error: `Invalid category "${categoryKey}".` };
   }
 
-  if (!songData.videoId) {
-    return { success: false, error: 'Cannot save song without a valid YouTube video ID.' };
+  const validVideoId = String(songData.videoId || '').trim();
+  if (!validVideoId || !/^[a-zA-Z0-9_-]{11}$/.test(validVideoId)) {
+    return { success: false, error: 'Cannot save song without a valid 11-character YouTube video ID.' };
   }
+  songData.videoId = validVideoId;
 
   // 1. Duplicate check unless explicitly forced
   if (!options.allowDuplicate) {

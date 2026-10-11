@@ -156,7 +156,7 @@ When an approved song is stored:
 
 Writes are restricted to verified administrators:
 - **Client Side**: Verifies `localStorage.getItem("playx_admin_logged_in") === "true"`.
-- **Server Side**: Verifies the `x-admin-secret` header or Bearer token against `ADMIN_SECRET` in `.env` (defaults to `Deep@k8747`).
+- **Server Side**: Verifies the `x-admin-secret` header or Bearer token against `ADMIN_SECRET` in `.env`.
 - Frontend users cannot trigger imports without passing the server-side credential check.
 
 ---
@@ -169,8 +169,8 @@ Copy `auto added songs/.env.example` to `auto added songs/.env`:
 # Server Port (Default: 3000)
 PORT=3000
 
-# Admin Password for approving imports (Defaults to PlayX admin credentials)
-ADMIN_SECRET=Deep@k8747
+# Admin Password for approving imports
+ADMIN_SECRET=YourStrongAdminPassword
 
 # Optional: YouTube Data API v3 Key
 # (Leave BLANK for zero-config oEmbed fallback!)
