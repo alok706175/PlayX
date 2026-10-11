@@ -85,22 +85,43 @@
 
           <!-- Collapsible GitHub Token & GitHub Actions Drawer -->
           <div id="importerGhTokenDrawer" class="importer-gh-drawer" style="display: none;">
-            <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--importer-text-main);">
-              🐙 GitHub Sync (Secrets & Cloud Integration)
+            <div style="font-size: 0.88rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--importer-text-main); display: flex; align-items: center; gap: 6px;">
+              <span>🐙</span> <span>GitHub Secrets & Variables (PLAYX_TOKEN)</span>
             </div>
-            <div style="font-size: 0.78rem; color: var(--importer-text-muted); margin-bottom: 0.6rem;">
-              यदि आप टोकन ब्राउज़र में नहीं डालना चाहते, तो GitHub Actions का उपयोग करें जो सीधे <b>Repo Secrets & Variables</b> से टोकन लेता है।
+            <div style="font-size: 0.78rem; color: var(--importer-text-muted); margin-bottom: 0.7rem; line-height: 1.45;">
+              GitHub सुरक्षा नीति के तहत ब्राउज़र सीधे GitHub के गोपनीय Secrets को नहीं पढ़ सकता। इसलिए <b>PLAYX_TOKEN</b> का उपयोग करने के दो आसान तरीके हैं:
             </div>
-            <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.75rem;">
-              <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); font-weight: 600;">
-                ⚡ Run via GitHub Actions (Repo Secrets)
-              </a>
+
+            <!-- Option 1: GitHub Actions Runner -->
+            <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 0.65rem 0.8rem; margin-bottom: 0.75rem;">
+              <div style="font-size: 0.82rem; font-weight: 600; color: #38bdf8; margin-bottom: 0.35rem;">
+                विकल्प 1: ⚡ GitHub Actions (बिना ब्राउज़र में टोकन डाले)
+              </div>
+              <p style="margin: 0 0 0.5rem 0; font-size: 0.75rem; color: var(--importer-text-muted); line-height: 1.4;">
+                यह वर्कफ़्लो सीधे आपके Repo के <b>Secrets या Variables</b> (<code>PLAYX_TOKEN</code>) से टोकन लेकर ऑटोमैटिक कमिट व पुश करता है:
+              </p>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 600;">
+                  🚀 Open GitHub Action
+                </a>
+                <a href="https://github.com/alok706175/PlayX/settings/secrets/actions" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.05); color: var(--importer-text-main);">
+                  🔐 Repo Secrets
+                </a>
+                <a href="https://github.com/alok706175/PlayX/settings/variables/actions" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.05); color: var(--importer-text-main);">
+                  📋 Repo Variables
+                </a>
+              </div>
             </div>
-            <div style="font-size: 0.75rem; color: var(--importer-text-muted); margin-bottom: 0.4rem;">
-              या वैकल्पिक रूप से ब्राउज़र में पर्सनल एक्सेस टोकन (PAT) सेव करें:
+
+            <!-- Option 2: Browser Direct Push -->
+            <div style="font-size: 0.8rem; font-weight: 600; color: var(--importer-text-main); margin-bottom: 0.35rem;">
+              विकल्प 2: 🔑 वेबसाइट में PLAYX_TOKEN सेव करें (Direct Push)
+            </div>
+            <div style="font-size: 0.75rem; color: var(--importer-text-muted); margin-bottom: 0.45rem;">
+              अगर आप इसी वेबसाइट से बिना सर्वर के सीधे GitHub पर पुश करना चाहते हैं:
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-              <input type="password" id="importerGhTokenInput" placeholder="ghp_xxxxxxxxxxxx" class="importer-mini-input" style="flex: 1; min-width: 200px;">
+              <input type="password" id="importerGhTokenInput" placeholder="PLAYX_TOKEN (ghp_...)" class="importer-mini-input" style="flex: 1; min-width: 200px;">
               <button type="button" id="importerSaveTokenBtn" class="importer-mini-btn primary">Save Token</button>
               <button type="button" id="importerClearTokenBtn" class="importer-mini-btn danger">Clear</button>
             </div>
@@ -160,8 +181,9 @@
       saveTokenBtn.addEventListener('click', () => {
         const val = (document.getElementById('importerGhTokenInput')?.value || '').trim();
         if (val) {
+          localStorage.setItem('playx_token', val);
           localStorage.setItem('playx_github_token', val);
-          showBanner('info', '✅ GitHub Token सुरक्षित कर लिया गया है (Saved successfully)!');
+          showBanner('info', '✅ PLAYX_TOKEN सुरक्षित कर लिया गया है (Saved successfully)!');
           if (drawer) drawer.style.display = 'none';
           updateSyncBar();
         } else {
@@ -173,10 +195,11 @@
     const clearTokenBtn = document.getElementById('importerClearTokenBtn');
     if (clearTokenBtn) {
       clearTokenBtn.addEventListener('click', () => {
+        localStorage.removeItem('playx_token');
         localStorage.removeItem('playx_github_token');
         const tokenInput = document.getElementById('importerGhTokenInput');
         if (tokenInput) tokenInput.value = '';
-        showBanner('info', 'GitHub Token हटा दिया गया (Token cleared).');
+        showBanner('info', 'PLAYX_TOKEN हटा दिया गया (Token cleared).');
         updateSyncBar();
       });
     }
@@ -222,7 +245,7 @@
   async function updateSyncBar() {
     const indicator = document.getElementById('importerSyncIndicator');
     const tokenInput = document.getElementById('importerGhTokenInput');
-    const savedToken = localStorage.getItem('playx_github_token') || '';
+    const savedToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
     if (tokenInput && savedToken) {
       tokenInput.value = savedToken;
     }
@@ -578,7 +601,7 @@
 
       // 2. If Backend was not reached, attempt Direct GitHub REST API Commit if Token exists
       if (!savedData) {
-        const ghToken = localStorage.getItem('playx_github_token');
+        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
         if (ghToken) {
           try {
             if (approveBtn) {

@@ -322,14 +322,14 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
     console.warn(`⚠️ [GitHub Auto-Sync] Git CLI error: ${err.message}`);
   }
 
-  // Strategy 2: GitHub REST API Fallback (when GITHUB_TOKEN is configured)
-  const ghToken = process.env.GITHUB_TOKEN;
-  const ghRepo = process.env.GITHUB_REPO || 'alok706175/PlayX';
-  const ghBranch = process.env.GITHUB_BRANCH || 'main';
+  // Strategy 2: GitHub REST API Fallback (when PLAYX_TOKEN or GITHUB_TOKEN is configured)
+  const ghToken = process.env.PLAYX_TOKEN || process.env.GITHUB_TOKEN;
+  const ghRepo = process.env.PLAYX_REPO || process.env.GITHUB_REPO || 'alok706175/PlayX';
+  const ghBranch = process.env.PLAYX_BRANCH || process.env.GITHUB_BRANCH || 'main';
 
   if (ghToken) {
     try {
-      console.log(`🐙 [GitHub Auto-Sync] Attempting GitHub REST API commit with GITHUB_TOKEN...`);
+      console.log(`🐙 [GitHub Auto-Sync] Attempting GitHub REST API commit with PLAYX_TOKEN / GITHUB_TOKEN...`);
       const targetPath = path.join(PROJECT_ROOT, relativeFilePath);
       const contentStr = fs.readFileSync(targetPath, 'utf8');
       const apiRes = await commitToGitHub(relativeFilePath, contentStr, commitMsg, {
