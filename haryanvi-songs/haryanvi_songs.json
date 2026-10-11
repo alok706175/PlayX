@@ -16,5 +16,23 @@
     "addedAt": "2026-10-11T10:00:57.551Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 2,
+    "name": "Bairi (Chandni Raat Mein Goli) | Virat & Miss Parul",
+    "nameEn": "Bairi (Chandni Raat Mein Goli) | Virat & Miss Parul",
+    "singer": "Pradeep Solanki & Heena",
+    "singerEn": "Pradeep Solanki & Heena",
+    "category": "Haryanvi Songs",
+    "tag": "डीजे हिट्स",
+    "videoId": "5H3yuPSB-ZM",
+    "youtubeId": "5H3yuPSB-ZM",
+    "embedUrl": "https://www.youtube.com/embed/5H3yuPSB-ZM",
+    "originalUrl": "https://youtu.be/5H3yuPSB-ZM?si=hL8ebDDFDssUZEFm",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/5H3yuPSB-ZM/hqdefault.jpg",
+    "addedAt": "2026-10-11T10:31:38.086Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
