@@ -252,22 +252,67 @@
 
     if (!indicator) return;
 
-    // Check if local backend is active
+    let isLocalServer = false;
+    let serverHasToken = false;
+
+    // 1. Check if backend server is reachable
     try {
-      const res = await fetch(`${API_BASE}/api/categories`, { method: 'GET' });
+      const res = await fetch(`${API_BASE}/api/sync-status`, { method: 'GET' });
       if (res.ok) {
-        indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Local Server Active (Auto Git Push origin/main Ready)</span>`;
-        return;
+        const data = await res.json().catch(() => ({}));
+        isLocalServer = true;
+        serverHasToken = Boolean(data.hasGithubToken);
       }
     } catch (e) {
-      // Backend not reached
+      // Fallback check to categories endpoint
+      try {
+        const resCat = await fetch(`${API_BASE}/api/categories`, { method: 'GET' });
+        if (resCat.ok) isLocalServer = true;
+      } catch (err) {}
     }
 
-    if (savedToken) {
-      indicator.innerHTML = `<span style="color: #38bdf8; font-weight: 600;">🐙 GitHub Direct API Push Active (origin/main)</span>`;
-    } else {
-      indicator.innerHTML = `<span style="color: #f59e0b; font-weight: 600;">⚠️ Server Offline & No GitHub Token (Click ⚙️ to configure)</span>`;
+    const hasToken = Boolean(savedToken || serverHasToken);
+
+    // 2. If GitHub Token is present, show "🟢 Server Active"
+    if (hasToken) {
+      if (isLocalServer) {
+        indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Server Active (Local & GitHub Sync origin/main Ready)</span>`;
+      } else {
+        indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Server Active (GitHub Token Connected - origin/main)</span>`;
+      }
+
+      // Optional background validation if client-side saved token exists
+      if (savedToken) {
+        fetch('https://api.github.com/user', {
+          headers: {
+            'Authorization': `Bearer ${savedToken}`,
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }).then(ghRes => {
+          if (ghRes.ok) {
+            return ghRes.json().then(user => {
+              if (user && user.login) {
+                indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Server Active (GitHub @${escapeHtml(user.login)} - origin/main)</span>`;
+              }
+            });
+          } else if (ghRes.status === 401) {
+            indicator.innerHTML = `<span style="color: #ef4444; font-weight: 600;">🔴 Server Error: Invalid GitHub Token (Click ⚙️ to update)</span>`;
+          }
+        }).catch(() => {
+          // Keep the active message on offline/network errors
+        });
+      }
+      return;
     }
+
+    // 3. If local server is running but without GitHub token
+    if (isLocalServer) {
+      indicator.innerHTML = `<span style="color: #10b981; font-weight: 600;">🟢 Server Active (Local Git CLI origin/main Ready)</span>`;
+      return;
+    }
+
+    // 4. Offline and no token
+    indicator.innerHTML = `<span style="color: #f59e0b; font-weight: 600;">⚠️ Server Offline & No GitHub Token (Click ⚙️ to configure)</span>`;
   }
 
   function showBanner(type, message) {

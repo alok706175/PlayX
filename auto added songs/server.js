@@ -410,6 +410,22 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
+  // API ROUTE: Sync & Server Status
+  // GET /api/sync-status
+  // -------------------------------------------------------------
+  if (pathname === '/api/sync-status' && method === 'GET') {
+    const hasToken = Boolean(process.env.PLAYX_TOKEN || process.env.GITHUB_TOKEN);
+    sendJsonResponse(res, 200, {
+      success: true,
+      server: 'active',
+      hasGithubToken: hasToken,
+      repo: process.env.PLAYX_REPO || process.env.GITHUB_REPO || 'alok706175/PlayX',
+      branch: process.env.PLAYX_BRANCH || process.env.GITHUB_BRANCH || 'main'
+    });
+    return;
+  }
+
+  // -------------------------------------------------------------
   // API ROUTE 3: Get Category Summary & Stats
   // GET /api/categories
   // -------------------------------------------------------------
