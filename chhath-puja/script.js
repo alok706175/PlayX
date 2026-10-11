@@ -1351,6 +1351,18 @@
     }
   }
 
+  function parseDurationToSec(dStr) {
+    if (!dStr || typeof dStr !== "string") return 0;
+    const parts = dStr.split(":").map(p => parseInt(p, 10));
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      return parts[0] * 60 + parts[1];
+    }
+    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    return 0;
+  }
+
   function getActiveDuration() {
     let dur = 0;
     if (isOnlineMode && isYtReady && ytPlayer && typeof ytPlayer.getDuration === "function") {
@@ -1359,7 +1371,10 @@
     if (!dur && offlineAudio && offlineAudio.duration && isFinite(offlineAudio.duration)) {
       dur = offlineAudio.duration || 0;
     }
-    return dur > 0 && isFinite(dur) ? dur : 0;
+    if (!dur && songs && songs[currentSong] && songs[currentSong].duration) {
+      dur = parseDurationToSec(songs[currentSong].duration);
+    }
+    return dur > 0 && isFinite(dur) ? dur : 225;
   }
 
   function getActiveCurrentTime() {
@@ -1498,6 +1513,7 @@
     progress.addEventListener("change", handleProgressCommit);
     progress.addEventListener("mouseup", handleProgressCommit);
     progress.addEventListener("touchend", handleProgressCommit);
+    progress.addEventListener("touchcancel", handleProgressCommit);
   }
 
   // ---------------------------------------------------------

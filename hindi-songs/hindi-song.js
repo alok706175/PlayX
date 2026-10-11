@@ -1112,6 +1112,33 @@
     }
   }
 
+  function parseDurationToSec(dStr) {
+    if (!dStr || typeof dStr !== "string") return 0;
+    const parts = dStr.split(":").map(p => parseInt(p, 10));
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      return parts[0] * 60 + parts[1];
+    }
+    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    return 0;
+  }
+
+  function getHindiActiveDuration() {
+    if (activeAudioSource === "youtube") {
+      let dur = (ytAudioPlayer && typeof ytAudioPlayer.getDuration === "function") ? (ytAudioPlayer.getDuration() || 0) : 0;
+      if (!dur || dur <= 0 || isNaN(dur)) {
+        dur = parseDurationToSec(songs[currentSong]?.duration);
+      }
+      return dur > 0 ? dur : 225;
+    }
+    const dur = offlineAudio ? offlineAudio.duration || 0 : 0;
+    if (!dur || dur <= 0 || isNaN(dur)) {
+      return parseDurationToSec(songs[currentSong]?.duration) || 225;
+    }
+    return dur;
+  }
+
   function updateLiveProgress() {
     if (isSeeking) return;
 
@@ -1119,9 +1146,9 @@
       if (ytAudioPlayer && typeof ytAudioPlayer.getCurrentTime === "function") {
         try {
           const cur = ytAudioPlayer.getCurrentTime() || 0;
-          const dur = ytAudioPlayer.getDuration() || 0;
+          const dur = getHindiActiveDuration();
           if (dur > 0) {
-            const pct = (cur / dur) * 100;
+            const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
             if (progress) progress.value = pct;
             if (progressFill) progressFill.style.width = `${pct}%`;
             if (totalTime) totalTime.textContent = formatTime(dur);
@@ -1134,11 +1161,11 @@
     }
 
     if (!offlineAudio) return;
-    const dur = offlineAudio.duration || 0;
+    const dur = getHindiActiveDuration();
     const cur = offlineAudio.currentTime || 0;
 
     if (dur > 0) {
-      const pct = (cur / dur) * 100;
+      const pct = Math.min(100, Math.max(0, (cur / dur) * 100));
       if (progress) progress.value = pct;
       if (progressFill) progressFill.style.width = `${pct}%`;
       if (totalTime) totalTime.textContent = formatTime(dur);
@@ -1152,12 +1179,7 @@
     const handleSeekInput = () => {
       isSeeking = true;
       if (seekDebounceTimeout) clearTimeout(seekDebounceTimeout);
-      let dur = 0;
-      if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.getDuration === "function") {
-        try { dur = ytAudioPlayer.getDuration() || 0; } catch (e) {}
-      } else {
-        dur = offlineAudio ? offlineAudio.duration || 0 : 0;
-      }
+      const dur = getHindiActiveDuration();
       const pct = parseFloat(progress.value) || 0;
       if (progressFill) progressFill.style.width = `${pct}%`;
       if (currentTime && dur > 0) {
@@ -1167,19 +1189,19 @@
 
     const handleSeekCommit = () => {
       const pct = parseFloat(progress.value) || 0;
+      const dur = getHindiActiveDuration();
       if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.getDuration === "function") {
         try {
-          const dur = ytAudioPlayer.getDuration() || 0;
           if (dur > 0) {
             const targetSec = (pct / 100) * dur;
             ytAudioPlayer.seekTo(targetSec, true);
+            if (currentTime) currentTime.textContent = formatTime(targetSec);
           }
         } catch (e) {}
         isSeeking = false;
         return;
       }
 
-      const dur = offlineAudio ? offlineAudio.duration || 0 : 0;
       if (dur > 0 && offlineAudio) {
         const targetSec = (pct / 100) * dur;
         try {
@@ -1191,6 +1213,7 @@
         } catch (e) {
           offlineAudio.currentTime = targetSec;
         }
+        if (currentTime) currentTime.textContent = formatTime(targetSec);
       }
       isSeeking = false;
     };
@@ -1199,6 +1222,7 @@
     progress.addEventListener("change", handleSeekCommit);
     progress.addEventListener("mouseup", handleSeekCommit);
     progress.addEventListener("touchend", handleSeekCommit);
+    progress.addEventListener("touchcancel", handleSeekCommit);
   }
 
   /* Shuffle & Repeat Modes */

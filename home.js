@@ -712,13 +712,20 @@
     });
 
     if (progressWrap) {
-      progressWrap.addEventListener("click", (e) => {
-        if (!audioPlayer.duration) return;
+      const handleSeek = (e) => {
+        if (!audioPlayer.duration || !isFinite(audioPlayer.duration)) return;
         const rect = progressWrap.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
+        const clientX = (e.touches && e.touches[0] ? e.touches[0].clientX : (e.changedTouches && e.changedTouches[0] ? e.changedTouches[0].clientX : e.clientX));
+        if (clientX === undefined) return;
+        const clickX = Math.max(0, Math.min(rect.width, clientX - rect.left));
         const width = rect.width;
-        audioPlayer.currentTime = (clickX / width) * audioPlayer.duration;
-      });
+        if (width > 0) {
+          audioPlayer.currentTime = (clickX / width) * audioPlayer.duration;
+        }
+      };
+
+      progressWrap.addEventListener("click", handleSeek);
+      progressWrap.addEventListener("touchend", handleSeek, { passive: true });
     }
   }
 

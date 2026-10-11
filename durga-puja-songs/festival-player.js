@@ -88,10 +88,20 @@
     }
 
     if (seekSlider) {
-      seekSlider.addEventListener("mousedown", () => { isDraggingSeek = true; });
-      seekSlider.addEventListener("touchstart", () => { isDraggingSeek = true; });
+      const startDrag = () => { isDraggingSeek = true; };
+      const stopDrag = () => {
+        if (isDraggingSeek) {
+          onSeekChange();
+        }
+      };
+
+      seekSlider.addEventListener("mousedown", startDrag);
+      seekSlider.addEventListener("touchstart", startDrag, { passive: true });
       seekSlider.addEventListener("input", onSeekInput);
       seekSlider.addEventListener("change", onSeekChange);
+      seekSlider.addEventListener("mouseup", stopDrag);
+      seekSlider.addEventListener("touchend", stopDrag, { passive: true });
+      seekSlider.addEventListener("touchcancel", stopDrag, { passive: true });
     }
 
     if (volumeSlider) {
@@ -338,6 +348,12 @@
     if (durationEl) {
       durationEl.textContent = song.duration || "--:--";
     }
+    if (currentTimeEl) {
+      currentTimeEl.textContent = "00:00";
+    }
+    if (seekSlider) {
+      seekSlider.value = 0;
+    }
 
     // Highlight active row in playlist
     document.querySelectorAll(".song-item-row").forEach((row, idx) => {
@@ -458,9 +474,32 @@
     }
   }
 
+  function parseDurationToSec(dStr) {
+    if (!dStr || typeof dStr !== "string") return 0;
+    const parts = dStr.split(":").map(p => parseInt(p, 10));
+    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+      return parts[0] * 60 + parts[1];
+    }
+    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    }
+    return 0;
+  }
+
+  function getEffectiveDuration() {
+    let dur = 0;
+    if (ytPlayer && typeof ytPlayer.getDuration === "function") {
+      try { dur = ytPlayer.getDuration() || 0; } catch (e) {}
+    }
+    if (!dur || dur <= 0 || isNaN(dur)) {
+      dur = parseDurationToSec(songs[currentIndex]?.duration);
+    }
+    return dur > 0 ? dur : 225; // default 03:45 fallback if not yet available
+  }
+
   function onSeekInput() {
-    if (!seekSlider || !ytPlayer || !ytPlayer.getDuration) return;
-    const dur = ytPlayer.getDuration() || 0;
+    if (!seekSlider) return;
+    const dur = getEffectiveDuration();
     if (dur > 0 && currentTimeEl) {
       const cur = (seekSlider.value / 100) * dur;
       currentTimeEl.textContent = formatTime(cur);
@@ -470,10 +509,13 @@
   function onSeekChange() {
     isDraggingSeek = false;
     if (!seekSlider || !ytPlayer || !ytPlayer.seekTo) return;
-    const dur = ytPlayer.getDuration() || 0;
+    const dur = getEffectiveDuration();
     if (dur > 0) {
       const targetTime = (seekSlider.value / 100) * dur;
-      ytPlayer.seekTo(targetTime, true);
+      try {
+        ytPlayer.seekTo(targetTime, true);
+      } catch (e) {}
+      if (currentTimeEl) currentTimeEl.textContent = formatTime(targetTime);
     }
   }
 
@@ -483,12 +525,14 @@
       if (!ytPlayer || !ytPlayer.getCurrentTime || isDraggingSeek) return;
       try {
         const cur = ytPlayer.getCurrentTime() || 0;
-        const dur = ytPlayer.getDuration() || 0;
+        const dur = getEffectiveDuration();
 
         if (currentTimeEl) currentTimeEl.textContent = formatTime(cur);
         if (dur > 0) {
-          if (durationEl) durationEl.textContent = formatTime(dur);
-          if (seekSlider) seekSlider.value = (cur / dur) * 100;
+          if (durationEl && (durationEl.textContent === "--:--" || durationEl.textContent === "00:00")) {
+            durationEl.textContent = formatTime(dur);
+          }
+          if (seekSlider) seekSlider.value = Math.min(100, Math.max(0, (cur / dur) * 100));
         }
       } catch (e) {}
     }, 500);
