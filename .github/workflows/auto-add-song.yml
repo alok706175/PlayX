@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       youtube_url:
-        description: 'YouTube / YouTube Music URL'
+        description: '🎵 YouTube / YouTube Music URL (Sirf gana link dalein - Title, Singer, Category, Duration sab auto-fetch hoga)'
         required: true
         type: string
       category:
-        description: 'Category (auto, chhath, hindi, saawan, durga, holi, bhojpuri, haryanvi, punjabi)'
+        description: '📁 Category (Optional: Auto-detect ke liye "auto" rehne dein)'
         required: false
         default: 'auto'
         type: choice
@@ -22,19 +22,19 @@ on:
           - 'bhojpuri'
           - 'haryanvi'
           - 'punjabi'
-      custom_title:
-        description: 'Custom Song Title (Optional)'
-        required: false
-        type: string
-      custom_singer:
-        description: 'Custom Singer Name (Optional)'
-        required: false
-        type: string
       allow_duplicate:
-        description: 'Allow duplicate song import'
+        description: '⚠️ Allow duplicate (Agar pehle se maujood gana bhi add karna ho)'
         required: false
         default: false
         type: boolean
+      custom_title:
+        description: '✏️ Custom Title (Optional - auto-fetch ke liye khali chhod dein)'
+        required: false
+        type: string
+      custom_singer:
+        description: '🎤 Custom Singer (Optional - auto-fetch ke liye khali chhod dein)'
+        required: false
+        type: string
 
   repository_dispatch:
     types: [add-song]
@@ -54,12 +54,17 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
 
+      - name: Configure Git Author
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Run Song Importer CLI
+      - name: Run Song Importer CLI (Auto-Fetch Metadata & Categorize)
         env:
           INPUT_YOUTUBE_URL: ${{ github.event.inputs.youtube_url || github.event.client_payload.youtube_url }}
           INPUT_CATEGORY: ${{ github.event.inputs.category || github.event.client_payload.category || 'auto' }}
@@ -68,16 +73,15 @@ jobs:
           INPUT_ALLOW_DUPLICATE: ${{ github.event.inputs.allow_duplicate || github.event.client_payload.allow_duplicate }}
           GITHUB_TOKEN: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
           PLAYX_TOKEN: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY || vars.YOUTUBE_API_KEY }}
         run: |
           node "auto added songs/cli-add-song.js"
 
       - name: Commit and Push Changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add .
           if git diff --quiet && git diff --staged --quiet; then
-            echo "No changes to commit."
+            echo "No changes to commit (already committed or skipped)."
           else
             git commit -m "Auto add song to PlayX playlist [skip ci]"
             git push origin main

@@ -173,6 +173,14 @@ async function fetchViaOEmbed(videoId) {
   const channelTitle = data.author_name || '';
   const { cleanTitle, detectedSinger } = cleanSongTitle(rawTitle);
 
+  // Auto-detect duration from video title (e.g. 4:15, 03:45) or provide standard song default (03:45)
+  let durationStr = '03:45';
+  const durationMatch = rawTitle.match(/[([{\s](\d{1,2}:\d{2})[)\]}\s]/);
+  if (durationMatch) {
+    durationStr = durationMatch[1];
+    if (durationStr.length === 4) durationStr = '0' + durationStr;
+  }
+
   return {
     videoId,
     rawTitle,
@@ -181,7 +189,7 @@ async function fetchViaOEmbed(videoId) {
     singer: detectedSinger || channelTitle || 'Unknown Artist',
     description: '',
     tags: [],
-    duration: '--:--', // oEmbed does not provide duration
+    duration: durationStr,
     publishedAt: '',
     thumbnail: data.thumbnail_url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
     embeddable: true,

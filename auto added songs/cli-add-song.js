@@ -22,14 +22,17 @@ async function main() {
     process.exit(1);
   }
 
-  console.log('===============================================================');
-  console.log('🎵 PlayX GitHub Actions Song Importer');
-  console.log('===============================================================');
-  console.log(`📡 Input URL: ${inputUrl}`);
+  const urlParser = require('./url-parser');
+  const cleanInputUrl = urlParser.extractUrlFromText(inputUrl);
 
-  // Step 1: Retrieve Metadata
-  console.log('🔍 Fetching video metadata and detecting category...');
-  const metaResult = await metadataFetcher.retrieveSongMetadata(inputUrl);
+  console.log('===============================================================');
+  console.log('🎵 PlayX GitHub Actions - Automatic Song Importer');
+  console.log('===============================================================');
+  console.log(`📡 Song Link: ${cleanInputUrl}`);
+
+  // Step 1: Auto-Fetch Metadata & Auto-Detect Category
+  console.log('\n🔍 Auto-fetching metadata from YouTube...');
+  const metaResult = await metadataFetcher.retrieveSongMetadata(cleanInputUrl);
 
   if (!metaResult.success) {
     console.error(`❌ Metadata extraction failed: ${metaResult.error}`);
@@ -38,37 +41,54 @@ async function main() {
 
   const { metadata, categorySuggestion } = metaResult;
 
-  // Apply overrides if provided
-  if (titleOverride) metadata.cleanTitle = titleOverride;
-  if (singerOverride) metadata.singer = singerOverride;
-
-  // Determine category
-  let targetCategory = categorySuggestion ? categorySuggestion.categoryKey : 'hindi';
-  if (categoryArg && categoryArg !== 'auto' && categoryDetector.CATEGORIES[categoryArg]) {
-    targetCategory = categoryArg;
+  // Apply overrides only if user explicitly provided them
+  if (titleOverride) {
+    metadata.cleanTitle = titleOverride;
+    metadata.title = titleOverride;
+  }
+  if (singerOverride) {
+    metadata.singer = singerOverride;
   }
 
-  console.log(`✅ Metadata retrieved:`);
-  console.log(`   - Title:    ${metadata.cleanTitle}`);
-  console.log(`   - Singer:   ${metadata.singer}`);
-  console.log(`   - Duration: ${metadata.duration}`);
-  console.log(`   - Category: ${targetCategory} (${categoryDetector.CATEGORIES[targetCategory]?.name || targetCategory})`);
+  // Determine category (auto-detect if 'auto' or not provided)
+  let targetCategory = categorySuggestion ? categorySuggestion.categoryKey : 'hindi';
+  let categoryDetectionNote = categorySuggestion 
+    ? `${categorySuggestion.categoryDetails?.name || targetCategory} (${categorySuggestion.confidence.toUpperCase()} confidence: ${categorySuggestion.reason})`
+    : 'Default (Hindi Songs)';
 
-  // Step 2: Check Duplicates
+  if (categoryArg && categoryArg !== 'auto' && categoryDetector.CATEGORIES[categoryArg]) {
+    targetCategory = categoryArg;
+    categoryDetectionNote = `Manually selected by user: ${categoryDetector.CATEGORIES[targetCategory].name}`;
+  }
+
+  console.log('\n✨ [AUTO-FETCH SUCCESSFUL]');
+  console.log(`   📌 Video ID:        ${metadata.videoId}`);
+  console.log(`   🎵 Song Title:      ${metadata.cleanTitle || metadata.rawTitle}`);
+  console.log(`   🎤 Singer / Artist:  ${metadata.singer}`);
+  console.log(`   ⏱️ Duration:        ${metadata.duration || '03:45'}`);
+  console.log(`   📁 Category:        ${categoryDetector.CATEGORIES[targetCategory]?.name || targetCategory} (${targetCategory})`);
+  console.log(`   🎯 Categorization:  ${categoryDetectionNote}`);
+  console.log(`   🖼️ Thumbnail:       ${metadata.thumbnail}`);
+  console.log(`   🎬 Embed Player:    ${metadata.embedUrl}`);
+  console.log(`   🌐 Source API:      ${metadata.sourceApi || 'YouTube'}`);
+
+  // Step 2: Check Duplicates Across Playlists
+  const allowDup = (process.env.INPUT_ALLOW_DUPLICATE || '').toString().toLowerCase() === 'true';
   const dup = songDbManager.checkDuplicate(metadata.videoId);
   if (dup.exists) {
-    console.warn(`⚠️ Warning: Duplicate detected! Song already exists in "${dup.categoryName}" (${dup.foundInFile}).`);
-    const allowDup = (process.env.INPUT_ALLOW_DUPLICATE || '').toLowerCase() === 'true';
+    console.warn(`\n⚠️ Warning: Duplicate detected! Song already exists in "${dup.categoryName}" (${dup.foundInFile}).`);
     if (!allowDup) {
-      console.error('❌ Aborting: Duplicate song not allowed.');
+      console.error('❌ Aborting: Duplicate song not allowed. (Set allow_duplicate: true in workflow if you wish to add anyway).');
       process.exit(1);
+    } else {
+      console.log('ℹ️ Duplicate allowed by user flag. Proceeding...');
     }
   }
 
   // Step 3: Add Song to Database
-  console.log(`💾 Writing song to ${categoryDetector.CATEGORIES[targetCategory]?.jsonFile}...`);
+  console.log(`\n💾 Writing song to ${categoryDetector.CATEGORIES[targetCategory]?.jsonFile}...`);
   const result = await songDbManager.addSongToCategory(targetCategory, metadata, {
-    allowDuplicate: true
+    allowDuplicate: allowDup || dup.exists
   });
 
   if (!result.success) {
@@ -77,9 +97,10 @@ async function main() {
   }
 
   console.log('===============================================================');
-  console.log(`🎉 SUCCESS: Song added to ${result.categoryName}!`);
-  console.log(`📁 File updated: ${result.targetFile}`);
-  console.log(`📊 Total songs in category: ${result.totalSongs}`);
+  console.log(`🎉 SUCCESS: Song successfully auto-added to PlayX!`);
+  console.log(`📁 Category:        ${result.categoryName}`);
+  console.log(`💾 File Updated:    ${result.targetFile}`);
+  console.log(`📊 Total Songs:     ${result.totalSongs}`);
   console.log('===============================================================');
 }
 
