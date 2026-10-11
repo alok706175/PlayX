@@ -51,7 +51,9 @@ async function main() {
   }
 
   // Determine category (auto-detect if 'auto' or not provided)
-  let targetCategory = categorySuggestion ? categorySuggestion.categoryKey : 'hindi';
+  let targetCategory = categorySuggestion
+    ? (categorySuggestion.suggestedCategory || categorySuggestion.categoryKey || 'hindi')
+    : 'hindi';
   let categoryDetectionNote = categorySuggestion 
     ? `${categorySuggestion.categoryDetails?.name || targetCategory} (${categorySuggestion.confidence.toUpperCase()} confidence: ${categorySuggestion.reason})`
     : 'Default (Hindi Songs)';
