@@ -1,5 +1,5 @@
 /* =========================================================
-   सुर संगम | PlayX Unified Festival Music Engine
+   PlayX Unified Festival Music Engine
    Powers: Bhojpuri, Durga Puja, Haryanvi, Holi, Saawan Songs
    ========================================================= */
 
@@ -17,7 +17,7 @@
   let isShuffle = false;
   let repeatMode = 0; // 0: None, 1: Repeat All, 2: Repeat One
   let likedSongs = new Set();
-  let currentLang = localStorage.getItem("playx_lang") || "en";
+  let currentLang = "en"; // English mode only
   document.documentElement.lang = currentLang;
 
   // View Mode: 'vinyl' | 'video'
@@ -258,7 +258,7 @@
       if (songs.length > 0) {
         ensureYouTubeAPI();
         if (songCountEl) {
-          songCountEl.textContent = `${songs.length} ${currentLang === "hi" ? "गाने" : "Songs"}`;
+          songCountEl.textContent = `${songs.length} Song${songs.length > 1 ? "s" : ""}`;
         }
         loadTrack(0, false);
         renderPlaylist();
@@ -274,16 +274,16 @@
 
   function displayComingSoonState() {
     if (songCountEl) {
-      songCountEl.textContent = currentLang === "hi" ? "0 गाने (जल्द आ रहे हैं)" : "Coming Soon";
+      songCountEl.textContent = "Coming Soon";
     }
     if (trackTitle) {
-      trackTitle.textContent = currentLang === "hi" ? "गाने जल्द आ रहे हैं" : "Songs Coming Soon";
+      trackTitle.textContent = "Songs Coming Soon";
     }
     if (trackSinger) {
-      trackSinger.textContent = currentLang === "hi" ? "PlayX म्यूज़िक लाइब्रेरी" : "PlayX Music Library";
+      trackSinger.textContent = "PlayX Music Library";
     }
     if (trackTag) {
-      trackTag.textContent = currentLang === "hi" ? "⏳ जल्द आ रहा है" : "⏳ Coming Soon";
+      trackTag.textContent = "⏳ Coming Soon";
     }
     if (durationEl) {
       durationEl.textContent = "--:--";
@@ -307,15 +307,13 @@
         <div style="text-align: center; padding: 3rem 1.5rem; background: rgba(255,255,255,0.02); border-radius: 16px; border: 1px dashed rgba(255,255,255,0.12);">
           <div style="font-size: 3rem; margin-bottom: 0.75rem;">⏳</div>
           <h4 style="font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">
-            ${currentLang === "hi" ? "इस श्रेणी में गाने जल्द जोड़े जाएंगे" : "Songs for this category are coming soon!"}
+            Songs for this category are coming soon!
           </h4>
           <p style="font-size: 0.9rem; color: #94a3b8; max-width: 380px; margin: 0 auto 1.5rem; line-height: 1.5;">
-            ${currentLang === "hi" 
-              ? "यहाँ कोई डमी या नकली गाना नहीं रखा गया है। जब मूल गाने उपलब्ध होंगे, वे यहाँ स्वतः जुड़ जाएंगे।" 
-              : "No dummy songs are included here. Original songs will be added here as soon as they become available."}
+            No dummy songs are included here. Original songs will be added here as soon as they become available.
           </p>
           <a href="../home.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: #fff; text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: all 0.2s;">
-            <span>←</span> <span>${currentLang === "hi" ? "होम पर जाएं (Go Home)" : "Go Back Home"}</span>
+            <span>←</span> <span>Go Back Home</span>
           </a>
         </div>
       `;
@@ -384,7 +382,7 @@
 
   function togglePlay() {
     if (songs.length === 0) {
-      alert(currentLang === "hi" ? "इस श्रेणी में अभी कोई गाना उपलब्ध नहीं है। गाने जल्द जोड़े जाएंगे!" : "No songs available in this category yet. Coming soon!");
+      alert("No songs available in this category yet. Coming soon!");
       return;
     }
     if (!songs[currentIndex]) return;
