@@ -766,5 +766,1315 @@
     "addedAt": "2026-10-11T12:32:39.414Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 75,
+    "name": "तू चीज़ बड़ी है मस्त मस्त",
+    "nameEn": "Too Cheez Badi Hain (Mohra)",
+    "singer": "उदित नारायण & कविता कृष्णमूर्ति",
+    "singerEn": "Udit Narayan & Kavita Krishnamurthy",
+    "category": "90s Classics",
+    "duration": "6:19",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752314/Too_Cheez_Badi_Hain_From_Mohra.mp3"
+  },
+  {
+    "id": 76,
+    "name": "हम यार हैं तुम्हारे",
+    "nameEn": "Hum Yaar Hai Tumhare (Haan Maine Bhi Pyaar Kiya)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "7:11",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752313/Hum_Yaar_Hai_Tumhare.mp3"
+  },
+  {
+    "id": 77,
+    "name": "सौ रब दी",
+    "nameEn": "Sau Rab Di (Pyaar Zindagi Hai)",
+    "singer": "अभिजीत & अनुराधा पौडवाल",
+    "singerEn": "Abhijeet & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "7:04",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752300/Sau_Rab_Di.mp3"
+  },
+  {
+    "id": 78,
+    "name": "दिल मेरा तोड़ दिया",
+    "nameEn": "Dil Mera Tod Diya (Kasoor)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Soulful Melodies",
+    "duration": "5:08",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752296/Dil_Mera_Tod_Diya_Kasoor_320_Kbps.mp3"
+  },
+  {
+    "id": 79,
+    "name": "जय माता दी (चलो बुलावा आया है)",
+    "nameEn": "Jai Mata Di Jai Mata Di (Avtaar)",
+    "singer": "नरेंद्र चंचल, आशा भोसले & महेंद्र कपूर",
+    "singerEn": "Narendra Chanchal, Asha Bhosle & Mahendra Kapoor",
+    "category": "Soulful Melodies",
+    "duration": "8:45",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752286/Jai_Mata_Di_Jai_Mata_Di.mp3"
+  },
+  {
+    "id": 80,
+    "name": "धीरे धीरे पास आ रही है",
+    "nameEn": "Dheere Dheere Paas Aa Rahi Hai",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "6:55",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752285/Dheere_Dheere_paas_aa_rahi_hai_phir_kyo_Mujhse_Dur_Ja_Rahi.mp4"
+  },
+  {
+    "id": 81,
+    "name": "पास वो आने लगे",
+    "nameEn": "Paas Woh Aane Lage (Main Khiladi Tu Anari)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:13",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752283/Paas_Woh_Aane_Lage_Main_Khiladi_Tu_Anari_Kumar_Sanu_Alka_Yagnik_90s_Hindi_Songs.mp4"
+  },
+  {
+    "id": 82,
+    "name": "आपके प्यार में हम (झंकार)",
+    "nameEn": "Aapke Pyaar Mein Hum - Jhankar (Raaz)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:24",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752279/Aapke_Pyaar_Mein_Hum_-_Jhankar.mp3"
+  },
+  {
+    "id": 83,
+    "name": "बहुत जताते हो प्यार",
+    "nameEn": "Bahut Jatate Ho Pyar (Aadmi Khilona Hai)",
+    "singer": "अलका याग्निक & मोहम्मद अज़ीज़",
+    "singerEn": "Alka Yagnik & Mohammad Aziz",
+    "category": "90s Classics",
+    "duration": "7:13",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752274/Bahut_Jatate_Ho_Pyar_From_Aadmi_Khilona_Hai.mp3"
+  },
+  {
+    "id": 84,
+    "name": "तू मिले दिल खिले",
+    "nameEn": "Tu Mile Dil Khile (Criminal)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:13",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752272/Tu_Mile_Dil_Khile_-_Kumar_Sanu.mp3"
+  },
+  {
+    "id": 85,
+    "name": "हंसते सूरज की रोशनी",
+    "nameEn": "Haste Suraj Ki (Vivah)",
+    "singer": "शान & श्रेया घोषाल",
+    "singerEn": "Shaan & Shreya Ghoshal",
+    "category": "Soulful Melodies",
+    "duration": "1:32",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752263/Haste_Suraj_Ki.mp3"
+  },
+  {
+    "id": 86,
+    "name": "हमने तुमको दिल ये दे दिया",
+    "nameEn": "Hamne Tumko Dil Ye De Diya (Gunaah)",
+    "singer": "बाबुल सुप्रियो & अलका याग्निक",
+    "singerEn": "Babul Supriyo & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:22",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752258/Hamne_Tumko_Dil_Ye_De_Diya.mp3"
+  },
+  {
+    "id": 87,
+    "name": "अगर तुम मिल जाओ (फीमेल)",
+    "nameEn": "Agar Tum Mil Jao - Female Version (Zeher)",
+    "singer": "श्रेया घोषाल",
+    "singerEn": "Shreya Ghoshal",
+    "category": "Soulful Melodies",
+    "duration": "6:00",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752243/Agar_Tum_Mil_Jao_-_Female_Version.mp3"
+  },
+  {
+    "id": 88,
+    "name": "कल कॉलेज बंद हो जायेगा",
+    "nameEn": "Kal College Bandh Ho Jaayega (Jaan Tere Naam)",
+    "singer": "उदित नारायण & साधना सरगम",
+    "singerEn": "Udit Narayan & Sadhana Sargam",
+    "category": "90s Classics",
+    "duration": "7:13",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752232/Kal_College_Bandh_Ho_Jaayega.mp3"
+  },
+  {
+    "id": 89,
+    "name": "मैंने सोच लिया",
+    "nameEn": "Maine Soch Liya (Tumsa Nahin Dekha)",
+    "singer": "उदित नारायण & श्रेया घोषाल",
+    "singerEn": "Udit Narayan & Shreya Ghoshal",
+    "category": "Romantic",
+    "duration": "4:18",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752229/Maine_Soch_Liya.mp3"
+  },
+  {
+    "id": 90,
+    "name": "ना मिलो कहीं प्यार",
+    "nameEn": "Na Milo Kahin Pyar (Badal)",
+    "singer": "सोनू निगम & कविता कृष्णमूर्ति",
+    "singerEn": "Sonu Nigam & Kavita Krishnamurthy",
+    "category": "Romantic",
+    "duration": "6:43",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752219/Na_Milo_Kahin_Pyar.mp3"
+  },
+  {
+    "id": 91,
+    "name": "है दिल",
+    "nameEn": "Hai Dil (Dil Ka Rishta)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:22",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792752168/Hai_Dil.mp3"
+  },
+  {
+    "id": 92,
+    "name": "अगर तुम मिल जाओ (मेल)",
+    "nameEn": "Agar Tum Mil Jao - Male Version (Zeher)",
+    "singer": "उदित नारायण",
+    "singerEn": "Udit Narayan",
+    "category": "Soulful Melodies",
+    "duration": "6:01",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751860/Agar_Tum_Mil_Jao_-_Male_Version.mp3"
+  },
+  {
+    "id": 93,
+    "name": "तूने जिंदगी में (मेल)",
+    "nameEn": "Tune Zindagi Mein Male Version (Humraaz)",
+    "singer": "उदित नारायण",
+    "singerEn": "Udit Narayan",
+    "category": "Romantic",
+    "duration": "5:09",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751853/Tune_Zindagi_Mein_Male_Version_-_From_Humraaz.mp3"
+  },
+  {
+    "id": 94,
+    "name": "दिल का आलम",
+    "nameEn": "Dil Ka Aalam (Aashiqui)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "4:59",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751849/Dil_Ka_Aalam_From_Aashiqui.mp3"
+  },
+  {
+    "id": 95,
+    "name": "फूल मांगू ना बहार मांगू (झंकार)",
+    "nameEn": "Phool Maangu Na Bahaar Maangu (Raja)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:18",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751838/Phool_Maangu_Na_Bahaar_Maangu_-_Jhankar.mp3"
+  },
+  {
+    "id": 96,
+    "name": "हमें तुमसे हुआ प्यार",
+    "nameEn": "Hamein Tumse Hua Pyar (Ab Tumhare Hawale Watan Sathiyo)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "6:06",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751835/Hamein_Tumse_Hua_Pyar_From_Ab_Tumhare_Hawale_Watan_Sathiyo.mp3"
+  },
+  {
+    "id": 97,
+    "name": "पहली पहली बार मोहब्बत की है",
+    "nameEn": "Pehli Pehli Baar Mohabbat Ki Hai (Sirf Tum)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:39",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751819/Pehli_Pehli_Baar_Mohabbat_Ki_Hai_From_Sirf_Tum.mp3"
+  },
+  {
+    "id": 98,
+    "name": "पा लिया है प्यार तेरा",
+    "nameEn": "Paa Liya Hain Pyar Tera (Kyo Kii... Main Jhuth Nahin Bolta)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:51",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751817/Paa_Liya_Hain_Pyar_Tera.mp3"
+  },
+  {
+    "id": 99,
+    "name": "कितना प्यारा है",
+    "nameEn": "Kitna Pyaara Hai (Raaz)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:16",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751807/Kitna_Pyaara_Hai.mp3"
+  },
+  {
+    "id": 100,
+    "name": "तेरा दिल",
+    "nameEn": "Tera Dil Mere Paas Rehne De (Hungama)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:51",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751806/Tera_Dil.mp3"
+  },
+  {
+    "id": 101,
+    "name": "कसम खाके कहो",
+    "nameEn": "Kasam Khake Kaho (Dil Hai Tumhaara)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:11",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751800/Kasam_Khake_Kaho.mp3"
+  },
+  {
+    "id": 102,
+    "name": "कितनी बेचैन होके",
+    "nameEn": "Kitni Bechain Hoke (Kasoor)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "7:25",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751783/Kitni_Bechain_Hoke.mp3"
+  },
+  {
+    "id": 103,
+    "name": "दिल दीवाना ना जाने कब",
+    "nameEn": "Dil Diwana (Daag The Fire)",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "90s Classics",
+    "duration": "6:19",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751782/Dil_Diwana_From_Daag_The_Fire.mp3"
+  },
+  {
+    "id": 104,
+    "name": "तू निकला छुपा रुस्तम",
+    "nameEn": "Tu Nikla Chhupa Rustam (Chhupa Rustam)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:07",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751774/Tu_Nikla_Chhupa_Rustam.mp3"
+  },
+  {
+    "id": 105,
+    "name": "ये चाँद कोई दीवाना है",
+    "nameEn": "Yeh Chand Koi Deewana Hai (Chhupa Rustam)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:34",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751766/Yeh_Chand_Koi_Deewana_Hai.mp3"
+  },
+  {
+    "id": 106,
+    "name": "झांझरिया (फीमेल)",
+    "nameEn": "Jhanjharia - Female Version (Krishna)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "4:44",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751749/Jhanjharia_-_Female_Version.mp3"
+  },
+  {
+    "id": 107,
+    "name": "झांझरिया (मेल)",
+    "nameEn": "Jhanjharia - Male Version (Krishna)",
+    "singer": "अभिजीत",
+    "singerEn": "Abhijeet",
+    "category": "90s Classics",
+    "duration": "4:22",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751746/Jhanjharia_-_Male_Version.mp3"
+  },
+  {
+    "id": 108,
+    "name": "इस बात का बहाना अच्छा है",
+    "nameEn": "Is Baat Ka Bahana Achcha Hai (Gautam Govinda)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:11",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751735/Is_Baat_Ka_Bahana_Achcha_Hai.mp3"
+  },
+  {
+    "id": 109,
+    "name": "तू शायर है मैं तेरी शायरी",
+    "nameEn": "Too Shayar Hai Main Teri Shayari (Saajan)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:30",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751723/Too_Shayar_Hai_Main_Teri_Shayari.mp3"
+  },
+  {
+    "id": 110,
+    "name": "बरसात के दिन आए",
+    "nameEn": "Barsaat Ke Din Aaye (Barsaat)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:27",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751719/Barsaat_Ke_Din_Aaye_From_Barsaat.mp3"
+  },
+  {
+    "id": 111,
+    "name": "हर एक मुस्कराहट",
+    "nameEn": "Har Ek Muskurahat (Aankhon Mein Tum Ho)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:41",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751709/Har_Ek_Muskurahat.mp3"
+  },
+  {
+    "id": 112,
+    "name": "सातों जनम में तेरे",
+    "nameEn": "Saaton Janam Main Tere (Dilwale)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751698/Saaton_Janam_Main_Tere.mp3"
+  },
+  {
+    "id": 113,
+    "name": "अल्लाह अल्लाह (कव्वाली)",
+    "nameEn": "Allah Allah Qawali (Yeh Dil Aashiqana)",
+    "singer": "साबरी ब्रदर्स, अलका याग्निक & तौसीफ अख्तर",
+    "singerEn": "Sabri Brothers, Alka Yagnik & Tauseef Akhtar",
+    "category": "Soulful Melodies",
+    "duration": "7:46",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751697/Allah_Allah_Qawali.mp3"
+  },
+  {
+    "id": 114,
+    "name": "पास वो आने लगे",
+    "nameEn": "Paas Woh Aane Lage (Main Khiladi Tu Anari)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:11",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751685/Paas_Woh_Aane_Lage.mp3"
+  },
+  {
+    "id": 115,
+    "name": "चाँद तारों में",
+    "nameEn": "Chand Taron Mein (2001)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:05",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751666/Chand_Taron_Mein.mp3"
+  },
+  {
+    "id": 116,
+    "name": "ओ दिल तोड़ के हंसती हो मेरा",
+    "nameEn": "O Dil Tod Ke Hansti Ho Mera (Bewafa Sanam)",
+    "singer": "उदित नारायण / अताउल्लाह खान",
+    "singerEn": "Udit Narayan / Attaullah Khan",
+    "category": "Soulful Melodies",
+    "duration": "5:19",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751647/O_Dil_Tod_Ke_Hansti_Ho_Mera_From_Bewafa_Sanam.mp3"
+  },
+  {
+    "id": 117,
+    "name": "पायलिया",
+    "nameEn": "Payaliya (Deewana)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:56",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751647/Payaliya_From_Deewana.mp3"
+  },
+  {
+    "id": 118,
+    "name": "सुनो मियाँ सुनो",
+    "nameEn": "Suno Miya Suno (Kyo Kii... Main Jhuth Nahin Bolta)",
+    "singer": "उदित नारायण, साधना सरगम & पूर्णिमा",
+    "singerEn": "Udit Narayan, Sadhana Sargam & Poornima",
+    "category": "Dance & Beats",
+    "duration": "5:05",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751646/Suno_Miya_Suno.mp3"
+  },
+  {
+    "id": 119,
+    "name": "दिल का रिश्ता",
+    "nameEn": "Dil Ka Rishta (Dil Ka Rishta)",
+    "singer": "कुमार सानु, अलका याग्निक & उदित नारायण",
+    "singerEn": "Kumar Sanu, Alka Yagnik & Udit Narayan",
+    "category": "Romantic",
+    "duration": "5:04",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751626/Dil_Ka_Rishta.mp3"
+  },
+  {
+    "id": 120,
+    "name": "धक धक करने लगा",
+    "nameEn": "Dhak Dhak Karne Laga (Beta)",
+    "singer": "अनुराधा पौडवाल & उदित नारायण",
+    "singerEn": "Anuradha Paudwal & Udit Narayan",
+    "category": "90s Classics",
+    "duration": "5:20",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751623/Dhak_Dhak_Karne_Laga_From_Beta.mp3"
+  },
+  {
+    "id": 121,
+    "name": "हम लाख छुपाएं",
+    "nameEn": "Hum Laakh Chupaye (Jaan Tere Naam)",
+    "singer": "कुमार सानु & आशा भोसले",
+    "singerEn": "Kumar Sanu & Asha Bhosle",
+    "category": "90s Classics",
+    "duration": "6:55",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751618/Hum_Laakh_Chupaye.mp3"
+  },
+  {
+    "id": 122,
+    "name": "आयेगा मजा अब बरसात का",
+    "nameEn": "Aayega Maza Ab Barsaat Ka (Andaaz)",
+    "singer": "अलका याग्निक & बाबुल सुप्रियो",
+    "singerEn": "Alka Yagnik & Babul Supriyo",
+    "category": "Romantic",
+    "duration": "5:26",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751607/Aayega_Maza_Ab_Barsaat_Ka_From_Andaaz.mp3"
+  },
+  {
+    "id": 123,
+    "name": "मोहब्बत दिल का सकून",
+    "nameEn": "Mohabbat Dil Ka Sakoon (Dil Hai Tumhaara)",
+    "singer": "अलका याग्निक, कुमार सानु & उदित नारायण",
+    "singerEn": "Alka Yagnik, Kumar Sanu & Udit Narayan",
+    "category": "Romantic",
+    "duration": "5:37",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751589/Mohabbat_Dil_Ka_Sakoon.mp3"
+  },
+  {
+    "id": 124,
+    "name": "बीच बजारिया",
+    "nameEn": "Beech Bajaria (Anari)",
+    "singer": "सपना मुखर्जी & कुमार सानु",
+    "singerEn": "Sapna Mukherjee & Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "4:48",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751589/Beech_Bajaria.mp3"
+  },
+  {
+    "id": 125,
+    "name": "ये दुआ है मेरी रब से",
+    "nameEn": "Yeh Dua Hai Meri (Sapne Saajan Ke)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:16",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751570/Yeh_Dua_Hai_Meri.mp3"
+  },
+  {
+    "id": 126,
+    "name": "कितना हसीन चेहरा",
+    "nameEn": "Kitna Haseen Chehra (Dilwale)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751568/Kitna_Haseen_Chehra_From_Dilwale.mp3"
+  },
+  {
+    "id": 127,
+    "name": "राम जाने",
+    "nameEn": "Ram Jaane (Ram Jaane)",
+    "singer": "उदित नारायण, सोनू निगम & अलका याग्निक",
+    "singerEn": "Udit Narayan, Sonu Nigam & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:33",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751566/Ram_Jaane_-_From_Ram_Jaane.mp3"
+  },
+  {
+    "id": 128,
+    "name": "तुम्हें देखें मेरी आँखें",
+    "nameEn": "Tumhein Dekhen Meri Aankhen (Rang)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:51",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751560/Tumhein_Dekhen_Meri_Aankhen.mp3"
+  },
+  {
+    "id": 129,
+    "name": "तुमसे मिलने को दिल",
+    "nameEn": "Tumse Milne Ko Dil (Phool Aur Kaante)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:00",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751533/Tumse_Milne_Ko_Dil.mp3"
+  },
+  {
+    "id": 130,
+    "name": "अख्खा इंडिया जानता है",
+    "nameEn": "Akhkha India Jaanta Hai (Jaan)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "6:45",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751526/Akhkha_India_Jaanta_Hai.mp3"
+  },
+  {
+    "id": 131,
+    "name": "आँखों में नींदें ना दिल",
+    "nameEn": "Aankhon Mein Neendein Na Dil (Sanam)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:59",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751526/Aankhon_Mein_Neendein_Na_Dil.mp3"
+  },
+  {
+    "id": 132,
+    "name": "मोहब्बत से",
+    "nameEn": "Mohabbat Se (Gumnaam)",
+    "singer": "उदित नारायण & श्रेया घोषाल",
+    "singerEn": "Udit Narayan & Shreya Ghoshal",
+    "category": "Romantic",
+    "duration": "5:11",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751525/Mohabbat_Se_From_Gumnaam.mp3"
+  },
+  {
+    "id": 133,
+    "name": "मैं अगर सामने",
+    "nameEn": "Main Agar Saamne (Raaz)",
+    "singer": "अभिजीत & अलका याग्निक",
+    "singerEn": "Abhijeet & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:46",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751500/Main_Agar_Saamne.mp3"
+  },
+  {
+    "id": 134,
+    "name": "तुमने अगर प्यार से (फीमेल)",
+    "nameEn": "Tumne Agar Pyar Se - Female Version (Raja)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:40",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751499/Tumne_Agar_Pyar_Se_-_Female_Version.mp3"
+  },
+  {
+    "id": 135,
+    "name": "तुमने अगर प्यार से (मेल)",
+    "nameEn": "Tumne Agar Pyar Se - Male Version (Raja)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "5:44",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751492/Tumne_Agar_Pyar_Se_-_Male_Version.mp3"
+  },
+  {
+    "id": 136,
+    "name": "वो लड़की बहुत याद आती है",
+    "nameEn": "Woh Ladki Bahut Yaad Aati (Qayamat)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "6:46",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751489/Woh_Ladki_Bahut_Yaad_Aati_From_Qayamat.mp3"
+  },
+  {
+    "id": 137,
+    "name": "प्यार किया तो निभाना",
+    "nameEn": "Pyar Kiya To Nibhana (Major Saab)",
+    "singer": "उदित नारायण & अनुराधा पौडवाल",
+    "singerEn": "Udit Narayan & Anuradha Paudwal",
+    "category": "90s Classics",
+    "duration": "5:07",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751450/Pyar_Kiya_To_Nibhana.mp3"
+  },
+  {
+    "id": 138,
+    "name": "पैरों में बंधन है",
+    "nameEn": "Pairon Mein Bandhan Hai (Mohabbatein)",
+    "singer": "उद्भव, मनोहर शेट्टी, ईशान, श्वेता पंडित, सोनाली भटावडेकर & पृथा मजूमदार",
+    "singerEn": "Udbhav, Manohar Shetty, Ishaan, Shweta Pandit, Sonali Bhatawdekar, Pritha Mazumdar",
+    "category": "Romantic",
+    "duration": "6:52",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751450/Pairon_Mein_Bandhan_Hai.mp3"
+  },
+  {
+    "id": 139,
+    "name": "ऐतबार नहीं करना",
+    "nameEn": "Aitbaar Nahi Karna (Qayamat)",
+    "singer": "अभिजीत & साधना सरगम",
+    "singerEn": "Abhijeet & Sadhana Sargam",
+    "category": "Romantic",
+    "duration": "4:37",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751469/Aitbaar_Nahi_Karna.mp3"
+  },
+  {
+    "id": 140,
+    "name": "मैंने अपना दिल दे दिया",
+    "nameEn": "Maine Apna Dil De Diya (Bandhan)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:00",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751464/Maine_Apna_Dil_De_Diya.mp3"
+  },
+  {
+    "id": 141,
+    "name": "बांसुरिया अब यही पुकारे",
+    "nameEn": "Bansuriya Ab Yehi Pukare (Balmaa)",
+    "singer": "कुमार सानु & आशा भोसले",
+    "singerEn": "Kumar Sanu & Asha Bhosle",
+    "category": "90s Classics",
+    "duration": "7:35",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751435/Bansuriya_Ab_Yehi_Pukare_From_Balmaa.mp3"
+  },
+  {
+    "id": 142,
+    "name": "कॉलेज की लड़कियों",
+    "nameEn": "College Ki Ladkiyon (Yeh Dil Aashiqana)",
+    "singer": "उदित नारायण",
+    "singerEn": "Udit Narayan",
+    "category": "Romantic",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751418/College_Ki_Ladkiyon.mp3"
+  },
+  {
+    "id": 143,
+    "name": "दिल का क्या करे साहेब",
+    "nameEn": "Dil Ka Kya Kare Saheb (Jeet)",
+    "singer": "कविता कृष्णमूर्ति",
+    "singerEn": "Kavita Krishnamurthy",
+    "category": "90s Classics",
+    "duration": "7:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751411/Dil_Ka_Kya_Kare_Saheb.mp3"
+  },
+  {
+    "id": 144,
+    "name": "आए हो मेरी जिंदगी में (फीमेल)",
+    "nameEn": "Aaye Ho Meri Zindagi Mein - Female Version (Raja Hindustani)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:03",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751407/Aaye_Ho_Meri_Zindagi_Mein_-_Female_Version.mp3"
+  },
+  {
+    "id": 145,
+    "name": "मुबारक मुबारक",
+    "nameEn": "Mubarak Mubarak (Haan Maine Bhi Pyaar Kiya)",
+    "singer": "उदित नारायण",
+    "singerEn": "Udit Narayan",
+    "category": "Romantic",
+    "duration": "7:05",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751405/Mubarak_Mubarak.mp3"
+  },
+  {
+    "id": 146,
+    "name": "अनदेखी अनजानी",
+    "nameEn": "Andekhi Anjaani (Mujhse Dosti Karoge)",
+    "singer": "लता मंगेशकर & उदित नारायण",
+    "singerEn": "Lata Mangeshkar & Udit Narayan",
+    "category": "Romantic",
+    "duration": "6:17",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751399/Andekhi_Anjaani.mp3"
+  },
+  {
+    "id": 147,
+    "name": "वो हो तुम",
+    "nameEn": "Woh Ho Tum (Muskaan)",
+    "singer": "सोनू निगम & अनुराधा पौडवाल",
+    "singerEn": "Sonu Nigam & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "6:45",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751383/Woh_Ho_Tum.mp3"
+  },
+  {
+    "id": 148,
+    "name": "ताल से ताल मिला",
+    "nameEn": "Taal Se Taal (Taal)",
+    "singer": "अलका याग्निक & उदित नारायण",
+    "singerEn": "Alka Yagnik & Udit Narayan",
+    "category": "90s Classics",
+    "duration": "6:18",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751382/Taal_Se_Taal.mp3"
+  },
+  {
+    "id": 149,
+    "name": "लव तुझे लव मैं करता",
+    "nameEn": "Love Tujhe Love Main Karta (Barsaat)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751363/Love_Tujhe_Love_Main_Karta.mp3"
+  },
+  {
+    "id": 150,
+    "name": "उस लड़की पे दिल आया",
+    "nameEn": "Us Ladki Pe Dil Aaya (Naam Gum Jaayega)",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "5:43",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751358/Us_Ladki_Pe_Dil_Aaya.mp3"
+  },
+  {
+    "id": 151,
+    "name": "मेरे यार की शादी है",
+    "nameEn": "Mere Yaar Ki Shaadi Hai (Title Track)",
+    "singer": "उदित नारायण, सोनू निगम & अलका याग्निक",
+    "singerEn": "Udit Narayan, Sonu Nigam & Alka Yagnik",
+    "category": "Dance & Beats",
+    "duration": "6:31",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751326/Mere_Yaar_Ki_Shaadi_Hai.mp3"
+  },
+  {
+    "id": 152,
+    "name": "हम जानते हैं तुम हमें",
+    "nameEn": "Hum Jaante Hai (Khilona)",
+    "singer": "विनोद राठौड़ & अलका याग्निक",
+    "singerEn": "Vinod Rathod & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "8:00",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751318/Hum_Jaante_Hai.mp3"
+  },
+  {
+    "id": 153,
+    "name": "साजन साजन तेरी दुल्हन",
+    "nameEn": "Sajan Sajan Teri Dulhan (Aarzoo)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:21",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751318/Sajan_Sajan_Teri_Dulhan.mp3"
+  },
+  {
+    "id": 154,
+    "name": "साजन साजन",
+    "nameEn": "Saajan Saajan (Dil Ka Rishta)",
+    "singer": "कुमार सानु, अलका याग्निक & सपना मुखर्जी",
+    "singerEn": "Kumar Sanu, Alka Yagnik & Sapna Mukherjee",
+    "category": "Romantic",
+    "duration": "6:16",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751309/Saajan_Saajan.mp3"
+  },
+  {
+    "id": 155,
+    "name": "दैया दैया दैया रे",
+    "nameEn": "Daiya Daiya Daiya Re (Dil Ka Rishta)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Dance & Beats",
+    "duration": "4:43",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751283/Daiya_Daiya_Daiya_Re.mp3"
+  },
+  {
+    "id": 156,
+    "name": "तुमको दुल्हन बनाएंगे हम",
+    "nameEn": "Tumko Dulhan Banayenge Hum (Mere Jeevan Saathi)",
+    "singer": "कुमार सानु & साधना सरगम",
+    "singerEn": "Kumar Sanu & Sadhana Sargam",
+    "category": "Romantic",
+    "duration": "5:18",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751275/Tumko_Dulhan_Banayenge_Hum_From_Mere_Jeevan_Saathi.mp3"
+  },
+  {
+    "id": 157,
+    "name": "आपके प्यार में हम",
+    "nameEn": "Aapke Pyaar Mein Hum (Raaz)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:29",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751252/Aapke_Pyaar_Mein_Hum.mp3"
+  },
+  {
+    "id": 158,
+    "name": "तू जो हंस हंस के",
+    "nameEn": "Tu Jo Hans Hans Ke (Raja Bhaiya)",
+    "singer": "उदित नारायण & कविता कृष्णमूर्ति",
+    "singerEn": "Udit Narayan & Kavita Krishnamurthy",
+    "category": "Romantic",
+    "duration": "4:59",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751252/Tu_Jo_Hans_Hans_Ke_-_From_Raja_Bhaiya.mp3"
+  },
+  {
+    "id": 159,
+    "name": "दिल ने ये कहा है दिल से",
+    "nameEn": "Dil Ne Yeh Kaha Hain Dil Se (Dhadkan)",
+    "singer": "उदित नारायण, अलका याग्निक & कुमार सानु",
+    "singerEn": "Udit Narayan, Alka Yagnik & Kumar Sanu",
+    "category": "Romantic",
+    "duration": "7:04",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751239/Dil_Ne_Yeh_Kaha_Hain_Dil_Se.mp3"
+  },
+  {
+    "id": 160,
+    "name": "शिकवा नहीं किसी से",
+    "nameEn": "Shikwa Nahin Kisi Se (Naseeb)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "5:28",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751229/Shikwa_Nahin_Kisi_Se.mp3"
+  },
+  {
+    "id": 161,
+    "name": "हम तुमको निगाहों में",
+    "nameEn": "Hum Tumko Nigahon Mein (Garv)",
+    "singer": "उदित नारायण & श्रेया घोषाल",
+    "singerEn": "Udit Narayan & Shreya Ghoshal",
+    "category": "Romantic",
+    "duration": "5:58",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751228/Hum_Tumko_Nigahon_Mein.mp3"
+  },
+  {
+    "id": 162,
+    "name": "हम तुम्हारे हैं सनम",
+    "nameEn": "Hum Tumhare Hain Sanam (Title Track)",
+    "singer": "उदित नारायण & अनुराधा पौडवाल",
+    "singerEn": "Udit Narayan & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "5:58",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751219/Hum_Tumhare_Hain_Sanam.mp3"
+  },
+  {
+    "id": 163,
+    "name": "हमको तुमसे प्यार है",
+    "nameEn": "Humko Tumse Pyaar Hai (Title Track)",
+    "singer": "कुमार सानु, अलका याग्निक & आनंद राज आनंद",
+    "singerEn": "Kumar Sanu, Alka Yagnik & Anand Raj Anand",
+    "category": "Romantic",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751196/Humko_Tumse_Pyaar_Hai.mp3"
+  },
+  {
+    "id": 164,
+    "name": "पहली बार दिल ये",
+    "nameEn": "Pehli Baar Dil Ye (Hum Ho Gaye Aap Ke)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:34",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751188/Pehli_Baar_Dil_Ye_From_Hum_Ho_Gaye_Aap_Ke.mp3"
+  },
+  {
+    "id": 165,
+    "name": "उठा ले जाऊंगा",
+    "nameEn": "Utha Le Jaoonga (Yeh Dil Aashiqana)",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "4:55",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751175/Utha_Le_Jaoonga.mp3"
+  },
+  {
+    "id": 166,
+    "name": "देखा जो तुमको (मोहब्बत हो न जाए)",
+    "nameEn": "Mohabbat Ho Na Jaye - Dekha Jo Tumko (Kasoor)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "6:37",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751164/Mohabbat_Ho_Na_Jaye_-_Dekha_Jo_Tumko.mp3"
+  },
+  {
+    "id": 167,
+    "name": "तुम्हारे सिवा कुछ ना",
+    "nameEn": "Tumhare Siva (Tum Bin)",
+    "singer": "उदित नारायण & अनुराधा पौडवाल",
+    "singerEn": "Udit Narayan & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "4:53",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751159/Tumhare_Siva.mp3"
+  },
+  {
+    "id": 168,
+    "name": "देखा है पहली बार",
+    "nameEn": "Dekha Hai Pehli Baar (Saajan)",
+    "singer": "एस. पी. बालसुब्रमण्यम & अलका याग्निक",
+    "singerEn": "S.P. Balasubrahmanyam & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:06",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751149/Dekha_Hai_Pehli_Baar.mp3"
+  },
+  {
+    "id": 169,
+    "name": "वो हो तुम (रिप्राइज़)",
+    "nameEn": "Who Ho Tum (Muskaan)",
+    "singer": "सोनू निगम & अनुराधा पौडवाल",
+    "singerEn": "Sonu Nigam & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "6:55",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751145/Who_Ho_Tum.mp3"
+  },
+  {
+    "id": 170,
+    "name": "आँख है भरी भरी (फीमेल)",
+    "nameEn": "Ankh Hai Bhari Bhari - Female Version (Tum Se Achcha Kaun Hai)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Soulful Melodies",
+    "duration": "7:17",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751140/Ankh_Hai_Bhari_Bhari_-_Female_Version.mp3"
+  },
+  {
+    "id": 171,
+    "name": "मैंने ये दिल तुमको दिया",
+    "nameEn": "Maine Yeh Dil Tumko Diya (Jaan Tere Naam)",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "90s Classics",
+    "duration": "5:41",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751114/Maine_Yeh_Dil_Tumko_Diya.mp3"
+  },
+  {
+    "id": 172,
+    "name": "जीता था जिसके लिए",
+    "nameEn": "Jeeta Tha Jiske Liye (Dilwale)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:46",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751109/Jeeta_Tha_Jiske_Liye.mp3"
+  },
+  {
+    "id": 173,
+    "name": "जीता हूँ जिसके लिए",
+    "nameEn": "Jeeta Hoon Jiske Liye (Dilwale)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:32",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751106/Jeeta_Hoon_Jiske_Liye_-_From_Dilwale.mp3"
+  },
+  {
+    "id": 174,
+    "name": "आपका आना दिल धड़कना",
+    "nameEn": "Aap Ka Aana Dil Dhadkana (Kurukshetra)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "6:08",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751106/Aap_Ka_Aana_Dil_Dhadkana.mp3"
+  },
+  {
+    "id": 175,
+    "name": "मैंने तुझे दिल दिया",
+    "nameEn": "Maine Tujhe Dil Diya (Yeh Dil Aashiqana)",
+    "singer": "कुमार सानु & अनुराधा पौडवाल",
+    "singerEn": "Kumar Sanu & Anuradha Paudwal",
+    "category": "Romantic",
+    "duration": "4:52",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751054/Maine_Tujhe_Dil_Diya.mp3"
+  },
+  {
+    "id": 176,
+    "name": "तेरी मोहब्बत ने दिल में",
+    "nameEn": "Teri Mohabbat Ne Dil (Rang)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:16",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751047/Teri_Mohabbat_Ne_Dil.mp3"
+  },
+  {
+    "id": 177,
+    "name": "मोहब्बत की नहीं जाती",
+    "nameEn": "Mohabbat Ki Nahin Jaati (Hero No. 1)",
+    "singer": "उदित नारायण & साधना सरगम",
+    "singerEn": "Udit Narayan & Sadhana Sargam",
+    "category": "90s Classics",
+    "duration": "5:50",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751046/Mohabbat_Ki_Nahin_Jaati.mp3"
+  },
+  {
+    "id": 178,
+    "name": "अक्सर इस दुनिया में",
+    "nameEn": "Aksar Is Duniya Mein (Dhadkan)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:42",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751024/Aksar_Is_Duniya_Mein.mp3"
+  },
+  {
+    "id": 179,
+    "name": "तेरा ही नाम होगा",
+    "nameEn": "Tera Hi Naam Hoga (Aadmi Khilona Hai)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792751019/Tera_Hi_Naam_Hoga.mp3"
+  },
+  {
+    "id": 180,
+    "name": "हम तुम पिक्चर देख रहे",
+    "nameEn": "Hum Tum Picture Dekh Rahe (Damini)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750994/Hum_Tum_Picture_Dekh_Rahe.mp3"
+  },
+  {
+    "id": 181,
+    "name": "कहीं मुझे प्यार हुआ तो नहीं",
+    "nameEn": "Kahin Mujhe Pyar Hua Toh Nahin (Rang)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:02",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750992/Kahin_Mujhe_Pyar_Hua_Toh_Nahin.mp3"
+  },
+  {
+    "id": 182,
+    "name": "तुम दिल की धड़कन में",
+    "nameEn": "Tum Dil Ki Dhadkan Mein (Dhadkan)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:51",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750986/Tum_Dil_Ki_Dhadkan_Mein.mp3"
+  },
+  {
+    "id": 183,
+    "name": "कुछ कुछ",
+    "nameEn": "Kuchh Kuchh (Aag)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "5:58",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750946/Kuchh_Kuchh.mp3"
+  },
+  {
+    "id": 184,
+    "name": "मेरे प्यार का हिसाब",
+    "nameEn": "Mere Pyaar Ka Hisaab (Gharana)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "6:27",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750945/Mere_Pyaar_Ka_Hisaab.mp3"
+  },
+  {
+    "id": 185,
+    "name": "मेरी महबूबा",
+    "nameEn": "Meri Mehbooba (Pardes)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:03",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750940/Meri_Mehbooba.mp3"
+  },
+  {
+    "id": 186,
+    "name": "पहले कभी ना मेरा हाल",
+    "nameEn": "Pehle Kabhi Na Mera Haal (Baghban)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:37",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750939/Pehle_Kabhi_Na_Mera_Haal.mp3"
+  },
+  {
+    "id": 187,
+    "name": "दिल दीवाना बिन सजना के",
+    "nameEn": "Dil Diwana (Maine Pyar Kiya)",
+    "singer": "एस. पी. बालसुब्रमण्यम & लता मंगेशकर",
+    "singerEn": "S.P. Balasubrahmanyam & Lata Mangeshkar",
+    "category": "90s Classics",
+    "duration": "6:02",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750915/Dil_Diwana.mp3"
+  },
+  {
+    "id": 188,
+    "name": "ना ना करते प्यार",
+    "nameEn": "Na Na Karte Pyar (Dhadkan)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "6:35",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750906/Na_Na_Karte_Pyar.mp3"
+  },
+  {
+    "id": 189,
+    "name": "पहली बार दिल ये (डुएट)",
+    "nameEn": "Pehli Baar Dil Ye (Hum Ho Gaye Aap Ke)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:25",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750896/Pehli_Baar_Dil_Ye.mp3"
+  },
+  {
+    "id": 190,
+    "name": "कोई तो साथी चाहिए",
+    "nameEn": "Koi To Saathi Chahiye (Kasoor)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "Soulful Melodies",
+    "duration": "5:30",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750887/Koi_To_Saathi_Chahiye.mp3"
+  },
+  {
+    "id": 191,
+    "name": "कल रात हो गई",
+    "nameEn": "Kal Raat Ho Gayee (Kasoor)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "7:29",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750886/Kal_Raat_Ho_Gayee.mp3"
+  },
+  {
+    "id": 192,
+    "name": "इतना मैं चाहूँ (डुएट)",
+    "nameEn": "Itna Main Chaahoon - Duet Version (Raaz)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:15",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750875/Itna_Main_Chaahoon_-_Duet_Version.mp3"
+  },
+  {
+    "id": 193,
+    "name": "प्यार से प्यार हम",
+    "nameEn": "Pyaar Se Pyar Hum (Ilaaka)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "5:29",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750867/Pyaar_Se_Pyar_Hum.mp3"
+  },
+  {
+    "id": 194,
+    "name": "मेरा दिल भी कितना पागल है",
+    "nameEn": "Mera Dil Bhi Kitna Pagal Hai (Saajan)",
+    "singer": "कुमार सानु & अलका याग्निक",
+    "singerEn": "Kumar Sanu & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "5:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750858/Mera_Dil_Bhi_Kitna_Pagal_Hai.mp3"
+  },
+  {
+    "id": 195,
+    "name": "सोचेंगे तुम्हें प्यार",
+    "nameEn": "Sochenge Tumhe Pyar (Deewana)",
+    "singer": "कुमार सानु",
+    "singerEn": "Kumar Sanu",
+    "category": "90s Classics",
+    "duration": "6:02",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750828/Sochenge_Tumhe_Pyar_From_Deewana.mp3"
+  },
+  {
+    "id": 196,
+    "name": "जब से तुमको देखा",
+    "nameEn": "Jab Se Tumko Dekha (Damini)",
+    "singer": "कुमार सानु & साधना सरगम",
+    "singerEn": "Kumar Sanu & Sadhana Sargam",
+    "category": "90s Classics",
+    "duration": "5:12",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750818/Jab_Se_Tumko_Dekha.mp3"
+  },
+  {
+    "id": 197,
+    "name": "दिल मेरा तोड़ दिया",
+    "nameEn": "Dil Mera Tod Diya (Kasoor)",
+    "singer": "अलका याग्निक",
+    "singerEn": "Alka Yagnik",
+    "category": "Soulful Melodies",
+    "duration": "5:10",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750783/Dil_Mera_Tod_Diya.mp3"
+  },
+  {
+    "id": 198,
+    "name": "जिंदगी बन गए हो तुम",
+    "nameEn": "Zindagi Ban Gaye Ho Tum (Kasoor)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "5:37",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750782/Zindagi_Ban_Gaye_Ho_Tum.mp3"
+  },
+  {
+    "id": 199,
+    "name": "तुमसे मिलने की तमन्ना है",
+    "nameEn": "Tumse Milne Ki Tamanna Hai (Saajan)",
+    "singer": "एस. पी. बालसुब्रमण्यम",
+    "singerEn": "S.P. Balasubrahmanyam",
+    "category": "90s Classics",
+    "duration": "5:29",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750754/Tumse_Milne_Ki_Tamanna_Hai.mp3"
+  },
+  {
+    "id": 200,
+    "name": "तेरे इश्क में नाचेंगे",
+    "nameEn": "Tere Ishq Mein Naachenge (Raja Hindustani)",
+    "singer": "कुमार सानु, अलीशा चिनॉय & सपना मुखर्जी",
+    "singerEn": "Kumar Sanu, Alisha Chinai & Sapna Mukherjee",
+    "category": "Dance & Beats",
+    "duration": "8:14",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750748/Tere_Ishq_Mein_Naachenge.mp3"
+  },
+  {
+    "id": 201,
+    "name": "वो मेरी नींद मेरा चैन",
+    "nameEn": "Woh Meri Neend Mera Chain (Hum Hain Rahi Pyar Ke)",
+    "singer": "साधना सरगम",
+    "singerEn": "Sadhana Sargam",
+    "category": "90s Classics",
+    "duration": "4:59",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750732/Woh_Meri_Neend_Mera_Chain.mp3"
+  },
+  {
+    "id": 202,
+    "name": "परदेसी परदेसी (सदाबहार)",
+    "nameEn": "Pardesi Pardesi (Raja Hindustani)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "90s Classics",
+    "duration": "7:28",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750704/Pardesi_Pardesi.mp3"
+  },
+  {
+    "id": 203,
+    "name": "भीगी हुई है रात",
+    "nameEn": "Bheegi Huyee Hai Raat (Sangram)",
+    "singer": "कुमार सानु & कविता कृष्णमूर्ति",
+    "singerEn": "Kumar Sanu & Kavita Krishnamurthy",
+    "category": "90s Classics",
+    "duration": "5:19",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750687/Bheegi_Huyee_Hai_Raat.mp3"
+  },
+  {
+    "id": 204,
+    "name": "किसी दिन बनूँगी मैं राजा की रानी",
+    "nameEn": "Kisi Din Banoongi Main (Raja)",
+    "singer": "उदित नारायण & अनुराधा पौडवाल",
+    "singerEn": "Udit Narayan & Anuradha Paudwal",
+    "category": "90s Classics",
+    "duration": "7:18",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750673/Kisi_Din_Banoongi_Main.mp3"
+  },
+  {
+    "id": 205,
+    "name": "तूने जिंदगी में आके (डुएट)",
+    "nameEn": "Tune Zindagi Mein Aake Duet Version (Humraaz)",
+    "singer": "उदित नारायण & अलका याग्निक",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "duration": "4:44",
+    "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750657/Tune_Zindagi_Mein_Aake_Duet_Version_-_From_Humraaz.mp3"
   }
 ]
