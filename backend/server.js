@@ -43,7 +43,7 @@ const songDbManager = require('./song-db-manager');
 })();
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const ADMIN_SECRET = process.env.ADMIN_SECRET || 'PlayX@AdminDefault2026';
+const ADMIN_SECRET = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || 'PlayX@AdminDefault2026';
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'deepaksinghrajput8747@gmail.com').toLowerCase();
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Deepak Singh Rajput';
 const PROJECT_ROOT = songDbManager.PROJECT_ROOT;
@@ -550,7 +550,7 @@ server.listen(PORT, () => {
    - GET  /api/categories
    - GET  /api/recent-imports
    - GET  /share-target
-🔐 Admin Auth:        Ready (${process.env.ADMIN_SECRET ? 'Custom Secret' : 'Default PlayX Admin'})
+🔐 Admin Auth:        Ready (${(process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET) ? 'Custom Secret' : 'Default PlayX Admin'})
 ✨ Metadata Engine:   ${process.env.YOUTUBE_API_KEY ? 'YouTube Data API v3' : 'YouTube oEmbed (Zero-Config)'}
 🐙 GitHub Auto-Sync:  Enabled (Automatic Push to origin/main)
 =================================================================
