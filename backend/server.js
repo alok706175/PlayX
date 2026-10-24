@@ -246,6 +246,30 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
+  // API ROOT & HEALTH CHECK: Server Status & Ping Endpoint
+  // GET / or GET /health
+  // -------------------------------------------------------------
+  if ((pathname === '/' || pathname === '/health') && method === 'GET') {
+    sendJsonResponse(res, 200, {
+      status: 'active',
+      service: 'PlayX Music Backend API',
+      version: '1.0.0',
+      message: 'PlayX Music Backend is online and running 🎵',
+      uptime: `${Math.floor(process.uptime())}s`,
+      endpoints: [
+        'POST /api/admin/login',
+        'POST /api/parse-link',
+        'POST /api/import-song',
+        'GET  /api/categories',
+        'GET  /api/recent-imports',
+        'GET  /api/sync-status',
+        'GET  /health'
+      ]
+    });
+    return;
+  }
+
+  // -------------------------------------------------------------
   // API ROUTE 0: Secure Administrator Login & Session Generation
   // POST /api/admin/login
   // -------------------------------------------------------------
@@ -499,9 +523,17 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // Static Files Server (Fallback for everything else)
+  // Fallback: 404 for unknown endpoints (Optional local static server via SERVE_STATIC=true)
   // -------------------------------------------------------------
-  serveStaticFile(req, res, pathname);
+  if (process.env.SERVE_STATIC === 'true') {
+    serveStaticFile(req, res, pathname);
+    return;
+  }
+
+  sendJsonResponse(res, 404, {
+    success: false,
+    error: `Not Found: ${method} ${pathname}. PlayX Backend serves API endpoints only under /api/`
+  });
 });
 
 // Start the server
