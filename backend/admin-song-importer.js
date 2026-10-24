@@ -9,7 +9,9 @@
 (function () {
   "use strict";
 
-  // Backend API URL (defaults to current origin or port 3000 if running on standard static port)
+  // Backend API URL (defaults to production Render backend or localhost during local dev)
+  const RENDER_BACKEND_URL = 'https://playx-backend-tcp4.onrender.com';
+
   const API_BASE = (function () {
     const origin = window.location.origin;
     // If already running directly on port 3000, use relative paths
@@ -18,16 +20,12 @@
     if (origin && (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1'))) {
       return 'http://localhost:3000';
     }
-    // If opened directly from file:/// or origin is null
-    if (!origin || origin === 'null' || window.location.protocol === 'file:') {
-      return 'http://localhost:3000';
-    }
     // If custom backend configured in localStorage
     const custom = localStorage.getItem('playx_backend_url');
     if (custom) return custom;
 
-    // Default fallback to local server
-    return 'http://localhost:3000';
+    // Production Render backend
+    return RENDER_BACKEND_URL;
   })();
 
   let modalEl = null;

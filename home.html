@@ -1139,9 +1139,10 @@
             msg.textContent = "सत्यापित किया जा रहा है...";
           }
 
+          var BACKEND_URL = "https://playx-backend-tcp4.onrender.com";
           var apiBase = (window.location.origin && (window.location.origin.startsWith("http://localhost") || window.location.origin.startsWith("http://127.0.0.1")))
             ? "http://localhost:3000"
-            : (window.location.port === "3000" ? "" : "http://localhost:3000");
+            : (window.location.port === "3000" ? "" : BACKEND_URL);
 
           var loginSuccess = false;
           var token = "";
