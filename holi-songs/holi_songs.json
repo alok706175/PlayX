@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Balam Pichkari ( Yeh Jawaani Hai Deewani )",
+    "nameEn": "Balam Pichkari ( Yeh Jawaani Hai Deewani )",
+    "singer": "Vishal Dadlani , Shalmali Kholgade",
+    "singerEn": "Vishal Dadlani , Shalmali Kholgade",
+    "category": "Holi Songs",
+    "tag": "Holi Song",
+    "videoId": "0WtRNGubWGA",
+    "youtubeId": "0WtRNGubWGA",
+    "embedUrl": "https://www.youtube.com/embed/0WtRNGubWGA",
+    "originalUrl": "https://youtu.be/0WtRNGubWGA?si=CP9l1e7MedA_49RB",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/0WtRNGubWGA/hqdefault.jpg",
+    "addedAt": "2026-10-24T19:53:09.662Z",
+    "status": "approved",
+    "source": "youtube"
+  }
+]
