@@ -73,10 +73,10 @@ const STATIC_ASSETS = [
   "./punjabi-songs/festival-player.css",
   "./punjabi-songs/festival-player.js",
   "./punjabi-songs/punjabi_songs.json",
-  "./auto added songs/admin-song-importer.css",
-  "./auto added songs/url-parser.js",
-  "./auto added songs/category-detector.js",
-  "./auto added songs/admin-song-importer.js"
+  "./backend/admin-song-importer.css",
+  "./backend/url-parser.js",
+  "./backend/category-detector.js",
+  "./backend/admin-song-importer.js"
 ];
 
 // Install Event - Pre-cache core app shell assets

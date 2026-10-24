@@ -1014,12 +1014,30 @@
       updateMediaSessionPosition(offlineAudio.currentTime, offlineAudio.duration);
     });
 
+    offlineAudio.addEventListener("waiting", () => {
+      updateChhathTabTitle("buffering");
+    });
+
+    offlineAudio.addEventListener("stalled", () => {
+      updateChhathTabTitle("buffering");
+      handlePlaybackError(new Error("audio_stalled"));
+    });
+
     offlineAudio.addEventListener("seeked", () => {
       updateLiveProgress();
       savePlayerStatePeriodic(true);
     });
 
     offlineAudio.addEventListener("ended", () => {
+      if (chhathSleepTimerMode === -1) {
+        chhathSleepTimerMode = 0;
+        const badge = document.getElementById("chhathSleepBadge");
+        if (badge) badge.style.display = "none";
+        if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.remove("active");
+        setPlayerState("paused");
+        updateChhathTabTitle();
+        return;
+      }
       setPlayerState("ended");
       playNext(true);
     });
@@ -1215,11 +1233,242 @@
 
     if (isPlaying) {
       startProgressSync();
+      startKeepAlive();
     } else {
       stopProgressSync();
+      stopKeepAlive();
     }
 
     renderPlaylist(playlistSearch ? playlistSearch.value : "");
+    updateChhathTabTitle();
+  }
+
+  /* =========================================================
+     DYNAMIC TAB TITLE & STATUS ENGINE
+     ========================================================= */
+  const originalChhathDocTitle = document.title;
+
+  function updateChhathTabTitle(status = "") {
+    const s = songs[currentSong];
+    if (!s) {
+      document.title = originalChhathDocTitle;
+      return;
+    }
+    const isEn = currentLang === "en";
+    let title = isEn ? (s.titleEn || s.title) : s.title;
+    let singer = isEn ? (s.artistEn || s.artist) : s.artist;
+    if (isOnlineMode) {
+      title = isEn ? (s.ytNameEn || title) : (s.ytName || title);
+      singer = isEn ? (s.ytSingerEn || singer) : (s.ytSinger || singer);
+    }
+    const singerText = singer ? ` • ${singer}` : "";
+
+    if (status === "buffering") {
+      document.title = `⏳ Buffering: ${title}${singerText} | PlayX`;
+    } else if (isPlaying) {
+      document.title = `▶ ${title}${singerText} | PlayX`;
+    } else {
+      document.title = `❚❚ Paused: ${title} | PlayX`;
+    }
+  }
+
+  /* =========================================================
+     SMOOTH AUDIO FADE IN / FADE OUT
+     ========================================================= */
+  function fadeChhathVolumeDown(durationMs = 350, onComplete) {
+    const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+    const steps = 7;
+    const interval = Math.max(20, Math.floor(durationMs / steps));
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      const factor = Math.max(0, 1 - (step / steps));
+
+      if (!isOnlineMode && offlineAudio) {
+        offlineAudio.volume = isMuted ? 0 : (volNum / 100) * factor;
+      } else if (isOnlineMode && ytPlayer && typeof ytPlayer.setVolume === "function") {
+        try { ytPlayer.setVolume(isMuted ? 0 : Math.round(volNum * factor)); } catch (e) {}
+      }
+
+      if (step >= steps) {
+        clearInterval(timer);
+        if (onComplete) onComplete();
+      }
+    }, interval);
+  }
+
+  function fadeChhathVolumeUp(durationMs = 350) {
+    const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+    const steps = 7;
+    const interval = Math.max(20, Math.floor(durationMs / steps));
+    let step = 0;
+
+    if (!isOnlineMode && offlineAudio) {
+      offlineAudio.volume = 0;
+    } else if (isOnlineMode && ytPlayer && typeof ytPlayer.setVolume === "function") {
+      try { ytPlayer.setVolume(0); } catch (e) {}
+    }
+
+    const timer = setInterval(() => {
+      step++;
+      const factor = Math.min(1, step / steps);
+
+      if (!isOnlineMode && offlineAudio) {
+        offlineAudio.volume = isMuted ? 0 : (volNum / 100) * factor;
+      } else if (isOnlineMode && ytPlayer && typeof ytPlayer.setVolume === "function") {
+        try { ytPlayer.setVolume(isMuted ? 0 : Math.round(volNum * factor)); } catch (e) {}
+      }
+
+      if (step >= steps) {
+        clearInterval(timer);
+      }
+    }, interval);
+  }
+
+  function pauseChhathWithFadeOut() {
+    fadeChhathVolumeDown(300, () => {
+      if (isOnlineMode) {
+        if (isYtReady && ytPlayer && typeof ytPlayer.pauseVideo === "function") {
+          try { ytPlayer.pauseVideo(); } catch (e) {}
+        }
+      } else {
+        if (offlineAudio && !offlineAudio.paused) {
+          offlineAudio.pause();
+        }
+      }
+      setPlayerState("paused");
+      updateChhathTabTitle();
+      const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+      setTimeout(() => {
+        if (!isOnlineMode && offlineAudio) {
+          offlineAudio.volume = isMuted ? 0 : volNum / 100;
+        } else if (isOnlineMode && ytPlayer && typeof ytPlayer.setVolume === "function") {
+          try { ytPlayer.setVolume(isMuted ? 0 : volNum); } catch (e) {}
+        }
+      }, 80);
+    });
+  }
+
+  /* =========================================================
+     SMART SLEEP TIMER ENGINE FOR CHHATH PUJA
+     ========================================================= */
+  let chhathSleepTimerBtn = null;
+  let chhathSleepTimerMenu = null;
+  let chhathSleepTimerId = null;
+  let chhathSleepTimerEndTime = null;
+  let chhathSleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
+
+  function initChhathSleepTimerUI() {
+    const parent = document.querySelector(".offline-controls");
+    if (!parent || document.getElementById("chhathSleepBtn")) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "sleep-timer-wrap";
+    wrap.style.cssText = "position:relative;display:inline-block;";
+
+    chhathSleepTimerBtn = document.createElement("button");
+    chhathSleepTimerBtn.id = "chhathSleepBtn";
+    chhathSleepTimerBtn.className = "offline-speed-btn";
+    chhathSleepTimerBtn.type = "button";
+    chhathSleepTimerBtn.title = "स्लीप टाइमर / Sleep Timer";
+    chhathSleepTimerBtn.innerHTML = `🌙 <span id="chhathSleepBadge" style="display:none;font-size:0.72rem;margin-left:2px;font-weight:700;color:#f59e0b;"></span>`;
+
+    chhathSleepTimerMenu = document.createElement("div");
+    chhathSleepTimerMenu.id = "chhathSleepMenu";
+    chhathSleepTimerMenu.style.cssText = "display:none;position:absolute;bottom:calc(100% + 8px);right:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px;min-width:160px;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,0.6);";
+
+    const options = [
+      { label: "Off (बंद)", val: 0 },
+      { label: "15 min (15 मिनट)", val: 15 },
+      { label: "30 min (30 मिनट)", val: 30 },
+      { label: "45 min (45 मिनट)", val: 45 },
+      { label: "60 min (1 घंटा)", val: 60 },
+      { label: "End of Song (गाना खत्म होने पर)", val: -1 }
+    ];
+
+    options.forEach(opt => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.style.cssText = "display:block;width:100%;text-align:left;background:none;border:none;color:#e2e8f0;padding:8px 12px;font-size:0.8rem;border-radius:8px;cursor:pointer;transition:all 0.15s;font-family:inherit;";
+      item.textContent = opt.label;
+      item.addEventListener("mouseenter", () => { item.style.background = "rgba(245,158,11,0.2)"; item.style.color = "#f59e0b"; });
+      item.addEventListener("mouseleave", () => { item.style.background = "none"; item.style.color = "#e2e8f0"; });
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setChhathSleepTimer(opt.val);
+        chhathSleepTimerMenu.style.display = "none";
+      });
+      chhathSleepTimerMenu.appendChild(item);
+    });
+
+    wrap.appendChild(chhathSleepTimerBtn);
+    wrap.appendChild(chhathSleepTimerMenu);
+    parent.appendChild(wrap);
+
+    chhathSleepTimerBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      chhathSleepTimerMenu.style.display = chhathSleepTimerMenu.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (chhathSleepTimerMenu && !wrap.contains(e.target)) {
+        chhathSleepTimerMenu.style.display = "none";
+      }
+    });
+  }
+
+  function setChhathSleepTimer(val) {
+    if (chhathSleepTimerId) {
+      clearInterval(chhathSleepTimerId);
+      chhathSleepTimerId = null;
+    }
+    chhathSleepTimerMode = val;
+    const badge = document.getElementById("chhathSleepBadge");
+
+    if (val === 0) {
+      chhathSleepTimerEndTime = null;
+      if (badge) badge.style.display = "none";
+      if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.remove("active");
+      return;
+    }
+
+    if (val === -1) {
+      if (badge) {
+        badge.textContent = "1 Song";
+        badge.style.display = "inline";
+      }
+      if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.add("active");
+      return;
+    }
+
+    chhathSleepTimerEndTime = Date.now() + (val * 60 * 1000);
+    if (badge) {
+      badge.textContent = `${val}m`;
+      badge.style.display = "inline";
+    }
+    if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.add("active");
+
+    chhathSleepTimerId = setInterval(() => {
+      const remaining = Math.max(0, Math.round((chhathSleepTimerEndTime - Date.now()) / 1000));
+      const mins = Math.ceil(remaining / 60);
+
+      if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
+
+      if (remaining <= 7 && remaining > 0) {
+        fadeChhathVolumeDown(remaining * 1000);
+      }
+
+      if (remaining <= 0) {
+        clearInterval(chhathSleepTimerId);
+        chhathSleepTimerId = null;
+        chhathSleepTimerEndTime = null;
+        chhathSleepTimerMode = 0;
+        if (badge) badge.style.display = "none";
+        if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.remove("active");
+        pauseChhathWithFadeOut();
+      }
+    }, 1000);
   }
 
   function togglePlay() {
@@ -1228,17 +1477,7 @@
     setTimeout(() => { isActionLocked = false; }, 200);
 
     if (isPlaying) {
-      // Pause
-      if (isOnlineMode) {
-        if (isYtReady && ytPlayer && typeof ytPlayer.pauseVideo === "function") {
-          try { ytPlayer.pauseVideo(); } catch (e) { }
-        }
-      } else {
-        if (offlineAudio && !offlineAudio.paused) {
-          offlineAudio.pause();
-        }
-      }
-      setPlayerState("paused");
+      pauseChhathWithFadeOut();
       showToast("⏸️ " + (currentLang === "en" ? "Audio Paused" : "गीत पॉज़ किया गया"));
     } else {
       // Play
@@ -1252,6 +1491,7 @@
               ytPlayer.setVolume(volNum);
             }
             ytPlayer.playVideo();
+            fadeChhathVolumeUp(300);
           } catch (e) { }
         } else {
           playOnlineSong(currentSong);
@@ -1274,6 +1514,7 @@
             playPromise
               .then(() => {
                 setPlayerState("playing");
+                fadeChhathVolumeUp(300);
                 preloadNextTrack();
               })
               .catch((err) => {
@@ -1284,6 +1525,7 @@
           }
         }
       }
+      updateChhathTabTitle();
       showToast("▶️ " + (currentLang === "en" ? "Playing Chhath Geet" : "छठ गीत शुरू हुआ!"));
     }
   }
@@ -2232,17 +2474,27 @@
       const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
       const makeUrl = (rel) => new URL(rel, origin + basePath).href;
 
+      const artwork = [];
+      const vid = s.videoId || s.youtubeId;
+      if (s.cover && !s.cover.includes("favicon")) {
+        artwork.push({ src: s.cover.startsWith("http") ? s.cover : makeUrl(s.cover), sizes: "512x512", type: "image/jpeg" });
+      } else if (vid) {
+        artwork.push(
+          { src: `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
+          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" }
+        );
+      }
+      artwork.push(
+        { src: makeUrl("../images/playx_icon.png"), sizes: "512x512", type: "image/png" },
+        { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" },
+        { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" }
+      );
+
       navigator.mediaSession.metadata = new MediaMetadata({
         title: songTitle,
         artist: songArtist || (isEn ? "Chhath Mahaparv" : "छठ महापर्व"),
         album: albumName,
-        artwork: [
-          { src: makeUrl("../favicon.io/favicon-32x32.png"), sizes: "96x96", type: "image/png" },
-          { src: makeUrl("../favicon.io/apple-touch-icon.png"), sizes: "128x128", type: "image/png" },
-          { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
-          { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "256x256", type: "image/png" },
-          { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" }
-        ]
+        artwork: artwork
       });
       navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
     } catch (e) { }
@@ -2291,8 +2543,31 @@
   }
 
   // ---------------------------------------------------------
-  // SCREEN WAKE LOCK & BACKGROUND PRELOAD
+  // SCREEN WAKE LOCK, BACKGROUND AUDIO KEEPALIVE & PRELOAD
   // ---------------------------------------------------------
+  let silentAudioKeeper = null;
+  function initSilentAudioKeeper() {
+    if (silentAudioKeeper) return;
+    try {
+      silentAudioKeeper = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFRm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+      silentAudioKeeper.loop = true;
+      silentAudioKeeper.volume = 0.001;
+    } catch (e) {}
+  }
+
+  function startKeepAlive() {
+    initSilentAudioKeeper();
+    if (silentAudioKeeper && silentAudioKeeper.paused) {
+      silentAudioKeeper.play().catch(() => {});
+    }
+  }
+
+  function stopKeepAlive() {
+    if (silentAudioKeeper && !silentAudioKeeper.paused) {
+      silentAudioKeeper.pause();
+    }
+  }
+
   async function requestWakeLock() {
     if ("wakeLock" in navigator && !wakeLockSentinel && document.visibilityState === "visible") {
       try {
@@ -2533,12 +2808,25 @@
               if (isOnlineMode) {
                 setPlayerState("playing");
                 displaySongInfo(currentSong);
+                updateChhathTabTitle();
               }
+            } else if (event.data === YT.PlayerState.BUFFERING) {
+              updateChhathTabTitle("buffering");
             } else if (event.data === YT.PlayerState.PAUSED) {
               if (isOnlineMode && !isActionLocked) {
                 setPlayerState("paused");
+                updateChhathTabTitle();
               }
             } else if (event.data === YT.PlayerState.ENDED) {
+              if (chhathSleepTimerMode === -1) {
+                chhathSleepTimerMode = 0;
+                const badge = document.getElementById("chhathSleepBadge");
+                if (badge) badge.style.display = "none";
+                if (chhathSleepTimerBtn) chhathSleepTimerBtn.classList.remove("active");
+                setPlayerState("paused");
+                updateChhathTabTitle();
+                return;
+              }
               if (isOnlineMode) {
                 playNext(true);
               }
@@ -2800,6 +3088,9 @@
         requestWakeLock();
       }
     } else {
+      if (isPlaying) {
+        startKeepAlive();
+      }
       if (MEDIA_SESSION_SUPPORTED) {
         try {
           navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
@@ -2814,11 +3105,13 @@
   window.addEventListener("beforeunload", () => {
     savePlayerStatePeriodic(true);
     releaseWakeLock();
+    stopKeepAlive();
   });
 
   window.addEventListener("pagehide", () => {
     savePlayerStatePeriodic(true);
     releaseWakeLock();
+    stopKeepAlive();
   });
 
   window.addEventListener("pageshow", () => {
@@ -2931,6 +3224,7 @@
   // ---------------------------------------------------------
   setLanguage("en", false);
   loadOfflineSongs();
+  initChhathSleepTimerUI();
 
   // Register High-Performance Service Worker for instant offline audio caching
   if ("serviceWorker" in navigator) {

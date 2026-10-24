@@ -673,17 +673,82 @@
         isPlaying = true;
         dock.classList.add("active", "playing");
         updateDockUI();
+        updateHomeMediaSession();
       }).catch(err => console.warn("Audio play prevented:", err));
     }
 
+    function updateHomeMediaSession() {
+      if (!("mediaSession" in navigator) || !currentPlayingTrack) return;
+      try {
+        const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: currentPlayingTrack.title,
+          artist: currentPlayingTrack.artist || "PlayX Preview",
+          album: "PlayX Music Hub",
+          artwork: [
+            { src: new URL("images/playx_icon.png", origin + window.location.pathname).href, sizes: "512x512", type: "image/png" },
+            { src: new URL("favicon.io/android-chrome-512x512.png", origin + window.location.pathname).href, sizes: "512x512", type: "image/png" }
+          ]
+        });
+        navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+      } catch (e) {}
+    }
+
+    if ("mediaSession" in navigator) {
+      try {
+        navigator.mediaSession.setActionHandler("play", () => {
+          if (!isPlaying) {
+            audioPlayer.play();
+            isPlaying = true;
+            dock.classList.add("playing");
+            updateDockUI();
+            updateHomeMediaSession();
+          }
+        });
+        navigator.mediaSession.setActionHandler("pause", () => {
+          if (isPlaying) {
+            audioPlayer.pause();
+            isPlaying = false;
+            dock.classList.remove("playing");
+            updateDockUI();
+            updateHomeMediaSession();
+          }
+        });
+        navigator.mediaSession.setActionHandler("stop", () => {
+          audioPlayer.pause();
+          isPlaying = false;
+          dock.classList.remove("active", "playing");
+          try { navigator.mediaSession.playbackState = "none"; } catch (e) {}
+        });
+        navigator.mediaSession.setActionHandler("seekto", (details) => {
+          if (details.seekTime !== undefined && isFinite(details.seekTime) && audioPlayer.duration) {
+            audioPlayer.currentTime = details.seekTime;
+          }
+        });
+      } catch (e) {}
+    }
+
+    const originalHomeTitle = document.title;
+
     function updateDockUI() {
-      if (!currentPlayingTrack) return;
+      if (!currentPlayingTrack) {
+        document.title = originalHomeTitle;
+        return;
+      }
       dockTitle.textContent = currentPlayingTrack.title;
       dockArtist.textContent = currentPlayingTrack.artist;
       dockThumb.textContent = currentPlayingTrack.icon || "🎵";
       dockPlayBtn.innerHTML = isPlaying
         ? `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`
         : `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`;
+      if (isPlaying) {
+        document.title = "▶ " + currentPlayingTrack.title + " | PlayX";
+      } else {
+        document.title = originalHomeTitle;
+      }
+      if ("mediaSession" in navigator) {
+        try { navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused"; } catch (e) {}
+      }
     }
 
     dockPlayBtn.addEventListener("click", () => {
@@ -697,12 +762,17 @@
         dock.classList.add("playing");
       }
       updateDockUI();
+      updateHomeMediaSession();
     });
 
     dockCloseBtn.addEventListener("click", () => {
       audioPlayer.pause();
       isPlaying = false;
+      document.title = originalHomeTitle;
       dock.classList.remove("active", "playing");
+      if ("mediaSession" in navigator) {
+        try { navigator.mediaSession.playbackState = "none"; } catch (e) {}
+      }
     });
 
     // Audio progress updates
@@ -710,6 +780,15 @@
       if (audioPlayer.duration) {
         const pct = (audioPlayer.currentTime / audioPlayer.duration) * 100;
         if (progressBar) progressBar.style.width = pct + "%";
+        if ("mediaSession" in navigator && "setPositionState" in navigator.mediaSession && Math.floor(audioPlayer.currentTime) % 2 === 0) {
+          try {
+            navigator.mediaSession.setPositionState({
+              duration: audioPlayer.duration,
+              playbackRate: audioPlayer.playbackRate || 1.0,
+              position: audioPlayer.currentTime
+            });
+          } catch (e) {}
+        }
       }
     });
 
@@ -717,6 +796,9 @@
       isPlaying = false;
       dock.classList.remove("playing");
       updateDockUI();
+      if ("mediaSession" in navigator) {
+        try { navigator.mediaSession.playbackState = "none"; } catch (e) {}
+      }
     });
 
     if (progressWrap) {

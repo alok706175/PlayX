@@ -726,9 +726,21 @@
                 if (!window.YT) return;
                 if (e.data === YT.PlayerState.PLAYING) {
                   setPlaybackState(true);
+                  updateHindiTabTitle();
+                } else if (e.data === YT.PlayerState.BUFFERING) {
+                  updateHindiTabTitle("buffering");
                 } else if (e.data === YT.PlayerState.PAUSED) {
                   setPlaybackState(false);
+                  updateHindiTabTitle();
                 } else if (e.data === YT.PlayerState.ENDED) {
+                  if (hindiSleepTimerMode === -1) {
+                    hindiSleepTimerMode = 0;
+                    const badge = document.getElementById("hindiSleepBadge");
+                    if (badge) badge.style.display = "none";
+                    if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+                    setPlaybackState(false);
+                    return;
+                  }
                   if (repeatMode === 2) {
                     ytAudioPlayer.seekTo(0);
                     ytAudioPlayer.playVideo();
@@ -831,6 +843,7 @@
 
       offlineAudio.play().then(() => {
         setPlaybackState(true);
+        fadeHindiVolumeUp(300);
         preloadNextTrack();
         const prefix = (i18n[currentLang] && i18n[currentLang].nowPlayingPrefix) || "🎶 Now Playing: ";
         showToast(prefix + (currentLang === "en" ? (s.nameEn || s.name) : s.name));
@@ -840,18 +853,234 @@
     }
   }
 
-  function togglePlayback() {
-    if (isPlaying) {
+  /* =========================================================
+     DYNAMIC TAB TITLE & STATUS ENGINE
+     ========================================================= */
+  const originalHindiDocTitle = document.title;
+
+  function updateHindiTabTitle(status = "") {
+    const s = songs[currentSong];
+    if (!s) {
+      document.title = originalHindiDocTitle;
+      return;
+    }
+    const isEn = currentLang === "en";
+    const title = isEn ? (s.nameEn || s.name) : s.name;
+    const singer = isEn ? (s.singerEn || s.singer) : s.singer;
+    const singerText = singer ? ` • ${singer}` : "";
+
+    if (status === "buffering") {
+      document.title = `⏳ Buffering: ${title}${singerText} | PlayX`;
+    } else if (isPlaying) {
+      document.title = `▶ ${title}${singerText} | PlayX`;
+    } else {
+      document.title = `❚❚ Paused: ${title} | PlayX`;
+    }
+  }
+
+  /* =========================================================
+     SMOOTH AUDIO FADE IN / FADE OUT
+     ========================================================= */
+  function fadeHindiVolumeDown(durationMs = 350, onComplete) {
+    const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+    const steps = 7;
+    const interval = Math.max(20, Math.floor(durationMs / steps));
+    let step = 0;
+
+    const timer = setInterval(() => {
+      step++;
+      const factor = Math.max(0, 1 - (step / steps));
+
+      if (activeAudioSource === "offline" && offlineAudio) {
+        offlineAudio.volume = (volNum / 100) * factor;
+      } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
+        try { ytAudioPlayer.setVolume(Math.round(volNum * factor)); } catch (e) {}
+      }
+
+      if (step >= steps) {
+        clearInterval(timer);
+        if (onComplete) onComplete();
+      }
+    }, interval);
+  }
+
+  function fadeHindiVolumeUp(durationMs = 350) {
+    const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+    const steps = 7;
+    const interval = Math.max(20, Math.floor(durationMs / steps));
+    let step = 0;
+
+    if (activeAudioSource === "offline" && offlineAudio) {
+      offlineAudio.volume = 0;
+    } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
+      try { ytAudioPlayer.setVolume(0); } catch (e) {}
+    }
+
+    const timer = setInterval(() => {
+      step++;
+      const factor = Math.min(1, step / steps);
+
+      if (activeAudioSource === "offline" && offlineAudio) {
+        offlineAudio.volume = (volNum / 100) * factor;
+      } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
+        try { ytAudioPlayer.setVolume(Math.round(volNum * factor)); } catch (e) {}
+      }
+
+      if (step >= steps) {
+        clearInterval(timer);
+      }
+    }, interval);
+  }
+
+  function pauseHindiWithFadeOut() {
+    fadeHindiVolumeDown(300, () => {
       if (activeAudioSource === "youtube") {
         pauseYouTubeAudio();
       } else if (offlineAudio && !offlineAudio.paused) {
         offlineAudio.pause();
       }
       setPlaybackState(false);
+      updateHindiTabTitle();
+      const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
+      setTimeout(() => {
+        if (activeAudioSource === "offline" && offlineAudio) {
+          offlineAudio.volume = volNum / 100;
+        } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
+          try { ytAudioPlayer.setVolume(volNum); } catch (e) {}
+        }
+      }, 80);
+    });
+  }
+
+  /* =========================================================
+     SMART SLEEP TIMER ENGINE FOR HINDI SONGS
+     ========================================================= */
+  let hindiSleepTimerBtn = null;
+  let hindiSleepTimerMenu = null;
+  let hindiSleepTimerId = null;
+  let hindiSleepTimerEndTime = null;
+  let hindiSleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
+
+  function initHindiSleepTimerUI() {
+    const parent = document.querySelector(".controls-left-cluster");
+    if (!parent || document.getElementById("hindiSleepBtn")) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "sleep-timer-wrap";
+    wrap.style.cssText = "position:relative;display:inline-block;";
+
+    hindiSleepTimerBtn = document.createElement("button");
+    hindiSleepTimerBtn.id = "hindiSleepBtn";
+    hindiSleepTimerBtn.className = "mode-btn";
+    hindiSleepTimerBtn.type = "button";
+    hindiSleepTimerBtn.title = "स्लीप टाइमर / Sleep Timer";
+    hindiSleepTimerBtn.innerHTML = `🌙 <span id="hindiSleepBadge" style="display:none;font-size:0.72rem;margin-left:2px;font-weight:700;color:#38bdf8;"></span>`;
+
+    hindiSleepTimerMenu = document.createElement("div");
+    hindiSleepTimerMenu.id = "hindiSleepMenu";
+    hindiSleepTimerMenu.style.cssText = "display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px;min-width:160px;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,0.6);";
+
+    const options = [
+      { label: "Off (बंद)", val: 0 },
+      { label: "15 min (15 मिनट)", val: 15 },
+      { label: "30 min (30 मिनट)", val: 30 },
+      { label: "45 min (45 मिनट)", val: 45 },
+      { label: "60 min (1 घंटा)", val: 60 },
+      { label: "End of Song (गाना खत्म होने पर)", val: -1 }
+    ];
+
+    options.forEach(opt => {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.style.cssText = "display:block;width:100%;text-align:left;background:none;border:none;color:#e2e8f0;padding:8px 12px;font-size:0.8rem;border-radius:8px;cursor:pointer;transition:all 0.15s;font-family:inherit;";
+      item.textContent = opt.label;
+      item.addEventListener("mouseenter", () => { item.style.background = "rgba(56,189,248,0.15)"; item.style.color = "#38bdf8"; });
+      item.addEventListener("mouseleave", () => { item.style.background = "none"; item.style.color = "#e2e8f0"; });
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setHindiSleepTimer(opt.val);
+        hindiSleepTimerMenu.style.display = "none";
+      });
+      hindiSleepTimerMenu.appendChild(item);
+    });
+
+    wrap.appendChild(hindiSleepTimerBtn);
+    wrap.appendChild(hindiSleepTimerMenu);
+    parent.appendChild(wrap);
+
+    hindiSleepTimerBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hindiSleepTimerMenu.style.display = hindiSleepTimerMenu.style.display === "none" ? "block" : "none";
+    });
+
+    document.addEventListener("click", (e) => {
+      if (hindiSleepTimerMenu && !wrap.contains(e.target)) {
+        hindiSleepTimerMenu.style.display = "none";
+      }
+    });
+  }
+
+  function setHindiSleepTimer(val) {
+    if (hindiSleepTimerId) {
+      clearInterval(hindiSleepTimerId);
+      hindiSleepTimerId = null;
+    }
+    hindiSleepTimerMode = val;
+    const badge = document.getElementById("hindiSleepBadge");
+
+    if (val === 0) {
+      hindiSleepTimerEndTime = null;
+      if (badge) badge.style.display = "none";
+      if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+      return;
+    }
+
+    if (val === -1) {
+      if (badge) {
+        badge.textContent = "1 Song";
+        badge.style.display = "inline";
+      }
+      if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.add("active");
+      return;
+    }
+
+    hindiSleepTimerEndTime = Date.now() + (val * 60 * 1000);
+    if (badge) {
+      badge.textContent = `${val}m`;
+      badge.style.display = "inline";
+    }
+    if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.add("active");
+
+    hindiSleepTimerId = setInterval(() => {
+      const remaining = Math.max(0, Math.round((hindiSleepTimerEndTime - Date.now()) / 1000));
+      const mins = Math.ceil(remaining / 60);
+
+      if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
+
+      if (remaining <= 7 && remaining > 0) {
+        fadeHindiVolumeDown(remaining * 1000);
+      }
+
+      if (remaining <= 0) {
+        clearInterval(hindiSleepTimerId);
+        hindiSleepTimerId = null;
+        hindiSleepTimerEndTime = null;
+        hindiSleepTimerMode = 0;
+        if (badge) badge.style.display = "none";
+        if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+        pauseHindiWithFadeOut();
+      }
+    }, 1000);
+  }
+
+  function togglePlayback() {
+    if (isPlaying) {
+      pauseHindiWithFadeOut();
     } else {
       if (activeAudioSource === "youtube") {
         resumeYouTubeAudio();
         setPlaybackState(true);
+        fadeHindiVolumeUp(300);
       } else if (offlineAudio) {
         const s = songs[currentSong];
         if (s && s.file && (!offlineAudio.src || offlineAudio.src !== s.file)) {
@@ -863,6 +1092,7 @@
         offlineAudio.playbackRate = activeRate;
         offlineAudio.play().then(() => {
           preloadNextTrack();
+          fadeHindiVolumeUp(300);
         }).catch(console.warn);
         setPlaybackState(true);
       }
@@ -895,6 +1125,29 @@
      5.1 SCREEN WAKE LOCK & BACKGROUND KEEPALIVE ENGINE
      ========================================================= */
   let wakeLockSentinel = null;
+  let silentAudioKeeper = null;
+
+  function initSilentAudioKeeper() {
+    if (silentAudioKeeper) return;
+    try {
+      silentAudioKeeper = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFRm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+      silentAudioKeeper.loop = true;
+      silentAudioKeeper.volume = 0.001;
+    } catch (e) {}
+  }
+
+  function startKeepAlive() {
+    initSilentAudioKeeper();
+    if (silentAudioKeeper && silentAudioKeeper.paused) {
+      silentAudioKeeper.play().catch(() => {});
+    }
+  }
+
+  function stopKeepAlive() {
+    if (silentAudioKeeper && !silentAudioKeeper.paused) {
+      silentAudioKeeper.pause();
+    }
+  }
 
   async function requestWakeLock() {
     if ("wakeLock" in navigator && !wakeLockSentinel && document.visibilityState === "visible") {
@@ -918,11 +1171,18 @@
 
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
-      if (offlineAudio) {
-        updateLiveProgress();
+      updateLiveProgress();
+      if (activeAudioSource === "offline" && offlineAudio) {
         if (!offlineAudio.paused && !isPlaying) {
           setPlaybackState(true);
         } else if (offlineAudio.paused && isPlaying) {
+          setPlaybackState(false);
+        }
+      } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.getPlayerState === "function") {
+        const state = ytAudioPlayer.getPlayerState();
+        if (state === 1 && !isPlaying) {
+          setPlaybackState(true);
+        } else if (state === 2 && isPlaying) {
           setPlaybackState(false);
         }
       }
@@ -930,18 +1190,24 @@
         requestWakeLock();
       }
     } else {
+      if (isPlaying) {
+        startKeepAlive();
+      }
       if (MEDIA_SESSION_SUPPORTED) {
         try {
           navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
-          if (offlineAudio) {
-            updateMediaSessionPosition(offlineAudio.currentTime, offlineAudio.duration);
-          }
+          const cur = getHindiActiveCurrentTime();
+          const dur = getHindiActiveDuration();
+          updateMediaSessionPosition(cur, dur);
         } catch (e) {}
       }
     }
   });
 
-  window.addEventListener("pagehide", releaseWakeLock);
+  window.addEventListener("pagehide", () => {
+    releaseWakeLock();
+    stopKeepAlive();
+  });
 
   /* Background speculative preloader for smooth gapless track transitions */
   const bgPreloadAudio = document.getElementById("bgPreloadAudio") || (function() {
@@ -1028,6 +1294,16 @@
       }
       playbackRetryCount = 0;
       updateLiveProgress();
+      updateHindiTabTitle();
+    });
+
+    offlineAudio.addEventListener("waiting", () => {
+      updateHindiTabTitle("buffering");
+    });
+
+    offlineAudio.addEventListener("stalled", () => {
+      updateHindiTabTitle("buffering");
+      handlePlaybackError("audio_stalled");
     });
 
     offlineAudio.addEventListener("timeupdate", () => {
@@ -1050,6 +1326,15 @@
 
     offlineAudio.addEventListener("ended", () => {
       lastPreloadedIdx = -1;
+      if (hindiSleepTimerMode === -1) {
+        hindiSleepTimerMode = 0;
+        const badge = document.getElementById("hindiSleepBadge");
+        if (badge) badge.style.display = "none";
+        if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+        setPlaybackState(false);
+        updateHindiTabTitle();
+        return;
+      }
       if (repeatMode === 2) {
         // Repeat One
         offlineAudio.currentTime = 0;
@@ -1071,6 +1356,19 @@
     });
   }
 
+  window.addEventListener("online", () => {
+    if (isPlaying) {
+      if (activeAudioSource === "offline" && offlineAudio) {
+        if (offlineAudio.paused) {
+          offlineAudio.play().catch(() => {});
+        }
+      } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.playVideo === "function") {
+        ytAudioPlayer.playVideo();
+      }
+      updateHindiTabTitle();
+    }
+  });
+
   function setPlaybackState(playing) {
     isPlaying = playing;
     if (playing) {
@@ -1080,6 +1378,7 @@
       if (miniCover) miniCover.classList.add("spinning");
       if (playerElem) playerElem.classList.add("playing");
       startProgressSync();
+      startKeepAlive();
       requestWakeLock();
       if (MEDIA_SESSION_SUPPORTED) {
         try { navigator.mediaSession.playbackState = "playing"; } catch (e) {}
@@ -1091,6 +1390,7 @@
       if (miniCover) miniCover.classList.remove("spinning");
       if (playerElem) playerElem.classList.remove("playing");
       stopProgressSync();
+      stopKeepAlive();
       releaseWakeLock();
       if (MEDIA_SESSION_SUPPORTED) {
         try { navigator.mediaSession.playbackState = "paused"; } catch (e) {}
@@ -1098,6 +1398,7 @@
     }
     renderPlaylist(playlistSearch ? playlistSearch.value : "");
     updateMediaSessionMetadata();
+    updateHindiTabTitle();
   }
 
   function startProgressSync() {
@@ -1137,6 +1438,16 @@
       return parseDurationToSec(songs[currentSong]?.duration) || 225;
     }
     return dur;
+  }
+
+  function getHindiActiveCurrentTime() {
+    if (activeAudioSource === "youtube") {
+      if (ytAudioPlayer && typeof ytAudioPlayer.getCurrentTime === "function") {
+        try { return ytAudioPlayer.getCurrentTime() || 0; } catch (e) {}
+      }
+      return 0;
+    }
+    return offlineAudio ? offlineAudio.currentTime || 0 : 0;
   }
 
   function updateLiveProgress() {
@@ -1768,18 +2079,28 @@
      ========================================================= */
   const MEDIA_SESSION_SUPPORTED = typeof navigator !== "undefined" && "mediaSession" in navigator;
 
-  function getArtworkList() {
+  function getArtworkList(s) {
     const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
     const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
     const makeUrl = (rel) => new URL(rel, origin + basePath).href;
 
-    return [
-      { src: makeUrl("favicon.io/hindi-icon-32x32.png"), sizes: "32x32", type: "image/png" },
-      { src: makeUrl("favicon.io/hindi-apple-touch-icon.png"), sizes: "180x180", type: "image/png" },
-      { src: makeUrl("favicon.io/hindi-icon-192x192.png"), sizes: "192x192", type: "image/png" },
+    const list = [];
+    const vid = s ? (s.videoId || s.youtubeId) : "";
+    if (s && s.image) {
+      list.push({ src: s.image.startsWith("http") ? s.image : makeUrl(s.image), sizes: "512x512", type: "image/jpeg" });
+    } else if (vid) {
+      list.push(
+        { src: `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" }
+      );
+    }
+    list.push(
+      { src: makeUrl("images/hindi_song_icon.png"), sizes: "512x512", type: "image/png" },
       { src: makeUrl("favicon.io/hindi-icon-512x512.png"), sizes: "512x512", type: "image/png" },
-      { src: makeUrl("images/hindi_song_icon.png"), sizes: "512x512", type: "image/png" }
-    ];
+      { src: makeUrl("favicon.io/hindi-icon-192x192.png"), sizes: "192x192", type: "image/png" },
+      { src: makeUrl("favicon.io/hindi-icon-32x32.png"), sizes: "32x32", type: "image/png" }
+    );
+    return list;
   }
 
   function updateMediaSessionPosition(pos = 0, dur = 0) {
@@ -1808,7 +2129,7 @@
         title: title,
         artist: singer || (isEn ? "Bollywood Singer" : "बॉलीवुड गायक"),
         album: albumName,
-        artwork: getArtworkList()
+        artwork: getArtworkList(s)
       });
       navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
     } catch (e) { }
@@ -1831,36 +2152,53 @@
         playNext();
       }],
       ["seekto", (details) => {
-        if (details.seekTime !== undefined && isFinite(details.seekTime) && offlineAudio) {
-          if (details.fastSeek && ("fastSeek" in offlineAudio)) {
-            offlineAudio.fastSeek(details.seekTime);
-          } else {
-            offlineAudio.currentTime = details.seekTime;
+        if (details.seekTime !== undefined && isFinite(details.seekTime)) {
+          const target = details.seekTime;
+          if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.seekTo === "function") {
+            ytAudioPlayer.seekTo(target, true);
+          } else if (offlineAudio) {
+            if (details.fastSeek && ("fastSeek" in offlineAudio)) {
+              offlineAudio.fastSeek(target);
+            } else {
+              offlineAudio.currentTime = target;
+            }
           }
           updateLiveProgress();
-          updateMediaSessionPosition(offlineAudio.currentTime, offlineAudio.duration);
+          updateMediaSessionPosition(target, getHindiActiveDuration());
         }
       }],
       ["seekbackward", (details) => {
         const skip = details.seekOffset || 10;
-        if (offlineAudio) {
-          offlineAudio.currentTime = Math.max(0, (offlineAudio.currentTime || 0) - skip);
-          updateLiveProgress();
-          updateMediaSessionPosition(offlineAudio.currentTime, offlineAudio.duration);
+        const cur = getHindiActiveCurrentTime();
+        const target = Math.max(0, cur - skip);
+        if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.seekTo === "function") {
+          ytAudioPlayer.seekTo(target, true);
+        } else if (offlineAudio) {
+          offlineAudio.currentTime = target;
         }
+        updateLiveProgress();
+        updateMediaSessionPosition(target, getHindiActiveDuration());
       }],
       ["seekforward", (details) => {
         const skip = details.seekOffset || 10;
-        if (offlineAudio) {
-          offlineAudio.currentTime = Math.min(offlineAudio.duration || 9999, (offlineAudio.currentTime || 0) + skip);
-          updateLiveProgress();
-          updateMediaSessionPosition(offlineAudio.currentTime, offlineAudio.duration);
+        const cur = getHindiActiveCurrentTime();
+        const dur = getHindiActiveDuration();
+        const target = Math.min(dur || 9999, cur + skip);
+        if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.seekTo === "function") {
+          ytAudioPlayer.seekTo(target, true);
+        } else if (offlineAudio) {
+          offlineAudio.currentTime = target;
         }
+        updateLiveProgress();
+        updateMediaSessionPosition(target, dur);
       }],
       ["stop", () => {
         if (offlineAudio) {
           offlineAudio.pause();
           offlineAudio.currentTime = 0;
+        }
+        if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.pauseVideo === "function") {
+          ytAudioPlayer.pauseVideo();
         }
         setPlaybackState(false);
         if (MEDIA_SESSION_SUPPORTED) {
@@ -1946,6 +2284,7 @@
      ========================================================= */
   setLanguage("en", false);
   loadHindiSongs();
+  initHindiSleepTimerUI();
 
   // PWA Install prompt handling
   const pwaInstallBtn = document.getElementById("pwaInstallBtn");

@@ -35,7 +35,7 @@ const songDbManager = require('./song-db-manager');
           }
         }
       });
-      console.log('✅ Loaded configuration from auto added songs/.env');
+      console.log('✅ Loaded configuration from backend/.env');
     } catch (e) {
       console.warn('Notice loading .env file:', e.message);
     }

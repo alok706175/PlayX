@@ -630,7 +630,7 @@
           throw new Error(
             `बैकएंड सर्वर से कनेक्ट नहीं हो सका (${backendError ? backendError.message : 'Server unreachable'}).\n\n` +
             `ऑटोमैटिक GitHub अपडेट के लिए:\n` +
-            `1. सुनिश्चित करें कि बैकएंड सर्वर चालू है: node "auto added songs/server.js"\n` +
+            `1. सुनिश्चित करें कि बैकएंड सर्वर चालू है: node "backend/server.js"\n` +
             `2. या '⚙️ GitHub Token' बटन पर क्लिक करके अपना GitHub Token दर्ज करें।`
           );
         }
@@ -797,7 +797,7 @@
         ${savedData.isClientFallback ? `
           <div style="font-size: 0.82rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 0.75rem; border-radius: 8px; max-width: 520px; text-align: left;">
             ℹ️ <strong>Static Hosting Notice:</strong> To permanently update your JSON file with one click, run:
-            <code>node "auto added songs/server.js"</code>. In static mode, copy this JSON snippet to <code>${savedData.targetFile}</code>:
+            <code>node "backend/server.js"</code>. In static mode, copy this JSON snippet to <code>${savedData.targetFile}</code>:
             <textarea readonly style="width: 100%; height: 80px; margin-top: 0.4rem; background: #000; color: #fff; font-size: 0.75rem; border-radius: 6px; padding: 0.4rem;">${JSON.stringify(s, null, 2)}</textarea>
           </div>
         ` : ''}

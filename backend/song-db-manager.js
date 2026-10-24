@@ -12,7 +12,7 @@ const https = require('https');
 const { exec } = require('child_process');
 const categoryDetector = require('./category-detector');
 
-// Base directory is the workspace root (one level up from 'auto added songs')
+// Base directory is the workspace root (one level up from 'backend')
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 // History log file for recently auto-added songs
@@ -285,7 +285,7 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
   try {
     // Stage the updated category file and history log
     await execShellCommand(`git add "${normalizedPath}"`);
-    await execShellCommand(`git add "auto added songs/auto_added_history.json"`);
+    await execShellCommand(`git add "backend/auto_added_history.json"`);
 
     // Commit
     const commitRes = await execShellCommand(`git commit -m "${commitMsg}"`);

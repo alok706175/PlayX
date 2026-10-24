@@ -54,20 +54,20 @@ This feature integrates into PlayX without modifying the visual aesthetic or bre
 
 ## 2. Files & Directory Structure
 
-All new core implementation files are housed within the `auto added songs/` folder:
+All new core implementation files are housed within the `backend/` folder:
 
 | File | Purpose |
 |---|---|
-| [`auto added songs/url-parser.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/url-parser.js) | Whitelist domain validation, regex extraction of 11-char video ID, canonical and embed URL construction. |
-| [`auto added songs/metadata-fetcher.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/metadata-fetcher.js) | Dual-mode metadata engine (YouTube Data API v3 & zero-config oEmbed), cleans titles, parses duration. |
-| [`auto added songs/category-detector.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/category-detector.js) | Linguistic and festival keyword scoring across all 8 PlayX playlists with confidence rating. |
-| [`auto added songs/song-db-manager.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/song-db-manager.js) | Cross-category duplicate detection, atomic file updates with `.bak` backups, and GitHub commit integration. |
-| [`auto added songs/server.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/server.js) | Standalone Node.js server (zero npm dependencies) serving the API and static site. |
-| [`auto added songs/admin-song-importer.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/admin-song-importer.js) | Frontend modal controller with responsive embed iframe preview, category selector, and approval flow. |
-| [`auto added songs/admin-song-importer.css`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/admin-song-importer.css) | Premium glassmorphic styles supporting both PlayX dark and light modes. |
-| [`auto added songs/test-suite.js`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/test-suite.js) | End-to-end automated test suite covering all URL formats, scoring, duplicate checks, and live fetch. |
-| [`auto added songs/.env.example`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/.env.example) | Configuration template for environment variables and secret tokens. |
-| [`auto added songs/package.json`](file:///c:/Users/alokk/Desktop/PlayX/auto%20added%20songs/package.json) | Node package definition with start and test scripts. |
+| [`backend/url-parser.js`](url-parser.js) | Whitelist domain validation, regex extraction of 11-char video ID, canonical and embed URL construction. |
+| [`backend/metadata-fetcher.js`](metadata-fetcher.js) | Dual-mode metadata engine (YouTube Data API v3 & zero-config oEmbed), cleans titles, parses duration. |
+| [`backend/category-detector.js`](category-detector.js) | Linguistic and festival keyword scoring across all 8 PlayX playlists with confidence rating. |
+| [`backend/song-db-manager.js`](song-db-manager.js) | Cross-category duplicate detection, atomic file updates with `.bak` backups, and GitHub commit integration. |
+| [`backend/server.js`](server.js) | Standalone Node.js server (zero npm dependencies) serving the API and static site. |
+| [`backend/admin-song-importer.js`](admin-song-importer.js) | Frontend modal controller with responsive embed iframe preview, category selector, and approval flow. |
+| [`backend/admin-song-importer.css`](admin-song-importer.css) | Premium glassmorphic styles supporting both PlayX dark and light modes. |
+| [`backend/test-suite.js`](test-suite.js) | End-to-end automated test suite covering all URL formats, scoring, duplicate checks, and live fetch. |
+| [`backend/.env.example`](.env.example) | Configuration template for environment variables and secret tokens. |
+| [`backend/package.json`](package.json) | Node package definition with start and test scripts. |
 
 ---
 
@@ -148,7 +148,7 @@ When an approved song is stored:
    - Generates a timestamped `.bak` backup copy of the target JSON file.
    - Writes the new list to a temporary file (`.tmp`).
    - Atomically renames `.tmp` to the target `.json` file via `fs.renameSync`.
-4. **History Logging**: Appends the approved record to `auto added songs/auto_added_history.json`.
+4. **History Logging**: Appends the approved record to `backend/auto_added_history.json`.
 
 ---
 
@@ -163,7 +163,7 @@ Writes are restricted to verified administrators:
 
 ## 8. Configuration & Environment Variables
 
-Copy `auto added songs/.env.example` to `auto added songs/.env`:
+Copy `backend/.env.example` to `backend/.env`:
 
 ```bash
 # Server Port (Default: 3000)
@@ -219,14 +219,14 @@ Whenever any new song is approved and added, the backend automatically updates y
 ### Running Locally / On a Dedicated Server
 ```bash
 # From workspace root:
-node "auto added songs/server.js"
+node "backend/server.js"
 ```
 The server will start at `http://localhost:3000` with the complete API and PlayX website.
 
 ### Running with PM2 (Production Daemon)
 ```bash
 npm install -g pm2
-pm2 start "auto added songs/server.js" --name "playx-importer"
+pm2 start "backend/server.js" --name "playx-importer"
 pm2 save
 ```
 
@@ -236,7 +236,7 @@ pm2 save
 
 Execute the automated test suite at any time:
 ```bash
-node "auto added songs/test-suite.js"
+node "backend/test-suite.js"
 ```
 
 **Results**:

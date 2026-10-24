@@ -2,10 +2,10 @@
   "name": "playx",
   "version": "1.0.0",
   "description": "PlayX Music Portal with YouTube Auto Song Importer",
-  "main": "auto added songs/server.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node \"auto added songs/server.js\"",
-    "test": "node \"auto added songs/test-suite.js\""
+    "start": "node \"backend/server.js\"",
+    "test": "node \"backend/test-suite.js\""
   },
   "keywords": [
     "playx",
