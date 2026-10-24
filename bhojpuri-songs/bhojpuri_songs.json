@@ -34,5 +34,23 @@
     "addedAt": "2026-10-10T17:28:02.840Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 3,
+    "name": "Rajaji Ke Dilwa",
+    "nameEn": "Rajaji Ke Dilwa",
+    "singer": "Pawan Singh , Anupma Yadav",
+    "singerEn": "Pawan Singh , Anupma Yadav",
+    "category": "Bhojpuri Songs",
+    "tag": "Bhojpuri song",
+    "videoId": "W0tcRFfKHEo",
+    "youtubeId": "W0tcRFfKHEo",
+    "embedUrl": "https://www.youtube.com/embed/W0tcRFfKHEo",
+    "originalUrl": "https://youtu.be/W0tcRFfKHEo?si=HkngmlgrCqxU_Ly4",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/W0tcRFfKHEo/hqdefault.jpg",
+    "addedAt": "2026-10-24T19:59:51.849Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
