@@ -34,5 +34,23 @@
     "addedAt": "2026-10-11T10:31:38.086Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 3,
+    "name": "Ram Bachaye",
+    "nameEn": "Ram Bachaye",
+    "singer": "Shiva Choudhary, Sompal",
+    "singerEn": "Shiva Choudhary, Sompal",
+    "category": "Haryanvi Songs",
+    "tag": "डीजे हिट्स",
+    "videoId": "0LCQPI8E9lA",
+    "youtubeId": "0LCQPI8E9lA",
+    "embedUrl": "https://www.youtube.com/embed/0LCQPI8E9lA",
+    "originalUrl": "https://youtu.be/0LCQPI8E9lA?si=8X1YQMwlL4Zljbc6",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/0LCQPI8E9lA/hqdefault.jpg",
+    "addedAt": "2026-10-27T06:46:24.783Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
