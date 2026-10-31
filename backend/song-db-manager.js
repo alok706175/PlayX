@@ -292,7 +292,12 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
     // Check if commit succeeded or already committed
     if (commitRes.success || commitRes.stdout.includes('nothing to commit')) {
       // Push to GitHub main
-      let pushRes = await execShellCommand(`git push origin main`);
+      // Only push if remote origin is configured
+      let pushRes = { success: false, error: 'origin check' };
+      const remoteCheck = await execShellCommand('git remote');
+      if (remoteCheck.success && remoteCheck.stdout.includes('origin')) {
+        pushRes = await execShellCommand('git push origin main');
+      }
 
       // If remote has new commits, pull with rebase and re-try push
       if (!pushRes.success && (pushRes.error.includes('fetch first') || pushRes.error.includes('non-fast-forward'))) {

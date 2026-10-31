@@ -155,8 +155,14 @@ function isAuthorizedAdmin(req, body = {}) {
 /**
  * Checks request rate limit (max 60 requests / minute)
  */
+function getClientIp(req) {
+  const f = req.headers['x-forwarded-for'];
+  if (f) return f.split(',')[0].trim();
+  return req.socket.remoteAddress || '127.0.0.1';
+}
+
 function checkApiRateLimit(req) {
-  const ip = req.socket.remoteAddress || '127.0.0.1';
+  const ip = getClientIp(req);
   const now = Date.now();
   const limit = apiRateLimiter.get(ip) || { count: 0, resetTime: now + 60000 };
 
@@ -249,7 +255,12 @@ const server = http.createServer(async (req, res) => {
   // API ROOT & HEALTH CHECK: Server Status & Ping Endpoint
   // GET / or GET /health
   // -------------------------------------------------------------
-  if ((pathname === '/' || pathname === '/health') && method === 'GET') {
+  if ((pathname === '/' || pathname === '/health' || pathname === '/api') && method === 'GET') {
+    const accept = req.headers.accept || '';
+    if (pathname === '/' && (accept.includes('text/html') || !accept.includes('application/json'))) {
+      serveStaticFile(req, res, '/home.html');
+      return;
+    }
     sendJsonResponse(res, 200, {
       status: 'active',
       service: 'PlayX Music Backend API',
@@ -274,7 +285,7 @@ const server = http.createServer(async (req, res) => {
   // POST /api/admin/login
   // -------------------------------------------------------------
   if (pathname === '/api/admin/login' && method === 'POST') {
-    const ip = req.socket.remoteAddress || '127.0.0.1';
+    const ip = getClientIp(req);
     const now = Date.now();
 
     // Check brute-force rate limiter (Max 5 attempts / 15 minutes)
@@ -525,7 +536,7 @@ const server = http.createServer(async (req, res) => {
   // -------------------------------------------------------------
   // Fallback: 404 for unknown endpoints (Optional local static server via SERVE_STATIC=true)
   // -------------------------------------------------------------
-  if (process.env.SERVE_STATIC === 'true') {
+  if (process.env.SERVE_STATIC !== 'false') {
     serveStaticFile(req, res, pathname);
     return;
   }

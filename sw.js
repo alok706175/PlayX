@@ -192,6 +192,23 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  
+  // 3.5 Dynamic Song Playlist JSON Data - Network-First with Cache Fallback
+  if (false) {
+    event.respondWith(
+      fetch(req)
+        .then((networkRes) => {
+          if (networkRes && networkRes.status === 200) {
+            const copy = networkRes.clone();
+            caches.open(DYNAMIC_CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
+          return networkRes;
+        })
+        .catch(() => caches.match(req))
+    );
+    return;
+  }
+
   // 4. Static App Shell Assets & JSON Data - Cache-First with Background Revalidation
   if (
     STATIC_ASSETS.some((asset) => req.url.includes(asset.replace("./", ""))) ||

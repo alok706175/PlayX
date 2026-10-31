@@ -525,3 +525,20 @@ body {
     position: static;
   }
 }
+
+/* Live YouTube Video Stage Display Mode */
+.video-stage.visible-video {
+  position: relative !important;
+  width: 100% !important;
+  max-width: 480px !important;
+  height: 240px !important;
+  min-height: 200px !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  margin: 12px auto !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(255, 184, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  z-index: 10 !important;
+}

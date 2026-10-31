@@ -148,16 +148,28 @@
   }
 
   function toggleViewMode() {
-    currentViewMode = "vinyl";
+    currentViewMode = currentViewMode === "vinyl" ? "video" : "vinyl";
     applyViewMode();
   }
 
   function applyViewMode() {
     if (!videoStage || !vinylDisc) return;
-    videoStage.style.display = "block"; // Keep active in DOM for YouTube audio
-    vinylDisc.style.display = "flex";
-    if (viewToggleBtn) {
-      viewToggleBtn.style.display = "none";
+    if (currentViewMode === "video") {
+      videoStage.classList.add("visible-video");
+      vinylDisc.style.display = "none";
+      if (viewToggleBtn) {
+        viewToggleBtn.style.display = "inline-flex";
+        viewToggleBtn.innerHTML = "<span>💿</span> <span>Vinyl View</span>";
+        viewToggleBtn.setAttribute("title", "Switch to Vinyl Disc View");
+      }
+    } else {
+      videoStage.classList.remove("visible-video");
+      vinylDisc.style.display = "flex";
+      if (viewToggleBtn) {
+        viewToggleBtn.style.display = "inline-flex";
+        viewToggleBtn.innerHTML = "<span>🎬</span> <span>Video View</span>";
+        viewToggleBtn.setAttribute("title", "Switch to YouTube Video View");
+      }
     }
   }
 
