@@ -2211,3 +2211,20 @@
   color: #ffffff;
 }
 
+
+/* Online YouTube Audio Badge on Song Cards */
+.song-card-online-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 5px 9px;
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  letter-spacing: 0.3px;
+  user-select: none;
+}

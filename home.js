@@ -33,7 +33,7 @@
       hindiTitle: "हिंदी सुपरहिट बॉलीवुड गीत",
       hindiSub: "Superhit Hindi Songs (Bollywood)",
       hindiDesc: "90s के सदाबहार क्लासिक्स, रोमांटिक मेलोडीज, और डांस ट्रैक्स। अरिजीत सिंह, सोनू निगम, लता मंगेशकर, कुमार सानु, उदित नारायण और अलका याग्निक के बेहतरीन नगमे।",
-      hindiPills: ["70 क्लासिक हिट्स", "320 Kbps HD", "डार्क मोड प्लेयर"],
+      hindiPills: ["200 क्लासिक हिट्स", "320 Kbps HD", "डार्क मोड प्लेयर"],
       saawanTitle: "सावन शिव भजन व बोल बम",
       saawanSub: "Saawan Songs & Shiv Bhajan",
       saawanDesc: "सावन शिव भजन व बोल बम के पावन भक्ति गीत। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
@@ -91,7 +91,7 @@
       hindiTitle: "Hindi Song",
       hindiSub: "Evergreen Classics & Romantic Melodies",
       hindiDesc: "Timeless 90s classics, romantic blockbusters, and energetic dance tracks from Arijit Singh, Sonu Nigam, Lata Mangeshkar, and Kumar Sanu.",
-      hindiPills: ["70 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
+      hindiPills: ["200 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
 
       haryanviTitle: "Haryanvi Song",
       haryanviSub: "Sapna Choudhary & DJ Bass Hits",

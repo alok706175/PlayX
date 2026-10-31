@@ -431,6 +431,7 @@
   const playlistBackdrop = document.getElementById("playlistBackdrop");
   const playlistList = document.getElementById("playlistList");
   const playlistTitleText = document.getElementById("playlistTitleText");
+    if (playlistTitleText) playlistTitleText.textContent = `${t.playlistTitle} (${songs.length})`;
   const playlistSearch = document.getElementById("playlistSearch");
 
   // Shortcuts modal elements
@@ -1255,7 +1256,7 @@
     if (isPlaying && playbackRetryCount < MAX_PLAYBACK_RETRIES) {
       playbackRetryCount++;
       setTimeout(() => {
-        if (offlineAudio && songs[currentSong]) {
+        if (offlineAudio && songs[currentSong] && songs[currentSong].file) {
           const savedPos = offlineAudio.currentTime;
           offlineAudio.src = songs[currentSong].file;
           offlineAudio.load();
@@ -1266,6 +1267,13 @@
           }).catch(() => {});
         }
       }, 1000);
+    } else {
+      playbackRetryCount = 0;
+      setPlaybackState(false);
+      showToast(currentLang === "en" ? "⚠️ Audio error: skipping to next track..." : "⚠️ ऑडियो लोड नहीं हुआ। अगला गीत शुरू हो रहा है...");
+      setTimeout(() => {
+        playNext();
+      }, 1500);
     }
   }
 
@@ -1887,12 +1895,16 @@
     });
   }
 
-  /* Search input listener */
+  /* Search input listener with smooth 180ms debounce */
+  let searchDebounceTimer = null;
   if (mainSearchInput) {
     mainSearchInput.addEventListener("input", (e) => {
       const q = e.target.value;
       if (mainSearchClearBtn) mainSearchClearBtn.style.display = q ? "flex" : "none";
-      renderSongCardsGrid();
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        renderSongCardsGrid();
+      }, 180);
     });
   }
 
