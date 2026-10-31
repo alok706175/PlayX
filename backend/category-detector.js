@@ -23,7 +23,7 @@
       pageUrl: 'chhath-puja/chhath-puja.html',
       isFestivalPlayer: false,
       isDualMode: true,
-      defaultTag: 'छठ महापर्व',
+      defaultTag: 'Chhath Mahaparv',
       icon: '🌅',
       weights: {
         keywords: [
@@ -66,7 +66,7 @@
       targetDir: 'saawan-songs',
       pageUrl: 'saawan-songs/saawan-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'बोल बम भजन',
+      defaultTag: 'Bol Bam Bhajan',
       icon: '🔱',
       weights: {
         keywords: [
@@ -87,7 +87,7 @@
       targetDir: 'durga-puja-songs',
       pageUrl: 'durga-puja-songs/durga-puja-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'नवरात्रि स्पेशल',
+      defaultTag: 'Navratri Special',
       icon: '🪔',
       weights: {
         keywords: [
@@ -108,7 +108,7 @@
       targetDir: 'holi-songs',
       pageUrl: 'holi-songs/holi-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'होली उत्सव',
+      defaultTag: 'Holi Special',
       icon: '🎨',
       weights: {
         keywords: [
@@ -128,7 +128,7 @@
       targetDir: 'bhojpuri-songs',
       pageUrl: 'bhojpuri-songs/bhojpuri-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'देसी हिट्स',
+      defaultTag: 'Desi Hits',
       icon: '🪕',
       weights: {
         keywords: [
@@ -150,7 +150,7 @@
       targetDir: 'haryanvi-songs',
       pageUrl: 'haryanvi-songs/haryanvi-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'डीजे हिट्स',
+      defaultTag: 'DJ Hits',
       icon: '⚡',
       weights: {
         keywords: [
@@ -172,7 +172,7 @@
       targetDir: 'punjabi-songs',
       pageUrl: 'punjabi-songs/punjabi-songs.html',
       isFestivalPlayer: true,
-      defaultTag: 'भांगड़ा बीट्स',
+      defaultTag: 'Bhangra Beats',
       icon: '🥁',
       weights: {
         keywords: [

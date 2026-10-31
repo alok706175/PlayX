@@ -287,8 +287,8 @@
       document.title = originalDocTitle;
       return;
     }
-    const songName = currentSong.name || "Song";
-    const singer = currentSong.singer ? ` • ${currentSong.singer}` : "";
+    const songName = currentSong.nameEn || currentSong.name || "Song";
+    const singer = (currentSong.singerEn || currentSong.singer) ? ` • ${currentSong.singerEn || currentSong.singer}` : "";
 
     if (status === "buffering") {
       document.title = `⏳ Buffering: ${songName}${singer} | PlayX`;
@@ -771,8 +771,8 @@
     currentIndex = index;
     const song = songs[index];
 
-    if (trackTitle) trackTitle.textContent = song.name;
-    if (trackSinger) trackSinger.textContent = song.singer;
+    if (trackTitle) trackTitle.textContent = song.nameEn || song.name;
+    if (trackSinger) trackSinger.textContent = song.singerEn || song.singer;
     if (trackTag) trackTag.textContent = song.tag || song.category || festivalTitle;
 
     // Update cover artwork
@@ -1063,7 +1063,7 @@
         ${thumbUrl ? `<div class="song-thumb-col"><img src="${thumbUrl}" alt="${song.name}" class="song-row-thumb" loading="lazy"></div>` : ""}
         <div class="song-info-col">
           <div class="song-name-text">${song.name}</div>
-          <div class="song-singer-text">${song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
+          <div class="song-singer-text">${song.singerEn || song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
         </div>
         <div class="song-actions-col">
           <button class="fav-icon-btn ${isFav ? "liked" : ""}" data-id="${song.id}" type="button" title="Favorites">${isFav ? "❤️" : "🤍"}</button>

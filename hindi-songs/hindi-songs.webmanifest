@@ -1,7 +1,7 @@
 {
-  "name": "PlayX | हिंदी सुपरहिट बॉलीवुड गीत",
-  "short_name": "हिंदी गीत",
-  "description": "200 सुपरहिट हिंदी बॉलीवुड गीत, 90s क्लासिक्स और रोमांटिक हिट्स - ऑनलाइन व ऑफलाइन म्यूजिक वेब ऐप",
+  "name": "PlayX | Superhit Hindi Songs",
+  "short_name": "Hindi Songs",
+  "description": "200 Superhit Bollywood Hindi Songs, 90s Classics and Romantic Melodies in 320 Kbps HD audio - online and offline web player.",
   "id": "/hindi-songs",
   "start_url": "./hindi-songs.html",
   "scope": "./",
@@ -9,7 +9,10 @@
   "orientation": "any",
   "theme_color": "#0c0f17",
   "background_color": "#0c0f17",
-  "categories": ["music", "entertainment"],
+  "categories": [
+    "music",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "favicon.io/hindi-icon-16x16.png",

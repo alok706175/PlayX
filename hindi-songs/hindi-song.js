@@ -9,7 +9,8 @@
   /* =========================================================
      0. BILINGUAL LOCALIZATION STRINGS (HINDI / ENGLISH)
      ========================================================= */
-  let currentLang = localStorage.getItem("playx_lang") || "en"; // Default English
+  let currentLang = "en";
+try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let selectedCategory = "all";
   let currentSort = "default";
   let isShuffle = false;
@@ -608,8 +609,8 @@
     const s = songs[index];
     const isEn = currentLang === "en";
 
-    const title = isEn ? (s.nameEn || s.name) : s.name;
-    const singer = isEn ? (s.singerEn || s.singer) : s.singer;
+    const title = s.nameEn || s.name;
+    const singer = s.singerEn || s.singer;
 
     let isOffline = false;
     if (window.OfflineManager) {
@@ -2074,10 +2075,11 @@
   }
 
   if (langToggleBtn) {
-    langToggleBtn.addEventListener("click", () => {
+    // Language toggle disabled for English-only mode
+    /* langToggleBtn.addEventListener("click", () => {
       const next = currentLang === "en" ? "hi" : "en";
       setLanguage(next, true);
-    });
+    }); */
   }
   setLanguage(currentLang, false);
 

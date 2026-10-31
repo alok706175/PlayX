@@ -1,7 +1,7 @@
 {
-  "name": "PlayX | Festival & Music Web Portal",
+  "name": "PlayX | Music & Festival Portal",
   "short_name": "PlayX",
-  "description": "छठ महापर्व, हिंदी, सावन, दुर्गा पूजा व होली गीतों का ऑनलाइन व ऑफलाइन म्यूजिक वेब ऐप",
+  "description": "Online and offline music web portal for Bollywood Hindi, Chhath Puja, Saawan, Durga Puja, Holi, Bhojpuri, Haryanvi, and Punjabi superhits in 320 Kbps HD audio.",
   "id": "/",
   "start_url": "./home.html",
   "scope": "./",
@@ -9,7 +9,11 @@
   "orientation": "any",
   "theme_color": "#24080a",
   "background_color": "#24080a",
-  "categories": ["music", "entertainment", "lifestyle"],
+  "categories": [
+    "music",
+    "entertainment",
+    "lifestyle"
+  ],
   "icons": [
     {
       "src": "favicon.io/favicon-16x16.png",

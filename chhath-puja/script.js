@@ -8,7 +8,8 @@
   /* =========================================================
      0. BILINGUAL INTERNATIONALIZATION (HINDI / ENGLISH)
      ========================================================= */
-  let currentLang = localStorage.getItem("playx_lang") || "en"; // Default English
+  let currentLang = "en";
+try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   const i18n = {
     hi: {
@@ -1055,8 +1056,8 @@
     const s = songs[index];
     const isEn = currentLang === "en";
 
-    let title = isEn ? (s.titleEn || s.title) : s.title;
-    let singer = isEn ? (s.artistEn || s.artist) : s.artist;
+    let title = s.titleEn || s.title;
+    let singer = s.artistEn || s.artist;
 
     if (isOnlineMode) {
       title = isEn ? (s.ytNameEn || title) : (s.ytName || title);
@@ -2869,10 +2870,11 @@
 
   // Bilingual language toggle button
   if (langToggleBtn) {
-    langToggleBtn.addEventListener("click", () => {
+    // Language toggle disabled for English-only mode
+    /* langToggleBtn.addEventListener("click", () => {
       const nextLang = currentLang === "en" ? "hi" : "en";
       setLanguage(nextLang, true);
-    });
+    }); */
   }
 
   const navHomeBtn = document.getElementById("navHomeBtn");

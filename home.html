@@ -424,7 +424,7 @@
       try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) {}
       window.closeAdminMenu();
       window.updateAdminAuthState();
-      alert("आप सफलतापूर्वक लॉगआउट हो गए हैं।");
+      alert("You have been logged out successfully.");
     };
 
     var lastToggleTime = 0;
@@ -505,11 +505,11 @@
         if (choice && choice.outcome === "accepted") {
           localStorage.setItem("playx_pwa_installed", "true");
           window.updateInstallButtonVisibility(true);
-          alert("PlayX ऐप आपके डिवाइस पर इंस्टॉल हो रहा है!");
+          alert("PlayX app is installing on your device!");
         }
         deferredPrompt = null;
       } else {
-        alert("PlayX ऐप को अपने डिवाइस पर इंस्टॉल करने के लिए:\n1. ब्राउज़र मेनू (⋮ या Share) खोलें।\n2. 'Add to Home screen' या 'Install app' चुनें।");
+        alert("To install PlayX on your device:\n1. Open browser menu (⋮ or Share).\n2. Tap 'Add to Home screen' or 'Install app'.");
       }
     };
   </script>
@@ -526,18 +526,15 @@
   <link rel="manifest" href="site.webmanifest">
 
   <!-- SEO Meta -->
-  <meta name="description"
-    content="छठ पूजा गीत, हिंदी सुपरहिट बॉलीवुड गाने, सावन शिव भजन, दुर्गा पूजा व नवरात्रि गीत, होली के रंग-बिरंगे गाने, भोजपुरी सुपरहिट गाने, हरियाणवी डीजे गाने और पंजाबी सुपरहिट गानों का संपूर्ण ऑनलाइन व ऑफलाइन संगीत पोर्टल। 320 Kbps HD ऑडियो में सुनें।">
-  <meta name="keywords"
-    content="छठ पूजा गीत, Chhath Puja Songs, हिंदी गाने, Hindi Songs, भोजपुरी गाने, Bhojpuri Songs, हरियाणवी गाने, Haryanvi Songs, पंजाबी गाने, Punjabi Songs, सावन गीत, Saawan Songs, Shiv Bhajan, दुर्गा पूजा गीत, Durga Puja Songs, होली के गाने, Holi Songs, दिलजीत दोसांझ, सिद्धू मूसेवाला, पवन सिंह, खेसारी लाल, सपना चौधरी">
+  <meta name="description" content="PlayX is the ultimate online and offline music portal for Bollywood Hindi songs, Chhath Puja, Saawan, Durga Puja, Holi, Bhojpuri, Haryanvi, and Punjabi superhits in 320 Kbps HD audio.">
+  <meta name="keywords" content="PlayX, Hindi Songs, Bollywood Classics, Chhath Puja Songs, Bhojpuri Songs, Punjabi Hits, Haryanvi Songs, Saawan Shiv Bhajan, Durga Puja Navratri, Holi Songs, HD Music Player">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0a0712">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="PlayX | छठ पूजा, हिंदी, सावन, दुर्गा पूजा व होली गीत पोर्टल">
-  <meta property="og:description"
-    content="छठ महापर्व, बॉलीवुड क्लासिक्स, शिव भजन, माता की भेंट और होली के सुपरहिट गानों का ऑल-इन-वन म्यूजिक हब।">
+  <meta property="og:title" content="PlayX | A Largest Music Library Website">
+  <meta property="og:description" content="Listen to 200+ Bollywood Hindi classics, Chhath Puja geet, Saawan bhajans, Durga Puja, Holi, Bhojpuri, and Punjabi superhits in 320 Kbps HD audio.">
   <meta property="og:url" content="https://www.mahaparvchhathpuja.me/">
   <meta property="og:image" content="https://www.mahaparvchhathpuja.me/images/playx_full_logo.png">
 
@@ -555,7 +552,7 @@
     "@type": "WebSite",
     "name": "PlayX - Chhath Ghat Festival & Music Portal",
     "url": "https://www.mahaparvchhathpuja.me/",
-    "description": "छठ पूजा, हिंदी गाने, सावन भजन, दुर्गा पूजा और होली गीतों का ऑनलाइन व ऑफलाइन म्यूजिक वेब पोर्टल",
+    "description": "PlayX online and offline music web portal for Bollywood Hindi, Chhath Puja, Saawan, Durga Puja, Holi, Bhojpuri, Haryanvi, and Punjabi superhits.",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://www.mahaparvchhathpuja.me/?q={search_term_string}",
@@ -592,7 +589,7 @@
         <!-- Nav Actions: Live IST Clock & Theme Toggle -->
         <div class="nav-actions">
           <!-- Live Clock on Homepage (Matches Language & Theme Button Style) -->
-          <div class="time-widget live-clock-widget" id="timeWidget" title="भारतीय मानक समय (IST)" role="button"
+          <div class="time-widget live-clock-widget" id="timeWidget" title="Indian Standard Time (IST)" role="button"
             tabindex="0" aria-label="Indian Standard Time Clock">
             <svg class="btn-nav-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
               stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -612,10 +609,7 @@
             </svg>
             <span id="themeBtnText">Dark Mode</span>
           </button>
-          <button class="lang-toggle-btn" id="langToggleBtn" type="button" aria-label="Switch to Hindi Language"
-            title="Switch to Hindi Language" data-lang="en">
-            <span id="langBtnText">English</span>
-          </button>
+          <!-- Language Toggle Button (English default) -->
         </div>
 
         <!-- Nav Right: 3 Vertical Dots (More Options) -->
@@ -705,10 +699,10 @@
 
         <!-- 1. HINDI SONGS CARD BUTTON -->
         <a href="hindi-songs/hindi-songs.html" class="category-card-btn card-hindi" data-category="hindi"
-          title="हिंदी सुपरहिट बॉलीवुड गीत सुनें">
+          title="Listen to Superhit Bollywood Hindi Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-hindi-music" title="हिंदी सुपरहिट संगीत">
-              <img src="hindi-songs/images/hindi_song_icon.png" alt="हिंदी सुपरहिट संगीत" class="hindi-card-icon-img"
+            <div class="card-icon-emblem card-icon-hindi-music" title="Superhit Hindi Music">
+              <img src="hindi-songs/images/hindi_song_icon.png" alt="Superhit Hindi Music" class="hindi-card-icon-img"
                 width="40" height="40">
             </div>
             <span class="card-btn-arrow">
@@ -721,27 +715,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>हिंदी सुपरहिट बॉलीवुड गीत</h3>
-              <div class="card-subtitle-en">Superhit Hindi Songs</div>
+              <h3>Hindi Superhit Songs</h3>
+              <div class="card-subtitle-en">Bollywood Classics & Melodies</div>
             </div>
             <p class="card-description">
-              90s के सदाबहार क्लासिक्स, रोमांटिक मेलोडीज, और डांस ट्रैक्स। अरिजीत सिंह, सोनू निगम,
-              लता मंगेशकर, कुमार सानु, उदित नारायण और अलका याग्निक के बेहतरीन नगमे।
+              Timeless 90s classics, romantic blockbusters, and dance tracks from Arijit Singh, Sonu Nigam, Lata Mangeshkar, and Kumar Sanu.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">70 क्लासिक हिट्स</span>
+              <span class="highlight-pill">200 Classic Hits</span>
               <span class="highlight-pill">320 Kbps HD</span>
-              <span class="highlight-pill">डार्क मोड प्लेयर</span>
+              <span class="highlight-pill">Dark Mode Player</span>
             </div>
           </div>
         </a>
 
         <!-- 2. HARYANVI SONGS CARD BUTTON -->
         <a href="haryanvi-songs/haryanvi-songs.html" class="category-card-btn card-haryanvi" data-category="haryanvi"
-          title="हरियाणवी सुपरहिट गाने सुनें">
+          title="Listen to Haryanvi Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-haryanvi" title="हरियाणवी सुपरहिट संगीत" style="background: #09091f; border: 1.5px solid rgba(236, 72, 153, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="haryanvi-songs/images/haryanvi_logo.svg" alt="हरियाणवी सुपरहिट संगीत" class="haryanvi-card-icon-img"
+            <div class="card-icon-emblem card-icon-haryanvi" title="Haryanvi Superhit Music" style="background: #09091f; border: 1.5px solid rgba(236, 72, 153, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="haryanvi-songs/images/haryanvi_logo.svg" alt="Haryanvi Superhit Music" class="haryanvi-card-icon-img"
                 width="44" height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
@@ -754,26 +747,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>हरियाणवी सुपरहिट गाने</h3>
-              <div class="card-subtitle-en">Haryanvi Superhit Songs</div>
+              <h3>Haryanvi Superhit Songs</h3>
+              <div class="card-subtitle-en">DJ Bass & Folk Hits</div>
             </div>
             <p class="card-description">
-              हरियाणवी सुपरहिट डीजे और फोक गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              High-energy Haryanvi party hits, folk tunes, and DJ bass anthems from top artists.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">डीजे हिट्स</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">DJ Bass Hits</span>
+              <span class="highlight-pill">Haryanvi Hits</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
 
         <!-- 3. PUNJABI SONGS CARD BUTTON -->
         <a href="punjabi-songs/punjabi-songs.html" class="category-card-btn card-punjabi" data-category="punjabi"
-          title="पंजाबी सुपरहिट गाने सुनें">
+          title="Listen to Punjabi Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-punjabi" title="पंजाबी सुपरहिट संगीत" style="background: #09091f; border: 1.5px solid rgba(168, 85, 247, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="punjabi-songs/images/punjabi_logo.png" alt="पंजाबी सुपरहिट संगीत" class="punjabi-card-icon-img"
+            <div class="card-icon-emblem card-icon-punjabi" title="Punjabi Superhit Music" style="background: #09091f; border: 1.5px solid rgba(168, 85, 247, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="punjabi-songs/images/punjabi_logo.png" alt="Punjabi Superhit Music" class="punjabi-card-icon-img"
                 width="38" height="38" style="border-radius: 50%; object-fit: cover;">
             </div>
             <span class="card-btn-arrow">
@@ -786,26 +779,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>पंजाबी सुपरहिट गाने</h3>
+              <h3>Punjabi Superhit Songs</h3>
               <div class="card-subtitle-en">Punjabi Superhit Songs & Bhangra Hits</div>
             </div>
             <p class="card-description">
-              दिलजीत दोसांझ, सिद्धू मूसेवाला और गुरु रंधावा के सुपरहिट पंजाबी व भांगड़ा गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              Energetic Punjabi anthems, Bhangra beats, and superhits from Diljit Dosanjh, Sidhu Moose Wala, and Guru Randhawa.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">भांगड़ा बीट्स</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">PlayX Hits</span>
+              <span class="highlight-pill">Bhangra Beats</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
 
         <!-- 4. DURGA PUJA SONGS CARD BUTTON -->
         <a href="durga-puja-songs/durga-puja-songs.html" class="category-card-btn card-durga" data-category="durga"
-          title="दुर्गा पूजा व नवरात्रि भक्ति गीत सुनें">
+          title="Listen to Durga Puja & Navratri Bhajans">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-durga" title="दुर्गा पूजा व नवरात्रि">
-              <img src="durga-puja-songs/images/durga_puja_logo.png" alt="दुर्गा पूजा व नवरात्रि"
+            <div class="card-icon-emblem card-icon-durga" title="Durga Puja & Navratri">
+              <img src="durga-puja-songs/images/durga_puja_logo.png" alt="Durga Puja & Navratri"
                 class="durga-card-icon-img" width="46" height="46">
             </div>
             <span class="card-btn-arrow">
@@ -818,26 +811,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>दुर्गा पूजा व नवरात्रि भक्ति</h3>
+              <h3>Durga Puja & Navratri Bhakti</h3>
               <div class="card-subtitle-en">Durga Puja & Navratri Bhakti Geet</div>
             </div>
             <p class="card-description">
-              माता रानी के पावन भजन, आरती और नवरात्रि की विशेष भेंटें। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              Sacred Navratri bhajans, Maa Durga aartis, bhents, and high-energy Garba & Dandiya hits.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">नवरात्रि स्पेशल</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">PlayX Hits</span>
+              <span class="highlight-pill">Navratri Special</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
 
         <!-- 5. SAAWAN SONGS CARD BUTTON -->
         <a href="saawan-songs/saawan-songs.html" class="category-card-btn card-saawan" data-category="saawan"
-          title="सावन शिव भजन व बोल बम सुनें">
+          title="Listen to Saawan Songs & Shiv Bhajan">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-trishul" title="त्रिशूल और डमरू">
-              <img src="saawan-songs/images/trishul_damru.svg" alt="त्रिशूल और डमरू" class="trishul-damru-img"
+            <div class="card-icon-emblem card-icon-trishul" title="Trishul & Damru">
+              <img src="saawan-songs/images/trishul_damru.svg" alt="Trishul & Damru" class="trishul-damru-img"
                 width="36" height="44">
             </div>
             <span class="card-btn-arrow">
@@ -850,23 +843,23 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>सावन शिव भजन व बोल बम</h3>
-              <div class="card-subtitle-en">Saawan Songs & Shiv Bhajan</div>
+              <h3>Saawan Songs & Shiv Bhajan</h3>
+              <div class="card-subtitle-en">Bol Bam & Mahadev Bhajans</div>
             </div>
             <p class="card-description">
-              सावन शिव भजन व बोल बम के पावन भक्ति गीत। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              Sacred Saawan Shiv bhajans, Shiv Tandav Stotram, and devotional songs celebrating Lord Shiva.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">बोल बम भजन</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">PlayX Hits</span>
+              <span class="highlight-pill">Bol Bam Hits</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
 
         <!-- 6. CHHATH PUJA SONGS CARD BUTTON -->
         <a href="chhath-puja/chhath-puja.html" class="category-card-btn card-chhath" data-category="chhath"
-          title="छठ पूजा महापर्व गीत सुनें">
+          title="Listen to Chhath Puja Devotional Songs">
           <div class="card-btn-header">
             <div class="card-icon-emblem">🌅</div>
             <span class="card-btn-arrow">
@@ -879,27 +872,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>छठ पूजा महापर्व गीत</h3>
-              <div class="card-subtitle-en">Chhath Puja Mahaparv Geet</div>
+              <h3>Chhath Puja Mahaparv Songs</h3>
+              <div class="card-subtitle-en">Divine Sun God & Chhathi Maiya Geet</div>
             </div>
             <p class="card-description">
-              उगी हे दीनानाथ, केलवा के पात पर, काँच ही बाँस के बहंगिया सहित शारदा सिन्हा,
-              पवन सिंह, खेसारी लाल यादव और अनुराधा पौडवाल के पावन अर्घ्य गीत।
+              Sacred Chhath Puja Arghya and devotional melodies by Sharda Sinha, Pawan Singh, Khesari Lal Yadav, Anuradha Paudwal, and more.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">25+ पारंपरिक गीत</span>
-              <span class="highlight-pill">सूर्य गायत्री मंत्र</span>
-              <span class="highlight-pill">लाइव घाट वीडियो</span>
+              <span class="highlight-pill">25+ Traditional Songs</span>
+              <span class="highlight-pill">Surya Gayatri Mantra</span>
+              <span class="highlight-pill">Live Ghat Videos</span>
             </div>
           </div>
         </a>
 
         <!-- 7. HOLI SONGS CARD BUTTON -->
         <a href="holi-songs/holi-songs.html" class="category-card-btn card-holi" data-category="holi"
-          title="होली के रंग-बिरंगे गाने सुनें">
+          title="Listen to Colorful Holi Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-holi" title="होली सुपरहिट संगीत" style="background: #ffffff; border: 1.5px solid rgba(244, 63, 94, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="holi-songs/images/holi_logo.svg" alt="होली संगीत" class="holi-card-icon-img"
+            <div class="card-icon-emblem card-icon-holi" title="Holi Superhit Music" style="background: #ffffff; border: 1.5px solid rgba(244, 63, 94, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="holi-songs/images/holi_logo.svg" alt="Holi Music" class="holi-card-icon-img"
                 width="44" height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
@@ -912,26 +904,26 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>होली के रंग-बिरंगे गाने</h3>
+              <h3>Colorful Holi Songs</h3>
               <div class="card-subtitle-en">Holi Songs & Fhag Special</div>
             </div>
             <p class="card-description">
-              रंगों के महापर्व होली के सुपरहिट गाने और फाग। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              Festive celebration of colors with all-time favorite Holi party tracks, folk tunes, and classic hits.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">होली उत्सव</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">PlayX Hits</span>
+              <span class="highlight-pill">Holi Hits</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
 
         <!-- 8. BHOJPURI SONGS CARD BUTTON -->
         <a href="bhojpuri-songs/bhojpuri-songs.html" class="category-card-btn card-bhojpuri" data-category="bhojpuri"
-          title="भोजपुरी सुपरहिट गाने सुनें">
+          title="Listen to Bhojpuri Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-bhojpuri" title="भोजपुरी सुपरहिट संगीत" style="background: #ffffff; border: 1.5px solid rgba(239, 68, 68, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="bhojpuri-songs/images/bhojpuri_logo.png" alt="भोजपुरी सुपरहिट संगीत" class="bhojpuri-card-icon-img"
+            <div class="card-icon-emblem card-icon-bhojpuri" title="Bhojpuri Superhit Music" style="background: #ffffff; border: 1.5px solid rgba(239, 68, 68, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="bhojpuri-songs/images/bhojpuri_logo.png" alt="Bhojpuri Superhit Music" class="bhojpuri-card-icon-img"
                 width="44" height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
@@ -944,16 +936,16 @@
           </div>
           <div class="card-content">
             <div class="card-title-group">
-              <h3>भोजपुरी सुपरहिट गाने</h3>
-              <div class="card-subtitle-en">Bhojpuri Superhit Songs & Desi Hits</div>
+              <h3>Bhojpuri Superhit Songs</h3>
+              <div class="card-subtitle-en">Desi Hits, Lokgeet & Dance Beats</div>
             </div>
             <p class="card-description">
-              भोजपुरी के सुपरहिट लोकगीत और संगीत संकलन। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।
+              Top Bhojpuri folk songs, superhit dance numbers, and popular melodies from Pawan Singh, Khesari Lal, and more.
             </p>
             <div class="card-highlights">
-              <span class="highlight-pill">⏳ जल्द आ रहा है</span>
-              <span class="highlight-pill">देसी हिट्स</span>
-              <span class="highlight-pill">PlayX स्पेशल</span>
+              <span class="highlight-pill">PlayX Hits</span>
+              <span class="highlight-pill">Desi Hits</span>
+              <span class="highlight-pill">PlayX Special</span>
             </div>
           </div>
         </a>
@@ -984,32 +976,32 @@
         </div>
 
         <div class="footer-col">
-          <h5 id="footerCol1Title">पर्व श्रेणियां</h5>
+          <h5 id="footerCol1Title">Festival Categories</h5>
           <ul class="footer-links">
-            <li><a href="chhath-puja/chhath-puja.html" id="footerLinkChhath">छठ पूजा महापर्व</a></li>
-            <li><a href="saawan-songs/saawan-songs.html" id="footerLinkSaawan">सावन शिव भजन</a></li>
-            <li><a href="durga-puja-songs/durga-puja-songs.html" id="footerLinkDurga">दुर्गा पूजा व नवरात्रि</a></li>
-            <li><a href="holi-songs/holi-songs.html" id="footerLinkHoli">होली के गाने व फाग</a></li>
+            <li><a href="chhath-puja/chhath-puja.html" id="footerLinkChhath">Chhath Puja Mahaparv</a></li>
+            <li><a href="saawan-songs/saawan-songs.html" id="footerLinkSaawan">Saawan Shiv Bhajans</a></li>
+            <li><a href="durga-puja-songs/durga-puja-songs.html" id="footerLinkDurga">Durga Puja & Navratri</a></li>
+            <li><a href="holi-songs/holi-songs.html" id="footerLinkHoli">Holi Songs & Fhag</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h5 id="footerCol2Title">संगीत संकलन</h5>
+          <h5 id="footerCol2Title">Music Collections</h5>
           <ul class="footer-links">
-            <li><a href="hindi-songs/hindi-songs.html" id="footerLinkHindi">हिंदी सुपरहिट बॉलीवुड</a></li>
-            <li><a href="bhojpuri-songs/bhojpuri-songs.html" id="footerLinkBhojpuri">भोजपुरी सुपरहिट गाने</a></li>
-            <li><a href="haryanvi-songs/haryanvi-songs.html" id="footerLinkHaryanvi">हरियाणवी सुपरहिट गाने</a></li>
-            <li><a href="punjabi-songs/punjabi-songs.html" id="footerLinkPunjabi">पंजाबी सुपरहिट गाने</a></li>
-            <li><a href="chhath-puja/chhath-puja.html#mantra" id="footerLinkMantra">सूर्य गायत्री मंत्र</a></li>
+            <li><a href="hindi-songs/hindi-songs.html" id="footerLinkHindi">Hindi Superhit Songs</a></li>
+            <li><a href="bhojpuri-songs/bhojpuri-songs.html" id="footerLinkBhojpuri">Bhojpuri Superhit Songs</a></li>
+            <li><a href="haryanvi-songs/haryanvi-songs.html" id="footerLinkHaryanvi">Haryanvi Superhit Songs</a></li>
+            <li><a href="punjabi-songs/punjabi-songs.html" id="footerLinkPunjabi">Punjabi Superhit Songs</a></li>
+            <li><a href="chhath-puja/chhath-puja.html#mantra" id="footerLinkMantra">Surya Gayatri Mantra</a></li>
           </ul>
         </div>
 
         <div class="footer-col">
-          <h5 id="footerCol3Title">सुविधाएं</h5>
+          <h5 id="footerCol3Title">Features & Links</h5>
           <ul class="footer-links">
-            <li><a href="chhath-puja/chhath-puja.html" id="footerLinkOffline">ऑफ़लाइन डाउनलोड्स</a></li>
-            <li><a href="javascript:void(0)" id="footerLinkPwa" onclick="window.handleInstallApp(event)">PWA इंस्टॉल करें</a></li>
-            <li><a href="sitemap.xml" id="footerLinkSitemap">साइटमैप</a></li>
+            <li><a href="chhath-puja/chhath-puja.html" id="footerLinkOffline">Offline Downloads</a></li>
+            <li><a href="javascript:void(0)" id="footerLinkPwa" onclick="window.handleInstallApp(event)">Install Web App (PWA)</a></li>
+            <li><a href="sitemap.xml" id="footerLinkSitemap">Sitemap</a></li>
           </ul>
         </div>
       </div>
@@ -1125,7 +1117,7 @@
           if (!user || !pwd) {
             if (msg) {
               msg.className = "admin-form-msg error";
-              msg.textContent = "कृपया एडमिन ईमेल और पासवर्ड दोनों दर्ज करें।";
+              msg.textContent = "Please enter both admin email and password.";
             }
             return;
           }
@@ -1136,7 +1128,7 @@
           }
           if (msg) {
             msg.className = "admin-form-msg";
-            msg.textContent = "सत्यापित किया जा रहा है...";
+            msg.textContent = "Verifying credentials...";
           }
 
           var BACKEND_URL = "https://playx-backend-tcp4.onrender.com";
@@ -1167,12 +1159,12 @@
               }
             } else if (res.status === 429) {
               var errData = await res.json().catch(function() { return {}; });
-              throw new Error(errData.error || "बहुत अधिक असफल प्रयास। कृपया कुछ देर प्रतीक्षा करें।");
+              throw new Error(errData.error || "Too many failed attempts. Please wait a moment.");
             } else if (res.status === 401) {
-              throw new Error("❌ अमान्य क्रेडेंशियल! केवल अधिकृत एडमिन ही लॉगिन कर सकते हैं।");
+              throw new Error("❌ Invalid credentials! Only verified administrators can log in.");
             }
           } catch (err) {
-            if (err.message && (err.message.includes("अमान्य") || err.message.includes("असफल प्रयास"))) {
+            if (err.message && (err.message.includes("invalid") || err.message.includes("failed attempt"))) {
               if (msg) {
                 msg.className = "admin-form-msg error";
                 msg.textContent = err.message;
@@ -1202,7 +1194,7 @@
           if (loginSuccess) {
             if (msg) {
               msg.className = "admin-form-msg success";
-              msg.textContent = "✅ नमस्ते " + userName + "! एडमिन लॉगिन सफल रहा।";
+              msg.textContent = "✅ Welcome " + userName + "! Admin login successful.";
             }
             localStorage.setItem("playx_admin_logged_in", "true");
             localStorage.setItem("playx_admin_user", userName);
@@ -1227,7 +1219,7 @@
           } else {
             if (msg) {
               msg.className = "admin-form-msg error";
-              msg.textContent = "❌ अमान्य क्रेडेंशियल! केवल अधिकृत एडमिन ही लॉगिन कर सकते हैं।";
+              msg.textContent = "❌ Invalid credentials! Only verified administrators can log in.";
             }
             if (submitBtn) {
               submitBtn.disabled = false;
@@ -1282,7 +1274,7 @@
       if (window.closeAdminMenu) window.closeAdminMenu();
       var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
       if (!isLoggedIn) {
-        var proceed = confirm("🔒 एडमिन सुरक्षा: गाने जोड़ने के लिए एडमिन लॉगिन आवश्यक है।\n(Admin login required to approve imports).\n\nक्या आप अभी लॉगिन करना चाहते हैं?");
+        var proceed = confirm("🔒 Admin Security: Admin login is required to approve song imports.\n\nDo you want to log in now?");
         if (proceed && window.openAdminModal) {
           window.openAdminModal();
         }

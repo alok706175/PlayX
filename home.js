@@ -12,7 +12,8 @@
   if (currentTheme !== "light" && currentTheme !== "dark") {
     currentTheme = "dark";
   }
-  let currentLang = localStorage.getItem("playx_lang") || "en";
+  let currentLang = "en";
+try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let activeFilter = "all";
   let currentPlayingTrack = null;
   let audioPlayer = new Audio();
@@ -95,23 +96,23 @@
 
       haryanviTitle: "Haryanvi Song",
       haryanviSub: "Sapna Choudhary & DJ Bass Hits",
-      haryanviDesc: "Haryanvi party hits and folk tunes. Original songs for this category are coming soon.",
-      haryanviPills: ["⏳ Coming Soon", "Haryanvi Hits", "PlayX Special"],
+      haryanviDesc: "Haryanvi party hits and folk tunes. Listen to top superhits in 320 Kbps HD audio.",
+      haryanviPills: ["DJ Bass Hits", "Haryanvi Hits", "PlayX Special"],
 
       punjabiTitle: "Punjabi Song",
       punjabiSub: "Diljit Dosanjh, Sidhu Moose Wala & Bhangra",
       punjabiDesc: "Top Punjabi party anthems and Bhangra beats. Original songs for this category are coming soon.",
-      punjabiPills: ["⏳ Coming Soon", "Bhangra Beats", "PlayX Special"],
+      punjabiPills: ["Bhangra Beats", "Party Anthems", "PlayX Special"],
 
       durgaTitle: "Navratri Song & Bhajan ",
       durgaSub: "Maa Durga Aarti, Bhent & Garba-Dandiya",
       durgaDesc: "Maa Durga aarti, bhents and Navratri devotion. Original songs for this category are coming soon.",
-      durgaPills: ["⏳ Coming Soon", "Navratri Special", "PlayX Special"],
+      durgaPills: ["Navratri Special", "Garba & Aarti", "PlayX Special"],
 
       saawanTitle: "Saawan  Song & Bhajan",
       saawanSub: "Holy Kanwar Yatra & Lord Shiva Songs",
       saawanDesc: "Sacred Saawan and Kanwar Yatra bhajans. Original devotional songs for this category are coming soon.",
-      saawanPills: ["⏳ Coming Soon", "Shiv Bhajans", "PlayX Special"],
+      saawanPills: ["Shiv Bhajans", "Bol Bam Hits", "PlayX Special"],
 
       chhathTitle: "Chhath puja Song",
       chhathSub: "Divine Sun God & Chhathi Maiya Songs",
@@ -121,12 +122,12 @@
       holiTitle: "Holi Song",
       holiSub: "Festival of Colors & Folk Celebrations",
       holiDesc: "Celebration of colors, festive tracks and folk songs. Original songs for this category are coming soon.",
-      holiPills: ["⏳ Coming Soon", "Holi Hits", "PlayX Special"],
+      holiPills: ["Holi Hits", "320 Kbps HD", "PlayX Special"],
 
       bhojpuriTitle: "Bhojpuri Song",
       bhojpuriSub: "Desi Hits, Lokgeet & Dance Beats",
       bhojpuriDesc: "Top Bhojpuri folk and popular tracks. Original songs for this category are coming soon.",
-      bhojpuriPills: ["⏳ Coming Soon", "Desi Folk", "PlayX Special"],
+      bhojpuriPills: ["Desi Hits", "Folk & Dance", "PlayX Special"],
 
       // Footer Translations
       footerBrandTagline: "A Largest Music Library Website.",
@@ -239,11 +240,12 @@
     applyLanguage(currentLang);
 
     if (!langBtn) return;
-    langBtn.addEventListener("click", () => {
+    // Language switcher disabled (English only mode)
+    /* langBtn.addEventListener("click", () => {
       currentLang = currentLang === "en" ? "hi" : "en";
       localStorage.setItem("playx_lang", currentLang);
       applyLanguage(currentLang);
-    });
+    }); */
   }
 
   function applyLanguage(lang) {

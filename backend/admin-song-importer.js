@@ -33,14 +33,14 @@
   let isSubmitting = false;
 
   const CATEGORY_OPTIONS = [
-    { id: 'chhath', name: 'Chhath Puja Songs (छठ महापर्व)', page: 'chhath-puja/chhath-puja.html', file: 'chhath-puja/youtube_songs.json' },
-    { id: 'hindi', name: 'Hindi Songs (बॉलीवुड सुपरहिट)', page: 'hindi-songs/hindi-songs.html', file: 'hindi-songs/hindi_songs.json' },
-    { id: 'saawan', name: 'Saawan Songs (सावन शिव भजन)', page: 'saawan-songs/saawan-songs.html', file: 'saawan-songs/saawan_songs.json' },
-    { id: 'durga', name: 'Durga Puja Songs (दुर्गा पूजा व नवरात्रि)', page: 'durga-puja-songs/durga-puja-songs.html', file: 'durga-puja-songs/durga_puja_songs.json' },
-    { id: 'holi', name: 'Holi Songs (होली के रंग-बिरंगे)', page: 'holi-songs/holi-songs.html', file: 'holi-songs/holi_songs.json' },
-    { id: 'bhojpuri', name: 'Bhojpuri Songs (भोजपुरी सुपरहिट)', page: 'bhojpuri-songs/bhojpuri-songs.html', file: 'bhojpuri-songs/bhojpuri_songs.json' },
-    { id: 'haryanvi', name: 'Haryanvi Songs (हरियाणवी सुपरहिट)', page: 'haryanvi-songs/haryanvi-songs.html', file: 'haryanvi-songs/haryanvi_songs.json' },
-    { id: 'punjabi', name: 'Punjabi Songs (पंजाबी सुपरहिट)', page: 'punjabi-songs/punjabi-songs.html', file: 'punjabi-songs/punjabi_songs.json' }
+    { id: 'chhath', name: 'Chhath Puja Songs', page: 'chhath-puja/chhath-puja.html', file: 'chhath-puja/youtube_songs.json' },
+    { id: 'hindi', name: 'Hindi Songs', page: 'hindi-songs/hindi-songs.html', file: 'hindi-songs/hindi_songs.json' },
+    { id: 'saawan', name: 'Saawan Songs', page: 'saawan-songs/saawan-songs.html', file: 'saawan-songs/saawan_songs.json' },
+    { id: 'durga', name: 'Durga Puja Songs', page: 'durga-puja-songs/durga-puja-songs.html', file: 'durga-puja-songs/durga_puja_songs.json' },
+    { id: 'holi', name: 'Holi Songs', page: 'holi-songs/holi-songs.html', file: 'holi-songs/holi_songs.json' },
+    { id: 'bhojpuri', name: 'Bhojpuri Songs', page: 'bhojpuri-songs/bhojpuri-songs.html', file: 'bhojpuri-songs/bhojpuri_songs.json' },
+    { id: 'haryanvi', name: 'Haryanvi Songs', page: 'haryanvi-songs/haryanvi-songs.html', file: 'haryanvi-songs/haryanvi_songs.json' },
+    { id: 'punjabi', name: 'Punjabi Songs', page: 'punjabi-songs/punjabi-songs.html', file: 'punjabi-songs/punjabi_songs.json' }
   ];
 
   /**

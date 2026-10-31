@@ -294,7 +294,7 @@ const server = http.createServer(async (req, res) => {
       const waitMins = Math.ceil((rateData.lockedUntil - now) / 60000);
       sendJsonResponse(res, 429, {
         success: false,
-        error: `बहुत अधिक असफल प्रयास (Too many failed login attempts). कृपया ${waitMins} मिनट बाद पुनः प्रयास करें।`
+        error: `Too many failed login attempts. Please try again after ${waitMins} minute(s).`
       });
       return;
     }
@@ -336,7 +336,7 @@ const server = http.createServer(async (req, res) => {
 
       sendJsonResponse(res, 401, {
         success: false,
-        error: 'अमान्य एडमिन क्रेडेंशियल (Invalid admin credentials). एक्सेस अस्वीकृत।'
+        error: 'Invalid admin credentials. Access denied.'
       });
     } catch (err) {
       sendJsonResponse(res, 500, {
