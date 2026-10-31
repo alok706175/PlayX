@@ -2093,5 +2093,22 @@
     "addedAt": "2026-10-30T19:29:21.926Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 207,
+    "name": "Jhuki Jhuki Nazar Teri Kamaal | Raja | Madhuri Dixit | Sanjay",
+    "nameEn": "Jhuki Jhuki Nazar Teri Kamaal | Raja | Madhuri Dixit | Sanjay",
+    "singer": "Alka Yagnik , Udit Narayan",
+    "singerEn": "Alka Yagnik , Udit Narayan",
+    "category": "Romantic",
+    "duration": "03:45",
+    "videoId": "vf0au_2CYYE",
+    "youtubeId": "vf0au_2CYYE",
+    "embedUrl": "https://www.youtube.com/embed/vf0au_2CYYE",
+    "originalUrl": "https://youtu.be/vf0au_2CYYE?si=E3nuwTs4toY2bv4v",
+    "thumbnail": "https://i.ytimg.com/vi/vf0au_2CYYE/hqdefault.jpg",
+    "addedAt": "2026-10-31T10:16:11.270Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
