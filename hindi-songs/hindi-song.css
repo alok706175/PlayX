@@ -2815,3 +2815,19 @@
   border-color: var(--accent-color, #f59e0b);
   color: var(--accent-color, #f59e0b);
 }
+
+/* Vector Mode Icon Styling */
+.mode-svg {
+  display: block;
+  pointer-events: none;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mode-btn:active .mode-svg,
+.playlist-toggle-btn:active .mode-svg {
+  transform: scale(0.88);
+}
+
+.mode-btn.active .mode-svg {
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.5));
+}
