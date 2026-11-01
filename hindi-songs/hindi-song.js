@@ -558,6 +558,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     // Deep-linking via URL query params (?song=ID or ?play=ID or ?index=N)
     let initialIdx = 0;
     let shouldAutoPlay = false;
+    let hasUrlParam = false;
     try {
       const params = new URLSearchParams(window.location.search);
       const songParam = params.get("song") || params.get("play") || params.get("id");
@@ -565,24 +566,56 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       if (idxParam !== null && !isNaN(parseInt(idxParam, 10))) {
         initialIdx = Math.max(0, Math.min(songs.length - 1, parseInt(idxParam, 10)));
         shouldAutoPlay = true;
+        hasUrlParam = true;
       } else if (songParam) {
         const found = songs.findIndex(s => String(s.id) === String(songParam) || (s.nameEn && s.nameEn.toLowerCase() === songParam.toLowerCase()));
         if (found !== -1) {
           initialIdx = found;
           shouldAutoPlay = true;
+          hasUrlParam = true;
         }
       }
     } catch(e){}
 
+    // If no explicit URL query, restore last played track from localStorage!
+    if (!hasUrlParam) {
+      try {
+        const savedSong = localStorage.getItem("hindi_player_last_song");
+        if (savedSong !== null) {
+          const parsed = parseInt(savedSong, 10);
+          if (!isNaN(parsed) && parsed >= 0 && parsed < songs.length) {
+            initialIdx = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
     displaySongInfo(initialIdx);
+
+    // Restore last position from localStorage if not auto-playing a new URL song
+    if (!shouldAutoPlay) {
+      try {
+        const savedPos = parseFloat(localStorage.getItem("hindi_player_last_pos") || "0");
+        if (!isNaN(savedPos) && savedPos > 0 && offlineAudio) {
+          const restorePosHandler = () => {
+            if (offlineAudio.duration && isFinite(offlineAudio.duration) && savedPos < offlineAudio.duration) {
+              offlineAudio.currentTime = savedPos;
+              updateLiveProgress();
+            }
+          };
+          offlineAudio.addEventListener("loadedmetadata", restorePosHandler, { once: true });
+        }
+      } catch (e) {}
+    }
+
     if (shouldAutoPlay) {
       playSong(initialIdx);
     }
     updateFavoriteUI();
 
-    // Preload first track audio source
-    if (offlineAudio && songs[0] && songs[0].file) {
-      offlineAudio.src = songs[0].file;
+    // Preload track audio source
+    if (offlineAudio && songs[initialIdx] && songs[initialIdx].file) {
+      offlineAudio.src = songs[initialIdx].file;
       offlineAudio.load();
     }
   }
@@ -651,6 +684,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   async function displaySongInfo(index) {
     if (!songs[index]) return;
     currentSong = index;
+    try {
+      localStorage.setItem("hindi_player_last_song", index.toString());
+    } catch (e) {}
     const s = songs[index];
     const isEn = currentLang === "en";
 
@@ -780,6 +816,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
                   setPlaybackState(false);
                   updateHindiTabTitle();
                 } else if (e.data === YT.PlayerState.ENDED) {
+                  try { localStorage.setItem("hindi_player_last_pos", "0"); } catch (e) {}
                   if (hindiSleepTimerMode === -1) {
                     hindiSleepTimerMode = 0;
                     const badge = document.getElementById("hindiSleepBadge");
@@ -1371,6 +1408,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     offlineAudio.addEventListener("error", handlePlaybackError);
 
     offlineAudio.addEventListener("ended", () => {
+      try { localStorage.setItem("hindi_player_last_pos", "0"); } catch (e) {}
       lastPreloadedIdx = -1;
       if (hindiSleepTimerMode === -1) {
         hindiSleepTimerMode = 0;
@@ -1529,6 +1567,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
     if (currentTime) currentTime.textContent = formatTime(cur);
     updateMediaSessionPosition(cur, dur);
+
+    // Save playback position periodically
+    try {
+      if (cur > 1 && dur > 5 && cur < dur - 2) {
+        localStorage.setItem("hindi_player_last_pos", cur.toFixed(1));
+      }
+    } catch (e) {}
   }
 
   /* Seek interactions */
@@ -1626,6 +1671,36 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
   }
 
+    /* Initialize and Restore Saved Volume State */
+  function initVolumeState() {
+    try {
+      const savedVolStr = localStorage.getItem("playx_volume") || localStorage.getItem("hindi_player_volume");
+      const savedMuted = localStorage.getItem("hindi_player_muted") === "1";
+
+      let vol = 100;
+      if (savedVolStr !== null) {
+        const parsed = parseInt(savedVolStr, 10);
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 100) {
+          vol = parsed;
+        }
+      }
+
+      if (savedMuted || vol === 0) {
+        if (volumeSlider) volumeSlider.value = 0;
+        if (offlineAudio) offlineAudio.volume = 0;
+        if (muteBtn) muteBtn.innerHTML = VOL_MUTE_ICON;
+        lastVolume = vol > 0 ? vol / 100 : 1;
+      } else {
+        if (volumeSlider) volumeSlider.value = vol;
+        if (offlineAudio) offlineAudio.volume = vol / 100;
+        if (muteBtn) muteBtn.innerHTML = VOL_HIGH_ICON;
+        lastVolume = vol / 100;
+      }
+    } catch (e) {
+      console.warn("Volume state init notice:", e);
+    }
+  }
+
   /* Volume & Mute Controls */
   const VOL_HIGH_ICON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path d="M10 5L5 9H2v6h3l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M13.5 9.5C14.3 10.3 14.8 11.1 14.8 12s-.5 1.7-1.3 2.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 7.5C17.9 8.9 18.7 10.4 18.7 12s-.8 3.1-2.2 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
   const VOL_MUTE_ICON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path d="M10 5L5 9H2v6h3l5 4V5z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><line x1="22" y1="9" x2="16" y2="15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><line x1="16" y1="9" x2="22" y2="15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`;
@@ -1638,6 +1713,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         try { ytAudioPlayer.setVolume(volNum); } catch (e) {}
       }
       if (muteBtn) muteBtn.innerHTML = volNum === 0 ? VOL_MUTE_ICON : VOL_HIGH_ICON;
+      try {
+        localStorage.setItem("playx_volume", volNum.toString());
+        localStorage.setItem("hindi_player_volume", volNum.toString());
+        localStorage.setItem("hindi_player_muted", volNum === 0 ? "1" : "0");
+      } catch (e) {}
     });
   }
 
@@ -1655,6 +1735,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         }
         if (volumeSlider) volumeSlider.value = targetVol;
         muteBtn.innerHTML = VOL_HIGH_ICON;
+        try {
+          localStorage.setItem("playx_volume", targetVol.toString());
+          localStorage.setItem("hindi_player_volume", targetVol.toString());
+          localStorage.setItem("hindi_player_muted", "0");
+        } catch (e) {}
         showToast(t.toastUnmuted);
       } else {
         const currentVol = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
@@ -1665,6 +1750,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         }
         if (volumeSlider) volumeSlider.value = 0;
         muteBtn.innerHTML = VOL_MUTE_ICON;
+        try {
+          localStorage.setItem("hindi_player_muted", "1");
+        } catch (e) {}
         showToast(t.toastMuted);
       }
     });
@@ -2336,6 +2424,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   setLanguage("en", false);
   loadHindiSongs();
   initHindiSleepTimerUI();
+  initVolumeState();
 
   // PWA Install prompt handling
   const pwaInstallBtn = document.getElementById("pwaInstallBtn");
