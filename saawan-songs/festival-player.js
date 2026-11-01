@@ -1062,7 +1062,7 @@
         <span class="song-num">${idx + 1 < 10 ? "0" : ""}${idx + 1}</span>
         ${thumbUrl ? `<div class="song-thumb-col"><img src="${thumbUrl}" alt="${song.name}" class="song-row-thumb" loading="lazy"></div>` : ""}
         <div class="song-info-col">
-          <div class="song-name-text">${song.name}</div>
+          <div class="song-name-text">${song.nameEn || song.name}</div>
           <div class="song-singer-text">${song.singerEn || song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
         </div>
         <div class="song-actions-col">
@@ -1119,15 +1119,25 @@
 
   function initTheme() {
     const themeBtn = document.getElementById("themeToggleBtn");
-    if (!themeBtn) return;
     const themes = ["midnight", "warm-amber", "twilight", "emerald"];
-    let curr = document.documentElement.getAttribute("data-theme") || "midnight";
+    
+    // Check saved theme from playx_theme or fest_theme
+    let saved = localStorage.getItem("playx_theme");
+    if (saved === "light") saved = "warm-amber";
+    else if (saved === "dark") saved = "midnight";
+    if (!saved || !themes.includes(saved)) {
+      saved = localStorage.getItem("fest_theme");
+    }
+    let curr = (saved && themes.includes(saved)) ? saved : "midnight";
+    document.documentElement.setAttribute("data-theme", curr);
 
+    if (!themeBtn) return;
     themeBtn.addEventListener("click", () => {
       const nextIdx = (themes.indexOf(curr) + 1) % themes.length;
       curr = themes[nextIdx];
       document.documentElement.setAttribute("data-theme", curr);
       localStorage.setItem("fest_theme", curr);
+      localStorage.setItem("playx_theme", curr === "warm-amber" ? "light" : "dark");
     });
   }
 

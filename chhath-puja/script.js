@@ -929,8 +929,27 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       renderPlaylist();
       displaySongInfo(currentSong);
 
-      // Load initial track without autoplaying
-      loadSong(currentSong, false);
+      // Deep-linking via URL query params (?song=ID or ?play=ID or ?index=N)
+      let initialIdx = currentSong;
+      let shouldAutoPlay = false;
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const songParam = params.get("song") || params.get("play") || params.get("id");
+        const idxParam = params.get("index");
+        if (idxParam !== null && !isNaN(parseInt(idxParam, 10))) {
+          initialIdx = Math.max(0, Math.min(songs.length - 1, parseInt(idxParam, 10)));
+          shouldAutoPlay = true;
+        } else if (songParam) {
+          const found = songs.findIndex(s => String(s.id) === String(songParam) || (s.titleEn && s.titleEn.toLowerCase().includes(songParam.toLowerCase())));
+          if (found !== -1) {
+            initialIdx = found;
+            shouldAutoPlay = true;
+          }
+        }
+      } catch(e){}
+      currentSong = initialIdx;
+      displaySongInfo(currentSong);
+      loadSong(currentSong, shouldAutoPlay);
 
       const savedPos = parseFloat(safeStorageGet(STORAGE_KEYS.LAST_POS, "0"));
       if (!isNaN(savedPos) && savedPos > 0 && offlineAudio) {

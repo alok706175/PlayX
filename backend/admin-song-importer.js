@@ -87,16 +87,16 @@
               <span>🐙</span> <span>GitHub Secrets & Variables (PLAYX_TOKEN)</span>
             </div>
             <div style="font-size: 0.78rem; color: var(--importer-text-muted); margin-bottom: 0.7rem; line-height: 1.45;">
-              GitHub सुरक्षा नीति के तहत ब्राउज़र सीधे GitHub के गोपनीय Secrets को नहीं पढ़ सकता। इसलिए <b>PLAYX_TOKEN</b> का उपयोग करने के दो आसान तरीके हैं:
+              Under GitHub security policies, client browsers cannot directly read private repository secrets. Here are the two ways to use <b>PLAYX_TOKEN</b>:
             </div>
 
             <!-- Option 1: GitHub Actions Runner -->
             <div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 0.65rem 0.8rem; margin-bottom: 0.75rem;">
               <div style="font-size: 0.82rem; font-weight: 600; color: #38bdf8; margin-bottom: 0.35rem;">
-                विकल्प 1: ⚡ GitHub Actions (बिना ब्राउज़र में टोकन डाले)
+                Option 1: ⚡ GitHub Actions (Automated background workflow)
               </div>
               <p style="margin: 0 0 0.5rem 0; font-size: 0.75rem; color: var(--importer-text-muted); line-height: 1.4;">
-                यह वर्कफ़्लो सीधे आपके Repo के <b>Secrets या Variables</b> (<code>PLAYX_TOKEN</code>) से टोकन लेकर ऑटोमैटिक कमिट व पुश करता है:
+                This workflow automatically commits and pushes songs using the <b>Secrets or Variables</b> (<code>PLAYX_TOKEN</code>) configured in your GitHub repository:
               </p>
               <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                 <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration: none; display: inline-flex; align-items: center; gap: 5px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-weight: 600;">
@@ -113,10 +113,10 @@
 
             <!-- Option 2: Browser Direct Push -->
             <div style="font-size: 0.8rem; font-weight: 600; color: var(--importer-text-main); margin-bottom: 0.35rem;">
-              विकल्प 2: 🔑 वेबसाइट में PLAYX_TOKEN सेव करें (Direct Push)
+              Option 2: 🔑 Save PLAYX_TOKEN in Browser (Direct Push)
             </div>
             <div style="font-size: 0.75rem; color: var(--importer-text-muted); margin-bottom: 0.45rem;">
-              अगर आप इसी वेबसाइट से बिना सर्वर के सीधे GitHub पर पुश करना चाहते हैं:
+              If you wish to push directly to GitHub from this web interface without running a local backend server:
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
               <input type="password" id="importerGhTokenInput" placeholder="PLAYX_TOKEN (ghp_...)" class="importer-mini-input" style="flex: 1; min-width: 200px;">
@@ -181,11 +181,11 @@
         if (val) {
           localStorage.setItem('playx_token', val);
           localStorage.setItem('playx_github_token', val);
-          showBanner('info', '✅ PLAYX_TOKEN सुरक्षित कर लिया गया है (Saved successfully)!');
+          showBanner('info', '✅ PLAYX_TOKEN saved successfully!');
           if (drawer) drawer.style.display = 'none';
           updateSyncBar();
         } else {
-          showBanner('warning', 'कृपया वैध GitHub टोकन दर्ज करें (Enter a valid token).');
+          showBanner('warning', 'Please enter a valid GitHub Personal Access Token.');
         }
       });
     }
@@ -197,7 +197,7 @@
         localStorage.removeItem('playx_github_token');
         const tokenInput = document.getElementById('importerGhTokenInput');
         if (tokenInput) tokenInput.value = '';
-        showBanner('info', 'PLAYX_TOKEN हटा दिया गया (Token cleared).');
+        showBanner('info', 'PLAYX_TOKEN cleared.');
         updateSyncBar();
       });
     }
@@ -221,7 +221,7 @@
     document.getElementById('importerAnalyzeBtn').addEventListener('click', () => {
       const val = document.getElementById('importerUrlInput').value.trim();
       if (!val) {
-        showBanner('warning', 'कृपया YouTube या YouTube Music का लिंक दर्ज करें (Please enter a link).');
+        showBanner('warning', 'Please enter a valid YouTube or YouTube Music link.');
         return;
       }
       analyzeUrl(val);
@@ -464,29 +464,29 @@
         <!-- Editable Metadata Form -->
         <div class="preview-form-grid">
           <div class="form-field full-width">
-            <label for="editSongTitle">Song Title (गाने का नाम)</label>
+            <label for="editSongTitle">Song Title</label>
             <input type="text" id="editSongTitle" value="${escapeHtml(meta.cleanTitle || meta.rawTitle)}" required>
           </div>
 
           <div class="form-field">
-            <label for="editSongSinger">Artist / Singer / Channel (गायक / चैनल)</label>
+            <label for="editSongSinger">Artist / Singer / Channel</label>
             <input type="text" id="editSongSinger" value="${escapeHtml(meta.singer || meta.channelTitle)}" required>
           </div>
 
           <div class="form-field">
-            <label for="selectSongCategory">Target Playlist Category (श्रेणी चुनें)</label>
+            <label for="selectSongCategory">Target Playlist Category</label>
             <select id="selectSongCategory">
               ${optionsHtml}
             </select>
           </div>
 
           <div class="form-field">
-            <label for="editSongTag">Tag / Festival Note (टैग)</label>
+            <label for="editSongTag">Tag / Festival Note</label>
             <input type="text" id="editSongTag" value="${escapeHtml(catSug.categoryDetails?.defaultTag || 'Special')}">
           </div>
 
           <div class="form-field">
-            <label for="editSongDuration">Duration (अवधि)</label>
+            <label for="editSongDuration">Duration</label>
             <input type="text" id="editSongDuration" value="${escapeHtml(meta.duration || '--:--')}">
           </div>
         </div>
@@ -527,7 +527,7 @@
     // Check admin authentication
     const isAdmin = localStorage.getItem('playx_admin_logged_in') === 'true';
     if (!isAdmin) {
-      alert('🔒 एडमिन लॉगिन आवश्यक है!\nकृपया गाने जोड़ने से पहले एडमिन पोर्टल में लॉगिन करें।');
+      alert('🔒 Admin Login Required!\nPlease log in to the admin portal before adding songs.');
       if (window.openAdminModal) {
         closeModal();
         window.openAdminModal();
@@ -542,7 +542,7 @@
     const duration = (document.getElementById('editSongDuration')?.value || '').trim();
 
     if (!title || !singer) {
-      alert('कृपया गाने का शीर्षक और गायक दोनों दर्ज करें।');
+      alert('Please enter both song title and artist/channel name.');
       return;
     }
 
@@ -550,7 +550,7 @@
     const isLoggedIn = localStorage.getItem('playx_admin_logged_in') === 'true';
 
     if (!isLoggedIn && !adminToken) {
-      alert('🔒 एडमिन सुरक्षा: केवल अधिकृत एडमिन ही गाने सेव कर सकते हैं। कृपया पहले एडमिन लॉगिन करें।');
+      alert('🔒 Admin Authorization: Only verified administrators can save songs. Please log in first.');
       if (window.openAdminModal) window.openAdminModal();
       return;
     }
@@ -626,17 +626,17 @@
         } else {
           // Both failed: NEVER silently fake success!
           throw new Error(
-            `बैकएंड सर्वर से कनेक्ट नहीं हो सका (${backendError ? backendError.message : 'Server unreachable'}).\n\n` +
-            `ऑटोमैटिक GitHub अपडेट के लिए:\n` +
-            `1. सुनिश्चित करें कि बैकएंड सर्वर चालू है: node "backend/server.js"\n` +
-            `2. या '⚙️ GitHub Token' बटन पर क्लिक करके अपना GitHub Token दर्ज करें।`
+            `Unable to connect to backend server (${backendError ? backendError.message : 'Server unreachable'}).\n\n` +
+`For automatic GitHub updates:\n` +
+`1. Ensure backend server is running: node "backend/server.js"\n` +
+`2. Or click '⚙️ GitHub Token' and enter your Personal Access Token (PAT).`
           );
         }
       }
 
       renderSuccess(savedData);
     } catch (err) {
-      alert(`गाने को सुरक्षित करने में त्रुटि (Error saving song):\n${err.message}`);
+      alert(`Error saving song:\n${err.message}`);
       if (approveBtn) {
         approveBtn.disabled = false;
         approveBtn.innerHTML = `<span>Approve & Add to Playlist</span>`;
@@ -669,7 +669,7 @@
 
     if (!getRes.ok) {
       if (getRes.status === 401 || getRes.status === 403) {
-        throw new Error('अमान्य GitHub Token! कृपया वैध टोकन (PAT with repo scope) दर्ज करें।');
+        throw new Error('Invalid GitHub Token! Please provide a valid token with repo scope.');
       }
       throw new Error(`GitHub file fetch failed (${getRes.status})`);
     }
@@ -779,7 +779,7 @@
         <h3 style="margin: 0; font-size: 1.35rem; color: #10b981;">Song Successfully Imported!</h3>
         <p style="margin: 0; color: var(--importer-text-muted); max-width: 500px;">
           "<strong>${escapeHtml(s.name)}</strong>" by <strong>${escapeHtml(s.singer)}</strong>
-          को सफलतापूर्वक <strong>${catName}</strong> प्लेलिस्ट में जोड़ दिया गया है।
+          has been successfully added to the <strong>${catName}</strong> playlist.
         </p>
 
         ${savedData.githubSync?.committed ? `

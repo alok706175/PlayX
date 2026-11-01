@@ -149,6 +149,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (!THEMES[themeKey]) themeKey = "midnight";
     document.documentElement.setAttribute("data-theme", themeKey);
     localStorage.setItem("hindi_songs_theme", themeKey);
+    localStorage.setItem("playx_theme", themeKey === "classic-dark" ? "light" : "dark");
 
     if (themeCurrentIcon) {
       themeCurrentIcon.textContent = THEMES[themeKey].icon;
@@ -184,7 +185,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   // Load Saved Theme
-  const savedTheme = localStorage.getItem("hindi_songs_theme") || "midnight";
+  const savedPlayx = localStorage.getItem("playx_theme");
+    const savedTheme = (savedPlayx === "light") ? "classic-dark" : (localStorage.getItem("hindi_songs_theme") || "midnight");
   setTheme(savedTheme, false);
 
   if (themeToggleBtn && themeDropdown) {
@@ -566,7 +568,30 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     renderPlaylist();
     renderSongCardsGrid();
-    displaySongInfo(0);
+
+    // Deep-linking via URL query params (?song=ID or ?play=ID or ?index=N)
+    let initialIdx = 0;
+    let shouldAutoPlay = false;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const songParam = params.get("song") || params.get("play") || params.get("id");
+      const idxParam = params.get("index");
+      if (idxParam !== null && !isNaN(parseInt(idxParam, 10))) {
+        initialIdx = Math.max(0, Math.min(songs.length - 1, parseInt(idxParam, 10)));
+        shouldAutoPlay = true;
+      } else if (songParam) {
+        const found = songs.findIndex(s => String(s.id) === String(songParam) || (s.nameEn && s.nameEn.toLowerCase() === songParam.toLowerCase()));
+        if (found !== -1) {
+          initialIdx = found;
+          shouldAutoPlay = true;
+        }
+      }
+    } catch(e){}
+
+    displaySongInfo(initialIdx);
+    if (shouldAutoPlay) {
+      playSong(initialIdx);
+    }
     updateFavoriteUI();
 
     // Preload first track audio source

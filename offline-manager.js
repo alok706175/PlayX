@@ -525,7 +525,7 @@
       banner.innerHTML = `
         <span class="pwa-banner-icon">🌐</span>
         <span class="pwa-banner-text">${
-          isEn ? "You're back online." : "आप वापस ऑनलाइन हैं।"
+          "You're back online."
         }</span>
       `;
     } else {
@@ -535,7 +535,7 @@
         <span class="pwa-banner-text">${
           isEn
             ? "You're offline. You can still listen to your downloaded songs."
-            : "आप ऑफ़लाइन हैं। आप अभी भी अपने डाउनलोड किए गए गीत सुन सकते हैं।"
+            : "You are offline. You can still play your downloaded songs."
         }</span>
       `;
     }

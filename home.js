@@ -1,5 +1,5 @@
 /* =========================================================
-   सुर संगम | Chhath Ghat Mahaparv & Festival Music Hub
+   PlayX | Festival & Bollywood Music Hub
    Master Homepage Interactive Engine
    ========================================================= */
 
@@ -21,65 +21,50 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   const TRANSLATIONS = {
     hi: {
-      btnText: "हिंदी",
-      btnTitle: "वर्तमान भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)",
-      timeWidgetTitle: "भारतीय मानक समय (IST)",
-      sectionTag: "POPULAR COLLECTIONS",
-      sectionTitle: "त्यौहार व संगीत श्रेणियां",
-      sectionSubtitle: "अपनी पसंदीदा श्रेणी चुनें और बेहतरीन गीतों के विशेष प्लेयर का आनंद लें।",
-      chhathTitle: "छठ पूजा महापर्व गीत",
-      chhathSub: "Chhath Puja Mahaparv Geet",
-      chhathDesc: "उगी हे दीनानाथ, केलवा के पात पर, काँच ही बाँस के बहंगिया सहित शारदा सिन्हा, पवन सिंह, खेसारी लाल यादव और अनुराधा पौडवाल के पावन अर्घ्य गीत।",
-      chhathPills: ["25+ पारंपरिक गीत", "320 Kbps HD", "ऑफलाइन प्लेयर"],
-      hindiTitle: "हिंदी सुपरहिट बॉलीवुड गीत",
-      hindiSub: "Superhit Hindi Songs (Bollywood)",
-      hindiDesc: "90s के सदाबहार क्लासिक्स, रोमांटिक मेलोडीज, और डांस ट्रैक्स। अरिजीत सिंह, सोनू निगम, लता मंगेशकर, कुमार सानु, उदित नारायण और अलका याग्निक के बेहतरीन नगमे।",
-      hindiPills: ["200 क्लासिक हिट्स", "320 Kbps HD", "डार्क मोड प्लेयर"],
-      saawanTitle: "सावन शिव भजन व बोल बम",
-      saawanSub: "Saawan Songs & Shiv Bhajan",
-      saawanDesc: "सावन शिव भजन व बोल बम के पावन भक्ति गीत। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      saawanPills: ["⏳ जल्द आ रहा है", "बोल बम भजन", "PlayX स्पेशल"],
-      durgaTitle: "दुर्गा पूजा व नवरात्रि भक्ति गीत",
-      durgaSub: "Durga Puja & Navratri Bhakti",
-      durgaDesc: "माता रानी के पावन भजन, आरती और नवरात्रि की विशेष भेंटें। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      durgaPills: ["⏳ जल्द आ रहा है", "नवरात्रि स्पेशल", "PlayX स्पेशल"],
-      holiTitle: "होली के रंग-बिरंगे गाने व फाग",
-      holiSub: "Holi Special Songs & Fagun Geet",
-      holiDesc: "रंगों के महापर्व होली के सुपरहिट गाने और फाग। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      holiPills: ["⏳ जल्द आ रहा है", "होली उत्सव", "PlayX स्पेशल"],
-      bhojpuriTitle: "भोजपुरी सुपरहिट गाने",
-      bhojpuriSub: "Bhojpuri Superhit Songs & Desi Hits",
-      bhojpuriDesc: "भोजपुरी के सुपरहिट लोकगीत और संगीत संकलन। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      bhojpuriPills: ["⏳ जल्द आ रहा है", "देसी हिट्स", "PlayX स्पेशल"],
-      haryanviTitle: "हरियाणवी सुपरहिट गाने",
-      haryanviSub: "Haryanvi Superhit Songs",
-      haryanviDesc: "हरियाणवी सुपरहिट डीजे और फोक गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      haryanviPills: ["⏳ जल्द आ रहा है", "डीजे हिट्स", "PlayX स्पेशल"],
-      punjabiTitle: "पंजाबी सुपरहिट गाने",
-      punjabiSub: "Punjabi Superhit Songs & Bhangra Hits",
-      punjabiDesc: "दिलजीत दोसांझ, सिद्धू मूसेवाला और गुरु रंधावा के सुपरहिट पंजाबी व भांगड़ा गाने। इस श्रेणी के ओरिजिनल गाने जल्द ही जोड़े जाएंगे।",
-      punjabiPills: ["⏳ जल्द आ रहा है", "भांगड़ा बीट्स", "PlayX स्पेशल"],
-
-      // Footer Translations
-      footerBrandTagline: "A Largest Music Library Website.",
-      footerCol1Title: "पर्व श्रेणियां",
-      footerLinkChhath: "छठ पूजा महापर्व",
-      footerLinkSaawan: "सावन शिव भजन",
-      footerLinkDurga: "दुर्गा पूजा व नवरात्रि",
-      footerLinkHoli: "होली के गाने व फाग",
-
-      footerCol2Title: "संगीत संकलन",
-      footerLinkHindi: "हिंदी सुपरहिट बॉलीवुड",
-      footerLinkBhojpuri: "भोजपुरी सुपरहिट गाने",
-      footerLinkHaryanvi: "हरियाणवी सुपरहिट गाने",
-      footerLinkPunjabi: "पंजाबी सुपरहिट गाने",
-      footerLinkMantra: "सूर्य गायत्री मंत्र",
-
-      footerCol3Title: "सुविधाएं",
-      footerLinkOffline: "ऑफ़लाइन डाउनलोड्स",
-      footerLinkPwa: "PWA इंस्टॉल करें",
-      footerLinkSitemap: "साइटमैप",
-      footerCopyright: "Copyright © 2026 <strong>PlayX</strong> . All Rights Reserved."
+      btnText: "English",
+      btnTitle: "Language: English",
+      timeWidgetTitle: "Indian Standard Time (IST)",
+      sectionTitle: "Festive & Music Categories",
+      sectionSubtitle: "Choose your favorite category and enjoy the dedicated player.",
+      chhathTitle: "Chhath Puja Mahaparv Songs",
+      chhathDesc: "Sacred Chhath Puja Arghya and devotional melodies by Sharda Sinha, Pawan Singh, Khesari Lal Yadav, and Anuradha Paudwal.",
+      chhathPills: ["25+ Sacred Songs", "320 Kbps HD", "Offline Player"],
+      hindiTitle: "Hindi Superhit Bollywood Songs",
+      hindiDesc: "Evergreen 90s classics, romantic melodies, and dance tracks by Arijit Singh, Sonu Nigam, Lata Mangeshkar, Kumar Sanu, and Alka Yagnik.",
+      hindiPills: ["200 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
+      saawanTitle: "Saawan Shiv Bhajan & Bol Bam",
+      saawanDesc: "Sacred Shiv Bhajans, Kanwar Geet, and Bol Bam devotional melodies by top devotional artists.",
+      saawanPills: ["25+ Shiv Bhajans", "HD Audio", "PlayX Special"],
+      durgaTitle: "Durga Puja & Navratri Bhakti",
+      durgaDesc: "Divine devotional melodies, Mata Ki Aarti, and Navratri special Bhakti geet for festive celebration.",
+      durgaPills: ["25+ Durga Bhajans", "Navratri Special", "PlayX Special"],
+      holiTitle: "Colorful Holi Songs & Fhag",
+      holiDesc: "Superhit festive Holi melodies, traditional Fhag, and colorful dance hits to celebrate the festival of colors.",
+      holiPills: ["25+ Holi Hits", "Holi Festival", "PlayX Special"],
+      bhojpuriTitle: "Bhojpuri Superhit Songs",
+      bhojpuriDesc: "Top Bhojpuri hit songs, festive dance melodies, and energetic beats from renowned folk icons.",
+      bhojpuriPills: ["25+ Desi Hits", "Folk & DJ Hits", "PlayX Special"],
+      haryanviTitle: "Haryanvi Superhit Songs",
+      haryanviDesc: "High-energy Haryanvi DJ tracks, folk melodies, and chartbuster dance hits.",
+      haryanviPills: ["25+ DJ Hits", "Folk Beats", "PlayX Special"],
+      punjabiTitle: "Punjabi Superhit Songs",
+      punjabiDesc: "Top Punjabi and Bhangra hits by Diljit Dosanjh, Sidhu Moosewala, Guru Randhawa, and more.",
+      punjabiPills: ["25+ Bhangra Hits", "Urban Beats", "PlayX Special"],
+      footerCol1Title: "Festive Categories",
+      footerLinkChhath: "Chhath Puja Mahaparv",
+      footerLinkSaawan: "Saawan Shiv Bhajan",
+      footerLinkDurga: "Durga Puja & Navratri",
+      footerLinkHoli: "Colorful Holi Songs",
+      footerCol2Title: "Music Collections",
+      footerLinkHindi: "Hindi Bollywood Superhits",
+      footerLinkBhojpuri: "Bhojpuri Superhits",
+      footerLinkHaryanvi: "Haryanvi Superhits",
+      footerLinkPunjabi: "Punjabi Superhits",
+      footerLinkMantra: "Surya Gayatri Mantra",
+      footerCol3Title: "Features",
+      footerLinkOffline: "Offline Downloads",
+      footerLinkPwa: "Install PWA App",
+      footerLinkSitemap: "Sitemap"
     },
     en: {
       btnText: "English",
@@ -220,14 +205,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (!themeBtn) return;
 
     if (currentTheme === "dark") {
-      const themeLabel = currentLang === "hi" ? "डार्क मोड" : "Dark Mode";
+      const themeLabel = "Dark Mode";
       themeBtn.innerHTML = `${SVG_MOON} <span id="themeBtnText">${themeLabel}</span>`;
-      themeBtn.setAttribute("title", currentLang === "hi" ? "लाइट मोड में बदलें / Switch to Light Mode" : "Switch to Light Mode");
+      themeBtn.setAttribute("title", "Switch to Light Mode");
       themeBtn.setAttribute("aria-label", "Switch to Light Mode");
     } else {
-      const themeLabel = currentLang === "hi" ? "लाइट मोड" : "Light Mode";
+      const themeLabel = "Light Mode";
       themeBtn.innerHTML = `${SVG_SUN} <span id="themeBtnText">${themeLabel}</span>`;
-      themeBtn.setAttribute("title", currentLang === "hi" ? "डार्क मोड में बदलें / Switch to Dark Mode" : "Switch to Dark Mode");
+      themeBtn.setAttribute("title", "Switch to Dark Mode");
       themeBtn.setAttribute("aria-label", "Switch to Dark Mode");
     }
   }
@@ -411,13 +396,12 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
      3. LIVE INDIAN STANDARD TIME (IST) CLOCK (CHHATH PUJA STYLE)
      ========================================================= */
   const langDays = {
-    hi: ["रवि", "सोम", "मंगल", "बुध", "गुरु", "शुक्र", "शनि"],
+    hi: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
     en: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   };
   const langMonths = {
     hi: [
-      "जनवरी", "फरवरी", "मार्च", "अप्रैल", "मई", "जून",
-      "जुलाई", "अगस्त", "सितंबर", "अक्टूबर", "नवंबर", "दिसंबर"
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ],
     en: [
       "Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -472,7 +456,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         dateEl.textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
       }
       if (timeWidget && TRANSLATIONS[lang]) {
-        timeWidget.title = TRANSLATIONS[lang].timeWidgetTitle || "भारतीय मानक समय (IST)";
+        timeWidget.title = TRANSLATIONS[lang].timeWidgetTitle || "Indian Standard Time (IST)";
       }
     };
 
@@ -579,21 +563,67 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     6. LIVE SEARCH ENGINE
+     6. UNIFIED GLOBAL SEARCH ENGINE (SONGS & CATEGORIES)
      ========================================================= */
+  const SONG_CATALOG_SOURCES = [
+    { name: "Hindi Songs", page: "hindi-songs/hindi-songs.html", file: "hindi-songs/hindi_songs.json" },
+    { name: "Chhath Puja", page: "chhath-puja/chhath-puja.html", file: "chhath-puja/songs.json" },
+    { name: "Bhojpuri Songs", page: "bhojpuri-songs/bhojpuri-songs.html", file: "bhojpuri-songs/bhojpuri_songs.json" },
+    { name: "Punjabi Songs", page: "punjabi-songs/punjabi-songs.html", file: "punjabi-songs/punjabi_songs.json" },
+    { name: "Haryanvi Songs", page: "haryanvi-songs/haryanvi-songs.html", file: "haryanvi-songs/haryanvi_songs.json" },
+    { name: "Holi Songs", page: "holi-songs/holi-songs.html", file: "holi-songs/holi_songs.json" },
+    { name: "Durga Puja", page: "durga-puja-songs/durga-puja-songs.html", file: "durga-puja-songs/durga_puja_songs.json" },
+    { name: "Saawan Songs", page: "saawan-songs/saawan-songs.html", file: "saawan-songs/saawan_songs.json" }
+  ];
+
+  let cachedSongCatalog = [];
+  let isCatalogLoaded = false;
+  let isCatalogLoading = false;
+
+  async function loadGlobalCatalog() {
+    if (isCatalogLoaded || isCatalogLoading) return;
+    isCatalogLoading = true;
+    try {
+      const promises = SONG_CATALOG_SOURCES.map(async (src) => {
+        try {
+          const res = await fetch(src.file);
+          if (res.ok) {
+            const list = await res.json();
+            return list.map(item => ({
+              ...item,
+              _categoryName: src.name,
+              _categoryPage: src.page
+            }));
+          }
+        } catch (e) {}
+        return [];
+      });
+      const results = await Promise.all(promises);
+      cachedSongCatalog = results.flat();
+      isCatalogLoaded = true;
+    } finally {
+      isCatalogLoading = false;
+    }
+  }
+
   function initSearch() {
     const searchInput = document.getElementById("heroSearchInput");
     const clearBtn = document.getElementById("searchClearBtn");
-    const cards = document.querySelectorAll(".category-card");
-    const trendingItems = document.querySelectorAll(".trending-song-card");
+    const resultsContainer = document.getElementById("globalSearchResults");
+    const categoryCards = document.querySelectorAll(".category-card-btn");
 
     if (!searchInput) return;
 
-    searchInput.addEventListener("input", () => {
+    // Preload song catalog when user focuses or hovers search bar
+    searchInput.addEventListener("focus", loadGlobalCatalog);
+    searchInput.addEventListener("mouseenter", loadGlobalCatalog);
+
+    searchInput.addEventListener("input", async () => {
       const q = searchInput.value.trim().toLowerCase();
       if (clearBtn) clearBtn.style.display = q ? "block" : "none";
 
-      cards.forEach((card) => {
+      // 1. Filter Category Cards on DOM
+      categoryCards.forEach((card) => {
         const text = card.textContent.toLowerCase();
         if (!q || text.includes(q)) {
           card.style.display = "flex";
@@ -603,25 +633,81 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         }
       });
 
-      trendingItems.forEach((item) => {
-        const text = item.textContent.toLowerCase();
-        if (!q || text.includes(q)) {
-          item.style.display = "flex";
-        } else {
-          item.style.display = "none";
-        }
-      });
+      // 2. Query Global Songs Catalog
+      if (!resultsContainer) return;
+
+      if (!q || q.length < 2) {
+        resultsContainer.style.display = "none";
+        resultsContainer.innerHTML = "";
+        return;
+      }
+
+      if (!isCatalogLoaded) {
+        await loadGlobalCatalog();
+      }
+
+      const matches = cachedSongCatalog.filter(song => {
+        const name = (song.nameEn || song.name || song.titleEn || song.title || "").toLowerCase();
+        const singer = (song.singerEn || song.singer || song.artistEn || song.artist || "").toLowerCase();
+        const tag = (song.tag || song.category || "").toLowerCase();
+        return name.includes(q) || singer.includes(q) || tag.includes(q);
+      }).slice(0, 12);
+
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `
+          <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
+            No songs matching "<strong>${searchInput.value.replace(/</g, "&lt;")}</strong>".
+          </div>
+        `;
+        resultsContainer.style.display = "block";
+        return;
+      }
+
+      resultsContainer.innerHTML = matches.map(song => {
+        const title = song.nameEn || song.name || song.titleEn || song.title;
+        const singer = song.singerEn || song.singer || song.artistEn || song.artist || "PlayX Artist";
+        const vid = song.youtubeId || song.videoId;
+        const thumb = vid ? `https://i.ytimg.com/vi/${vid}/default.jpg` : (song.thumbnail || song.cover || "images/playx_icon.png");
+        const playUrl = `${song._categoryPage}?play=${encodeURIComponent(song.id || vid)}`;
+
+        return `
+          <a href="${playUrl}" class="search-result-item" title="Play ${title}">
+            <img src="${thumb}" alt="${title}" class="search-result-thumb" loading="lazy" onerror="this.src='images/playx_icon.png'">
+            <div class="search-result-info">
+              <div class="search-result-title">${title}</div>
+              <div class="search-result-meta">
+                <span>${singer}</span>
+                <span>•</span>
+                <span class="search-result-badge">${song._categoryName}</span>
+              </div>
+            </div>
+            <div class="search-result-play-icon">▶</div>
+          </a>
+        `;
+      }).join("");
+
+      resultsContainer.style.display = "block";
+    });
+
+    // Close dropdown on outside click
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest(".hero-search-box") && resultsContainer) {
+        resultsContainer.style.display = "none";
+      }
     });
 
     if (clearBtn) {
       clearBtn.addEventListener("click", () => {
         searchInput.value = "";
         clearBtn.style.display = "none";
-        cards.forEach((c) => {
+        if (resultsContainer) {
+          resultsContainer.style.display = "none";
+          resultsContainer.innerHTML = "";
+        }
+        categoryCards.forEach((c) => {
           c.style.display = "flex";
           c.style.opacity = "1";
         });
-        trendingItems.forEach((t) => (t.style.display = "flex"));
       });
     }
   }
