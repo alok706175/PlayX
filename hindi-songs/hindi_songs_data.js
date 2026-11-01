@@ -2085,5 +2085,22 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-01T14:20:18.828Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 204,
+    "name": "Us Ladki Pe Dil Aaya",
+    "nameEn": "Us Ladki Pe Dil Aaya",
+    "singer": "Anuradha Paudwal , Kumar Sanu",
+    "singerEn": "Anuradha Paudwal , Kumar Sanu",
+    "category": "Romantic",
+    "duration": "03:45",
+    "videoId": "HpyX-a4r2EI",
+    "youtubeId": "HpyX-a4r2EI",
+    "embedUrl": "https://www.youtube.com/embed/HpyX-a4r2EI",
+    "originalUrl": "https://youtu.be/HpyX-a4r2EI?si=qum6TNz_bbXZkdZe",
+    "thumbnail": "https://i.ytimg.com/vi/HpyX-a4r2EI/hqdefault.jpg",
+    "addedAt": "2026-11-01T21:26:47.444Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];

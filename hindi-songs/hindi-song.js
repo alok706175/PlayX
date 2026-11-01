@@ -42,7 +42,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       loadingSong: "गीत लोड हो रहा है...",
       playlistTitle: "हिंदी गीत सूची",
       playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
-      searchPlaceholder: "203 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
+      searchPlaceholder: "204 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
       noSongsFound: "कोई गीत नहीं मिला",
       noFavsFound: "कोई पसंदीदा गीत नहीं मिला। किसी भी गीत पर ❤️ क्लिक करके पसंदीदा बनाएं!",
       prevSongTitle: "पिछला गीत (J)",
@@ -85,14 +85,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       timeWidgetTitle: "Indian Standard Time (IST)",
       navBackText: "Go Home",
       navBackTitle: "Go to Home",
-      heroBadge: "✨ 203 SUPERHIT BOLLYWOOD CLASSICS",
+      heroBadge: "✨ 204 SUPERHIT BOLLYWOOD CLASSICS",
       mainLogoTitle1: "Superhit Hindi",
       mainLogoTitle2: "Songs Collection",
       taglineText: "॥ Bollywood Classics • Romantic Hits • Soulful Melodies • Dance Beats ॥",
       loadingSong: "Loading Hindi Songs...",
       playlistTitle: "Hindi Songs Playlist",
       playlistSearchPlaceholder: "Search song, movie, or singer name...",
-      searchPlaceholder: "Search 203 Hindi songs, movies, or artists...",
+      searchPlaceholder: "Search 204 Hindi songs, movies, or artists...",
       noSongsFound: "No songs found matching your search",
       noFavsFound: "No favorite songs yet. Click ❤️ on any song to add to your favorites!",
       prevSongTitle: "Previous Track (J)",
@@ -311,7 +311,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const info = getCurrentSongShareInfo();
     const heading = customHeading || (info.song
       ? `🎶 *${info.title}* - ${info.singer} 🎧`
-      : `🎶 ${songs.length || 203} Superhit Bollywood Hindi Classics 🎧`);
+      : `🎶 ${songs.length || 204} Superhit Bollywood Hindi Classics 🎧`);
 
     const body =
       `${heading}\n\n` +
@@ -348,7 +348,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const info = getCurrentSongShareInfo();
       const quote = info.song
         ? `🎶 Listen to "${info.title}" by ${info.singer} in HD audio on PlayX!`
-        : `🎶 Listen to ${songs.length || 203} Superhit Bollywood Hindi Classics Online on PlayX 🎧`;
+        : `🎶 Listen to ${songs.length || 204} Superhit Bollywood Hindi Classics Online on PlayX 🎧`;
       const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(info.url)}&quote=${encodeURIComponent(quote)}`;
       window.open(fbUrl, "_blank", "noopener,noreferrer,width=600,height=500");
     });
