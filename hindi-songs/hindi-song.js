@@ -42,7 +42,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       loadingSong: "गीत लोड हो रहा है...",
       playlistTitle: "हिंदी गीत सूची",
       playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
-      searchPlaceholder: "गीत, फिल्म या गायक का नाम खोजें (Search Hindi songs)...",
+      searchPlaceholder: "203 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
       noSongsFound: "कोई गीत नहीं मिला",
       noFavsFound: "कोई पसंदीदा गीत नहीं मिला। किसी भी गीत पर ❤️ क्लिक करके पसंदीदा बनाएं!",
       prevSongTitle: "पिछला गीत (J)",
@@ -85,14 +85,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       timeWidgetTitle: "Indian Standard Time (IST)",
       navBackText: "Go Home",
       navBackTitle: "Go to Home",
-      heroBadge: "✨ 205 SUPERHIT BOLLYWOOD CLASSICS",
+      heroBadge: "✨ 203 SUPERHIT BOLLYWOOD CLASSICS",
       mainLogoTitle1: "Superhit Hindi",
       mainLogoTitle2: "Songs Collection",
       taglineText: "॥ Bollywood Classics • Romantic Hits • Soulful Melodies • Dance Beats ॥",
       loadingSong: "Loading Hindi Songs...",
       playlistTitle: "Hindi Songs Playlist",
       playlistSearchPlaceholder: "Search song, movie, or singer name...",
-      searchPlaceholder: "Search song, movie, or singer name...",
+      searchPlaceholder: "Search 203 Hindi songs, movies, or artists...",
       noSongsFound: "No songs found matching your search",
       noFavsFound: "No favorite songs yet. Click ❤️ on any song to add to your favorites!",
       prevSongTitle: "Previous Track (J)",
@@ -295,16 +295,17 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const SHARE_URL = window.location.href;
 
   function shareOnWhatsApp(customHeading) {
-    const title = customHeading || "🎶 70 सुपरहिट हिंदी बॉलीवुड गीत संग्रह 🎧";
+    const totalCount = songs.length || 203;
+    const title = customHeading || `🎶 ${totalCount} Superhit Bollywood Hindi Classics 🎧`;
     const body =
       `${title}\n\n` +
-      `सुनिए सदाबहार 90s क्लासिक्स, रोमांटिक हिट्स और डांस बीट्स 320 Kbps HD ऑडियो में:\n\n` +
-      `▶️ *ऑनलाइन गीत यहां सुनें:* \n${SHARE_URL}\n\n` +
-      `✨ लता मंगेशकर, कुमार सानु, उदित नारायण, सोनू निगम, अरिजीत सिंह और श्रेया घोषाल के सुपरहिट गीत! 🎵`;
+      `Listen to evergreen 90s classics, romantic melodies, and dance beats in 320 Kbps HD audio on PlayX:\n\n` +
+      `▶️ *Listen Online Here:* \n${SHARE_URL}\n\n` +
+      `✨ Evergreen songs by Lata Mangeshkar, Kishore Kumar, Kumar Sanu, Udit Narayan, Sonu Nigam, Alka Yagnik, and Arijit Singh! 🎵`;
 
     const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(body)}`;
     window.open(waLink, "_blank", "noopener,noreferrer");
-    showToast("✨ WhatsApp खोला जा रहा है...");
+    showToast("✨ Opening WhatsApp...");
   }
 
   const shareDropdown = document.getElementById("shareDropdown");
@@ -320,14 +321,17 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const waShareBtn = document.getElementById("whatsappShareBtn");
   if (waShareBtn) {
     waShareBtn.addEventListener("click", () => {
-      shareOnWhatsApp("🎶 70 सुपरहिट हिंदी बॉलीवुड गीत संग्रह 🎧");
+      const totalCount = songs.length || 203;
+      shareOnWhatsApp(`🎶 ${totalCount} Superhit Bollywood Hindi Classics 🎧`);
     });
   }
 
   const fbShareBtn = document.getElementById("facebookShareBtn");
   if (fbShareBtn) {
     fbShareBtn.addEventListener("click", () => {
-      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}&quote=${encodeURIComponent("🎶 70 सुपरहिट हिंदी बॉलीवुड गीत संग्रह ऑनलाइन सुनें 🎧")}`;
+      const totalCount = songs.length || 203;
+      const quote = `🎶 Listen to ${totalCount} Superhit Bollywood Hindi Classics Online on PlayX 🎧`;
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}&quote=${encodeURIComponent(quote)}`;
       window.open(fbUrl, "_blank", "noopener,noreferrer,width=600,height=500");
     });
   }
@@ -547,6 +551,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const t = i18n[currentLang] || i18n.en;
     if (playlistTitleText) {
       playlistTitleText.textContent = `${t.playlistTitle} (${songs.length})`;
+    }
+    const heroBadge = document.getElementById("heroBadge");
+    if (heroBadge) {
+      heroBadge.textContent = `✨ ${songs.length} SUPERHIT BOLLYWOOD CLASSICS`;
+    }
+    const gridCounterBadge = document.getElementById("gridCounterBadge");
+    if (gridCounterBadge) {
+      gridCounterBadge.textContent = `Showing ${songs.length} Songs`;
     }
   }
 
