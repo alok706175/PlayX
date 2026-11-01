@@ -434,7 +434,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const playlistBackdrop = document.getElementById("playlistBackdrop");
   const playlistList = document.getElementById("playlistList");
   const playlistTitleText = document.getElementById("playlistTitleText");
-    if (playlistTitleText) playlistTitleText.textContent = `${t.playlistTitle} (${songs.length})`;
   const playlistSearch = document.getElementById("playlistSearch");
 
   // Shortcuts modal elements
@@ -530,23 +529,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
   }
 
-  /* Load Hindi Songs dataset */
-  async function loadHindiSongs() {
-    try {
-      const res = await fetch("hindi_songs.json", { cache: "no-store" });
-      if (res.ok) {
-        songs = await res.json();
-      }
-    } catch (e) {
-      console.warn("Hindi songs fetch error:", e);
-    }
-
-    if (!Array.isArray(songs) || songs.length === 0) {
-      if (songName) songName.textContent = "No Hindi Songs Found";
-      return;
-    }
-
-    // Calculate category counts
+    function updateSongCategoryCounts() {
     const countAll = document.getElementById("countAll");
     const countRomantic = document.getElementById("countRomantic");
     const count90s = document.getElementById("count90s");
@@ -565,7 +548,10 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (playlistTitleText) {
       playlistTitleText.textContent = `${t.playlistTitle} (${songs.length})`;
     }
+  }
 
+  function initSongUIAndDeepLinking() {
+    updateSongCategoryCounts();
     renderPlaylist();
     renderSongCardsGrid();
 
@@ -598,6 +584,40 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (offlineAudio && songs[0] && songs[0].file) {
       offlineAudio.src = songs[0].file;
       offlineAudio.load();
+    }
+  }
+
+  /* Load Hindi Songs dataset */
+  async function loadHindiSongs() {
+    // 1. Instant rendering from preloaded bundle if available
+    if (Array.isArray(window.PLAYX_HINDI_SONGS_DATA) && window.PLAYX_HINDI_SONGS_DATA.length > 0) {
+      songs = window.PLAYX_HINDI_SONGS_DATA;
+      initSongUIAndDeepLinking();
+    }
+
+    // 2. Fetch latest hindi_songs.json in background (without no-store to ensure SW & cache resilience)
+    try {
+      const res = await fetch("hindi_songs.json");
+      if (res.ok) {
+        const fetched = await res.json();
+        if (Array.isArray(fetched) && fetched.length > 0) {
+          songs = fetched;
+          if (!window.PLAYX_HINDI_SONGS_DATA) {
+            initSongUIAndDeepLinking();
+          } else {
+            updateSongCategoryCounts();
+            renderPlaylist();
+            renderSongCardsGrid();
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Hindi songs fetch note:", e);
+    }
+
+    if (!Array.isArray(songs) || songs.length === 0) {
+      if (songName) songName.textContent = "No Hindi Songs Found";
+      return;
     }
   }
 
