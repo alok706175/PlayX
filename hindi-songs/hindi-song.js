@@ -1004,65 +1004,41 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
      ========================================================= */
   let hindiSleepTimerBtn = null;
   let hindiSleepTimerMenu = null;
+  let hindiSleepBadge = null;
   let hindiSleepTimerId = null;
   let hindiSleepTimerEndTime = null;
   let hindiSleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
 
   function initHindiSleepTimerUI() {
-    const parent = document.querySelector(".controls-left-cluster");
-    if (!parent || document.getElementById("hindiSleepBtn")) return;
+    const wrap = document.getElementById("hindiSleepWrap");
+    hindiSleepTimerBtn = document.getElementById("hindiSleepBtn");
+    hindiSleepBadge = document.getElementById("hindiSleepBadge");
+    hindiSleepTimerMenu = document.getElementById("hindiSleepMenu");
 
-    const wrap = document.createElement("div");
-    wrap.className = "sleep-timer-wrap";
-    wrap.style.cssText = "position:relative;display:inline-block;";
-
-    hindiSleepTimerBtn = document.createElement("button");
-    hindiSleepTimerBtn.id = "hindiSleepBtn";
-    hindiSleepTimerBtn.className = "mode-btn";
-    hindiSleepTimerBtn.type = "button";
-    hindiSleepTimerBtn.title = "स्लीप टाइमर / Sleep Timer";
-    hindiSleepTimerBtn.innerHTML = `🌙 <span id="hindiSleepBadge" style="display:none;font-size:0.72rem;margin-left:2px;font-weight:700;color:#38bdf8;"></span>`;
-
-    hindiSleepTimerMenu = document.createElement("div");
-    hindiSleepTimerMenu.id = "hindiSleepMenu";
-    hindiSleepTimerMenu.style.cssText = "display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px;min-width:160px;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,0.6);";
-
-    const options = [
-      { label: "Off (बंद)", val: 0 },
-      { label: "15 min (15 मिनट)", val: 15 },
-      { label: "30 min (30 मिनट)", val: 30 },
-      { label: "45 min (45 मिनट)", val: 45 },
-      { label: "60 min (1 घंटा)", val: 60 },
-      { label: "End of Song (गाना खत्म होने पर)", val: -1 }
-    ];
-
-    options.forEach(opt => {
-      const item = document.createElement("button");
-      item.type = "button";
-      item.style.cssText = "display:block;width:100%;text-align:left;background:none;border:none;color:#e2e8f0;padding:8px 12px;font-size:0.8rem;border-radius:8px;cursor:pointer;transition:all 0.15s;font-family:inherit;";
-      item.textContent = opt.label;
-      item.addEventListener("mouseenter", () => { item.style.background = "rgba(56,189,248,0.15)"; item.style.color = "#38bdf8"; });
-      item.addEventListener("mouseleave", () => { item.style.background = "none"; item.style.color = "#e2e8f0"; });
-      item.addEventListener("click", (e) => {
-        e.stopPropagation();
-        setHindiSleepTimer(opt.val);
-        hindiSleepTimerMenu.style.display = "none";
-      });
-      hindiSleepTimerMenu.appendChild(item);
-    });
-
-    wrap.appendChild(hindiSleepTimerBtn);
-    wrap.appendChild(hindiSleepTimerMenu);
-    parent.appendChild(wrap);
+    if (!hindiSleepTimerBtn || !hindiSleepTimerMenu || !wrap) return;
 
     hindiSleepTimerBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      hindiSleepTimerMenu.style.display = hindiSleepTimerMenu.style.display === "none" ? "block" : "none";
+      const isOpen = wrap.classList.toggle("open");
+      hindiSleepTimerBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    const menuItems = hindiSleepTimerMenu.querySelectorAll(".sleep-menu-item");
+    menuItems.forEach((item) => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const val = parseInt(item.getAttribute("data-val"), 10);
+        menuItems.forEach(m => m.classList.toggle("active", m === item));
+        setHindiSleepTimer(val);
+        wrap.classList.remove("open");
+        hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
+      });
     });
 
     document.addEventListener("click", (e) => {
-      if (hindiSleepTimerMenu && !wrap.contains(e.target)) {
-        hindiSleepTimerMenu.style.display = "none";
+      if (wrap && !wrap.contains(e.target)) {
+        wrap.classList.remove("open");
+        hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
       }
     });
   }
@@ -1073,30 +1049,42 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       hindiSleepTimerId = null;
     }
     hindiSleepTimerMode = val;
-    const badge = document.getElementById("hindiSleepBadge");
+    const badge = document.getElementById("hindiSleepBadge") || hindiSleepBadge;
 
     if (val === 0) {
       hindiSleepTimerEndTime = null;
       if (badge) badge.style.display = "none";
-      if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+      if (hindiSleepTimerBtn) {
+        hindiSleepTimerBtn.classList.remove("active");
+        hindiSleepTimerBtn.title = "Sleep Timer (Off)";
+      }
+      showToast("🌙 Sleep Timer turned off");
       return;
     }
 
     if (val === -1) {
       if (badge) {
         badge.textContent = "1 Song";
-        badge.style.display = "inline";
+        badge.style.display = "inline-block";
       }
-      if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.add("active");
+      if (hindiSleepTimerBtn) {
+        hindiSleepTimerBtn.classList.add("active");
+        hindiSleepTimerBtn.title = "Sleep Timer: Stop after current song";
+      }
+      showToast("🌙 Sleep Timer set: Stop after current song");
       return;
     }
 
     hindiSleepTimerEndTime = Date.now() + (val * 60 * 1000);
     if (badge) {
       badge.textContent = `${val}m`;
-      badge.style.display = "inline";
+      badge.style.display = "inline-block";
     }
-    if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.add("active");
+    if (hindiSleepTimerBtn) {
+      hindiSleepTimerBtn.classList.add("active");
+      hindiSleepTimerBtn.title = `Sleep Timer: ${val}m remaining`;
+    }
+    showToast(`🌙 Sleep Timer set: ${val} minutes`);
 
     hindiSleepTimerId = setInterval(() => {
       const remaining = Math.max(0, Math.round((hindiSleepTimerEndTime - Date.now()) / 1000));
@@ -1114,8 +1102,12 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         hindiSleepTimerEndTime = null;
         hindiSleepTimerMode = 0;
         if (badge) badge.style.display = "none";
-        if (hindiSleepTimerBtn) hindiSleepTimerBtn.classList.remove("active");
+        if (hindiSleepTimerBtn) {
+          hindiSleepTimerBtn.classList.remove("active");
+          hindiSleepTimerBtn.title = "Sleep Timer (Off)";
+        }
         pauseHindiWithFadeOut();
+        showToast("🌙 Sleep Timer ended. Goodnight! 😴");
       }
     }, 1000);
   }

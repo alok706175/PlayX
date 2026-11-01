@@ -2036,7 +2036,7 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "source": "youtube"
   },
   {
-    "id": 207,
+    "id": 201,
     "name": "Jhuki Jhuki Nazar Teri Kamaal | Raja | Madhuri Dixit | Sanjay",
     "nameEn": "Jhuki Jhuki Nazar Teri Kamaal | Raja | Madhuri Dixit | Sanjay",
     "singer": "Alka Yagnik , Udit Narayan",
@@ -2053,7 +2053,7 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "source": "youtube"
   },
   {
-    "id": 208,
+    "id": 202,
     "name": "Choli Ke Peeche Kya Hai | Khalnayak",
     "nameEn": "Choli Ke Peeche Kya Hai | Khalnayak",
     "singer": "Alka Yagnik",
@@ -2066,6 +2066,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "originalUrl": "https://youtu.be/3OXiqmUhB70?si=k-o40O-yb2fhN4mM",
     "thumbnail": "https://i.ytimg.com/vi/3OXiqmUhB70/hqdefault.jpg",
     "addedAt": "2026-10-31T13:56:48.354Z",
+    "status": "approved",
+    "source": "youtube"
+  },
+  {
+    "id": 203,
+    "name": "Teri Chunnariya | Hello Brother | Salman Khan | Rani Mukherjee |",
+    "nameEn": "Teri Chunnariya | Hello Brother | Salman Khan | Rani Mukherjee |",
+    "singer": "Kumar Sanu ,  Alka Yagnik",
+    "singerEn": "Kumar Sanu ,  Alka Yagnik",
+    "category": "Romantic",
+    "duration": "03:45",
+    "videoId": "V3fgToJoKdk",
+    "youtubeId": "V3fgToJoKdk",
+    "embedUrl": "https://www.youtube.com/embed/V3fgToJoKdk",
+    "originalUrl": "https://youtu.be/V3fgToJoKdk?si=igQrKW4W8Pepoptm",
+    "thumbnail": "https://i.ytimg.com/vi/V3fgToJoKdk/hqdefault.jpg",
+    "addedAt": "2026-11-01T14:20:18.828Z",
     "status": "approved",
     "source": "youtube"
   }
