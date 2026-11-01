@@ -820,11 +820,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
               onStateChange: (e) => {
                 if (!window.YT) return;
                 if (e.data === YT.PlayerState.PLAYING) {
+                  setBufferingState(false);
                   setPlaybackState(true);
                   updateHindiTabTitle();
                 } else if (e.data === YT.PlayerState.BUFFERING) {
-                  updateHindiTabTitle("buffering");
+                  setBufferingState(true);
                 } else if (e.data === YT.PlayerState.PAUSED) {
+                  setBufferingState(false);
                   setPlaybackState(false);
                   updateHindiTabTitle();
                 } else if (e.data === YT.PlayerState.ENDED) {
@@ -922,6 +924,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         return;
       }
 
+      setBufferingState(true);
       const fileSrc = playback.src;
       const targetFullUrl = new URL(fileSrc, window.location.href).href;
       if (offlineAudio.src !== targetFullUrl) {
@@ -1198,8 +1201,242 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     playSong(prevPos);
   }
 
+  
+  /* =========================================================
+     STREAMING RESILIENCE: BUFFERING & STALL INDICATOR ENGINE
+     ========================================================= */
+  let isBuffering = false;
+  function setBufferingState(buffering) {
+    isBuffering = !!buffering;
+    const overlay = document.getElementById("bufferingOverlay");
+    const statusPill = document.getElementById("bufferingStatusPill");
+    if (buffering) {
+      if (albumCover) albumCover.classList.add("buffering");
+      if (overlay) overlay.classList.add("active");
+      if (statusPill) statusPill.style.display = "inline-flex";
+      updateHindiTabTitle("buffering");
+    } else {
+      if (albumCover) albumCover.classList.remove("buffering");
+      if (overlay) overlay.classList.remove("active");
+      if (statusPill) statusPill.style.display = "none";
+      updateHindiTabTitle();
+    }
+  }
+
+  /* =========================================================
+     CUSTOM UP NEXT QUEUE ENGINE
+     ========================================================= */
+  let userQueue = [];
+  try {
+    const savedQueue = localStorage.getItem("hindi_player_queue");
+    if (savedQueue) {
+      const parsed = JSON.parse(savedQueue);
+      if (Array.isArray(parsed)) {
+        userQueue = parsed.filter(idx => typeof idx === "number" && idx >= 0);
+      }
+    }
+  } catch (e) {
+    console.warn("Queue reading error:", e);
+  }
+
+  function saveUserQueue() {
+    try {
+      localStorage.setItem("hindi_player_queue", JSON.stringify(userQueue));
+    } catch (e) {}
+  }
+
+  function updateQueueUI() {
+    const queueBadge = document.getElementById("queueBadge");
+    const queueCountPill = document.getElementById("queueCountPill");
+    const count = userQueue.length;
+
+    if (queueBadge) {
+      if (count > 0) {
+        queueBadge.textContent = count > 99 ? "99+" : count;
+        queueBadge.style.display = "flex";
+      } else {
+        queueBadge.style.display = "none";
+      }
+    }
+
+    if (queueCountPill) {
+      queueCountPill.textContent = count;
+    }
+
+    renderQueueList();
+  }
+
+  function addToQueue(songIdx, playNextNow = false) {
+    if (songIdx < 0 || songIdx >= songs.length) return;
+    const song = songs[songIdx];
+    if (!song) return;
+
+    if (playNextNow) {
+      userQueue.unshift(songIdx);
+    } else {
+      userQueue.push(songIdx);
+    }
+    saveUserQueue();
+    updateQueueUI();
+
+    const title = currentLang === "en" ? (song.nameEn || song.name) : song.name;
+    const msg = playNextNow
+      ? `⏭ "${title}" set as Play Next!`
+      : `➕ "${title}" added to Up Next (${userQueue.length} in queue)`;
+    showToast(msg);
+
+    // Pulse animation on queue button
+    const queueBtn = document.getElementById("queueToggleBtn");
+    if (queueBtn) {
+      queueBtn.classList.remove("pulse-glow");
+      void queueBtn.offsetWidth;
+      queueBtn.classList.add("pulse-glow");
+      setTimeout(() => queueBtn.classList.remove("pulse-glow"), 800);
+    }
+  }
+
+  function removeFromQueue(queuePos, e) {
+    if (e) e.stopPropagation();
+    if (queuePos >= 0 && queuePos < userQueue.length) {
+      const removedIdx = userQueue.splice(queuePos, 1)[0];
+      saveUserQueue();
+      updateQueueUI();
+      const removedSong = songs[removedIdx];
+      if (removedSong) {
+        const title = currentLang === "en" ? (removedSong.nameEn || removedSong.name) : removedSong.name;
+        showToast(`✕ Removed "${title}" from queue`);
+      }
+    }
+  }
+
+  function clearQueue() {
+    if (userQueue.length === 0) {
+      showToast("Queue is already empty");
+      return;
+    }
+    userQueue = [];
+    saveUserQueue();
+    updateQueueUI();
+    showToast("🗑️ Up Next queue cleared");
+  }
+
+  const queueModal = document.getElementById("queueModal");
+  const queueBackdrop = document.getElementById("queueBackdrop");
+  const queueToggleBtn = document.getElementById("queueToggleBtn");
+  const queueCloseBtn = document.getElementById("queueCloseBtn");
+  const queueClearBtn = document.getElementById("queueClearBtn");
+
+  function openQueue() {
+    if (queueModal) queueModal.classList.add("open");
+    if (queueBackdrop) queueBackdrop.classList.add("open");
+    updateQueueUI();
+  }
+
+  function closeQueue() {
+    if (queueModal) queueModal.classList.remove("open");
+    if (queueBackdrop) queueBackdrop.classList.remove("open");
+  }
+
+  function toggleQueue() {
+    if (queueModal && queueModal.classList.contains("open")) {
+      closeQueue();
+    } else {
+      openQueue();
+    }
+  }
+
+  function renderQueueList() {
+    const list = document.getElementById("queueList");
+    const nowTitle = document.getElementById("queueNowTitle");
+    const nowSinger = document.getElementById("queueNowSinger");
+
+    const curSongObj = songs[currentSong];
+    if (curSongObj) {
+      const isEn = currentLang === "en";
+      if (nowTitle) nowTitle.textContent = isEn ? (curSongObj.nameEn || curSongObj.name) : curSongObj.name;
+      if (nowSinger) nowSinger.textContent = (isEn ? (curSongObj.singerEn || curSongObj.singer) : curSongObj.singer) || "Bollywood";
+    }
+
+    if (!list) return;
+    list.innerHTML = "";
+
+    if (userQueue.length === 0) {
+      list.innerHTML = `
+        <div class="queue-empty-state">
+          <div class="queue-empty-icon">📋</div>
+          <div class="queue-empty-text">Your Up Next queue is empty</div>
+          <div class="queue-empty-sub">Click the ➕ button on any song card or playlist item to line up your songs!</div>
+        </div>
+      `;
+      return;
+    }
+
+    const isEn = currentLang === "en";
+    userQueue.forEach((songIdx, pos) => {
+      const s = songs[songIdx];
+      if (!s) return;
+      const title = isEn ? (s.nameEn || s.name) : s.name;
+      const singer = (isEn ? (s.singerEn || s.singer) : s.singer) || "Bollywood";
+
+      const item = document.createElement("div");
+      item.className = "queue-item";
+      item.setAttribute("role", "option");
+      item.innerHTML = `
+        <div class="queue-item-order">${pos + 1}</div>
+        <div class="queue-item-info">
+          <div class="queue-item-title">${title}</div>
+          <div class="queue-item-singer">🎤 ${singer}</div>
+        </div>
+        <div class="queue-item-actions">
+          <button class="queue-item-play-btn" type="button" title="Play Now" aria-label="Play ${title}">▶</button>
+          <button class="queue-item-remove-btn" type="button" title="Remove from queue" aria-label="Remove ${title}">✕</button>
+        </div>
+      `;
+
+      // Play now button
+      const playBtn = item.querySelector(".queue-item-play-btn");
+      if (playBtn) {
+        playBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          userQueue.splice(pos, 1);
+          saveUserQueue();
+          updateQueueUI();
+          playSong(songIdx);
+        });
+      }
+
+      // Remove button
+      const removeBtn = item.querySelector(".queue-item-remove-btn");
+      if (removeBtn) {
+        removeBtn.addEventListener("click", (e) => {
+          removeFromQueue(pos, e);
+        });
+      }
+
+      // Clicking on the item row plays it
+      const infoDiv = item.querySelector(".queue-item-info");
+      if (infoDiv) {
+        infoDiv.addEventListener("click", () => {
+          userQueue.splice(pos, 1);
+          saveUserQueue();
+          updateQueueUI();
+          playSong(songIdx);
+        });
+      }
+
+      list.appendChild(item);
+    });
+  }
+
   function playNext() {
     if (!songs.length) return;
+    if (userQueue.length > 0) {
+      const nextPos = userQueue.shift();
+      saveUserQueue();
+      updateQueueUI();
+      playSong(nextPos);
+      return;
+    }
     if (isShuffle) {
       const randomPos = Math.floor(Math.random() * songs.length);
       playSong(randomPos);
@@ -1382,7 +1619,16 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       releaseWakeLock();
     });
 
+    offlineAudio.addEventListener("loadstart", () => {
+      if (isPlaying) setBufferingState(true);
+    });
+
+    offlineAudio.addEventListener("canplay", () => {
+      setBufferingState(false);
+    });
+
     offlineAudio.addEventListener("playing", () => {
+      setBufferingState(false);
       if (!isPlaying) setPlaybackState(true);
       if (MEDIA_SESSION_SUPPORTED) {
         try { navigator.mediaSession.playbackState = "playing"; } catch (e) {}
@@ -1393,12 +1639,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
 
     offlineAudio.addEventListener("waiting", () => {
-      updateHindiTabTitle("buffering");
+      setBufferingState(true);
     });
 
     offlineAudio.addEventListener("stalled", () => {
-      updateHindiTabTitle("buffering");
-      handlePlaybackError("audio_stalled");
+      setBufferingState(true);
     });
 
     offlineAudio.addEventListener("timeupdate", () => {
@@ -1440,7 +1685,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         playNext();
       } else {
         // Normal next
-        if (currentSong < songs.length - 1) {
+        if (userQueue.length > 0 || currentSong < songs.length - 1) {
           playNext();
         } else {
           setPlaybackState(false);
@@ -1883,8 +2128,19 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           <div class="item-title">${title}</div>
           <div class="item-singer">🎤 ${singer} • <span style="opacity:0.7;">${s.category || "Bollywood"}</span></div>
         </div>
-        <div class="item-duration">${s.duration || "320K"}</div>
+        <div class="item-actions" style="display:flex;align-items:center;gap:6px;">
+          <div class="item-duration">${s.duration || "320K"}</div>
+          <button class="item-queue-btn" type="button" title="Add to Up Next queue" aria-label="Add ${title} to queue">➕</button>
+        </div>
       `;
+
+      const qBtn = item.querySelector(".item-queue-btn");
+      if (qBtn) {
+        qBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          addToQueue(s.originalIdx);
+        });
+      }
 
       item.addEventListener("click", () => {
         playSong(s.originalIdx);
@@ -1950,6 +2206,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         <div class="song-card-footer">
           <div class="song-card-duration">⏱️ ${s.duration || "320 Kbps"}</div>
           <div class="song-card-actions">
+            <button class="song-card-queue-btn" type="button" title="Add to Up Next queue" aria-label="Add ${title} to queue">➕</button>
             <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
               ${isDownloaded ? '✓' : '↓'}
             </button>
@@ -1966,6 +2223,15 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       if (likeBtn) {
         likeBtn.addEventListener("click", (e) => {
           toggleSongFavorite(s.id, e);
+        });
+      }
+
+      // Queue button listener
+      const qBtn = card.querySelector(".song-card-queue-btn");
+      if (qBtn) {
+        qBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          addToQueue(s.originalIdx);
         });
       }
 
@@ -2404,6 +2670,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       } else {
         openPlaylist();
       }
+    } else if (e.key === "q" || e.key === "Q") {
+      e.preventDefault();
+      toggleQueue();
     } else if (e.key === "t" || e.key === "T") {
       e.preventDefault();
       cycleTheme();
@@ -2423,6 +2692,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     } else if (e.key === "Escape") {
       closePlaylist();
+      closeQueue();
       closeShortcuts();
       if (speedDropdown) speedDropdown.classList.remove("open");
       if (themeDropdown) themeDropdown.classList.remove("open");
@@ -2437,6 +2707,19 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   loadHindiSongs();
   initHindiSleepTimerUI();
   initVolumeState();
+
+  /* Queue Toggle and Modal Listeners */
+  if (queueToggleBtn) {
+    queueToggleBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleQueue();
+    });
+  }
+  if (queueCloseBtn) queueCloseBtn.addEventListener("click", closeQueue);
+  if (queueBackdrop) queueBackdrop.addEventListener("click", closeQueue);
+  if (queueClearBtn) queueClearBtn.addEventListener("click", clearQueue);
+  updateQueueUI();
+
 
   // PWA Install prompt handling
   const pwaInstallBtn = document.getElementById("pwaInstallBtn");

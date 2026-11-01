@@ -214,6 +214,15 @@
             <div class="offline-cover" id="albumCover">
               <span class="cover-icon">🎵</span>
               <div class="vinyl-center"></div>
+              <!-- Buffering Spinner Overlay -->
+              <div class="buffering-overlay" id="bufferingOverlay" aria-hidden="true">
+                <div class="buffering-spinner"></div>
+              </div>
+            </div>
+            <!-- Buffering status pill under cover -->
+            <div class="buffering-pill" id="bufferingStatusPill" style="display: none;">
+              <span class="buffering-dot"></span>
+              <span>Buffering...</span>
             </div>
           </div>
 
@@ -331,8 +340,17 @@
                 title="Volume" aria-label="Volume">
             </div>
 
+            <!-- Up Next Queue Toggle -->
+            <div class="queue-btn-wrap">
+              <button class="playlist-toggle-btn" id="queueToggleBtn" title="Up Next Queue (Q)" type="button"
+                aria-label="Open Up Next Queue">
+                <span class="icon-queue">📋</span>
+                <span id="queueBadge" class="queue-badge" style="display: none;">0</span>
+              </button>
+            </div>
+
             <!-- Playlist Drawer Toggle -->
-            <button class="playlist-toggle-btn" id="playlistToggleBtn" title="Playlist" type="button"
+            <button class="playlist-toggle-btn" id="playlistToggleBtn" title="Playlist (P)" type="button"
               aria-label="Open Playlist">
               <span class="icon-list">☰</span>
             </button>
@@ -469,6 +487,48 @@
     </div>
   </div>
 
+  <!-- Up Next Queue Drawer Modal -->
+  <div class="queue-backdrop" id="queueBackdrop"></div>
+  <div class="queue-modal" id="queueModal" role="dialog" aria-modal="true" aria-labelledby="queueTitle">
+    <div class="queue-header">
+      <div class="queue-title" id="queueTitle">
+        <span>📋</span>
+        <span id="queueTitleText">Up Next Queue</span>
+        <span class="queue-count-pill" id="queueCountPill">0</span>
+      </div>
+      <div class="queue-header-actions">
+        <button class="queue-clear-btn" id="queueClearBtn" title="Clear all queued songs" type="button">Clear All</button>
+        <button class="playlist-close" id="queueCloseBtn" aria-label="Close Queue" title="Close">✕</button>
+      </div>
+    </div>
+
+    <div class="queue-body">
+      <!-- Current Song in Queue View -->
+      <div class="queue-now-playing-banner" id="queueNowPlayingBanner">
+        <div class="queue-now-label">NOW PLAYING</div>
+        <div class="queue-now-row">
+          <div class="queue-now-disc">🎵</div>
+          <div class="queue-now-info">
+            <div class="queue-now-title" id="queueNowTitle">--</div>
+            <div class="queue-now-singer" id="queueNowSinger">--</div>
+          </div>
+          <div class="queue-now-wave" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-section-header">
+        <span class="queue-section-label">UP NEXT</span>
+        <span class="queue-tip">Click to play • ✕ to remove</span>
+      </div>
+
+      <div class="queue-list" id="queueList" role="listbox">
+        <!-- Populated via JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- Keyboard Shortcuts Modal -->
   <div class="shortcuts-modal" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
     <div class="shortcuts-header">
@@ -483,6 +543,10 @@
       <div class="shortcut-row">
         <span>Previous / Next Song</span>
         <span class="shortcut-key">J / K</span>
+      </div>
+      <div class="shortcut-row">
+        <span>Up Next Queue</span>
+        <span class="shortcut-key">Q</span>
       </div>
       <div class="shortcut-row">
         <span>Seek -5s / +5s</span>
