@@ -290,23 +290,40 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     4. SOCIAL SHARING & URL COPY
+     4. SOCIAL SHARING & DYNAMIC SONG DEEP-LINK ENGINE
      ========================================================= */
-  const SHARE_URL = window.location.href;
+  function getCurrentSongShareInfo() {
+    const s = songs[currentSong];
+    const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
+    const pathname = window.location.pathname;
+    let url = window.location.href.split("?")[0];
+    if (s) {
+      const songId = s.id || (currentSong + 1);
+      url = `${origin}${pathname}?song=${encodeURIComponent(songId)}&index=${encodeURIComponent(currentSong)}`;
+    }
+    const isEn = currentLang === "en";
+    const title = s ? (isEn ? (s.nameEn || s.name) : s.name) : "Superhit Bollywood Hindi Songs";
+    const singer = s ? (isEn ? (s.singerEn || s.singer) : s.singer) : "Bollywood Singers";
+    return { url, title, singer, song: s };
+  }
 
   function shareOnWhatsApp(customHeading) {
-    const totalCount = songs.length || 203;
-    const title = customHeading || `🎶 ${totalCount} Superhit Bollywood Hindi Classics 🎧`;
+    const info = getCurrentSongShareInfo();
+    const heading = customHeading || (info.song
+      ? `🎶 *${info.title}* - ${info.singer} 🎧`
+      : `🎶 ${songs.length || 203} Superhit Bollywood Hindi Classics 🎧`);
+
     const body =
-      `${title}\n\n` +
-      `Listen to evergreen 90s classics, romantic melodies, and dance beats in 320 Kbps HD audio on PlayX:\n\n` +
-      `▶️ *Listen Online Here:* \n${SHARE_URL}\n\n` +
-      `✨ Evergreen songs by Lata Mangeshkar, Kishore Kumar, Kumar Sanu, Udit Narayan, Sonu Nigam, Alka Yagnik, and Arijit Singh! 🎵`;
+      `${heading}\n\n` +
+      `Listen to this song in 320 Kbps HD audio on PlayX:\n` +
+      `▶️ *Listen Direct Here:* \n${info.url}\n\n` +
+      `✨ Bollywood Classics • Romantic Hits • Soulful Melodies 🎵`;
 
     const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(body)}`;
     window.open(waLink, "_blank", "noopener,noreferrer");
     showToast("✨ Opening WhatsApp...");
   }
+
 
   const shareDropdown = document.getElementById("shareDropdown");
   const shareMainBtn = document.getElementById("shareMainBtn");
@@ -321,17 +338,18 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const waShareBtn = document.getElementById("whatsappShareBtn");
   if (waShareBtn) {
     waShareBtn.addEventListener("click", () => {
-      const totalCount = songs.length || 203;
-      shareOnWhatsApp(`🎶 ${totalCount} Superhit Bollywood Hindi Classics 🎧`);
+      shareOnWhatsApp();
     });
   }
 
   const fbShareBtn = document.getElementById("facebookShareBtn");
   if (fbShareBtn) {
     fbShareBtn.addEventListener("click", () => {
-      const totalCount = songs.length || 203;
-      const quote = `🎶 Listen to ${totalCount} Superhit Bollywood Hindi Classics Online on PlayX 🎧`;
-      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}&quote=${encodeURIComponent(quote)}`;
+      const info = getCurrentSongShareInfo();
+      const quote = info.song
+        ? `🎶 Listen to "${info.title}" by ${info.singer} in HD audio on PlayX!`
+        : `🎶 Listen to ${songs.length || 203} Superhit Bollywood Hindi Classics Online on PlayX 🎧`;
+      const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(info.url)}&quote=${encodeURIComponent(quote)}`;
       window.open(fbUrl, "_blank", "noopener,noreferrer,width=600,height=500");
     });
   }
@@ -340,11 +358,12 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const instaShareBtn = document.getElementById("instagramShareBtn");
   if (instaShareBtn) {
     instaShareBtn.addEventListener("click", async () => {
+      const info = getCurrentSongShareInfo();
       try {
-        await navigator.clipboard.writeText(SHARE_URL);
-        showToast(currentLang === "en" ? "✨ Link copied! Share on Instagram 📸" : "✨ लिंक कॉपी हुआ! Instagram पर शेयर करें 📸");
+        await navigator.clipboard.writeText(info.url);
+        showToast(`✨ Link copied for "${info.title}"! Share on Instagram 📸`);
       } catch (err) {
-        showToast(currentLang === "en" ? "✨ Opening Instagram..." : "✨ Instagram खोला जा रहा है...");
+        showToast("✨ Opening Instagram...");
       }
       if (shareDropdown) shareDropdown.classList.remove("open");
       setTimeout(() => {
@@ -356,12 +375,12 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const copyLinkBtn = document.getElementById("copyLinkBtn");
   if (copyLinkBtn) {
     copyLinkBtn.addEventListener("click", async () => {
+      const info = getCurrentSongShareInfo();
       try {
-        await navigator.clipboard.writeText(SHARE_URL);
-        const t = i18n[currentLang] || i18n.en;
-        showToast(t.toastCopied);
+        await navigator.clipboard.writeText(info.url);
+        showToast(info.song ? `🔗 Link copied for "${info.title}"!` : "🔗 Link copied to clipboard!");
       } catch (err) {
-        showToast("Link: " + SHARE_URL);
+        showToast("Link: " + info.url);
       }
       if (shareDropdown) shareDropdown.classList.remove("open");
     });
@@ -888,9 +907,20 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
   }
 
-  async function playSong(index) {
+  async function playSong(index, immediate = false) {
     if (!songs[index]) return;
+
+    if (!immediate && isPlaying && isCrossfadeEnabled && !isCrossfading && activeAudioSource === "mp3") {
+      isCrossfading = true;
+      fadeHindiVolumeDown(350, () => {
+        isCrossfading = false;
+        playSong(index, true);
+      });
+      return;
+    }
+
     currentSong = index;
+    songCrossfadeTriggered = false;
     try {
       await displaySongInfo(index);
     } catch (err) {
@@ -1279,6 +1309,62 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     saveUserQueue();
     updateQueueUI();
 
+  /* Mobile Mini Player Tap to Scroll & Horizontal Swipe Gestures */
+  const miniDock = document.getElementById("miniPlayerDock");
+  const miniCluster = document.getElementById("miniSongCluster");
+
+  if (miniCluster) {
+    miniCluster.addEventListener("click", () => {
+      const mainPlayer = document.getElementById("offlinePlayer") || document.getElementById("heroSection");
+      if (mainPlayer) {
+        mainPlayer.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  if (miniDock) {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchEndX = 0;
+    let touchEndY = 0;
+
+    miniDock.addEventListener("touchstart", (e) => {
+      if (e.changedTouches && e.changedTouches[0]) {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }
+    }, { passive: true });
+
+    miniDock.addEventListener("touchend", (e) => {
+      if (e.changedTouches && e.changedTouches[0]) {
+        touchEndX = e.changedTouches[0].screenX;
+        touchEndY = e.changedTouches[0].screenY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        // Require at least 45px horizontal swipe with dominant horizontal axis
+        if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
+          if (diffX < 0) {
+            // Swiped left -> Next Track
+            playNext();
+            showToast("⏭ Next Track", "right");
+          } else {
+            // Swiped right -> Previous Track
+            playPrevious();
+            showToast("⏮ Previous Track", "left");
+          }
+        }
+      }
+    }, { passive: true });
+  }
+
+  /* Crossfade Toggle Button Listener */
+  const crossfadeBtn = document.getElementById("crossfadeBtn");
+  if (crossfadeBtn) {
+    crossfadeBtn.addEventListener("click", toggleCrossfade);
+    updateCrossfadeUI();
+  }
+
+
     const title = currentLang === "en" ? (song.nameEn || song.name) : song.name;
     const msg = playNextNow
       ? `⏭ "${title}" set as Play Next!`
@@ -1648,8 +1734,19 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     offlineAudio.addEventListener("timeupdate", () => {
       updateLiveProgress();
-      if (offlineAudio.duration && (offlineAudio.currentTime / offlineAudio.duration > 0.75 || (offlineAudio.duration - offlineAudio.currentTime) < 25)) {
-        preloadNextTrack();
+      if (offlineAudio.duration) {
+        const cur = offlineAudio.currentTime;
+        const dur = offlineAudio.duration;
+        if (cur / dur > 0.75 || dur - cur < 25) {
+          preloadNextTrack();
+        }
+        // Smooth crossfade near track end (last 1.8s)
+        if (!songCrossfadeTriggered && isCrossfadeEnabled && dur > 15 && (dur - cur) <= 1.8 && (dur - cur) > 0.3 && repeatMode !== 2) {
+          songCrossfadeTriggered = true;
+          fadeHindiVolumeDown(1400, () => {
+            playNext();
+          });
+        }
       }
     });
 
@@ -1821,6 +1918,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       if (progress) progress.value = pct;
       if (progressFill) progressFill.style.width = `${pct}%`;
       if (totalTime) totalTime.textContent = formatTime(dur);
+      const miniFill = document.getElementById("miniProgressFill");
+      if (miniFill) miniFill.style.width = `${pct}%`;
     }
     if (currentTime) currentTime.textContent = formatTime(cur);
     updateMediaSessionPosition(cur, dur);
@@ -1955,6 +2054,69 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     } catch (e) {
       console.warn("Volume state init notice:", e);
+    }
+  }
+
+  
+  /* =========================================================
+     SMOOTH AUDIO CROSSFADE ENGINE
+     ========================================================= */
+  let isCrossfadeEnabled = true;
+  try {
+    const savedCrossfade = localStorage.getItem("hindi_player_crossfade");
+    if (savedCrossfade !== null) {
+      isCrossfadeEnabled = savedCrossfade === "1";
+    }
+  } catch (e) {}
+
+  let isCrossfading = false;
+  let songCrossfadeTriggered = false;
+
+  function toggleCrossfade() {
+    isCrossfadeEnabled = !isCrossfadeEnabled;
+    try {
+      localStorage.setItem("hindi_player_crossfade", isCrossfadeEnabled ? "1" : "0");
+    } catch (e) {}
+    updateCrossfadeUI();
+    showToast(isCrossfadeEnabled ? "🌊 Smooth Crossfade: ON" : "➡️ Smooth Crossfade: OFF");
+  }
+
+  function updateCrossfadeUI() {
+    const crossfadeBtn = document.getElementById("crossfadeBtn");
+    if (crossfadeBtn) {
+      crossfadeBtn.classList.toggle("active", isCrossfadeEnabled);
+      crossfadeBtn.title = isCrossfadeEnabled
+        ? "Crossfade: Smooth Transition (Active)"
+        : "Crossfade: Smooth Transition (Off)";
+    }
+  }
+
+  
+  /* Keyboard Volume & Modal Helpers */
+  function adjustVolumeDelta(delta) {
+    if (!volumeSlider) return;
+    let currentVol = parseInt(volumeSlider.value, 10);
+    if (isNaN(currentVol)) currentVol = 100;
+    let newVol = Math.max(0, Math.min(100, currentVol + delta));
+    volumeSlider.value = newVol;
+    if (offlineAudio) offlineAudio.volume = newVol / 100;
+    if (ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
+      try { ytAudioPlayer.setVolume(newVol); } catch (e) {}
+    }
+    if (muteBtn) muteBtn.innerHTML = newVol === 0 ? VOL_MUTE_ICON : VOL_HIGH_ICON;
+    try {
+      localStorage.setItem("playx_volume", newVol.toString());
+      localStorage.setItem("hindi_player_volume", newVol.toString());
+      localStorage.setItem("hindi_player_muted", newVol === 0 ? "1" : "0");
+    } catch (e) {}
+    showToast(`🔊 Volume: ${newVol}%`);
+  }
+
+  function toggleShortcuts() {
+    if (shortcutsModal && shortcutsModal.classList.contains("open")) {
+      closeShortcuts();
+    } else {
+      openShortcuts();
     }
   }
 
@@ -2676,6 +2838,21 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     } else if (e.key === "t" || e.key === "T") {
       e.preventDefault();
       cycleTheme();
+    } else if (e.key === "s" || e.key === "S") {
+      e.preventDefault();
+      if (shuffleBtn) shuffleBtn.click();
+    } else if (e.key === "r" || e.key === "R") {
+      e.preventDefault();
+      if (repeatBtn) repeatBtn.click();
+    } else if (e.key === "?" || e.key === "h" || e.key === "H") {
+      e.preventDefault();
+      toggleShortcuts();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      adjustVolumeDelta(5);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      adjustVolumeDelta(-5);
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
       if (offlineAudio) {

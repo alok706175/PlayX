@@ -2765,3 +2765,53 @@
   color: var(--accent-color, #f59e0b);
   transform: scale(1.08);
 }
+
+/* =========================================================
+   MINI-PLAYER SLIM PROGRESS BAR & CLUSTER HOVER
+   ========================================================= */
+.mini-player-dock {
+  position: relative;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.mini-progress-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border-radius: 14px 14px 0 0;
+  pointer-events: none;
+}
+
+.mini-progress-fill {
+  height: 100%;
+  background: var(--accent-gradient, linear-gradient(90deg, #f59e0b 0%, #d97706 100%));
+  width: 0%;
+  transition: width 0.15s linear;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.mini-song-cluster {
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.mini-song-cluster:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.mini-song-cluster:active {
+  transform: scale(0.98);
+}
+
+/* Crossfade mode button active glow */
+#crossfadeBtn.active {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: var(--accent-color, #f59e0b);
+  color: var(--accent-color, #f59e0b);
+}

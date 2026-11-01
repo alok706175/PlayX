@@ -450,7 +450,11 @@
 
   <!-- Sticky Bottom Floating Mini-Player -->
   <div class="mini-player-dock" id="miniPlayerDock" aria-label="Quick Audio Controls">
-    <div class="mini-song-cluster" id="miniSongCluster" title="Scroll to Top Player">
+    <!-- Slim live progress bar at top edge of mini player -->
+    <div class="mini-progress-track" aria-hidden="true">
+      <div class="mini-progress-fill" id="miniProgressFill" style="width: 0%;"></div>
+    </div>
+    <div class="mini-song-cluster" id="miniSongCluster" title="Scroll to Main Player (Tap / Click)">
       <div class="mini-cover" id="miniCover">🎵</div>
       <div class="mini-details">
         <div class="mini-title" id="miniTitle">Hindi Song</div>
@@ -545,12 +549,24 @@
         <span class="shortcut-key">J / K</span>
       </div>
       <div class="shortcut-row">
-        <span>Up Next Queue</span>
-        <span class="shortcut-key">Q</span>
+        <span>Volume Up / Down</span>
+        <span class="shortcut-key">↑ / ↓</span>
       </div>
       <div class="shortcut-row">
         <span>Seek -5s / +5s</span>
         <span class="shortcut-key">← / →</span>
+      </div>
+      <div class="shortcut-row">
+        <span>Toggle Shuffle</span>
+        <span class="shortcut-key">S</span>
+      </div>
+      <div class="shortcut-row">
+        <span>Cycle Repeat Mode</span>
+        <span class="shortcut-key">R</span>
+      </div>
+      <div class="shortcut-row">
+        <span>Up Next Queue</span>
+        <span class="shortcut-key">Q</span>
       </div>
       <div class="shortcut-row">
         <span>Mute / Unmute</span>
@@ -567,6 +583,10 @@
       <div class="shortcut-row">
         <span>Switch Theme</span>
         <span class="shortcut-key">T</span>
+      </div>
+      <div class="shortcut-row">
+        <span>Help & Shortcuts</span>
+        <span class="shortcut-key">? / H</span>
       </div>
     </div>
   </div>
