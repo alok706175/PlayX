@@ -659,16 +659,19 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       initSongUIAndDeepLinking();
     }
 
-    // 2. Fetch latest hindi_songs.json in background (without no-store to ensure SW & cache resilience)
+    // 2. Fetch latest hindi_songs.json with cache busting to guarantee newly added songs show up
     try {
-      const res = await fetch("hindi_songs.json");
+      const res = await fetch(`hindi_songs.json?_t=${Date.now()}`, { cache: "no-cache" });
       if (res.ok) {
         const fetched = await res.json();
         if (Array.isArray(fetched) && fetched.length > 0) {
+          const hadPrior = Array.isArray(songs) && songs.length > 0;
+          const wasLengthChanged = !hadPrior || songs.length !== fetched.length;
           songs = fetched;
-          if (!window.PLAYX_HINDI_SONGS_DATA) {
+          window.PLAYX_HINDI_SONGS_DATA = fetched;
+          if (!hadPrior) {
             initSongUIAndDeepLinking();
-          } else {
+          } else if (wasLengthChanged) {
             updateSongCategoryCounts();
             renderPlaylist();
             renderSongCardsGrid();
@@ -1341,14 +1344,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         touchEndY = e.changedTouches[0].screenY;
         const diffX = touchEndX - touchStartX;
         const diffY = touchEndY - touchStartY;
-        // Require at least 45px horizontal swipe with dominant horizontal axis
         if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY) * 1.5) {
           if (diffX < 0) {
-            // Swiped left -> Next Track
             playNext();
             showToast("⏭ Next Track", "right");
           } else {
-            // Swiped right -> Previous Track
             playPrevious();
             showToast("⏮ Previous Track", "left");
           }
@@ -1356,14 +1356,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     }, { passive: true });
   }
-
-  /* Crossfade Toggle Button Listener */
-  const crossfadeBtn = document.getElementById("crossfadeBtn");
-  if (crossfadeBtn) {
-    crossfadeBtn.addEventListener("click", toggleCrossfade);
-    updateCrossfadeUI();
-  }
-
 
     const title = currentLang === "en" ? (song.nameEn || song.name) : song.name;
     const msg = playNextNow

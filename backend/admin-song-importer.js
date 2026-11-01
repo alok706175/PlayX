@@ -657,13 +657,35 @@
     const repo = 'alok706175/PlayX';
     const branch = 'main';
     const filePath = catObj.file;
-    const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}`;
+    const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}&_nocache=${Date.now()}`;
 
-    // 1. Fetch current file content and sha
+    // Helper functions for safe multi-byte UTF-8 Base64 encoding/decoding
+    function decodeUtf8Base64(b64) {
+      const cleanB64 = (b64 || '').replace(/\s/g, '');
+      const bin = atob(cleanB64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) {
+        bytes[i] = bin.charCodeAt(i);
+      }
+      return new TextDecoder('utf-8').decode(bytes);
+    }
+
+    function encodeUtf8Base64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let bin = '';
+      for (let i = 0; i < bytes.length; i++) {
+        bin += String.fromCharCode(bytes[i]);
+      }
+      return btoa(bin);
+    }
+
+    // 1. Fetch current file content and sha with cache-busting
     const getRes = await fetch(url, {
       headers: {
         'Authorization': `Bearer ${githubToken}`,
-        'Accept': 'application/vnd.github.v3+json'
+        'Accept': 'application/vnd.github.v3+json',
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
       }
     });
 
@@ -677,12 +699,13 @@
     const fileMeta = await getRes.json();
     let currentSongs = [];
     try {
-      // UTF-8 safe base64 decode
-      const decodedStr = decodeURIComponent(escape(atob(fileMeta.content.replace(/\s/g, ''))));
+      const decodedStr = decodeUtf8Base64(fileMeta.content);
       currentSongs = JSON.parse(decodedStr);
-      if (!Array.isArray(currentSongs)) currentSongs = [];
+      if (!Array.isArray(currentSongs)) {
+        throw new Error('Playlist in repository is not an array.');
+      }
     } catch (parseErr) {
-      currentSongs = [];
+      throw new Error(`Failed to parse existing songs from repository (${filePath}): ${parseErr.message}. Aborting commit to prevent data loss!`);
     }
 
     // 2. Format record
@@ -715,8 +738,8 @@
     currentSongs.push(newRecord);
 
     // 3. UTF-8 safe base64 encode
-    const updatedJsonStr = JSON.stringify(currentSongs, null, 2);
-    const encodedContent = btoa(unescape(encodeURIComponent(updatedJsonStr)));
+    const updatedJsonStr = JSON.stringify(currentSongs, null, 2) + '\n';
+    const encodedContent = encodeUtf8Base64(updatedJsonStr);
     const commitMsg = `Add '${newRecord.name.replace(/['"]/g, '')}' to ${catObj.name} playlist [PlayX Auto-Import]`;
 
     // 4. PUT commit to GitHub
@@ -741,6 +764,42 @@
     }
 
     const putData = await putRes.json();
+
+    // 5. If Hindi songs, keep preloaded bundle hindi_songs_data.js in sync on GitHub
+    if (categoryKey === 'hindi') {
+      try {
+        const bundlePath = 'hindi-songs/hindi_songs_data.js';
+        const bundleGetRes = await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}?ref=${branch}&_nocache=${Date.now()}`, {
+          headers: {
+            'Authorization': `Bearer ${githubToken}`,
+            'Accept': 'application/vnd.github.v3+json',
+            'Cache-Control': 'no-cache'
+          }
+        });
+        let bundleSha = null;
+        if (bundleGetRes.ok) {
+          const bundleMeta = await bundleGetRes.json();
+          bundleSha = bundleMeta.sha;
+        }
+        const bundleStr = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(currentSongs, null, 2) + ';\n';
+        await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${githubToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.github.v3+json'
+          },
+          body: JSON.stringify({
+            message: `Sync hindi_songs_data.js bundle with new song '${newRecord.name.replace(/['"]/g, '')}'`,
+            content: encodeUtf8Base64(bundleStr),
+            sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (bundleErr) {
+        console.warn('Direct GitHub bundle sync warning:', bundleErr.message);
+      }
+    }
 
     return {
       success: true,

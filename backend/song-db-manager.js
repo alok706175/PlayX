@@ -286,6 +286,9 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
     // Stage the updated category file and history log
     await execShellCommand(`git add "${normalizedPath}"`);
     await execShellCommand(`git add "backend/auto_added_history.json"`);
+    if (normalizedPath.includes('hindi_songs.json')) {
+      await execShellCommand(`git add "hindi-songs/hindi_songs_data.js"`);
+    }
 
     // Commit
     const commitRes = await execShellCommand(`git commit -m "${commitMsg}"`);
@@ -527,6 +530,17 @@ async function addSongToCategory(categoryKey, songData, options = {}) {
       success: false,
       error: `Failed to write to database file ${cat.jsonFile}: ${err.message}`
     };
+  }
+
+  // 2.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
+  if (categoryKey === 'hindi') {
+    try {
+      const dataJsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
+      const bundleContent = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(existingList, null, 2) + ';\n';
+      fs.writeFileSync(dataJsPath, bundleContent, 'utf8');
+    } catch (bundleErr) {
+      console.warn('Could not sync hindi_songs_data.js bundle:', bundleErr.message);
+    }
   }
 
   // 3. Record in history log

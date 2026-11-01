@@ -1,4 +1,4 @@
-/* PlayX Hindi Songs Dataset Bundle (Instant offline & file protocol fallback) */
+/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */
 window.PLAYX_HINDI_SONGS_DATA = [
   {
     "id": 1,

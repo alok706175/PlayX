@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v46";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v46";
+const CACHE_NAME = "chhath-pwa-v48";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v48";
 
 const STATIC_ASSETS = [
   "./",
@@ -197,7 +197,7 @@ self.addEventListener("fetch", (event) => {
 
   
   // 3.5 Dynamic Song Playlist JSON Data - Network-First with Cache Fallback
-  if (false) {
+  if (url.pathname.endsWith(".json")) {
     event.respondWith(
       fetch(req)
         .then((networkRes) => {
@@ -212,13 +212,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 4. Static App Shell Assets & JSON Data - Cache-First with Background Revalidation
+  // 4. Static App Shell Assets - Cache-First with Background Revalidation
   if (
     STATIC_ASSETS.some((asset) => req.url.includes(asset.replace("./", ""))) ||
     req.destination === "style" ||
     req.destination === "script" ||
-    req.destination === "image" ||
-    url.pathname.endsWith(".json")
+    req.destination === "image"
   ) {
     event.respondWith(
       caches.match(req).then((cachedResponse) => {
