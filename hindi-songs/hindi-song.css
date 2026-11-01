@@ -2809,12 +2809,7 @@
   transform: scale(0.98);
 }
 
-/* Crossfade mode button active glow */
-#crossfadeBtn.active {
-  background: rgba(245, 158, 11, 0.18);
-  border-color: var(--accent-color, #f59e0b);
-  color: var(--accent-color, #f59e0b);
-}
+
 
 /* Vector Mode Icon Styling */
 .mode-svg {
