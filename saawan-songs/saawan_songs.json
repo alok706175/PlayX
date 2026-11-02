@@ -1,23 +1,5 @@
 [
   {
-    "id": 2,
-    "name": "Har Har Shambhu Shiv Mahadeva",
-    "nameEn": "Har Har Shambhu Shiv Mahadeva",
-    "singer": "Abhilipsa Panda & Jeetu Sharma",
-    "singerEn": "Abhilipsa Panda & Jeetu Sharma",
-    "category": "Saawan Songs",
-    "tag": "Shiv Shambhu",
-    "videoId": "hBMoU_a_04s",
-    "youtubeId": "hBMoU_a_04s",
-    "embedUrl": "https://www.youtube.com/embed/hBMoU_a_04s",
-    "originalUrl": "https://www.youtube.com/watch?v=hBMoU_a_04s",
-    "duration": "06:14",
-    "thumbnail": "https://i.ytimg.com/vi/hBMoU_a_04s/hqdefault.jpg",
-    "addedAt": "2026-10-31T09:41:38.319Z",
-    "status": "approved",
-    "source": "youtube"
-  },
-  {
     "id": 3,
     "name": "Namo Namo Ji Shankara",
     "nameEn": "Namo Namo (Kedarnath)",
