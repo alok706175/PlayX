@@ -78,9 +78,7 @@
             <div class="importer-header-text">
               <h2 id="importerModalTitle">
                 <span>PlayX Song Importer</span>
-                <span class="badge-v2">PRO v2.5</span>
               </h2>
-              <p>Automatic YouTube & YouTube Music Sharing & Embed Conversion</p>
             </div>
           </div>
           <div class="importer-header-actions">
@@ -141,7 +139,7 @@
               <label for="importerUrlInput" class="importer-input-label">
                 <span>Paste YouTube or YouTube Music Link</span>
               </label>
-              <span class="importer-format-note">Shorts, Watch, Music & Share Links</span>
+              
             </div>
 
             <!-- Master Search Bar -->
@@ -159,13 +157,7 @@
               </button>
             </div>
 
-            <!-- Format Tags Row -->
-            <div class="importer-format-tags">
-              <span class="format-tag">✓ youtube.com/watch?v=...</span>
-              <span class="format-tag">✓ youtu.be/...</span>
-              <span class="format-tag">✓ music.youtube.com/watch?v=...</span>
-              <span class="format-tag">✓ youtube.com/shorts/...</span>
-            </div>
+            
           </div>
 
           <!-- Dynamic Container for Welcome Showcase OR Interactive Preview Card -->
@@ -187,82 +179,13 @@
   /**
    * Renders the welcome hero section when no link is currently being analyzed
    */
-  async function renderWelcomeShowcase() {
+  function renderWelcomeShowcase() {
     const container = document.getElementById('importerDynamicArea');
-    if (!container || activeAnalysis) return;
-
-    // Fetch recent additions from history
-    let recentSongs = [];
-    try {
-      const res = await fetch(`backend/auto_added_history.json?_t=${Date.now()}`);
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) recentSongs = data.slice(0, 3);
-      }
-    } catch (e) {}
-
-    let recentHtml = '';
-    if (recentSongs.length > 0) {
-      recentHtml = `
-        <div class="importer-recent-showcase">
-          <div class="recent-showcase-header">
-            <div class="recent-showcase-title">
-              <span>🕒</span> <span>Recently Auto-Imported Songs</span>
-            </div>
-            <span style="font-size: 0.76rem; color: var(--importer-text-muted);">Verified & Synced</span>
-          </div>
-          <div class="recent-mini-items">
-            ${recentSongs.map(s => {
-              const catObj = CATEGORY_OPTIONS.find(c => c.id === s.categoryKey || c.name === s.categoryName) || { name: s.categoryName || 'PlayX', icon: '🎵', page: 'home.html' };
-              const playUrl = `${catObj.page}?song=${encodeURIComponent(s.id || s.videoId || '')}`;
-              const thumb = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
-              return `
-                <div class="recent-mini-row">
-                  <div class="recent-mini-left">
-                    <img src="${escapeHtml(thumb)}" class="recent-mini-thumb" alt="${escapeHtml(s.name)}" onerror="this.src='images/playx_icon.png'">
-                    <div class="recent-mini-text" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
-                    <span class="recent-mini-cat">${catObj.icon} ${escapeHtml(catObj.name)}</span>
-                    <a href="${playUrl}" class="importer-mini-btn" style="text-decoration:none;padding:0.25rem 0.6rem;font-size:0.75rem;">▶ Play</a>
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      `;
+    if (container && !activeAnalysis) {
+      container.innerHTML = '';
     }
-
-    container.innerHTML = `
-      <div class="importer-hero-section">
-        <!-- 3 Feature Highlights -->
-        <div class="feature-cards-grid">
-          <div class="feature-card">
-            <div class="feature-card-icon">⚡</div>
-            <h4>Instant Metadata</h4>
-            <p>Auto-extracts HD thumbnail, original artist, clean title & exact duration in milliseconds.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-card-icon">🎯</div>
-            <h4>Smart Categorizer</h4>
-            <p>Intelligently routes songs to Hindi, Chhath, Saawan, Durga Puja, Bhojpuri & more.</p>
-          </div>
-          <div class="feature-card">
-            <div class="feature-card-icon">🚀</div>
-            <h4>Direct GitHub Sync</h4>
-            <p>Commits to <code>origin/main</code> and synchronizes offline dataset bundles with zero song loss.</p>
-          </div>
-        </div>
-
-        ${recentHtml}
-      </div>
-    `;
   }
 
-  /**
-   * Attaches interactive event handlers to the modal elements
-   */
   function attachModalListeners() {
     // Close modal
     document.getElementById('importerCloseBtn').addEventListener('click', closeModal);
