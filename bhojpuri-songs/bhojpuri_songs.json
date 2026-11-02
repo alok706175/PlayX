@@ -124,5 +124,23 @@
     "addedAt": "2026-11-02T21:17:26.153Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 8,
+    "name": "Nimbu Kharbuja Bhail 2 (feat. Khesari Lal Yadav & Sapna Chauhan)",
+    "nameEn": "Nimbu Kharbuja Bhail 2 (feat. Khesari Lal Yadav & Sapna Chauhan)",
+    "singer": "Khesari Lal Yadav & Karishma Kakkar",
+    "singerEn": "Khesari Lal Yadav & Karishma Kakkar",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "dwiXguIajEA",
+    "youtubeId": "dwiXguIajEA",
+    "embedUrl": "https://www.youtube.com/embed/dwiXguIajEA",
+    "originalUrl": "https://music.youtube.com/watch?v=dwiXguIajEA&si=CX2EtqY1rTdWh_1f",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/dwiXguIajEA/hqdefault.jpg",
+    "addedAt": "2026-11-02T21:26:02.029Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
