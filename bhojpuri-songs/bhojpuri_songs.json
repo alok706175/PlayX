@@ -106,5 +106,23 @@
     "addedAt": "2026-10-31T09:41:38.320Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 7,
+    "name": "Balamuwa Ke Ballam",
+    "nameEn": "Balamuwa Ke Ballam",
+    "singer": "Neha Raj & Samar Singh",
+    "singerEn": "Neha Raj & Samar Singh",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "Q8V0FcbG0ik",
+    "youtubeId": "Q8V0FcbG0ik",
+    "embedUrl": "https://www.youtube.com/embed/Q8V0FcbG0ik",
+    "originalUrl": "https://music.youtube.com/watch?v=Q8V0FcbG0ik&si=kfR_0lutUETn8uru",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/Q8V0FcbG0ik/hqdefault.jpg",
+    "addedAt": "2026-11-02T21:17:26.153Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
