@@ -1,7 +1,7 @@
 /**
- * PlayX Auto Added Songs - Admin Song Importer Controller (v2.0 Redesign)
+ * PlayX Auto Added Songs - Admin Song Importer Controller (v2.5 Ultra-Modern)
  * 
- * Provides a high-end administrative modal for analyzing YouTube / YouTube Music links,
+ * Provides an ultra-modern administrative modal for analyzing YouTube / YouTube Music links,
  * previewing rich metadata, auto-cleaning titles, visual category selection,
  * real-time server & GitHub auto-sync status, and import history logs.
  */
@@ -26,7 +26,6 @@
   let modalEl = null;
   let activeAnalysis = null;
   let isSubmitting = false;
-  let currentActiveTab = 'import'; // 'import' | 'history' | 'settings'
 
   const CATEGORY_OPTIONS = [
     { id: 'hindi', name: 'Hindi Songs', hindi: 'हिंदी गीत', icon: '🎵', page: 'hindi-songs/hindi-songs.html', file: 'hindi-songs/hindi_songs.json' },
@@ -45,11 +44,11 @@
   function cleanTitleString(title) {
     if (!title) return '';
     let cleaned = title;
-    // Remove common bracketed noise
+    // Remove common bracketed video noise
     cleaned = cleaned.replace(/\s*[([{\-—]\s*(official\s*(music\s*)?(video|audio|lyric(s)?|track|hd|4k|remastered|full\s*song|version|promo)?|4k\s*ultra\s*hd|1080p|hd|audio\s*song|video\s*song|exclusive|full\s*video|lyrical\s*video|new\s*song\s*\d{4})\s*[)\]}]\s*/gi, ' ');
     // Remove trailing studio or channel watermarks
     cleaned = cleaned.replace(/\s*\|\s*(t-series|zee\s*music\s*company|sony\s*music\s*india|tips\s*official|yrf|speed\s*records|white\s*hill\s*music|wave\s*music|worldwide\s*records).*/gi, '');
-    // Clean orphan pipes or hyphens at the end
+    // Clean orphan pipes or hyphens at ends
     cleaned = cleaned.replace(/[\s|—\-]+$/, '');
     cleaned = cleaned.replace(/^[\s|—\-]+/, '');
     // Condense double spaces
@@ -58,7 +57,7 @@
   }
 
   /**
-   * Injects modal DOM structure into the page
+   * Builds and injects the modal DOM structure into the page
    */
   function initImporterUI() {
     if (document.getElementById('playxSongImporterOverlay')) return;
@@ -76,29 +75,17 @@
         <div class="importer-header">
           <div class="importer-title-group">
             <div class="importer-icon-badge">🎵</div>
-            <div>
+            <div class="importer-header-text">
               <h2 id="importerModalTitle">
                 <span>PlayX Song Importer</span>
-                <span class="badge-v2">v2.0 Pro</span>
+                <span class="badge-v2">PRO v2.5</span>
               </h2>
-              <p>Instant YouTube & YouTube Music Multi-Category Auto Importer</p>
+              <p>Automatic YouTube & YouTube Music Sharing & Embed Conversion</p>
             </div>
           </div>
-          <button class="importer-close-btn" id="importerCloseBtn" type="button" title="Close Importer (Esc)" aria-label="Close">✕</button>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="importer-tabs-nav">
-          <button type="button" class="importer-tab-btn active" data-tab="import" id="tabBtnImport">
-            <span>📥</span> <span>Import Song</span>
-          </button>
-          <button type="button" class="importer-tab-btn" data-tab="history" id="tabBtnHistory">
-            <span>🕒</span> <span>Recent History</span>
-            <span class="tab-badge" id="historyCountBadge">0</span>
-          </button>
-          <button type="button" class="importer-tab-btn" data-tab="settings" id="tabBtnSettings">
-            <span>⚙️</span> <span>Sync Engine & Token</span>
-          </button>
+          <div class="importer-header-actions">
+            <button class="importer-close-btn" id="importerCloseBtn" type="button" title="Close Importer (Esc)" aria-label="Close">✕</button>
+          </div>
         </div>
 
         <!-- Body Container -->
@@ -106,128 +93,83 @@
           <!-- Notification / Share Banner -->
           <div id="importerBanner" style="display: none;"></div>
 
-          <!-- TAB 1: IMPORT SONG -->
-          <div class="importer-tab-content active" id="tabContentImport">
-            <!-- Live Sync Status Capsule -->
-            <div class="importer-sync-bar" id="importerSyncBar">
-              <div class="importer-sync-indicator" id="importerSyncIndicator">
-                <span class="pulse-dot amber"></span>
-                <span>Connecting to Sync Engine...</span>
-              </div>
-              <div class="importer-sync-actions">
-                <button type="button" id="importerQuickTokenBtn" class="importer-mini-btn" title="Configure GitHub Token">
-                  <span>⚙️ Token</span>
-                </button>
-                <button type="button" id="importerRefreshSyncBtn" class="importer-mini-btn" title="Re-check Server Status">
-                  <span>🔄 Refresh</span>
-                </button>
-              </div>
+          <!-- Live Sync Status Bar Capsule -->
+          <div class="importer-sync-bar" id="importerSyncBar">
+            <div class="importer-sync-indicator" id="importerSyncIndicator">
+              <span class="pulse-dot amber"></span>
+              <span>Checking Sync Engine...</span>
             </div>
-
-            <!-- URL Input Card -->
-            <div class="importer-input-card">
-              <div class="importer-input-header">
-                <label for="importerUrlInput">
-                  <span>🎵 Paste YouTube Link</span>
-                </label>
-                <span class="supported-tag">Watch • Music • Shorts • Share URLs</span>
-              </div>
-
-              <div class="importer-search-group">
-                <span class="importer-icon-lead">▶</span>
-                <input type="text" id="importerUrlInput" class="importer-url-input"
-                  placeholder="Paste YouTube or YouTube Music link (e.g. https://youtu.be/...)" autocomplete="off" spellcheck="false">
-                <button type="button" class="btn-clear-input" id="importerClearInputBtn" title="Clear input">✕</button>
-                <button type="button" class="btn-paste" id="importerPasteBtn" title="Paste from clipboard">
-                  <span>📋</span> <span>Paste</span>
-                </button>
-                <button type="button" class="btn-analyze" id="importerAnalyzeBtn">
-                  <span id="analyzeBtnIcon">⚡</span>
-                  <span id="analyzeBtnText">Analyze Link</span>
-                </button>
-              </div>
-
-              <!-- Format Guidance Pills -->
-              <div class="importer-format-pills">
-                <span class="format-pill">📺 youtube.com/watch?v=...</span>
-                <span class="format-pill">⚡ youtu.be/...</span>
-                <span class="format-pill">🎵 music.youtube.com/...</span>
-                <span class="format-pill">📱 youtube.com/shorts/...</span>
-              </div>
-            </div>
-
-            <!-- Dynamic Container for Interactive Preview Card & Results -->
-            <div id="importerDynamicArea"></div>
-          </div>
-
-          <!-- TAB 2: RECENT HISTORY -->
-          <div class="importer-tab-content" id="tabContentHistory">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-              <h3 style="margin: 0; font-size: 1.05rem; color: var(--importer-text);">Recently Auto-Added Songs</h3>
-              <button type="button" id="refreshHistoryBtn" class="importer-mini-btn">🔄 Refresh History</button>
-            </div>
-            <div id="importerHistoryContainer" class="importer-history-list">
-              <div style="text-align: center; padding: 2.5rem 1rem; color: var(--importer-text-muted);">
-                <div class="spinner" style="margin: 0 auto 0.8rem;"></div>
-                Loading recent imports history...
-              </div>
+            <div class="importer-sync-actions">
+              <button type="button" id="importerGhTokenBtn" class="importer-mini-btn" title="GitHub Direct Push Settings">
+                <span>⚙️ GitHub Token</span>
+              </button>
             </div>
           </div>
 
-          <!-- TAB 3: SYNC SETTINGS & TOKEN -->
-          <div class="importer-tab-content" id="tabContentSettings">
-            <div class="importer-settings-grid">
-              <!-- Strategy 1: Local Server -->
-              <div class="settings-card">
-                <div class="settings-card-header">
-                  <h4><span>🖥️ Strategy 1: Local Backend Server</span></h4>
-                  <span id="settingsServerBadge" class="format-pill">Checking...</span>
-                </div>
-                <p class="settings-desc">
-                  When running locally, PlayX automatically stages updated JSON files, auto-syncs dataset bundles, creates git commits, and executes <code>git push origin main</code> directly through Git CLI.
-                </p>
-                <div style="font-size: 0.82rem; background: rgba(0,0,0,0.3); padding: 0.6rem 0.85rem; border-radius: 8px; font-family: monospace; color: var(--importer-accent);">
-                  Terminal command: node "backend/server.js"
-                </div>
+          <!-- Collapsible GitHub Token Drawer -->
+          <div id="importerGhTokenDrawer" class="importer-token-drawer" style="display: none;">
+            <div class="token-drawer-header">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span>🐙</span> <span>GitHub Direct Push Settings (PLAYX_TOKEN)</span>
               </div>
-
-              <!-- Strategy 2: GitHub API Direct Push -->
-              <div class="settings-card">
-                <div class="settings-card-header">
-                  <h4><span>🐙 Strategy 2: GitHub API Direct Push (PLAYX_TOKEN)</span></h4>
-                  <span id="settingsTokenBadge" class="format-pill">Not Configured</span>
-                </div>
-                <p class="settings-desc">
-                  Allows instant, direct commits to <b>alok706175/PlayX (main branch)</b> right from this web browser without requiring a terminal server. Safe UTF-8 Base64 encoding prevents file corruption.
-                </p>
-
-                <div class="token-input-row">
-                  <div class="token-input-wrapper">
-                    <input type="password" id="importerGhTokenInput" placeholder="Enter GitHub Personal Access Token (ghp_...)" class="importer-token-input">
-                    <button type="button" class="btn-toggle-token-vis" id="importerToggleTokenVis" title="Toggle visibility">👁️</button>
-                  </div>
-                  <button type="button" id="importerSaveTokenBtn" class="importer-mini-btn primary">
-                    <span>💾 Save Token</span>
-                  </button>
-                  <button type="button" id="importerClearTokenBtn" class="importer-mini-btn danger">
-                    <span>🗑️ Clear</span>
-                  </button>
-                </div>
-
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.4rem;">
-                  <a href="https://github.com/settings/tokens/new?scopes=repo&description=PlayX-Song-Importer" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration:none;">
-                    🔑 Generate New Token (repo scope)
-                  </a>
-                  <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration:none;">
-                    ⚡ GitHub Actions Runner
-                  </a>
-                  <a href="https://github.com/alok706175/PlayX/settings/secrets/actions" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration:none;">
-                    🔐 Repo Secrets
-                  </a>
-                </div>
+              <button type="button" id="importerCloseTokenDrawerBtn" class="btn-clear-search" style="display:flex;">✕</button>
+            </div>
+            <p class="token-drawer-desc">
+              Browser security restricts reading private repository secrets directly. Save your GitHub Personal Access Token (PAT) with <code>repo</code> scope below to commit songs directly to <b>alok706175/PlayX:main</b>.
+            </p>
+            <div class="token-input-row">
+              <div class="token-input-wrap">
+                <input type="password" id="importerGhTokenInput" placeholder="Enter PLAYX_TOKEN (ghp_...)" class="token-input">
+                <button type="button" class="token-eye-btn" id="importerToggleTokenVis" title="Toggle visibility">👁️</button>
               </div>
+              <button type="button" id="importerSaveTokenBtn" class="importer-mini-btn primary">Save Token</button>
+              <button type="button" id="importerClearTokenBtn" class="importer-mini-btn danger">Clear</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.2rem;">
+              <a href="https://github.com/settings/tokens/new?scopes=repo&description=PlayX-Song-Importer" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration:none;">
+                🔑 Generate PAT (repo scope)
+              </a>
+              <a href="https://github.com/alok706175/PlayX/actions/workflows/auto-add-song.yml" target="_blank" rel="noopener noreferrer" class="importer-mini-btn" style="text-decoration:none;">
+                ⚡ GitHub Actions Workflow
+              </a>
             </div>
           </div>
+
+          <!-- Unified Search & URL Input Box -->
+          <div class="importer-input-card">
+            <div class="importer-input-card-header">
+              <label for="importerUrlInput" class="importer-input-label">
+                <span>Paste YouTube or YouTube Music Link</span>
+              </label>
+              <span class="importer-format-note">Shorts, Watch, Music & Share Links</span>
+            </div>
+
+            <!-- Master Search Bar -->
+            <div class="importer-search-bar">
+              <span class="search-bar-icon-lead">▶</span>
+              <input type="text" id="importerUrlInput" class="importer-url-input"
+                placeholder="https://music.youtube.com/watch?v=... or https://youtu.be/..." autocomplete="off" spellcheck="false">
+              <button type="button" class="btn-clear-search" id="importerClearInputBtn" title="Clear input">✕</button>
+              <button type="button" class="btn-paste-chip" id="importerPasteBtn" title="Paste from clipboard">
+                <span>📋</span> <span>Paste</span>
+              </button>
+              <button type="button" class="btn-analyze-primary" id="importerAnalyzeBtn">
+                <span id="analyzeBtnIcon">⚡</span>
+                <span id="analyzeBtnText">Analyze Link</span>
+              </button>
+            </div>
+
+            <!-- Format Tags Row -->
+            <div class="importer-format-tags">
+              <span class="format-tag">✓ youtube.com/watch?v=...</span>
+              <span class="format-tag">✓ youtu.be/...</span>
+              <span class="format-tag">✓ music.youtube.com/watch?v=...</span>
+              <span class="format-tag">✓ youtube.com/shorts/...</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Container for Welcome Showcase OR Interactive Preview Card -->
+          <div id="importerDynamicArea"></div>
         </div>
       </div>
     `;
@@ -235,65 +177,116 @@
     document.body.appendChild(overlay);
     modalEl = overlay;
 
-    // Attach core modal event listeners
+    // Attach listeners
     attachModalListeners();
+
+    // Render default welcome hero showcase
+    renderWelcomeShowcase();
+  }
+
+  /**
+   * Renders the welcome hero section when no link is currently being analyzed
+   */
+  async function renderWelcomeShowcase() {
+    const container = document.getElementById('importerDynamicArea');
+    if (!container || activeAnalysis) return;
+
+    // Fetch recent additions from history
+    let recentSongs = [];
+    try {
+      const res = await fetch(`backend/auto_added_history.json?_t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) recentSongs = data.slice(0, 3);
+      }
+    } catch (e) {}
+
+    let recentHtml = '';
+    if (recentSongs.length > 0) {
+      recentHtml = `
+        <div class="importer-recent-showcase">
+          <div class="recent-showcase-header">
+            <div class="recent-showcase-title">
+              <span>🕒</span> <span>Recently Auto-Imported Songs</span>
+            </div>
+            <span style="font-size: 0.76rem; color: var(--importer-text-muted);">Verified & Synced</span>
+          </div>
+          <div class="recent-mini-items">
+            ${recentSongs.map(s => {
+              const catObj = CATEGORY_OPTIONS.find(c => c.id === s.categoryKey || c.name === s.categoryName) || { name: s.categoryName || 'PlayX', icon: '🎵', page: 'home.html' };
+              const playUrl = `${catObj.page}?song=${encodeURIComponent(s.id || s.videoId || '')}`;
+              const thumb = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+              return `
+                <div class="recent-mini-row">
+                  <div class="recent-mini-left">
+                    <img src="${escapeHtml(thumb)}" class="recent-mini-thumb" alt="${escapeHtml(s.name)}" onerror="this.src='images/playx_icon.png'">
+                    <div class="recent-mini-text" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0;">
+                    <span class="recent-mini-cat">${catObj.icon} ${escapeHtml(catObj.name)}</span>
+                    <a href="${playUrl}" class="importer-mini-btn" style="text-decoration:none;padding:0.25rem 0.6rem;font-size:0.75rem;">▶ Play</a>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = `
+      <div class="importer-hero-section">
+        <!-- 3 Feature Highlights -->
+        <div class="feature-cards-grid">
+          <div class="feature-card">
+            <div class="feature-card-icon">⚡</div>
+            <h4>Instant Metadata</h4>
+            <p>Auto-extracts HD thumbnail, original artist, clean title & exact duration in milliseconds.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card-icon">🎯</div>
+            <h4>Smart Categorizer</h4>
+            <p>Intelligently routes songs to Hindi, Chhath, Saawan, Durga Puja, Bhojpuri & more.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card-icon">🚀</div>
+            <h4>Direct GitHub Sync</h4>
+            <p>Commits to <code>origin/main</code> and synchronizes offline dataset bundles with zero song loss.</p>
+          </div>
+        </div>
+
+        ${recentHtml}
+      </div>
+    `;
   }
 
   /**
    * Attaches interactive event handlers to the modal elements
    */
   function attachModalListeners() {
-    // Close modal triggers
+    // Close modal
     document.getElementById('importerCloseBtn').addEventListener('click', closeModal);
     modalEl.addEventListener('click', (e) => {
       if (e.target === modalEl) closeModal();
     });
 
-    // Tab switching
-    const tabBtns = modalEl.querySelectorAll('.importer-tab-btn');
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetTab = btn.getAttribute('data-tab');
-        switchTab(targetTab);
+    // Token Drawer Toggle
+    const tokenBtn = document.getElementById('importerGhTokenBtn');
+    const drawer = document.getElementById('importerGhTokenDrawer');
+    const closeDrawerBtn = document.getElementById('importerCloseTokenDrawerBtn');
+
+    if (tokenBtn && drawer) {
+      tokenBtn.addEventListener('click', () => {
+        drawer.style.display = drawer.style.display === 'none' ? 'flex' : 'none';
       });
-    });
-
-    // Quick Token button in sync bar jumps to Settings tab
-    const quickTokenBtn = document.getElementById('importerQuickTokenBtn');
-    if (quickTokenBtn) {
-      quickTokenBtn.addEventListener('click', () => switchTab('settings'));
     }
-
-    // Refresh sync status button
-    const refreshSyncBtn = document.getElementById('importerRefreshSyncBtn');
-    if (refreshSyncBtn) {
-      refreshSyncBtn.addEventListener('click', () => {
-        updateSyncBar();
-        showBanner('info', '🔄 Sync engine status refreshed.');
+    if (closeDrawerBtn && drawer) {
+      closeDrawerBtn.addEventListener('click', () => {
+        drawer.style.display = 'none';
       });
     }
 
-    // Refresh history button
-    const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
-    if (refreshHistoryBtn) {
-      refreshHistoryBtn.addEventListener('click', loadHistoryList);
-    }
-
-    // URL Input clear button
-    const urlInput = document.getElementById('importerUrlInput');
-    const clearInputBtn = document.getElementById('importerClearInputBtn');
-    if (urlInput && clearInputBtn) {
-      urlInput.addEventListener('input', () => {
-        clearInputBtn.style.display = urlInput.value.trim() ? 'flex' : 'none';
-      });
-      clearInputBtn.addEventListener('click', () => {
-        urlInput.value = '';
-        clearInputBtn.style.display = 'none';
-        urlInput.focus();
-      });
-    }
-
-    // Token save button
+    // Save Token
     const saveTokenBtn = document.getElementById('importerSaveTokenBtn');
     if (saveTokenBtn) {
       saveTokenBtn.addEventListener('click', () => {
@@ -301,16 +294,16 @@
         if (val) {
           localStorage.setItem('playx_token', val);
           localStorage.setItem('playx_github_token', val);
-          showBanner('info', '✅ PLAYX_TOKEN saved securely in browser!');
+          showBanner('info', '✅ PLAYX_TOKEN saved successfully in browser!');
+          if (drawer) drawer.style.display = 'none';
           updateSyncBar();
-          setTimeout(() => switchTab('import'), 600);
         } else {
           showBanner('warning', 'Please enter a valid GitHub Personal Access Token (starts with ghp_ or github_pat_).');
         }
       });
     }
 
-    // Token clear button
+    // Clear Token
     const clearTokenBtn = document.getElementById('importerClearTokenBtn');
     if (clearTokenBtn) {
       clearTokenBtn.addEventListener('click', () => {
@@ -323,7 +316,7 @@
       });
     }
 
-    // Token visibility toggle
+    // Token visibility eye toggle
     const toggleTokenBtn = document.getElementById('importerToggleTokenVis');
     if (toggleTokenBtn) {
       toggleTokenBtn.addEventListener('click', () => {
@@ -336,17 +329,34 @@
       });
     }
 
-    // Clipboard Paste button
+    // URL Input clear button
+    const urlInput = document.getElementById('importerUrlInput');
+    const clearBtn = document.getElementById('importerClearInputBtn');
+    if (urlInput && clearBtn) {
+      urlInput.addEventListener('input', () => {
+        clearBtn.style.display = urlInput.value.trim() ? 'flex' : 'none';
+      });
+      clearBtn.addEventListener('click', () => {
+        urlInput.value = '';
+        clearBtn.style.display = 'none';
+        urlInput.focus();
+        if (activeAnalysis) {
+          activeAnalysis = null;
+          renderWelcomeShowcase();
+        }
+      });
+    }
+
+    // Paste from clipboard
     const pasteBtn = document.getElementById('importerPasteBtn');
-    if (pasteBtn) {
+    if (pasteBtn && urlInput) {
       pasteBtn.addEventListener('click', async () => {
         try {
           if (navigator.clipboard && navigator.clipboard.readText) {
             const text = await navigator.clipboard.readText();
             if (text) {
-              const input = document.getElementById('importerUrlInput');
-              input.value = text.trim();
-              if (clearInputBtn) clearInputBtn.style.display = 'flex';
+              urlInput.value = text.trim();
+              if (clearBtn) clearBtn.style.display = 'flex';
               analyzeUrl(text.trim());
             }
           } else {
@@ -360,11 +370,11 @@
 
     // Analyze button
     const analyzeBtn = document.getElementById('importerAnalyzeBtn');
-    if (analyzeBtn) {
+    if (analyzeBtn && urlInput) {
       analyzeBtn.addEventListener('click', () => {
-        const val = document.getElementById('importerUrlInput').value.trim();
+        const val = urlInput.value.trim();
         if (!val) {
-          showBanner('warning', 'Please enter a valid YouTube or YouTube Music link.');
+          showBanner('warning', 'Please paste a valid YouTube or YouTube Music link.');
           return;
         }
         analyzeUrl(val);
@@ -384,53 +394,17 @@
   }
 
   /**
-   * Switches modal tabs with smooth animation
-   */
-  function switchTab(tabId) {
-    currentActiveTab = tabId;
-    const tabBtns = modalEl.querySelectorAll('.importer-tab-btn');
-    const tabContents = modalEl.querySelectorAll('.importer-tab-content');
-
-    tabBtns.forEach(btn => {
-      btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
-    });
-
-    tabContents.forEach(content => {
-      content.classList.toggle('active', content.id === `tabContent${tabId.charAt(0).toUpperCase() + tabId.slice(1)}`);
-    });
-
-    if (tabId === 'history') {
-      loadHistoryList();
-    } else if (tabId === 'settings') {
-      updateSyncBar();
-    }
-  }
-
-  /**
-   * Updates sync status bar and settings badges
+   * Updates sync status bar indicator
    */
   async function updateSyncBar() {
     const indicator = document.getElementById('importerSyncIndicator');
     const tokenInput = document.getElementById('importerGhTokenInput');
-    const serverBadge = document.getElementById('settingsServerBadge');
-    const tokenBadge = document.getElementById('settingsTokenBadge');
-
     const savedToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
     if (tokenInput && savedToken) {
       tokenInput.value = savedToken;
     }
 
-    if (tokenBadge) {
-      if (savedToken) {
-        tokenBadge.textContent = 'Token Active ✓';
-        tokenBadge.style.color = '#10b981';
-        tokenBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-      } else {
-        tokenBadge.textContent = 'Not Configured';
-        tokenBadge.style.color = 'var(--importer-text-muted)';
-        tokenBadge.style.borderColor = 'var(--importer-border-subtle)';
-      }
-    }
+    if (!indicator) return;
 
     let isLocalServerOnline = false;
 
@@ -458,130 +432,25 @@
       isLocalServerOnline = false;
     }
 
-    if (serverBadge) {
-      if (isLocalServerOnline) {
-        serverBadge.textContent = 'Connected (Port 3000) ✓';
-        serverBadge.style.color = '#10b981';
-        serverBadge.style.borderColor = 'rgba(16, 185, 129, 0.4)';
-      } else {
-        serverBadge.textContent = 'Offline';
-        serverBadge.style.color = '#f59e0b';
-        serverBadge.style.borderColor = 'rgba(245, 158, 11, 0.4)';
-      }
-    }
-
-    if (!indicator) return;
-
     if (isLocalServerOnline) {
       indicator.innerHTML = `
         <span class="pulse-dot green"></span>
-        <span>Local Backend Online (Auto Git Push <code>origin/main</code> Active)</span>
+        <span style="color:#10b981;font-weight:700;">Local Server Active</span>
+        <span style="color:var(--importer-text-muted);">(Auto Git Push origin/main)</span>
       `;
     } else if (savedToken) {
       indicator.innerHTML = `
         <span class="pulse-dot cyan"></span>
-        <span>GitHub Direct Push Active (<code>alok706175/PlayX:main</code>)</span>
+        <span style="color:#38bdf8;font-weight:700;">GitHub Direct API Push Active</span>
+        <span style="color:var(--importer-text-muted);">(origin/main)</span>
       `;
     } else {
       indicator.innerHTML = `
         <span class="pulse-dot amber"></span>
-        <span>Offline Mode (Click ⚙️ Token to enable Direct GitHub Push)</span>
+        <span style="color:#f59e0b;font-weight:700;">Server Offline & No GitHub Token</span>
+        <span style="color:var(--importer-text-muted);">(Click ⚙️ to configure)</span>
       `;
     }
-  }
-
-  /**
-   * Fetches and renders recent imports history
-   */
-  async function loadHistoryList() {
-    const container = document.getElementById('importerHistoryContainer');
-    const badge = document.getElementById('historyCountBadge');
-    if (!container) return;
-
-    container.innerHTML = `
-      <div style="text-align: center; padding: 2rem 1rem; color: var(--importer-text-muted);">
-        <div class="spinner" style="margin: 0 auto 0.6rem;"></div>
-        Refreshing history...
-      </div>
-    `;
-
-    let historyList = [];
-
-    // Try backend API first
-    try {
-      const res = await fetch(`${API_BASE}/api/recent-imports?_t=${Date.now()}`, {
-        headers: { 'Accept': 'application/json' },
-        cache: 'no-store'
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.success && Array.isArray(data.history)) {
-          historyList = data.history;
-        }
-      }
-    } catch (e) {
-      // Fallback: Try static auto_added_history.json
-      try {
-        const staticRes = await fetch(`backend/auto_added_history.json?_t=${Date.now()}`);
-        if (staticRes.ok) {
-          const staticData = await staticRes.json();
-          if (Array.isArray(staticData)) historyList = staticData;
-        }
-      } catch (err) {}
-    }
-
-    if (badge) {
-      badge.textContent = historyList.length;
-    }
-
-    if (!historyList || historyList.length === 0) {
-      container.innerHTML = `
-        <div style="text-align: center; padding: 3rem 1rem; color: var(--importer-text-muted); background: var(--importer-surface); border-radius: 12px; border: 1px dashed var(--importer-border-subtle);">
-          <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🎶</div>
-          <div style="font-weight: 700; color: var(--importer-text); margin-bottom: 0.3rem;">No Imported Songs Recorded Yet</div>
-          <p style="font-size: 0.82rem; margin: 0;">Songs you import will automatically show up here with playback links and commit history.</p>
-        </div>
-      `;
-      return;
-    }
-
-    container.innerHTML = historyList.slice(0, 30).map(s => {
-      const catObj = CATEGORY_OPTIONS.find(c => c.id === s.categoryKey || c.name === s.categoryName) || {
-        name: s.categoryName || 'PlayX',
-        icon: '🎵',
-        page: 'home.html'
-      };
-
-      const dateStr = s.addedAt ? new Date(s.addedAt).toLocaleString(undefined, {
-        month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
-      }) : 'Recently';
-
-      const thumbUrl = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
-      const playUrl = `${catObj.page}?song=${encodeURIComponent(s.id || s.videoId || '')}`;
-
-      return `
-        <div class="history-item-card">
-          <div class="history-left">
-            <img src="${escapeHtml(thumbUrl)}" class="history-thumb" alt="${escapeHtml(s.name)}" loading="lazy" onerror="this.src='images/playx_icon.png'">
-            <div class="history-info">
-              <div class="history-title" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</div>
-              <div class="history-meta">
-                <span>🎤 ${escapeHtml(s.singer || 'Artist')}</span>
-                <span>•</span>
-                <span>${catObj.icon} ${escapeHtml(catObj.name)}</span>
-                <span>•</span>
-                <span>🕒 ${dateStr}</span>
-              </div>
-            </div>
-          </div>
-          <div class="history-right">
-            <a href="${playUrl}" class="history-play-btn" title="Open and listen in ${escapeHtml(catObj.name)}">
-              <span>▶ Play</span>
-            </a>
-          </div>
-        </div>
-      `;
-    }).join('');
   }
 
   function showBanner(type, message) {
@@ -606,7 +475,7 @@
     btn.disabled = loading;
     if (loading) {
       icon.innerHTML = `<div class="spinner"></div>`;
-      text.textContent = 'Fetching Metadata...';
+      text.textContent = 'Fetching...';
     } else {
       icon.innerHTML = `⚡`;
       text.textContent = 'Analyze Link';
@@ -622,9 +491,10 @@
     const container = document.getElementById('importerDynamicArea');
     if (container) {
       container.innerHTML = `
-        <div style="text-align: center; padding: 2rem 1rem; color: var(--importer-text-muted); background: var(--importer-surface); border-radius: 16px; border: 1px dashed var(--importer-border);">
-          <div class="spinner" style="margin: 0 auto 0.8rem;"></div>
-          <div>Analyzing YouTube link and detecting best playlist category...</div>
+        <div style="text-align: center; padding: 2.5rem 1rem; color: var(--importer-text-muted); background: var(--importer-surface); border-radius: 18px; border: 1.5px dashed var(--importer-border);">
+          <div class="spinner" style="margin: 0 auto 0.9rem;"></div>
+          <div style="font-weight: 700; color: var(--importer-text); margin-bottom: 0.3rem;">Analyzing YouTube Link...</div>
+          <div style="font-size: 0.82rem;">Fetching high-resolution artwork, video metadata & matching optimal playlist category</div>
         </div>
       `;
     }
@@ -699,7 +569,7 @@
       activeAnalysis = data;
       renderPreview(data);
     } catch (err) {
-      if (container) container.innerHTML = '';
+      renderWelcomeShowcase();
       showBanner('danger', err.message);
     } finally {
       setAnalyzeLoading(false);
@@ -728,9 +598,9 @@
       duplicateHtml = `
         <div class="importer-warning-box danger-dup">
           <div style="font-weight: 750; display: flex; align-items: center; gap: 0.4rem;">
-            <span>⚠️ Duplicate Song Detected</span>
+            <span>⚠️ Duplicate Song Detected!</span>
           </div>
-          <div>This song already exists in <strong>${dup.categoryName || dup.foundInCategory}</strong> (${dup.foundInFile}). Adding it again is usually not needed unless you wish to duplicate it.</div>
+          <div>This song already exists in the "<strong>${dup.categoryName || dup.foundInCategory}</strong>" playlist (${dup.foundInFile}). Adding it again is not recommended.</div>
         </div>
       `;
     }
@@ -745,7 +615,7 @@
       `;
     }
 
-    // Interactive Visual Category Chips
+    // Interactive Visual Category Chips (8 categories)
     const categoryChipsHtml = CATEGORY_OPTIONS.map(c => {
       const isSuggested = c.id === suggestedCatId;
       return `
@@ -757,7 +627,7 @@
       `;
     }).join('');
 
-    // Native select options for form parity
+    // Native select options for form binding
     const optionsHtml = CATEGORY_OPTIONS.map(c => `
       <option value="${c.id}" ${c.id === suggestedCatId ? 'selected' : ''}>
         ${c.icon} ${c.name} (${c.hindi})
@@ -767,7 +637,7 @@
     container.innerHTML = `
       <div class="importer-preview-card" id="importerPreviewCard">
         <!-- Top Badge Row -->
-        <div class="preview-header-bar">
+        <div class="preview-top-badges">
           <span class="platform-pill">
             <span>📺</span> <span>${meta.platform || 'YouTube'}</span>
           </span>
@@ -784,7 +654,7 @@
         <div class="preview-dual-grid">
           <!-- Left Column: Media Stage -->
           <div class="preview-media-stage">
-            <div class="media-thumbnail-box" id="mediaThumbnailBox" title="Click to load live player">
+            <div class="media-thumbnail-box" id="mediaThumbnailBox" title="Click to test play video stream">
               <img src="${escapeHtml(thumbUrl)}" class="media-thumbnail-img" alt="${escapeHtml(meta.cleanTitle)}" onerror="this.src='https://i.ytimg.com/vi/${meta.videoId}/hqdefault.jpg'">
               <div class="media-play-overlay">
                 <div class="play-circle-icon">▶</div>
@@ -807,13 +677,6 @@
             <button type="button" class="btn-toggle-player" id="btnToggleLivePlayer">
               <span>▶</span> <span>Test Play Live Stream</span>
             </button>
-
-            <!-- Metadata info chips -->
-            <div class="meta-chips-row">
-              <div class="meta-chip"><span>ID:</span> <strong>${meta.videoId}</strong></div>
-              <div class="meta-chip"><span>HD:</span> <strong>320 Kbps</strong></div>
-              <div class="meta-chip"><span>Channel:</span> <strong>${escapeHtml(meta.channelTitle || meta.singer || 'Artist')}</strong></div>
-            </div>
           </div>
 
           <!-- Right Column: Metadata Form & Category Selector -->
@@ -827,8 +690,7 @@
               <div class="category-cards-grid" id="categoryCardsGrid">
                 ${categoryChipsHtml}
               </div>
-              <!-- Hidden select for form value binding -->
-              <select id="selectSongCategory" class="category-select-fallback">
+              <select id="selectSongCategory" style="display:none;">
                 ${optionsHtml}
               </select>
             </div>
@@ -858,6 +720,11 @@
               <div class="form-field">
                 <label for="editSongDuration">Duration</label>
                 <input type="text" id="editSongDuration" value="${escapeHtml(meta.duration && meta.duration !== '--:--' ? meta.duration : '03:45')}">
+              </div>
+
+              <div class="form-field">
+                <label>Video ID</label>
+                <input type="text" value="${escapeHtml(meta.videoId)}" readonly style="opacity:0.75;font-family:monospace;">
               </div>
             </div>
           </div>
@@ -894,11 +761,11 @@
       cleanBtn.addEventListener('click', () => {
         const cleaned = cleanTitleString(titleInput.value || originalRaw);
         titleInput.value = cleaned;
-        showBanner('info', '✨ Cleaned YouTube title tags!');
+        showBanner('info', '✨ Cleaned video title boilerplate!');
       });
     }
 
-    // Toggle Live Player Iframe
+    // Toggle Live Player
     const thumbBox = document.getElementById('mediaThumbnailBox');
     const embedFrame = document.getElementById('previewEmbedFrame');
     const toggleBtn = document.getElementById('btnToggleLivePlayer');
@@ -935,9 +802,9 @@
 
     // Cancel Button
     document.getElementById('importerCancelBtn').addEventListener('click', () => {
-      container.innerHTML = '';
       activeAnalysis = null;
       hideBanner();
+      renderWelcomeShowcase();
     });
 
     // Approve Button
@@ -947,7 +814,7 @@
   }
 
   /**
-   * Approves and saves the song to JSON databases and synchronizes bundles
+   * Approves and saves the song to JSON database and auto-syncs dataset bundle
    */
   async function approveAndSaveSong() {
     if (!activeAnalysis || isSubmitting) return;
@@ -1054,7 +921,7 @@
             `Unable to connect to backend server (${backendError ? backendError.message : 'Server offline'}).\n\n` +
             `To enable automatic GitHub pushes:\n` +
             `1. Start local server: node "backend/server.js"\n` +
-            `2. Or open '⚙️ Sync Engine & Token' tab and save your PLAYX_TOKEN.`
+            `2. Or click '⚙️ GitHub Token' and save your PLAYX_TOKEN.`
           );
         }
       }
@@ -1264,27 +1131,27 @@
         <div class="success-icon-badge">🎉</div>
         <h3 style="margin: 0; font-size: 1.45rem; color: #10b981; font-weight: 800;">Song Successfully Imported!</h3>
         
-        <div style="display: flex; align-items: center; gap: 0.85rem; background: var(--importer-surface); border: 1px solid var(--importer-border); padding: 0.85rem 1.25rem; border-radius: 14px; max-width: 520px; text-align: left;">
-          <img src="${escapeHtml(thumbUrl)}" style="width: 64px; height: 48px; border-radius: 8px; object-fit: cover; background: #000;" onerror="this.src='images/playx_icon.png'">
+        <div style="display: flex; align-items: center; gap: 0.95rem; background: var(--importer-surface); border: 1.5px solid var(--importer-border); padding: 0.95rem 1.35rem; border-radius: 16px; max-width: 520px; text-align: left; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+          <img src="${escapeHtml(thumbUrl)}" style="width: 68px; height: 50px; border-radius: 8px; object-fit: cover; background: #000;" onerror="this.src='images/playx_icon.png'">
           <div>
-            <div style="font-weight: 750; color: var(--importer-text); font-size: 0.95rem;">${escapeHtml(s.name)}</div>
-            <div style="font-size: 0.8rem; color: var(--importer-text-muted);">🎤 ${escapeHtml(s.singer)} • 📁 ${catName} #${s.id || savedData.totalSongs || ''}</div>
+            <div style="font-weight: 750; color: var(--importer-text); font-size: 0.96rem;">${escapeHtml(s.name)}</div>
+            <div style="font-size: 0.82rem; color: var(--importer-text-muted); margin-top: 0.2rem;">🎤 ${escapeHtml(s.singer)} • 📁 ${catName} #${s.id || savedData.totalSongs || ''}</div>
           </div>
         </div>
 
         ${savedData.githubSync?.committed ? `
-          <div style="font-size: 0.86rem; color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 0.65rem 1rem; border-radius: 10px; max-width: 520px; display: flex; align-items: center; gap: 0.6rem; text-align: left;">
-            <span style="font-size: 1.25rem;">🚀</span>
+          <div style="font-size: 0.86rem; color: #10b981; background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); padding: 0.65rem 1.1rem; border-radius: 12px; max-width: 520px; display: flex; align-items: center; gap: 0.65rem; text-align: left;">
+            <span style="font-size: 1.3rem;">🚀</span>
             <div>
               <strong>GitHub Auto-Push Complete:</strong> ${savedData.githubSync.message}
-              ${savedData.githubSync.url ? `<br><a href="${savedData.githubSync.url}" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">View Commit on GitHub</a>` : ''}
+              ${savedData.githubSync.url ? `<br><a href="${savedData.githubSync.url}" target="_blank" style="color: #38bdf8; text-decoration: underline; font-weight: 650;">View Commit on GitHub</a>` : ''}
             </div>
           </div>
         ` : ''}
 
         <div style="display: flex; gap: 0.85rem; flex-wrap: wrap; justify-content: center; margin-top: 0.6rem;">
           <a href="${playNowUrl}" class="success-link-btn">
-            <span>▶️</span> <span>Play "${escapeHtml(s.name.slice(0, 24))}" Now</span>
+            <span>▶️</span> <span>Play "${escapeHtml(s.name.slice(0, 22))}" Now</span>
           </a>
           <button type="button" class="btn-secondary" id="importAnotherBtn">
             <span>+ Import Another Song</span>
@@ -1297,9 +1164,9 @@
       document.getElementById('importerUrlInput').value = '';
       const clearBtn = document.getElementById('importerClearInputBtn');
       if (clearBtn) clearBtn.style.display = 'none';
-      container.innerHTML = '';
       activeAnalysis = null;
       hideBanner();
+      renderWelcomeShowcase();
     });
   }
 
