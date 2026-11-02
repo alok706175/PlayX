@@ -52,23 +52,5 @@
     "addedAt": "2026-10-31T09:41:38.319Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 4,
-    "name": "Mera Bhola Hai Bhandari",
-    "nameEn": "Mera Bhola Hai Bhandari",
-    "singer": "Hansraj Raghuwanshi",
-    "singerEn": "Hansraj Raghuwanshi",
-    "category": "Saawan Songs",
-    "tag": "Mahadev Bhajan",
-    "videoId": "BBAyRBu6rIU",
-    "youtubeId": "BBAyRBu6rIU",
-    "embedUrl": "https://www.youtube.com/embed/BBAyRBu6rIU",
-    "originalUrl": "https://www.youtube.com/watch?v=BBAyRBu6rIU",
-    "duration": "04:52",
-    "thumbnail": "https://i.ytimg.com/vi/BBAyRBu6rIU/hqdefault.jpg",
-    "addedAt": "2026-10-31T09:41:38.319Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ]
