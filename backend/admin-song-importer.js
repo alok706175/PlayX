@@ -837,7 +837,7 @@
             }
             savedData = await saveSongDirectlyToGitHub(category, payload.songData, ghToken);
           } catch (ghErr) {
-            throw new Error(`GitHub Direct Push Error: ${ghErr.message}`);
+            throw ghErr;
           }
         } else {
           throw new Error(
@@ -874,6 +874,12 @@
     const filePath = catObj.file;
     const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}&_nocache=${Date.now()}`;
 
+    const cleanToken = (githubToken || '').trim().replace(/^Bearer\s+/i, '').replace(/^token\s+/i, '');
+    if (!cleanToken) {
+      throw new Error('GitHub Token is missing. Click "⚙️ GitHub Token" and save your Personal Access Token.');
+    }
+    const authHeader = cleanToken.startsWith('github_pat_') ? `Bearer ${cleanToken}` : `token ${cleanToken}`;
+
     // Multi-byte UTF-8 Base64 Helpers
     function decodeUtf8Base64(b64) {
       const cleanB64 = (b64 || '').replace(/\s/g, '');
@@ -894,21 +900,34 @@
       return btoa(bin);
     }
 
-    // 1. Fetch current file content with cache-busting
-    const getRes = await fetch(url, {
-      headers: {
-        'Authorization': `Bearer ${githubToken}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
+    // 1. Fetch current file content with cache-busting (CORS-safe: only Authorization header)
+    let getRes;
+    try {
+      getRes = await fetch(url, {
+        headers: {
+          'Authorization': authHeader
+        }
+      });
+    } catch (netErr) {
+      // Fallback: If Authorization header triggers unexpected CORS issue on GET, try public fetch
+      try {
+        getRes = await fetch(url);
+      } catch (fallbackErr) {
+        throw new Error(`Failed to reach GitHub API (${netErr.message}). Check your internet connection or verify api.github.com is not blocked.`);
       }
-    });
+    }
 
     if (!getRes.ok) {
-      if (getRes.status === 401 || getRes.status === 403) {
-        throw new Error('Invalid GitHub Token! Please provide a valid token with repo scope.');
+      if (getRes.status === 401) {
+        throw new Error('Invalid or expired GitHub Token (401 Bad Credentials)! Click "⚙️ GitHub Token" to update your token.');
       }
-      throw new Error(`GitHub file fetch failed (${getRes.status})`);
+      if (getRes.status === 403) {
+        throw new Error('GitHub Token Permission Denied (403)! Ensure your token has "repo" (Contents: Read and Write) permissions.');
+      }
+      if (getRes.status === 404) {
+        throw new Error(`Playlist file not found in repository (${filePath}) on branch '${branch}'.`);
+      }
+      throw new Error(`GitHub file fetch failed (${getRes.status}): ${getRes.statusText}`);
     }
 
     const fileMeta = await getRes.json();
@@ -957,25 +976,41 @@
     const encodedContent = encodeUtf8Base64(updatedJsonStr);
     const commitMsg = `Add '${newRecord.name.replace(/['"]/g, '')}' to ${catObj.name} playlist [PlayX Auto-Import]`;
 
-    // 4. PUT commit to GitHub
-    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${githubToken}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify({
-        message: commitMsg,
-        content: encodedContent,
-        sha: fileMeta.sha,
-        branch: branch
-      })
-    });
+    // 4. PUT commit to GitHub (CORS-safe: only Authorization & Content-Type)
+    let putRes;
+    try {
+      putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': authHeader,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: commitMsg,
+          content: encodedContent,
+          sha: fileMeta.sha,
+          branch: branch
+        })
+      });
+    } catch (putNetErr) {
+      throw new Error(`Network error while pushing commit to GitHub (${putNetErr.message}). Check your connection.`);
+    }
 
     if (!putRes.ok) {
-      const putErr = await putRes.json().catch(() => ({}));
-      throw new Error(`GitHub Commit Error (${putRes.status}): ${putErr.message || 'Unknown error'}`);
+      if (putRes.status === 401) {
+        throw new Error('Invalid GitHub Token (401 Bad Credentials)! Please verify or regenerate your GitHub Personal Access Token.');
+      }
+      if (putRes.status === 403) {
+        throw new Error('GitHub Permission Denied (403)! Ensure your Personal Access Token has "repo" (Contents: Read & Write) permissions for alok706175/PlayX.');
+      }
+      if (putRes.status === 404) {
+        throw new Error(`Target file or repository not found (404): ${repo}/${filePath}`);
+      }
+      if (putRes.status === 409) {
+        throw new Error('GitHub Commit Conflict (409): The playlist was recently modified on GitHub. Please click "Approve" again to re-sync.');
+      }
+      const putErrJson = await putRes.json().catch(() => ({}));
+      throw new Error(`GitHub Commit Error (${putRes.status}): ${putErrJson.message || putRes.statusText || 'Commit rejected by GitHub'}`);
     }
 
     const putData = await putRes.json();
@@ -984,25 +1019,25 @@
     if (categoryKey === 'hindi') {
       try {
         const bundlePath = 'hindi-songs/hindi_songs_data.js';
-        const bundleGetRes = await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}?ref=${branch}&_nocache=${Date.now()}`, {
-          headers: {
-            'Authorization': `Bearer ${githubToken}`,
-            'Accept': 'application/vnd.github.v3+json',
-            'Cache-Control': 'no-cache'
-          }
-        });
         let bundleSha = null;
-        if (bundleGetRes.ok) {
-          const bundleMeta = await bundleGetRes.json();
-          bundleSha = bundleMeta.sha;
-        }
+        try {
+          const bundleGetRes = await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: {
+              'Authorization': authHeader
+            }
+          });
+          if (bundleGetRes.ok) {
+            const bundleMeta = await bundleGetRes.json();
+            bundleSha = bundleMeta.sha;
+          }
+        } catch (e) {}
+
         const bundleStr = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(currentSongs, null, 2) + ';\n';
         await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}`, {
           method: 'PUT',
           headers: {
-            'Authorization': `Bearer ${githubToken}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/vnd.github.v3+json'
+            'Authorization': authHeader,
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             message: `Sync hindi_songs_data.js bundle with new song '${newRecord.name.replace(/['"]/g, '')}'`,
