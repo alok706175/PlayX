@@ -569,6 +569,93 @@ async function addSongToCategory(categoryKey, songData, options = {}) {
 /**
  * Returns overall statistics for all categories
  */
+
+/**
+ * Deletes a song from the selected category JSON database.
+ * @param {string} categoryKey 
+ * @param {string|number} songId 
+ * @returns {Promise<{
+ *   success: boolean,
+ *   deletedSong?: object,
+ *   targetFile?: string,
+ *   totalSongs?: number,
+ *   githubSync?: object,
+ *   error?: string
+ * }>}
+ */
+async function deleteSongFromCategory(categoryKey, songId) {
+  const cat = categoryDetector.CATEGORIES[categoryKey];
+  if (!cat) {
+    return { success: false, error: 'Invalid category: ' + categoryKey };
+  }
+
+  const targetPath = getCategoryFilePath(categoryKey);
+  const existingList = readJsonSafe(targetPath);
+
+  const idx = existingList.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+  if (idx === -1) {
+    return { success: false, error: 'Song with ID ' + songId + ' not found in category ' + cat.name };
+  }
+
+  const [deletedSong] = existingList.splice(idx, 1);
+
+  // 1. Atomic write back to local file
+  try {
+    atomicWriteJson(targetPath, existingList);
+  } catch (err) {
+    return {
+      success: false,
+      error: 'Failed to write to database file ' + cat.jsonFile + ': ' + err.message
+    };
+  }
+
+  // 1.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
+  if (categoryKey === 'hindi') {
+    try {
+      const dataJsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
+      const bundleContent = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(existingList, null, 2) + ';\n';
+      fs.writeFileSync(dataJsPath, bundleContent, 'utf8');
+    } catch (bundleErr) {
+      console.warn('Could not sync hindi_songs_data.js bundle:', bundleErr.message);
+    }
+  }
+
+  // 2. Automatic GitHub repository push
+  const songTitle = (deletedSong.name || 'Song').replace(/['"]/g, '');
+  const commitMsg = 'Delete ' + songTitle + ' from ' + cat.name + ' playlist [PlayX Admin]';
+  const normalizedPath = cat.jsonFile.replace(/\\/g, '/');
+
+  let githubSync = { success: false, message: 'Local deletion only' };
+  try {
+    await execShellCommand('git add "' + normalizedPath + '"');
+    if (normalizedPath.includes('hindi_songs.json')) {
+      await execShellCommand('git add "hindi-songs/hindi_songs_data.js"');
+    }
+    const commitRes = await execShellCommand('git commit -m "' + commitMsg + '"');
+    if (commitRes.success) {
+      let pushRes = await execShellCommand('git push origin main');
+      if (!pushRes.success && (pushRes.error.includes('fetch first') || pushRes.error.includes('non-fast-forward'))) {
+        await execShellCommand('git pull --rebase origin main');
+        pushRes = await execShellCommand('git push origin main');
+      }
+      if (pushRes.success) {
+        githubSync = { success: true, committed: true, method: 'git-cli' };
+      }
+    }
+  } catch (e) {
+    console.warn('Git push on delete warning:', e.message);
+  }
+
+  return {
+    success: true,
+    deletedSong,
+    targetFile: cat.jsonFile,
+    categoryName: cat.name,
+    totalSongs: existingList.length,
+    githubSync
+  };
+}
+
 function getAllCategoriesSummary() {
   const summary = {};
   for (const [key, cat] of Object.entries(categoryDetector.CATEGORIES)) {
@@ -596,5 +683,6 @@ module.exports = {
   formatSongRecord,
   addSongToCategory,
   getAllCategoriesSummary,
-  getRecentAutoAddedSongs
+  getRecentAutoAddedSongs,
+  deleteSongFromCategory
 };

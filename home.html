@@ -10,7 +10,7 @@
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
   <link rel="stylesheet" href="home.css?v=42">
   <link rel="stylesheet" href="dark-light-mode.css">
-  <link rel="stylesheet" href="backend/admin-song-importer.css?v=2.6">
+  <link rel="stylesheet" href="backend/admin-song-importer.css?v=3.0">
 
   <style>
     /* Critical Navbar 3-Dot Dropdown & Admin Modal Styles */
@@ -669,6 +669,19 @@
                 <span>Auto Song Importer</span>
               </button>
 
+              <!-- Delete / Manage Songs Button -->
+              <button class="dropdown-item-btn admin-delete-btn" id="adminDeleteSongBtn" type="button"
+                onclick="window.handleOpenSongManager && window.handleOpenSongManager(event)" role="menuitem">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span>Delete / Manage Songs</span>
+              </button>
+
               <div class="dropdown-divider" id="installAppDivider"></div>
 
               <!-- 3. Install App Button (Visible only when app is not installed) -->
@@ -1281,6 +1294,29 @@
     })();
 
     // Auto Song Importer Invocation
+    
+    // Manage & Delete Songs Invocation
+    window.handleOpenSongManager = function (e) {
+      if (e) {
+        if (e.preventDefault) e.preventDefault();
+        if (e.stopPropagation) e.stopPropagation();
+      }
+      if (window.closeAdminMenu) window.closeAdminMenu();
+      var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
+      if (!isLoggedIn) {
+        var proceed = confirm("🔒 Admin Security: Admin login is required to delete songs.\n\nDo you want to log in now?");
+        if (proceed && window.openAdminModal) {
+          window.openAdminModal();
+        }
+        return;
+      }
+      if (window.PlayXSongImporter && window.PlayXSongImporter.openSongManager) {
+        window.PlayXSongImporter.openSongManager();
+      } else if (window.PlayXSongImporter) {
+        window.PlayXSongImporter.openModal();
+      }
+    };
+
     window.handleOpenSongImporter = function (e) {
       if (e) {
         if (e.preventDefault) e.preventDefault();
@@ -1304,7 +1340,7 @@
   <!-- PlayX Auto Added Songs Importer Engine -->
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="backend/admin-song-importer.js?v=2.9"></script>
+  <script src="backend/admin-song-importer.js?v=3.0"></script>
 </body>
 
 </html>

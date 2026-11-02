@@ -448,6 +448,49 @@ const server = http.createServer(async (req, res) => {
   // API ROUTE: Sync & Server Status
   // GET /api/sync-status
   // -------------------------------------------------------------
+  
+  // -------------------------------------------------------------
+  // API ROUTE: Delete Song from Category Database
+  // POST /api/delete-song
+  // -------------------------------------------------------------
+  if (pathname === '/api/delete-song' && method === 'POST') {
+    try {
+      const body = await parseRequestBody(req);
+
+      // Verify Admin Authentication
+      if (!isAuthorizedAdmin(req, body)) {
+        sendJsonResponse(res, 401, {
+          success: false,
+          error: 'Unauthorized: Admin authentication failed. Only verified administrators can delete songs.'
+        });
+        return;
+      }
+
+      const { category, songId } = body;
+      if (!category || songId === undefined) {
+        sendJsonResponse(res, 400, {
+          success: false,
+          error: 'Missing required parameters "category" or "songId".'
+        });
+        return;
+      }
+
+      const result = await songDbManager.deleteSongFromCategory(category, songId);
+      if (!result.success) {
+        sendJsonResponse(res, 400, result);
+        return;
+      }
+
+      sendJsonResponse(res, 200, result);
+    } catch (err) {
+      sendJsonResponse(res, 500, {
+        success: false,
+        error: 'Server error deleting song: ' + err.message
+      });
+    }
+    return;
+  }
+
   if (pathname === '/api/sync-status' && method === 'GET') {
     const hasToken = Boolean(process.env.PLAYX_TOKEN || process.env.GITHUB_TOKEN);
     sendJsonResponse(res, 200, {

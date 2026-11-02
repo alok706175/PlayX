@@ -133,35 +133,61 @@
             </div>
           </div>
 
-          <!-- Unified Search & URL Input Box -->
-          <div class="importer-input-card">
-            <div class="importer-input-card-header">
-              <label for="importerUrlInput" class="importer-input-label">
-                <span>Paste YouTube or YouTube Music Link</span>
-              </label>
-              
-            </div>
-
-            <!-- Master Search Bar -->
-            <div class="importer-search-bar">
-              <span class="search-bar-icon-lead">▶</span>
-              <input type="text" id="importerUrlInput" class="importer-url-input"
-                placeholder="Paste youtube or Youtube Music link" autocomplete="off" spellcheck="false">
-              <button type="button" class="btn-clear-search" id="importerClearInputBtn" title="Clear input">✕</button>
-              <button type="button" class="btn-paste-chip" id="importerPasteBtn" title="Paste from clipboard">
-                <span>📋</span> <span>Paste</span>
-              </button>
-              <button type="button" class="btn-analyze-primary" id="importerAnalyzeBtn">
-                <span id="analyzeBtnIcon">⚡</span>
-                <span id="analyzeBtnText">Analyze Link</span>
-              </button>
-            </div>
-
-            
+          <!-- Navigation Tabs: Import Songs vs Delete / Manage Songs -->
+          <div class="importer-tabs-bar" id="importerTabsBar">
+            <button type="button" class="importer-tab-btn active" id="tabImportModeBtn">
+              <span>➕</span> <span>Import New Song</span>
+            </button>
+            <button type="button" class="importer-tab-btn danger-tab" id="tabDeleteModeBtn">
+              <span>🗑️</span> <span>Delete / Manage Songs</span>
+            </button>
           </div>
 
-          <!-- Dynamic Container for Welcome Showcase OR Interactive Preview Card -->
-          <div id="importerDynamicArea"></div>
+          <!-- Section 1: Add / Import Song -->
+          <div id="importerAddSection">
+            <!-- Unified Search & URL Input Box -->
+            <div class="importer-input-card">
+              <div class="importer-input-card-header">
+                <label for="importerUrlInput" class="importer-input-label">
+                  <span>Paste YouTube or YouTube Music Link</span>
+                </label>
+              </div>
+
+              <!-- Master Search Bar -->
+              <div class="importer-search-bar">
+                <span class="search-bar-icon-lead">▶</span>
+                <input type="text" id="importerUrlInput" class="importer-url-input"
+                  placeholder="Paste youtube or Youtube Music link" autocomplete="off" spellcheck="false">
+                <button type="button" class="btn-clear-search" id="importerClearInputBtn" title="Clear input">✕</button>
+                <button type="button" class="btn-paste-chip" id="importerPasteBtn" title="Paste from clipboard">
+                  <span>📋</span> <span>Paste</span>
+                </button>
+                <button type="button" class="btn-analyze-primary" id="importerAnalyzeBtn">
+                  <span id="analyzeBtnIcon">⚡</span>
+                  <span id="analyzeBtnText">Analyze Link</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Container for Welcome Showcase OR Interactive Preview Card -->
+            <div id="importerDynamicArea"></div>
+          </div>
+
+          <!-- Section 2: Delete / Manage Songs -->
+          <div id="importerDeleteSection" class="importer-delete-section" style="display: none;">
+            <div class="delete-category-pills" id="deleteCategoryPills"></div>
+            <div class="delete-search-bar">
+              <span style="font-size: 1.1rem; color: #94a3b8;">🔍</span>
+              <input type="text" id="deleteSongSearchInput" class="delete-search-input" placeholder="Search songs in this category to delete...">
+              <span id="deleteSongCountBadge" class="delete-count-badge">0 songs</span>
+            </div>
+            <div class="delete-songs-list" id="deleteSongsList">
+              <div class="delete-empty-state">
+                <span>⏳</span>
+                <span>Select a category above to view and delete songs.</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -187,6 +213,21 @@
   }
 
   function attachModalListeners() {
+
+    // Mode Switcher Tabs (Import vs Delete)
+    const tabImportBtn = document.getElementById('tabImportModeBtn');
+    const tabDeleteBtn = document.getElementById('tabDeleteModeBtn');
+    if (tabImportBtn) tabImportBtn.addEventListener('click', () => switchTab('import'));
+    if (tabDeleteBtn) tabDeleteBtn.addEventListener('click', () => switchTab('delete'));
+
+    // Delete Song Search Filter Listener
+    const deleteSearchInput = document.getElementById('deleteSongSearchInput');
+    if (deleteSearchInput) {
+      deleteSearchInput.addEventListener('input', (e) => {
+        renderDeleteSongsList(e.target.value);
+      });
+    }
+
     // Close modal
     document.getElementById('importerCloseBtn').addEventListener('click', closeModal);
     modalEl.addEventListener('click', (e) => {
@@ -1067,6 +1108,375 @@
   /**
    * Displays the final success card with playback and direct links
    */
+  
+  // ==========================================================================
+  // Admin Song Deletion & Management Engine
+  // ==========================================================================
+  let activeTabMode = 'import'; // 'import' or 'delete'
+  let activeDeleteCategory = 'bhojpuri';
+  let cachedDeleteSongs = [];
+
+  function switchTab(mode) {
+    activeTabMode = mode;
+    const addSection = document.getElementById('importerAddSection');
+    const deleteSection = document.getElementById('importerDeleteSection');
+    const tabImportBtn = document.getElementById('tabImportModeBtn');
+    const tabDeleteBtn = document.getElementById('tabDeleteModeBtn');
+    const modalTitle = document.getElementById('importerModalTitle');
+
+    if (mode === 'delete') {
+      if (addSection) addSection.style.display = 'none';
+      if (deleteSection) deleteSection.style.display = 'flex';
+      if (tabImportBtn) tabImportBtn.classList.remove('active');
+      if (tabDeleteBtn) tabDeleteBtn.classList.add('active');
+      if (modalTitle) modalTitle.innerHTML = '<span>PlayX Song Manager (Delete / Remove Songs)</span>';
+
+      renderDeleteCategoryPills();
+      loadDeleteCategorySongs(activeDeleteCategory);
+    } else {
+      if (addSection) addSection.style.display = 'block';
+      if (deleteSection) deleteSection.style.display = 'none';
+      if (tabImportBtn) tabImportBtn.classList.add('active');
+      if (tabDeleteBtn) tabDeleteBtn.classList.remove('active');
+      if (modalTitle) modalTitle.innerHTML = '<span>PlayX Song Importer</span>';
+    }
+  }
+
+  function renderDeleteCategoryPills() {
+    const container = document.getElementById('deleteCategoryPills');
+    if (!container) return;
+
+    container.innerHTML = CATEGORY_OPTIONS.map(cat => {
+      const isActive = cat.id === activeDeleteCategory;
+      return `
+        <button type="button" class="delete-cat-pill ${isActive ? 'active' : ''}" data-cat="${cat.id}">
+          <span>${cat.icon}</span> <span>${cat.name}</span>
+        </button>
+      `;
+    }).join('');
+
+    container.querySelectorAll('.delete-cat-pill').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const catId = btn.getAttribute('data-cat');
+        if (catId && catId !== activeDeleteCategory) {
+          activeDeleteCategory = catId;
+          renderDeleteCategoryPills();
+          loadDeleteCategorySongs(catId);
+        }
+      });
+    });
+  }
+
+  async function loadDeleteCategorySongs(categoryKey) {
+    const listEl = document.getElementById('deleteSongsList');
+    const countBadge = document.getElementById('deleteSongCountBadge');
+    const searchInput = document.getElementById('deleteSongSearchInput');
+    if (!listEl) return;
+
+    if (searchInput) searchInput.value = '';
+
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === categoryKey);
+    if (!catObj) return;
+
+    listEl.innerHTML = `
+      <div class="delete-empty-state">
+        <div class="spinner"></div>
+        <span>Loading ${escapeHtml(catObj.name)} playlist...</span>
+      </div>
+    `;
+
+    try {
+      const res = await fetch(`${catObj.file}?_t=${Date.now()}`);
+      if (!res.ok) throw new Error(`Could not load playlist (${res.status})`);
+      const songs = await res.json();
+      cachedDeleteSongs = Array.isArray(songs) ? songs : [];
+      if (countBadge) countBadge.textContent = `${cachedDeleteSongs.length} songs`;
+      renderDeleteSongsList('');
+    } catch (err) {
+      listEl.innerHTML = `
+        <div class="delete-empty-state" style="color:#ef4444;">
+          <span>⚠️</span>
+          <span>Failed to load songs: ${escapeHtml(err.message)}</span>
+        </div>
+      `;
+    }
+  }
+
+  function renderDeleteSongsList(query = '') {
+    const listEl = document.getElementById('deleteSongsList');
+    const countBadge = document.getElementById('deleteSongCountBadge');
+    if (!listEl) return;
+
+    const q = (query || '').toLowerCase().trim();
+    const filtered = cachedDeleteSongs.filter(s => {
+      if (!q) return true;
+      const name = (s.name || s.title || '').toLowerCase();
+      const singer = (s.singer || s.singerEn || '').toLowerCase();
+      const id = String(s.id || '');
+      return name.includes(q) || singer.includes(q) || id.includes(q);
+    });
+
+    if (countBadge) {
+      countBadge.textContent = q ? `${filtered.length} of ${cachedDeleteSongs.length} songs` : `${cachedDeleteSongs.length} songs`;
+    }
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `
+        <div class="delete-empty-state">
+          <span>🔍</span>
+          <span>No songs found matching "${escapeHtml(query)}".</span>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(s => {
+      const sid = s.id;
+      const name = s.name || s.title || 'Untitled Song';
+      const singer = s.singer || 'Artist';
+      const duration = s.duration || '--:--';
+      const thumb = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+
+      return `
+        <div class="delete-song-row" id="deleteSongRow_${sid}">
+          <div class="delete-song-left">
+            <img src="${escapeHtml(thumb)}" class="delete-song-thumb" alt="${escapeHtml(name)}" onerror="this.src='images/playx_icon.png'">
+            <div class="delete-song-info">
+              <div class="delete-song-title" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+              <div class="delete-song-artist">🎤 ${escapeHtml(singer)} • ⏱️ ${duration} • #${sid}</div>
+            </div>
+          </div>
+          <button type="button" class="btn-delete-song-action" data-song-id="${sid}" data-song-name="${escapeHtml(name)}">
+            <span>🗑️</span> <span>Delete</span>
+          </button>
+        </div>
+      `;
+    }).join('');
+
+    // Attach click listeners to delete action buttons
+    listEl.querySelectorAll('.btn-delete-song-action').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const sname = btn.getAttribute('data-song-name') || 'this song';
+        handleSongDeleteAction(sid, sname, btn);
+      });
+    });
+  }
+
+  async function handleSongDeleteAction(songId, songName, btnElement) {
+    // 1. Verify Admin Authentication
+    const isAdmin = localStorage.getItem('playx_admin_logged_in') === 'true';
+    if (!isAdmin) {
+      const proceed = confirm('🔒 Admin Authentication Required: You must be logged in as an administrator to delete songs.\n\nDo you want to log in now?');
+      if (proceed && window.openAdminModal) window.openAdminModal();
+      return;
+    }
+
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === activeDeleteCategory);
+    const catName = catObj ? catObj.name : activeDeleteCategory;
+
+    // 2. User Confirmation Dialog
+    const confirmed = confirm(`⚠️ Are you sure you want to permanently delete:\n\n"${songName}"\n\nfrom ${catName}? This change will be pushed to origin/main.`);
+    if (!confirmed) return;
+
+    btnElement.disabled = true;
+    btnElement.innerHTML = `<div class="spinner"></div> <span>Deleting...</span>`;
+
+    try {
+      let deleteSuccess = false;
+      let deleteMessage = '';
+
+      // Strategy 1: Try Local Backend Server
+      try {
+        const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
+        const res = await fetch(`${API_BASE}/api/delete-song`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
+          },
+          body: JSON.stringify({ category: activeDeleteCategory, songId: songId })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success) {
+            deleteSuccess = true;
+            deleteMessage = 'Deleted via server and pushed to git origin/main!';
+          }
+        }
+      } catch (err) {
+        // Fallback to GitHub Direct REST API
+      }
+
+      // Strategy 2: Direct GitHub REST API Deletion (origin/main)
+      if (!deleteSuccess) {
+        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
+        if (!ghToken) {
+          throw new Error('Server offline and no GitHub Token configured. Please click "⚙️ GitHub Token" above and enter your PLAYX_TOKEN to commit deletions.');
+        }
+
+        btnElement.innerHTML = `<div class="spinner"></div> <span>Pushing to GitHub...</span>`;
+        await deleteSongDirectlyFromGitHub(activeDeleteCategory, songId, ghToken);
+        deleteSuccess = true;
+        deleteMessage = 'Deleted and committed directly to GitHub repository (origin/main)!';
+      }
+
+      // Remove from cached array
+      cachedDeleteSongs = cachedDeleteSongs.filter(s => String(s.id) !== String(songId) && s.videoId !== String(songId));
+
+      // Visual removal animation
+      const row = document.getElementById(`deleteSongRow_${songId}`);
+      if (row) {
+        row.style.transition = 'all 0.35s ease';
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(-20px)';
+        setTimeout(() => row.remove(), 360);
+      }
+
+      const countBadge = document.getElementById('deleteSongCountBadge');
+      if (countBadge) countBadge.textContent = `${cachedDeleteSongs.length} songs`;
+
+      showBanner('info', `✅ "${songName}" was deleted and pushed to GitHub (origin/main) successfully!`);
+    } catch (err) {
+      alert(`Error deleting song:\n${err.message}`);
+      btnElement.disabled = false;
+      btnElement.innerHTML = `<span>🗑️</span> <span>Delete</span>`;
+    }
+  }
+
+  async function deleteSongDirectlyFromGitHub(categoryKey, songId, githubToken) {
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === categoryKey);
+    if (!catObj) throw new Error(`Invalid category: ${categoryKey}`);
+
+    const repo = 'alok706175/PlayX';
+    const branch = 'main';
+    const filePath = catObj.file;
+    const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}&_nocache=${Date.now()}`;
+
+    const cleanToken = (githubToken || '').trim().replace(/^Bearer\s+/i, '').replace(/^token\s+/i, '');
+    if (!cleanToken) {
+      throw new Error('GitHub Token is missing. Click "⚙️ GitHub Token" and save your token.');
+    }
+    const authHeader = cleanToken.startsWith('github_pat_') ? `Bearer ${cleanToken}` : `token ${cleanToken}`;
+
+    // 1. Fetch current file
+    let getRes;
+    try {
+      getRes = await fetch(url, { headers: { 'Authorization': authHeader } });
+    } catch (netErr) {
+      try {
+        getRes = await fetch(url);
+      } catch (e) {
+        throw new Error(`Failed to reach GitHub API (${netErr.message}). Check your internet connection.`);
+      }
+    }
+
+    if (!getRes.ok) {
+      if (getRes.status === 401) throw new Error('Invalid or expired GitHub Token (401)!');
+      if (getRes.status === 403) throw new Error('GitHub Token Permission Denied (403)! Ensure token has "repo" scope.');
+      throw new Error(`Failed to fetch playlist (${getRes.status})`);
+    }
+
+    const fileMeta = await getRes.json();
+    let currentSongs = [];
+    try {
+      currentSongs = JSON.parse(decodeUtf8Base64(fileMeta.content));
+    } catch (e) {
+      throw new Error(`Could not parse playlist JSON: ${e.message}`);
+    }
+
+    const idx = currentSongs.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+    if (idx === -1) {
+      throw new Error(`Song with ID "${songId}" was not found in the repository playlist.`);
+    }
+
+    const [deletedSong] = currentSongs.splice(idx, 1);
+
+    // 2. Commit updated JSON back to GitHub
+    const updatedJsonStr = JSON.stringify(currentSongs, null, 2) + '\n';
+    const encodedContent = encodeUtf8Base64(updatedJsonStr);
+    const commitMsg = `Delete '${(deletedSong.name || 'Song').replace(/['"]/g, '')}' from ${catObj.name} playlist [PlayX Admin]`;
+
+    let putRes;
+    try {
+      putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': authHeader,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: commitMsg,
+          content: encodedContent,
+          sha: fileMeta.sha,
+          branch: branch
+        })
+      });
+    } catch (putErr) {
+      throw new Error(`Network error while pushing commit to GitHub (${putErr.message}).`);
+    }
+
+    if (!putRes.ok) {
+      if (putRes.status === 401 || putRes.status === 403) {
+        throw new Error('GitHub Permission Denied! Ensure your token has write access to repository.');
+      }
+      if (putRes.status === 409) {
+        throw new Error('GitHub Conflict (409): The playlist was recently modified on GitHub. Please retry.');
+      }
+      throw new Error(`GitHub Commit Error (${putRes.status})`);
+    }
+
+    // 3. If Hindi, also keep hindi_songs_data.js in sync
+    if (categoryKey === 'hindi') {
+      try {
+        const bundlePath = 'hindi-songs/hindi_songs_data.js';
+        let bundleSha = null;
+        try {
+          const bGet = await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (bGet.ok) {
+            const bMeta = await bGet.json();
+            bundleSha = bMeta.sha;
+          }
+        } catch (e) {}
+
+        const bundleStr = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(currentSongs, null, 2) + ';\n';
+        await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Sync hindi_songs_data.js bundle after deleting '${(deletedSong.name || 'Song').replace(/['"]/g, '')}'`,
+            content: encodeUtf8Base64(bundleStr),
+            sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (bundleErr) {
+        console.warn('Hindi bundle sync on delete error:', bundleErr.message);
+      }
+    }
+
+    return {
+      success: true,
+      deletedSong,
+      totalSongs: currentSongs.length
+    };
+  }
+
+  function openSongManager(categoryKey) {
+    if (categoryKey && CATEGORY_OPTIONS.some(c => c.id === categoryKey)) {
+      activeDeleteCategory = categoryKey;
+    }
+    openModal();
+    switchTab('delete');
+  }
+
   function renderSuccess(savedData) {
     const container = document.getElementById('importerDynamicArea');
     if (!container) return;
@@ -1185,6 +1595,8 @@
 
   // Expose API on window
   window.PlayXSongImporter = {
+    openSongManager,
+    switchTab,
     openModal,
     closeModal,
     analyzeUrl,
