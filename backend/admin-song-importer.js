@@ -355,17 +355,10 @@
       isLocalServerOnline = false;
     }
 
-    if (isLocalServerOnline) {
+    if (isLocalServerOnline || savedToken) {
       indicator.innerHTML = `
         <span class="pulse-dot green"></span>
-        <span style="color:#10b981;font-weight:700;">Local Server Active</span>
-        <span style="color:var(--importer-text-muted);">(Auto Git Push origin/main)</span>
-      `;
-    } else if (savedToken) {
-      indicator.innerHTML = `
-        <span class="pulse-dot cyan"></span>
-        <span style="color:#38bdf8;font-weight:700;">GitHub Direct API Push Active</span>
-        <span style="color:var(--importer-text-muted);">(origin/main)</span>
+        <span style="color:#10b981;font-weight:700;">Server is live</span>
       `;
     } else {
       indicator.innerHTML = `
