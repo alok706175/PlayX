@@ -400,15 +400,22 @@
       var loginBtn = document.getElementById("adminLoginBtn");
       var logoutBtn = document.getElementById("adminLogoutBtn");
 
+      var importerBtn = document.getElementById("adminAutoImporterBtn");
+      var deleteBtn = document.getElementById("adminDeleteSongBtn");
+
       if (isLoggedIn) {
         if (dropHeader) dropHeader.style.display = "flex";
         if (dropName) dropName.textContent = userName;
         if (loginBtn) loginBtn.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "flex";
+        if (importerBtn) importerBtn.style.display = "flex";
+        if (deleteBtn) deleteBtn.style.display = "flex";
       } else {
         if (dropHeader) dropHeader.style.display = "none";
         if (loginBtn) loginBtn.style.display = "flex";
         if (logoutBtn) logoutBtn.style.display = "none";
+        if (importerBtn) importerBtn.style.display = "none";
+        if (deleteBtn) deleteBtn.style.display = "none";
       }
     };
 
@@ -658,7 +665,7 @@
               </button>
 
               <!-- Auto Song Importer Button -->
-              <button class="dropdown-item-btn admin-importer-btn" id="adminAutoImporterBtn" type="button"
+              <button class="dropdown-item-btn admin-importer-btn" id="adminAutoImporterBtn" type="button" style="display: none;"
                 onclick="window.handleOpenSongImporter && window.handleOpenSongImporter(event)" role="menuitem">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -670,7 +677,7 @@
               </button>
 
               <!-- Delete / Manage Songs Button -->
-              <button class="dropdown-item-btn admin-delete-btn" id="adminDeleteSongBtn" type="button"
+              <button class="dropdown-item-btn admin-delete-btn" id="adminDeleteSongBtn" type="button" style="display: none;"
                 onclick="window.handleOpenSongManager && window.handleOpenSongManager(event)" role="menuitem">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1340,7 +1347,7 @@
   <!-- PlayX Auto Added Songs Importer Engine -->
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="backend/admin-song-importer.js?v=3.0"></script>
+  <script src="backend/admin-song-importer.js?v=3.1"></script>
 </body>
 
 </html>
