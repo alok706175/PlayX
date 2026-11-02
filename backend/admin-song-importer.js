@@ -899,6 +899,26 @@
    * Commits new song directly to GitHub repository via GitHub REST API
    * with UTF-8 safe TextEncoder/TextDecoder and Hindi bundle auto-sync.
    */
+    // Multi-byte UTF-8 Base64 Helpers
+  function decodeUtf8Base64(b64) {
+    const cleanB64 = (b64 || '').replace(/\s/g, '');
+    const bin = atob(cleanB64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) {
+      bytes[i] = bin.charCodeAt(i);
+    }
+    return new TextDecoder('utf-8').decode(bytes);
+  }
+
+  function encodeUtf8Base64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let bin = '';
+    for (let i = 0; i < bytes.length; i++) {
+      bin += String.fromCharCode(bytes[i]);
+    }
+    return btoa(bin);
+  }
+
   async function saveSongDirectlyToGitHub(categoryKey, songData, githubToken) {
     const catObj = CATEGORY_OPTIONS.find(c => c.id === categoryKey);
     if (!catObj) throw new Error(`Invalid category: ${categoryKey}`);
@@ -913,26 +933,6 @@
       throw new Error('GitHub Token is missing. Click "⚙️ GitHub Token" and save your Personal Access Token.');
     }
     const authHeader = cleanToken.startsWith('github_pat_') ? `Bearer ${cleanToken}` : `token ${cleanToken}`;
-
-    // Multi-byte UTF-8 Base64 Helpers
-    function decodeUtf8Base64(b64) {
-      const cleanB64 = (b64 || '').replace(/\s/g, '');
-      const bin = atob(cleanB64);
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) {
-        bytes[i] = bin.charCodeAt(i);
-      }
-      return new TextDecoder('utf-8').decode(bytes);
-    }
-
-    function encodeUtf8Base64(str) {
-      const bytes = new TextEncoder().encode(str);
-      let bin = '';
-      for (let i = 0; i < bytes.length; i++) {
-        bin += String.fromCharCode(bytes[i]);
-      }
-      return btoa(bin);
-    }
 
     // 1. Fetch current file content with cache-busting (CORS-safe: only Authorization header)
     let getRes;
