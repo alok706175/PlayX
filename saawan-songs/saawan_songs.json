@@ -70,23 +70,5 @@
     "addedAt": "2026-10-31T09:41:38.319Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 5,
-    "name": "Subah Subah Le Shiv Ka Naam",
-    "nameEn": "Subah Subah Le Shiv Ka Naam",
-    "singer": "Hariharan / Gulshan Kumar",
-    "singerEn": "Hariharan / Gulshan Kumar",
-    "category": "Saawan Songs",
-    "tag": "Prabhat Shiv Bhajan",
-    "videoId": "X7f_64u3u1E",
-    "youtubeId": "X7f_64u3u1E",
-    "embedUrl": "https://www.youtube.com/embed/X7f_64u3u1E",
-    "originalUrl": "https://www.youtube.com/watch?v=X7f_64u3u1E",
-    "duration": "06:10",
-    "thumbnail": "https://i.ytimg.com/vi/X7f_64u3u1E/hqdefault.jpg",
-    "addedAt": "2026-10-31T09:41:38.319Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ]
