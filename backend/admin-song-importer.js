@@ -146,7 +146,7 @@
             <div class="importer-search-bar">
               <span class="search-bar-icon-lead">▶</span>
               <input type="text" id="importerUrlInput" class="importer-url-input"
-                placeholder="https://music.youtube.com/watch?v=... or https://youtu.be/..." autocomplete="off" spellcheck="false">
+                placeholder="Paste youtube or Youtube Music link" autocomplete="off" spellcheck="false">
               <button type="button" class="btn-clear-search" id="importerClearInputBtn" title="Clear input">✕</button>
               <button type="button" class="btn-paste-chip" id="importerPasteBtn" title="Paste from clipboard">
                 <span>📋</span> <span>Paste</span>
