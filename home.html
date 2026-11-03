@@ -9,9 +9,9 @@
   <title>PlayX | A Largest Music Library Website.</title>
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
-  <link rel="stylesheet" href="home.css?v=45">
+  <link rel="stylesheet" href="home.css?v=46">
   <link rel="stylesheet" href="dark-light-mode.css">
-  <link rel="stylesheet" href="backend/admin-song-importer.css?v=3.3">
+  <link rel="stylesheet" href="backend/admin-song-importer.css?v=3.4">
 
   <style>
     /* Critical Navbar 3-Dot Dropdown & Admin Modal Styles */
@@ -320,9 +320,13 @@
       z-index: 10 !important;
       transition: all 0.2s ease !important;
     }
-    .btn-toggle-pwd:hover {
+    .btn-toggle-pwd:hover,
+    .btn-toggle-pwd:focus,
+    .btn-toggle-pwd:active {
       color: #ffb800 !important;
-      background: rgba(255, 184, 0, 0.12) !important;
+      background: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
     }
     .btn-toggle-pwd:active {
       transform: translateY(-50%) scale(0.92) !important;
@@ -1422,7 +1426,7 @@
   <!-- PlayX Auto Added Songs Importer Engine -->
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="backend/admin-song-importer.js?v=3.6"></script>
+  <script src="backend/admin-song-importer.js?v=3.7"></script>
 </body>
 
 </html>

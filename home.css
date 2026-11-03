@@ -2462,9 +2462,13 @@ body {
   transition: all 0.2s ease;
 }
 
-.btn-toggle-pwd:hover {
+.btn-toggle-pwd:hover,
+.btn-toggle-pwd:focus,
+.btn-toggle-pwd:active {
   color: #ffb800;
-  background: rgba(255, 184, 0, 0.12);
+  background: transparent;
+  outline: none;
+  box-shadow: none;
 }
 
 .btn-toggle-pwd:active {
