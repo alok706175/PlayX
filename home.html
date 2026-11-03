@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -366,7 +367,7 @@
           localStorage.setItem("playx_pwa_installed", "true");
           window.updateInstallButtonVisibility(true);
         }
-      }).catch(function () {});
+      }).catch(function () { });
     }
 
     // Listen to standalone media query change
@@ -384,7 +385,7 @@
         } else if (standaloneQuery.addListener) {
           standaloneQuery.addListener(onModeChange);
         }
-      } catch (err) {}
+      } catch (err) { }
     }
 
     window.updateAdminAuthState = function () {
@@ -428,7 +429,7 @@
       localStorage.removeItem("playx_admin_user");
       localStorage.removeItem("playx_admin_email");
       localStorage.removeItem("playx_admin_token");
-      try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) {}
+      try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) { }
       window.closeAdminMenu();
       window.updateAdminAuthState();
       alert("You have been logged out successfully.");
@@ -533,15 +534,18 @@
   <link rel="manifest" href="site.webmanifest">
 
   <!-- SEO Meta -->
-  <meta name="description" content="PlayX is the ultimate online and offline music portal for Bollywood Hindi songs, Chhath Puja, Saawan, Durga Puja, Holi, Bhojpuri, Haryanvi, and Punjabi superhits in 320 Kbps HD audio.">
-  <meta name="keywords" content="PlayX, Hindi Songs, Bollywood Classics, Chhath Puja Songs, Bhojpuri Songs, Punjabi Hits, Haryanvi Songs, Saawan Shiv Bhajan, Durga Puja Navratri, Holi Songs, HD Music Player">
+  <meta name="description"
+    content="PlayX is the ultimate online and offline music portal for Bollywood Hindi songs, Chhath Puja, Saawan, Durga Puja, Holi, Bhojpuri, Haryanvi, and Punjabi superhits in 320 Kbps HD audio.">
+  <meta name="keywords"
+    content="PlayX, Hindi Songs, Bollywood Classics, Chhath Puja Songs, Bhojpuri Songs, Punjabi Hits, Haryanvi Songs, Saawan Shiv Bhajan, Durga Puja Navratri, Holi Songs, HD Music Player">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#0a0712">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="PlayX | A Largest Music Library Website">
-  <meta property="og:description" content="Listen to 205+ Bollywood Hindi classics, Chhath Puja geet, Saawan bhajans, Durga Puja, Holi, Bhojpuri, and Punjabi superhits in 320 Kbps HD audio.">
+  <meta property="og:description"
+    content="Listen to 205+ Bollywood Hindi classics, Chhath Puja geet, Saawan bhajans, Durga Puja, Holi, Bhojpuri, and Punjabi superhits in 320 Kbps HD audio.">
   <meta property="og:url" content="https://www.mahaparvchhathpuja.me/">
   <meta property="og:image" content="https://www.mahaparvchhathpuja.me/images/playx_full_logo.png">
 
@@ -665,8 +669,9 @@
               </button>
 
               <!-- Auto Song Importer Button -->
-              <button class="dropdown-item-btn admin-importer-btn" id="adminAutoImporterBtn" type="button" style="display: none;"
-                onclick="window.handleOpenSongImporter && window.handleOpenSongImporter(event)" role="menuitem">
+              <button class="dropdown-item-btn admin-importer-btn" id="adminAutoImporterBtn" type="button"
+                style="display: none;" onclick="window.handleOpenSongImporter && window.handleOpenSongImporter(event)"
+                role="menuitem">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M9 18V5l12-2v13"></path>
@@ -677,8 +682,9 @@
               </button>
 
               <!-- Delete / Manage Songs Button -->
-              <button class="dropdown-item-btn admin-delete-btn" id="adminDeleteSongBtn" type="button" style="display: none;"
-                onclick="window.handleOpenSongManager && window.handleOpenSongManager(event)" role="menuitem">
+              <button class="dropdown-item-btn admin-delete-btn" id="adminDeleteSongBtn" type="button"
+                style="display: none;" onclick="window.handleOpenSongManager && window.handleOpenSongManager(event)"
+                role="menuitem">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#ef4444" stroke-width="2"
                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <polyline points="3 6 5 6 21 6"></polyline>
@@ -713,16 +719,20 @@
   <main>
 
 
-        <!-- HERO SEARCH & GLOBAL SONG DISCOVERY -->
-    <section class="container hero-search-section" style="padding-top: 1.5rem; padding-bottom: 0.5rem; text-align: center;">
+    <!-- HERO SEARCH & GLOBAL SONG DISCOVERY -->
+    <section class="container hero-search-section"
+      style="padding-top: 1.5rem; padding-bottom: 0.5rem; text-align: center;">
       <div class="hero-search-box">
         <div class="search-input-wrapper">
-          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
-          <input type="text" id="heroSearchInput" class="hero-search-input" placeholder="Search 500+ songs, artists, or categories..." autocomplete="off">
-          <button type="button" class="search-clear-btn" id="searchClearBtn" title="Clear search" aria-label="Clear search">✕</button>
+          <input type="text" id="heroSearchInput" class="hero-search-input"
+            placeholder="Search 500+ songs, artists, or categories..." autocomplete="off">
+          <button type="button" class="search-clear-btn" id="searchClearBtn" title="Clear search"
+            aria-label="Clear search">✕</button>
         </div>
         <div id="globalSearchResults" class="global-search-results" style="display: none;"></div>
       </div>
@@ -754,7 +764,8 @@
               <div class="card-subtitle-en">Bollywood Classics & Melodies</div>
             </div>
             <p class="card-description">
-              Timeless 90s classics, romantic blockbusters, and dance tracks from Arijit Singh, Sonu Nigam, Lata Mangeshkar, and Kumar Sanu.
+              Timeless 90s classics, romantic blockbusters, and dance tracks from Arijit Singh, Sonu Nigam, Lata
+              Mangeshkar, and Kumar Sanu.
             </p>
             <div class="card-highlights">
               <span class="highlight-pill">205 Classic Hits</span>
@@ -768,9 +779,10 @@
         <a href="haryanvi-songs/haryanvi-songs.html" class="category-card-btn card-haryanvi" data-category="haryanvi"
           title="Listen to Haryanvi Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-haryanvi" title="Haryanvi Superhit Music" style="background: #09091f; border: 1.5px solid rgba(236, 72, 153, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="haryanvi-songs/images/haryanvi_logo.svg" alt="Haryanvi Superhit Music" class="haryanvi-card-icon-img"
-                width="44" height="44" style="object-fit: contain;">
+            <div class="card-icon-emblem card-icon-haryanvi" title="Haryanvi Superhit Music"
+              style="background: #09091f; border: 1.5px solid rgba(236, 72, 153, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="haryanvi-songs/images/haryanvi_logo.svg" alt="Haryanvi Superhit Music"
+                class="haryanvi-card-icon-img" width="44" height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -800,9 +812,10 @@
         <a href="punjabi-songs/punjabi-songs.html" class="category-card-btn card-punjabi" data-category="punjabi"
           title="Listen to Punjabi Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-punjabi" title="Punjabi Superhit Music" style="background: #09091f; border: 1.5px solid rgba(168, 85, 247, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="punjabi-songs/images/punjabi_logo.png" alt="Punjabi Superhit Music" class="punjabi-card-icon-img"
-                width="38" height="38" style="border-radius: 50%; object-fit: cover;">
+            <div class="card-icon-emblem card-icon-punjabi" title="Punjabi Superhit Music"
+              style="background: #09091f; border: 1.5px solid rgba(168, 85, 247, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="punjabi-songs/images/punjabi_logo.png" alt="Punjabi Superhit Music"
+                class="punjabi-card-icon-img" width="38" height="38" style="border-radius: 50%; object-fit: cover;">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -818,7 +831,8 @@
               <div class="card-subtitle-en">Punjabi Superhit Songs & Bhangra Hits</div>
             </div>
             <p class="card-description">
-              Energetic Punjabi anthems, Bhangra beats, and superhits from Diljit Dosanjh, Sidhu Moose Wala, and Guru Randhawa.
+              Energetic Punjabi anthems, Bhangra beats, and superhits from Diljit Dosanjh, Sidhu Moose Wala, and Guru
+              Randhawa.
             </p>
             <div class="card-highlights">
               <span class="highlight-pill">PlayX Hits</span>
@@ -911,7 +925,8 @@
               <div class="card-subtitle-en">Divine Sun God & Chhathi Maiya Geet</div>
             </div>
             <p class="card-description">
-              Sacred Chhath Puja Arghya and devotional melodies by Sharda Sinha, Pawan Singh, Khesari Lal Yadav, Anuradha Paudwal, and more.
+              Sacred Chhath Puja Arghya and devotional melodies by Sharda Sinha, Pawan Singh, Khesari Lal Yadav,
+              Anuradha Paudwal, and more.
             </p>
             <div class="card-highlights">
               <span class="highlight-pill">25+ Traditional Songs</span>
@@ -925,9 +940,10 @@
         <a href="holi-songs/holi-songs.html" class="category-card-btn card-holi" data-category="holi"
           title="Listen to Colorful Holi Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-holi" title="Holi Superhit Music" style="background: #ffffff; border: 1.5px solid rgba(244, 63, 94, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="holi-songs/images/holi_logo.svg" alt="Holi Music" class="holi-card-icon-img"
-                width="44" height="44" style="object-fit: contain;">
+            <div class="card-icon-emblem card-icon-holi" title="Holi Superhit Music"
+              style="background: #ffffff; border: 1.5px solid rgba(244, 63, 94, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="holi-songs/images/holi_logo.svg" alt="Holi Music" class="holi-card-icon-img" width="44"
+                height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -957,9 +973,10 @@
         <a href="bhojpuri-songs/bhojpuri-songs.html" class="category-card-btn card-bhojpuri" data-category="bhojpuri"
           title="Listen to Bhojpuri Superhit Songs">
           <div class="card-btn-header">
-            <div class="card-icon-emblem card-icon-bhojpuri" title="Bhojpuri Superhit Music" style="background: #ffffff; border: 1.5px solid rgba(239, 68, 68, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
-              <img src="bhojpuri-songs/images/bhojpuri_logo.png" alt="Bhojpuri Superhit Music" class="bhojpuri-card-icon-img"
-                width="44" height="44" style="object-fit: contain;">
+            <div class="card-icon-emblem card-icon-bhojpuri" title="Bhojpuri Superhit Music"
+              style="background: #ffffff; border: 1.5px solid rgba(239, 68, 68, 0.4); overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 2px;">
+              <img src="bhojpuri-songs/images/bhojpuri_logo.png" alt="Bhojpuri Superhit Music"
+                class="bhojpuri-card-icon-img" width="44" height="44" style="object-fit: contain;">
             </div>
             <span class="card-btn-arrow">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -975,7 +992,8 @@
               <div class="card-subtitle-en">Desi Hits, Lokgeet & Dance Beats</div>
             </div>
             <p class="card-description">
-              Top Bhojpuri folk songs, superhit dance numbers, and popular melodies from Pawan Singh, Khesari Lal, and more.
+              Top Bhojpuri folk songs, superhit dance numbers, and popular melodies from Pawan Singh, Khesari Lal, and
+              more.
             </p>
             <div class="card-highlights">
               <span class="highlight-pill">PlayX Hits</span>
@@ -1035,7 +1053,8 @@
           <h5 id="footerCol3Title">Features & Links</h5>
           <ul class="footer-links">
             <li><a href="chhath-puja/chhath-puja.html" id="footerLinkOffline">Offline Downloads</a></li>
-            <li><a href="javascript:void(0)" id="footerLinkPwa" onclick="window.handleInstallApp(event)">Install Web App (PWA)</a></li>
+            <li><a href="javascript:void(0)" id="footerLinkPwa" onclick="window.handleInstallApp(event)">Install Web App
+                (PWA)</a></li>
             <li><a href="sitemap.xml" id="footerLinkSitemap">Sitemap</a></li>
           </ul>
         </div>
@@ -1125,7 +1144,7 @@
         try {
           var buf = new TextEncoder().encode(str);
           var hashBuf = await window.crypto.subtle.digest("SHA-256", buf);
-          return Array.from(new Uint8Array(hashBuf)).map(function(b) {
+          return Array.from(new Uint8Array(hashBuf)).map(function (b) {
             return b.toString(16).padStart(2, "0");
           }).join("");
         } catch (e) {
@@ -1193,7 +1212,7 @@
                 userEmail = data.email || user;
               }
             } else if (res.status === 429) {
-              var errData = await res.json().catch(function() { return {}; });
+              var errData = await res.json().catch(function () { return {}; });
               throw new Error(errData.error || "Too many failed attempts. Please wait a moment.");
             } else if (res.status === 401) {
               throw new Error("❌ Invalid credentials! Only verified administrators can log in.");
@@ -1235,7 +1254,7 @@
             localStorage.setItem("playx_admin_user", userName);
             localStorage.setItem("playx_admin_email", userEmail);
             if (token) localStorage.setItem("playx_admin_token", token);
-            try { sessionStorage.setItem("playx_admin_secret", pwd); } catch (e) {}
+            try { sessionStorage.setItem("playx_admin_secret", pwd); } catch (e) { }
 
             if (window.updateAdminAuthState) window.updateAdminAuthState();
 
@@ -1301,7 +1320,7 @@
     })();
 
     // Auto Song Importer Invocation
-    
+
     // Manage & Delete Songs Invocation
     window.handleOpenSongManager = function (e) {
       if (e) {
@@ -1347,7 +1366,7 @@
   <!-- PlayX Auto Added Songs Importer Engine -->
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="backend/admin-song-importer.js?v=3.2"></script>
+  <script src="backend/admin-song-importer.js?v=3.3"></script>
 </body>
 
 </html>

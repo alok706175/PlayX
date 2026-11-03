@@ -3,10 +3,12 @@
  * 
  * Runs on standard Node.js with ZERO external npm dependencies required!
  * Handles link validation, metadata extraction, duplicate checking,
- * admin authentication, atomic JSON storage, and optional GitHub commits.
+ * admin authentication with signed JWT & timing-safe checks,
+ * atomic JSON storage with concurrency mutex, and automatic GitHub commits.
  */
 
 const http = require('http');
+const https = require('https');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
@@ -48,6 +50,9 @@ const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'deepaksinghrajput8747@gmail.com
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Deepak Singh Rajput';
 const PROJECT_ROOT = songDbManager.PROJECT_ROOT;
 
+// Secret key for signing and validating JWT tokens
+const JWT_SECRET = process.env.JWT_SECRET || (ADMIN_SECRET + '_playx_hmac_jwt_salt_2026');
+
 // Security: In-memory session store & rate limiters
 // activeSessions: token -> { createdAt, expiresAt }
 const activeSessions = new Map();
@@ -80,6 +85,114 @@ const MIME_TYPES = {
   '.xml': 'application/xml',
   '.txt': 'text/plain; charset=UTF-8'
 };
+
+/**
+ * Base64URL encoding helper
+ */
+function base64UrlEncode(str) {
+  return Buffer.from(str)
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+}
+
+/**
+ * Base64URL decoding helper
+ */
+function base64UrlDecode(str) {
+  let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (b64.length % 4) b64 += '=';
+  return Buffer.from(b64, 'base64').toString('utf8');
+}
+
+/**
+ * Signs a JWT payload using native HMAC-SHA256 (Zero npm dependencies)
+ * @param {object} payload 
+ * @param {string} [secret] 
+ * @param {number} [expiresInSeconds] 
+ * @returns {string} Signed JWT token string
+ */
+function signJwt(payload, secret = JWT_SECRET, expiresInSeconds = 7 * 86400) {
+  const header = { alg: 'HS256', typ: 'JWT' };
+  const now = Math.floor(Date.now() / 1000);
+  const fullPayload = {
+    ...payload,
+    iat: now,
+    exp: now + expiresInSeconds
+  };
+
+  const encodedHeader = base64UrlEncode(JSON.stringify(header));
+  const encodedPayload = base64UrlEncode(JSON.stringify(fullPayload));
+  const data = `${encodedHeader}.${encodedPayload}`;
+
+  const signature = crypto
+    .createHmac('sha256', secret)
+    .update(data)
+    .digest('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  return `${data}.${signature}`;
+}
+
+/**
+ * Verifies a signed JWT token string and returns parsed payload if valid
+ * @param {string} token 
+ * @param {string} [secret] 
+ * @returns {object|null}
+ */
+function verifyJwt(token, secret = JWT_SECRET) {
+  if (!token || typeof token !== 'string') return null;
+  const parts = token.split('.');
+  if (parts.length !== 3) return null;
+
+  const [encodedHeader, encodedPayload, signature] = parts;
+  const data = `${encodedHeader}.${encodedPayload}`;
+
+  const expectedSig = crypto
+    .createHmac('sha256', secret)
+    .update(data)
+    .digest('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+
+  const sigBuf = Buffer.from(signature);
+  const expectedBuf = Buffer.from(expectedSig);
+  if (sigBuf.length !== expectedBuf.length || !crypto.timingSafeEqual(sigBuf, expectedBuf)) {
+    return null;
+  }
+
+  try {
+    const payload = JSON.parse(base64UrlDecode(encodedPayload));
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      return null; // Expired
+    }
+    return payload;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Constant-time string comparison to eliminate timing-attack vulnerabilities
+ * @param {string} a 
+ * @param {string} b 
+ * @returns {boolean}
+ */
+function timingSafeCompare(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(a, 'utf8');
+  const bufB = Buffer.from(b, 'utf8');
+  if (bufA.length !== bufB.length) {
+    crypto.timingSafeEqual(bufA, bufA); // Constant-time dummy comparison
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 /**
  * Sends JSON HTTP response with CORS and security headers
@@ -123,7 +236,7 @@ function parseRequestBody(req) {
 }
 
 /**
- * Checks if request has valid admin credentials or active session
+ * Checks if request has valid admin credentials via signed JWT or active session
  */
 function isAuthorizedAdmin(req, body = {}) {
   const secretFromHeader = req.headers['x-admin-secret'] || '';
@@ -138,7 +251,13 @@ function isAuthorizedAdmin(req, body = {}) {
   const tokenToCheck = (bearerToken || secretFromHeader || secretFromBody).trim();
   if (!tokenToCheck) return false;
 
-  // 1. Check if token is an active valid session
+  // 1. Verify signed JWT token (Stateless, survives server restarts)
+  const jwtPayload = verifyJwt(tokenToCheck);
+  if (jwtPayload && jwtPayload.admin === true) {
+    return true;
+  }
+
+  // 2. Check in-memory session store (Backward compatibility)
   const session = activeSessions.get(tokenToCheck);
   if (session) {
     if (Date.now() < session.expiresAt) {
@@ -148,8 +267,8 @@ function isAuthorizedAdmin(req, body = {}) {
     }
   }
 
-  // 2. Direct match with configured ADMIN_SECRET
-  return tokenToCheck === ADMIN_SECRET;
+  // 3. Constant-time match with configured ADMIN_SECRET
+  return timingSafeCompare(tokenToCheck, ADMIN_SECRET);
 }
 
 /**
@@ -252,28 +371,42 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROOT & HEALTH CHECK: Server Status & Ping Endpoint
-  // GET / or GET /health
+  // API ROOT & FAST PING / HEALTH ENDPOINTS: Keeps server warm and live
+  // GET /api/ping or GET /health or GET /api
   // -------------------------------------------------------------
-  if ((pathname === '/' || pathname === '/health' || pathname === '/api') && method === 'GET') {
+  if ((pathname === '/api/ping' || pathname === '/health' || pathname === '/api') && method === 'GET') {
+    sendJsonResponse(res, 200, {
+      status: 'ok',
+      live: true,
+      service: 'PlayX Music Backend API',
+      message: 'Server is live',
+      uptime: Math.floor(process.uptime()),
+      timestamp: Date.now()
+    });
+    return;
+  }
+
+  if (pathname === '/' && method === 'GET') {
     const accept = req.headers.accept || '';
-    if (pathname === '/' && (accept.includes('text/html') || !accept.includes('application/json'))) {
+    if (accept.includes('text/html') || !accept.includes('application/json')) {
       serveStaticFile(req, res, '/home.html');
       return;
     }
     sendJsonResponse(res, 200, {
       status: 'active',
       service: 'PlayX Music Backend API',
-      version: '1.0.0',
+      version: '1.2.0',
       message: 'PlayX Music Backend is online and running 🎵',
       uptime: `${Math.floor(process.uptime())}s`,
       endpoints: [
         'POST /api/admin/login',
         'POST /api/parse-link',
         'POST /api/import-song',
+        'POST /api/delete-song',
         'GET  /api/categories',
         'GET  /api/recent-imports',
         'GET  /api/sync-status',
+        'GET  /api/ping',
         'GET  /health'
       ]
     });
@@ -281,7 +414,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROUTE 0: Secure Administrator Login & Session Generation
+  // API ROUTE 0: Secure Administrator Login (Signed JWT Token Generation)
   // POST /api/admin/login
   // -------------------------------------------------------------
   if (pathname === '/api/admin/login' && method === 'POST') {
@@ -304,25 +437,33 @@ const server = http.createServer(async (req, res) => {
       const email = (body.email || '').trim().toLowerCase();
       const password = (body.password || '').trim();
 
-      const emailMatches = !email || email === ADMIN_EMAIL;
-      const pwdMatches = password === ADMIN_SECRET;
+      const emailMatches = !email || timingSafeCompare(email, ADMIN_EMAIL);
+      const pwdMatches = timingSafeCompare(password, ADMIN_SECRET);
 
       if (emailMatches && pwdMatches) {
         // Reset rate limiter on successful authentication
         loginRateLimiter.delete(ip);
 
-        // Generate cryptographically secure random session token (64 hex characters)
-        const sessionToken = crypto.randomBytes(32).toString('hex');
+        // Generate signed JWT token (7-day validity, verifiable across restarts)
+        const expiresInSec = 7 * 86400;
+        const sessionToken = signJwt({
+          admin: true,
+          email: ADMIN_EMAIL,
+          user: ADMIN_NAME
+        }, JWT_SECRET, expiresInSec);
+
+        // Also record in in-memory session store for dual-layer check
         activeSessions.set(sessionToken, {
           createdAt: now,
-          expiresAt: now + 24 * 60 * 60 * 1000 // 24 hours
+          expiresAt: now + expiresInSec * 1000
         });
 
         sendJsonResponse(res, 200, {
           success: true,
           token: sessionToken,
           user: ADMIN_NAME,
-          email: ADMIN_EMAIL
+          email: ADMIN_EMAIL,
+          expiresIn: expiresInSec
         });
         return;
       }
@@ -445,12 +586,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROUTE: Sync & Server Status
-  // GET /api/sync-status
-  // -------------------------------------------------------------
-  
-  // -------------------------------------------------------------
-  // API ROUTE: Delete Song from Category Database
+  // API ROUTE 3: Delete Song from Category Database
   // POST /api/delete-song
   // -------------------------------------------------------------
   if (pathname === '/api/delete-song' && method === 'POST') {
@@ -491,6 +627,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // -------------------------------------------------------------
+  // API ROUTE 4: Sync & Server Status
+  // GET /api/sync-status
+  // -------------------------------------------------------------
   if (pathname === '/api/sync-status' && method === 'GET') {
     const hasToken = Boolean(process.env.PLAYX_TOKEN || process.env.GITHUB_TOKEN);
     sendJsonResponse(res, 200, {
@@ -504,7 +644,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROUTE 3: Get Category Summary & Stats
+  // API ROUTE 5: Get Category Summary & Stats
   // GET /api/categories
   // -------------------------------------------------------------
   if (pathname === '/api/categories' && method === 'GET') {
@@ -524,7 +664,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROUTE 4: Check Duplicates
+  // API ROUTE 6: Check Duplicates
   // GET /api/duplicates?videoId=...
   // -------------------------------------------------------------
   if (pathname === '/api/duplicates' && method === 'GET') {
@@ -546,7 +686,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // API ROUTE 5: Get Recent Auto-Added History
+  // API ROUTE 7: Get Recent Auto-Added History
   // GET /api/recent-imports
   // -------------------------------------------------------------
   if (pathname === '/api/recent-imports' && method === 'GET') {
@@ -577,7 +717,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
-  // Fallback: 404 for unknown endpoints (Optional local static server via SERVE_STATIC=true)
+  // Fallback: Static File Server or 404
   // -------------------------------------------------------------
   if (process.env.SERVE_STATIC !== 'false') {
     serveStaticFile(req, res, pathname);
@@ -590,6 +730,18 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
+// Cloud Keep-Alive: Ping itself periodically if KEEP_ALIVE_URL is provided in cloud environments
+if (process.env.KEEP_ALIVE_URL) {
+  const keepAliveTarget = process.env.KEEP_ALIVE_URL.replace(/\/$/, '') + '/api/ping';
+  setInterval(() => {
+    https.get(keepAliveTarget, (res) => {
+      console.log(`⏱️ [Keep-Alive] Pinged ${keepAliveTarget} - Status: ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.warn(`⏱️ [Keep-Alive] Warning: ${err.message}`);
+    });
+  }, 13 * 60 * 1000); // 13 minutes (Render sleeps after 15 mins)
+}
+
 // Start the server
 server.listen(PORT, () => {
   console.log(`
@@ -599,16 +751,25 @@ server.listen(PORT, () => {
 🌐 Local URL:         http://localhost:${PORT}
 🏠 Home Page:         http://localhost:${PORT}/home.html
 📡 API Endpoints:     
+   - GET  /api/ping
+   - POST /api/admin/login
    - POST /api/parse-link
    - POST /api/import-song
+   - POST /api/delete-song
    - GET  /api/categories
    - GET  /api/recent-imports
    - GET  /share-target
-🔐 Admin Auth:        Ready (${(process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET) ? 'Custom Secret' : 'Default PlayX Admin'})
-✨ Metadata Engine:   ${process.env.YOUTUBE_API_KEY ? 'YouTube Data API v3' : 'YouTube oEmbed (Zero-Config)'}
+🔐 Admin Auth:        Signed JWT + TimingSafe Equal (Zero npm dependencies)
+✨ Metadata Engine:   ${process.env.YOUTUBE_API_KEY ? 'YouTube Data API v3' : 'YouTube oEmbed (Zero-Config) + Dynamic Scraper'}
 🐙 GitHub Auto-Sync:  Enabled (Automatic Push to origin/main)
 =================================================================
 `);
 });
 
-module.exports = server;
+module.exports = {
+  server,
+  signJwt,
+  verifyJwt,
+  timingSafeCompare,
+  isAuthorizedAdmin
+};

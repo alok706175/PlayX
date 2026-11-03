@@ -377,7 +377,7 @@
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 1400);
 
-      const res = await fetch(`${API_BASE}/api/categories?_t=${Date.now()}`, {
+      const res = await fetch(`${API_BASE}/api/ping?_t=${Date.now()}`, {
         method: 'GET',
         cache: 'no-store',
         headers: { 'Accept': 'application/json' },
@@ -385,10 +385,9 @@
       });
       clearTimeout(timeoutId);
 
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('application/json')) {
+      if (res.ok) {
         const data = await res.json().catch(() => null);
-        if (data && data.success && Array.isArray(data.categories)) {
+        if (data && (data.live || data.status === 'ok' || data.status === 'active')) {
           isLocalServerOnline = true;
         }
       }

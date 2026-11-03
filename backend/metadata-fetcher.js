@@ -4,6 +4,7 @@
  * Fetches video metadata using:
  * 1. Official YouTube Data API v3 (when YOUTUBE_API_KEY is configured in .env)
  * 2. YouTube oEmbed API fallback (Zero-Config, no API key required)
+ * 3. Dynamic watch-page duration scraper (extracts exact duration without API key)
  * 
  * Extracts video title, channel, duration, thumbnail, embed status,
  * and cleans music video title strings for beautiful display in PlayX.
@@ -27,13 +28,125 @@ function parseISO8601Duration(isoDuration) {
   const minutes = parseInt(match[2] || '0', 10);
   const seconds = parseInt(match[3] || '0', 10);
 
+  const minStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
   const secStr = seconds < 10 ? `0${seconds}` : `${seconds}`;
 
   if (hours > 0) {
-    const minStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
     return `${hours}:${minStr}:${secStr}`;
   }
-  return `${minutes}:${secStr}`;
+  return `${minStr}:${secStr}`;
+}
+
+/**
+ * Converts total seconds into MM:SS or H:MM:SS format
+ * @param {number} totalSecs 
+ * @returns {string}
+ */
+function formatSecondsToDuration(totalSecs) {
+  if (typeof totalSecs !== 'number' || isNaN(totalSecs) || totalSecs < 0) return '--:--';
+  const hrs = Math.floor(totalSecs / 3600);
+  const mins = Math.floor((totalSecs % 3600) / 60);
+  const secs = Math.floor(totalSecs % 60);
+
+  const minStr = mins < 10 ? `0${mins}` : `${mins}`;
+  const secStr = secs < 10 ? `0${secs}` : `${secs}`;
+
+  if (hrs > 0) {
+    return `${hrs}:${minStr}:${secStr}`;
+  }
+  return `${minStr}:${secStr}`;
+}
+
+/**
+ * Extracts duration from HTML chunk using meta tags or ytInitialPlayerResponse
+ * @param {string} html 
+ * @returns {string|null}
+ */
+function extractDurationFromHtml(html) {
+  if (!html || typeof html !== 'string') return null;
+
+  // 1. Check itemprop="duration" (e.g. content="PT4M13S")
+  const metaMatch = html.match(/itemprop=["']duration["']\s+content=["'](PT[^"']+)["']/i) ||
+                    html.match(/content=["'](PT[^"']+)["']\s+itemprop=["']duration["']/i);
+  if (metaMatch && metaMatch[1]) {
+    const parsed = parseISO8601Duration(metaMatch[1]);
+    if (parsed && parsed !== '--:--') return parsed;
+  }
+
+  // 2. Check lengthSeconds in ytInitialPlayerResponse
+  const lengthMatch = html.match(/["']lengthSeconds["']\s*:\s*["'](\d+)["']/);
+  if (lengthMatch && lengthMatch[1]) {
+    const sec = parseInt(lengthMatch[1], 10);
+    if (!isNaN(sec) && sec > 0) {
+      return formatSecondsToDuration(sec);
+    }
+  }
+
+  // 3. Check approxDurationMs
+  const approxMatch = html.match(/["']approxDurationMs["']\s*:\s*["'](\d+)["']/);
+  if (approxMatch && approxMatch[1]) {
+    const ms = parseInt(approxMatch[1], 10);
+    if (!isNaN(ms) && ms > 0) {
+      return formatSecondsToDuration(Math.round(ms / 1000));
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Scrapes true video duration from YouTube watch page HTML (Zero-Config, no API key)
+ * @param {string} videoId 
+ * @returns {Promise<string|null>}
+ */
+function fetchYouTubeDuration(videoId) {
+  return new Promise((resolve) => {
+    let resolved = false;
+    const safeResolve = (val) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(val);
+      }
+    };
+
+    const options = {
+      hostname: 'www.youtube.com',
+      path: `/watch?v=${encodeURIComponent(videoId)}`,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept-Language': 'en-US,en;q=0.9'
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let html = '';
+      res.on('data', (chunk) => {
+        html += chunk;
+        if (html.length > 300 * 1024) { // First 300KB contains the duration metadata
+          req.destroy();
+          safeResolve(extractDurationFromHtml(html));
+        }
+      });
+      res.on('end', () => {
+        safeResolve(extractDurationFromHtml(html));
+      });
+      res.on('close', () => {
+        safeResolve(extractDurationFromHtml(html));
+      });
+    });
+
+    req.setTimeout(4000, () => {
+      req.destroy();
+      safeResolve(null);
+    });
+
+    req.on('error', () => {
+      safeResolve(null);
+    });
+
+    req.end();
+  });
 }
 
 /**
@@ -161,6 +274,7 @@ async function fetchViaDataApi(videoId, apiKey) {
 
 /**
  * Fetches metadata via YouTube oEmbed API (No API Key Required)
+ * Enhanced with automatic watch-page duration scraper fallback
  * @param {string} videoId 
  * @returns {Promise<object>}
  */
@@ -173,12 +287,26 @@ async function fetchViaOEmbed(videoId) {
   const channelTitle = data.author_name || '';
   const { cleanTitle, detectedSinger } = cleanSongTitle(rawTitle);
 
-  // Auto-detect duration from video title (e.g. 4:15, 03:45) or provide standard song default (03:45)
-  let durationStr = '03:45';
-  const durationMatch = rawTitle.match(/[([{\s](\d{1,2}:\d{2})[)\]}\s]/);
-  if (durationMatch) {
-    durationStr = durationMatch[1];
-    if (durationStr.length === 4) durationStr = '0' + durationStr;
+  // Dynamic duration scraping from YouTube watch page HTML (no API key needed!)
+  let durationStr = null;
+  try {
+    durationStr = await fetchYouTubeDuration(videoId);
+  } catch (e) {
+    // ignore network errors
+  }
+
+  // Fallback 1: Auto-detect duration from video title (e.g. 4:15, 03:45)
+  if (!durationStr || durationStr === '--:--') {
+    const durationMatch = rawTitle.match(/[([{\s](\d{1,2}:\d{2})[)\]}\s]/);
+    if (durationMatch) {
+      durationStr = durationMatch[1];
+      if (durationStr.length === 4) durationStr = '0' + durationStr;
+    }
+  }
+
+  // Fallback 2: Reasonable default if all else fails
+  if (!durationStr || durationStr === '--:--') {
+    durationStr = '03:45';
   }
 
   return {
@@ -285,6 +413,9 @@ async function retrieveSongMetadata(inputUrl, apiKeyOverride) {
 
 module.exports = {
   parseISO8601Duration,
+  formatSecondsToDuration,
+  extractDurationFromHtml,
+  fetchYouTubeDuration,
   cleanSongTitle,
   fetchViaDataApi,
   fetchViaOEmbed,

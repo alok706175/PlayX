@@ -2,8 +2,9 @@
  * PlayX Auto Added Songs - JSON Database & GitHub Storage Manager
  * 
  * Safely persists songs to the appropriate PlayX category JSON files.
- * Provides duplicate checking across all categories, atomic file writes,
- * automatic backups, and optional GitHub API commit integration.
+ * Provides duplicate checking across all categories, concurrency mutex locks,
+ * atomic file writes with .bak backups, strict schema consistency,
+ * and automatic Git CLI / GitHub REST API commit integration.
  */
 
 const fs = require('fs');
@@ -17,6 +18,25 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 // History log file for recently auto-added songs
 const HISTORY_FILE = path.join(__dirname, 'auto_added_history.json');
+
+// Concurrency: Per-category operation queues to serialize writes and eliminate race conditions
+const categoryQueues = new Map();
+
+/**
+ * Concurrency Mutex: Serializes asynchronous read-modify-write operations
+ * on the same category JSON database file to eliminate race conditions.
+ * @param {string} categoryKey 
+ * @param {() => Promise<any>} taskFn 
+ * @returns {Promise<any>}
+ */
+function withCategoryLock(categoryKey, taskFn) {
+  const currentQueue = categoryQueues.get(categoryKey) || Promise.resolve();
+  const nextTask = currentQueue
+    .catch(() => {}) // Prevent previous error from blocking future operations
+    .then(() => taskFn());
+  categoryQueues.set(categoryKey, nextTask);
+  return nextTask;
+}
 
 /**
  * Resolves absolute file path for a given category JSON file
@@ -93,34 +113,107 @@ function checkDuplicate(videoId, originalUrl = '') {
 }
 
 /**
- * Atomically writes data to file with a .bak backup
+ * Atomically writes data to file with validation, retry mechanism, and .bak backup
  * @param {string} targetPath 
  * @param {any} data 
  */
 function atomicWriteJson(targetPath, data) {
+  if (!Array.isArray(data)) {
+    throw new Error(`Data validation error: atomicWriteJson expects an Array, received ${typeof data}`);
+  }
+
   const dir = path.dirname(targetPath);
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 
   const jsonStr = JSON.stringify(data, null, 2) + '\n';
-  const tmpPath = `${targetPath}.tmp.${Date.now()}`;
+  const tmpPath = `${targetPath}.tmp.${process.pid}.${Date.now()}`;
   const bakPath = `${targetPath}.bak`;
 
-  // 1. Create backup if file exists and has content
+  // 1. Create .bak backup if target exists and is non-empty
   if (fs.existsSync(targetPath)) {
     try {
-      fs.copyFileSync(targetPath, bakPath);
+      const stats = fs.statSync(targetPath);
+      if (stats.size > 0) {
+        fs.copyFileSync(targetPath, bakPath);
+      }
     } catch (e) {
       console.warn(`Could not create backup for ${targetPath}:`, e.message);
     }
   }
 
-  // 2. Write to temp file
+  // 2. Write to unique temporary file
   fs.writeFileSync(tmpPath, jsonStr, 'utf8');
 
-  // 3. Atomic rename to target
-  fs.renameSync(tmpPath, targetPath);
+  // 3. Atomic rename with Windows retry mechanism
+  let renamed = false;
+  let attempts = 0;
+  while (!renamed && attempts < 5) {
+    try {
+      attempts++;
+      fs.renameSync(tmpPath, targetPath);
+      renamed = true;
+    } catch (err) {
+      if (attempts >= 5) {
+        // Fallback: copyFileSync then remove tmp
+        try {
+          fs.copyFileSync(tmpPath, targetPath);
+          fs.unlinkSync(tmpPath);
+          renamed = true;
+        } catch (copyErr) {
+          throw new Error(`Atomic write failed after ${attempts} attempts: ${err.message} (copy fallback: ${copyErr.message})`);
+        }
+      } else {
+        // Brief synchronous pause for momentary Windows file locks to release
+        const waitTill = Date.now() + 25;
+        while (Date.now() < waitTill) {}
+      }
+    }
+  }
+}
+
+/**
+ * Synchronizes hindi-songs/hindi_songs_data.js bundle with latest hindi_songs.json
+ * @param {Array<object>} songsList 
+ * @returns {boolean}
+ */
+function syncHindiBundle(songsList) {
+  try {
+    const dataJsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
+    const bundleContent = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(songsList, null, 2) + ';\n';
+    fs.writeFileSync(dataJsPath, bundleContent, 'utf8');
+    return true;
+  } catch (bundleErr) {
+    console.warn('Could not sync hindi_songs_data.js bundle:', bundleErr.message);
+    return false;
+  }
+}
+
+/**
+ * Checks parity between hindi_songs.json and hindi_songs_data.js
+ * @returns {{ inSync: boolean, jsonCount?: number, jsCount?: number, error?: string }}
+ */
+function verifyHindiParity() {
+  const jsonPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs.json');
+  const jsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
+  const jsonSongs = readJsonSafe(jsonPath);
+  if (!fs.existsSync(jsPath)) {
+    return { inSync: false, jsonCount: jsonSongs.length, jsCount: 0 };
+  }
+  const rawJs = fs.readFileSync(jsPath, 'utf8');
+  const match = rawJs.match(/window\.PLAYX_HINDI_SONGS_DATA\s*=\s*(\[[\s\S]*\]);/);
+  if (!match) {
+    return { inSync: false, error: 'Could not parse hindi_songs_data.js bundle' };
+  }
+  try {
+    const jsSongs = JSON.parse(match[1]);
+    const inSync = (jsonSongs.length === jsSongs.length) &&
+      (jsonSongs.length === 0 || jsonSongs[0].id === jsSongs[0].id);
+    return { inSync, jsonCount: jsonSongs.length, jsCount: jsSongs.length };
+  } catch (e) {
+    return { inSync: false, error: e.message };
+  }
 }
 
 /**
@@ -270,32 +363,52 @@ function execShellCommand(cmd, cwd) {
 }
 
 /**
- * Automatically syncs the newly added song to GitHub:
- * Strategy 1: Git CLI (Local auto-commit & push to origin/main)
- * Strategy 2: GitHub REST API (Fallback using GITHUB_TOKEN if configured)
+ * Detects and safely clears stale .git/index.lock if left over from interrupted git runs
  */
-async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
-  const safeSongName = (songName || 'New Song').replace(/["`$\r\n]/g, "'");
-  const commitMsg = `Add '${safeSongName}' to ${categoryName} playlist [PlayX Auto-Import]`;
+function clearStaleGitLock() {
+  try {
+    const lockPath = path.join(PROJECT_ROOT, '.git', 'index.lock');
+    if (fs.existsSync(lockPath)) {
+      const stats = fs.statSync(lockPath);
+      // If older than 15 seconds, it is an abandoned stale lock
+      if (Date.now() - stats.mtimeMs > 15000) {
+        fs.unlinkSync(lockPath);
+        console.log('🧹 [Git Clean] Removed stale .git/index.lock file.');
+      }
+    }
+  } catch (err) {
+    console.warn('[Git Clean] Notice checking .git/index.lock:', err.message);
+  }
+}
+
+/**
+ * Automatically syncs file changes to GitHub:
+ * Strategy 1: Git CLI (Local auto-commit & push to origin/main)
+ * Strategy 2: GitHub REST API (Fallback using PLAYX_TOKEN or GITHUB_TOKEN if configured)
+ */
+async function autoSyncToGitHub(relativeFilePath, songName, categoryName, action = 'add') {
+  clearStaleGitLock();
+
+  const safeSongName = (songName || 'Song').replace(/["`$\r\n]/g, "'");
+  const commitMsg = action === 'delete'
+    ? `Delete '${safeSongName}' from ${categoryName} playlist [PlayX Admin]`
+    : `Add '${safeSongName}' to ${categoryName} playlist [PlayX Auto-Import]`;
   const normalizedPath = relativeFilePath.replace(/\\/g, '/');
 
-  console.log(`\n🚀 [GitHub Auto-Sync] Syncing "${safeSongName}" to GitHub (${normalizedPath})...`);
+  console.log(`\n🚀 [GitHub Auto-Sync] Syncing "${safeSongName}" (${action}) to GitHub (${normalizedPath})...`);
 
   // Strategy 1: Local Git CLI Push
   try {
-    // Stage the updated category file and history log
     await execShellCommand(`git add "${normalizedPath}"`);
-    await execShellCommand(`git add "backend/auto_added_history.json"`);
+    if (action === 'add') {
+      await execShellCommand(`git add "backend/auto_added_history.json"`);
+    }
     if (normalizedPath.includes('hindi_songs.json')) {
       await execShellCommand(`git add "hindi-songs/hindi_songs_data.js"`);
     }
 
-    // Commit
     const commitRes = await execShellCommand(`git commit -m "${commitMsg}"`);
-    // Check if commit succeeded or already committed
     if (commitRes.success || commitRes.stdout.includes('nothing to commit')) {
-      // Push to GitHub main
-      // Only push if remote origin is configured
       let pushRes = { success: false, error: 'origin check' };
       const remoteCheck = await execShellCommand('git remote');
       if (remoteCheck.success && remoteCheck.stdout.includes('origin')) {
@@ -321,7 +434,7 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
           message: 'Code and playlist automatically pushed to GitHub repository (origin/main)!'
         };
       } else {
-        console.warn(`⚠️ [GitHub Auto-Sync] Git CLI push warning: ${pushRes.error}`);
+        console.warn(`⚠️ [GitHub Auto-Sync] Git CLI push note: ${pushRes.error}`);
       }
     } else {
       console.warn(`⚠️ [GitHub Auto-Sync] Git commit note: ${commitRes.stdout || commitRes.error}`);
@@ -370,7 +483,7 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName) {
     success: false,
     committed: false,
     method: 'none',
-    message: 'Local JSON file updated, but GitHub auto-push could not reach origin. You can also run "git push" manually.'
+    message: 'Local JSON file updated. (GitHub push was not completed; code can also be pushed manually).'
   };
 }
 
@@ -383,7 +496,8 @@ function sanitizeText(str) {
 }
 
 /**
- * Formats a song record precisely for the target category's schema
+ * Formats a song record with a strict, uniform schema across all PlayX categories.
+ * Guarantees that every song object possesses all required playback properties.
  * @param {string} categoryKey 
  * @param {number} nextId 
  * @param {object} inputData 
@@ -401,57 +515,17 @@ function formatSongRecord(categoryKey, nextId, inputData) {
   const singerEn = sanitizeText(inputData.singerEn || singer);
   const duration = sanitizeText(inputData.duration && inputData.duration !== '--:--' ? inputData.duration : '03:45');
   const thumbnail = inputData.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-  const tag = sanitizeText(inputData.tag || cat.defaultTag);
+  const tag = sanitizeText(inputData.tag || cat?.defaultTag || 'Hits');
+  const categoryDisplay = cat?.name || 'PlayX Music';
 
-  if (categoryKey === 'chhath') {
-    // Chhath Puja youtube_songs.json schema
-    return {
-      id: nextId,
-      name: title,
-      nameEn: titleEn,
-      singer: singer,
-      singerEn: singerEn,
-      videoId: videoId,
-      youtubeId: videoId,
-      embedUrl: embedUrl,
-      originalUrl: inputData.originalUrl || `https://www.youtube.com/watch?v=${videoId}`,
-      thumbnail: thumbnail,
-      duration: duration,
-      addedAt: nowIso,
-      status: 'approved',
-      source: 'youtube'
-    };
-  }
-
-  if (categoryKey === 'hindi') {
-    // Hindi songs schema
-    return {
-      id: nextId,
-      name: title,
-      nameEn: titleEn,
-      singer: singer,
-      singerEn: singerEn,
-      category: inputData.subCategory || 'Romantic',
-      duration: duration,
-      videoId: videoId,
-      youtubeId: videoId,
-      embedUrl: embedUrl,
-      originalUrl: inputData.originalUrl || `https://www.youtube.com/watch?v=${videoId}`,
-      thumbnail: thumbnail,
-      addedAt: nowIso,
-      status: 'approved',
-      source: 'youtube'
-    };
-  }
-
-  // Festival-player schema (Bhojpuri, Saawan, Durga Puja, Holi, Haryanvi, Punjabi)
+  // Uniform standard schema across all PlayX playlists
   return {
-    id: nextId,
+    id: parseInt(nextId, 10),
     name: title,
     nameEn: titleEn,
     singer: singer,
     singerEn: singerEn,
-    category: cat.name,
+    category: categoryKey === 'hindi' ? (inputData.subCategory || 'Romantic') : categoryDisplay,
     tag: tag,
     videoId: videoId,
     youtubeId: videoId,
@@ -467,6 +541,7 @@ function formatSongRecord(categoryKey, nextId, inputData) {
 
 /**
  * Adds an approved song to the selected category JSON database.
+ * Uses mutex queue to serialize file writes and prevent concurrency race conditions.
  * @param {string} categoryKey 
  * @param {object} songData 
  * @param {{ allowDuplicate?: boolean }} [options] 
@@ -479,99 +554,89 @@ function formatSongRecord(categoryKey, nextId, inputData) {
  *   error?: string
  * }>}
  */
-async function addSongToCategory(categoryKey, songData, options = {}) {
-  const cat = categoryDetector.CATEGORIES[categoryKey];
-  if (!cat) {
-    return { success: false, error: `Invalid category "${categoryKey}".` };
-  }
+function addSongToCategory(categoryKey, songData, options = {}) {
+  return withCategoryLock(categoryKey, async () => {
+    const cat = categoryDetector.CATEGORIES[categoryKey];
+    if (!cat) {
+      return { success: false, error: `Invalid category "${categoryKey}".` };
+    }
 
-  const validVideoId = String(songData.videoId || '').trim();
-  if (!validVideoId || !/^[a-zA-Z0-9_-]{11}$/.test(validVideoId)) {
-    return { success: false, error: 'Cannot save song without a valid 11-character YouTube video ID.' };
-  }
-  songData.videoId = validVideoId;
+    const validVideoId = String(songData.videoId || '').trim();
+    if (!validVideoId || !/^[a-zA-Z0-9_-]{11}$/.test(validVideoId)) {
+      return { success: false, error: 'Cannot save song without a valid 11-character YouTube video ID.' };
+    }
+    songData.videoId = validVideoId;
 
-  // 1. Duplicate check unless explicitly forced
-  if (!options.allowDuplicate) {
-    const dupCheck = checkDuplicate(songData.videoId, songData.originalUrl);
-    if (dupCheck.exists) {
+    // 1. Duplicate check unless explicitly forced
+    if (!options.allowDuplicate) {
+      const dupCheck = checkDuplicate(songData.videoId, songData.originalUrl);
+      if (dupCheck.exists) {
+        return {
+          success: false,
+          error: `Duplicate Song: This video already exists in "${dupCheck.categoryName}" (${dupCheck.foundInFile}).`,
+          duplicateDetails: dupCheck
+        };
+      }
+    }
+
+    const targetPath = getCategoryFilePath(categoryKey);
+    const existingList = readJsonSafe(targetPath);
+
+    // Determine next numeric ID with robust parsing
+    const maxId = existingList.reduce((max, s) => {
+      const numId = parseInt(s.id, 10);
+      return (!isNaN(numId) && numId > max) ? numId : max;
+    }, 0);
+    const nextId = maxId + 1;
+
+    // Format record according to uniform schema
+    const newRecord = formatSongRecord(categoryKey, nextId, songData);
+
+    // Append new record
+    existingList.push(newRecord);
+
+    // 2. Atomic write to local file with validation and backup
+    try {
+      atomicWriteJson(targetPath, existingList);
+    } catch (err) {
       return {
         success: false,
-        error: `Duplicate Song: This video already exists in "${dupCheck.categoryName}" (${dupCheck.foundInFile}).`,
-        duplicateDetails: dupCheck
+        error: `Failed to write to database file ${cat.jsonFile}: ${err.message}`
       };
     }
-  }
 
-  const targetPath = getCategoryFilePath(categoryKey);
-  const existingList = readJsonSafe(targetPath);
-
-  // Determine next numeric ID
-  let maxId = 0;
-  for (const s of existingList) {
-    const numId = parseInt(s.id, 10);
-    if (!isNaN(numId) && numId > maxId) {
-      maxId = numId;
+    // 2.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
+    if (categoryKey === 'hindi') {
+      syncHindiBundle(existingList);
     }
-  }
-  const nextId = maxId + 1;
 
-  // Format record according to category schema
-  const newRecord = formatSongRecord(categoryKey, nextId, songData);
+    // 3. Record in history log
+    recordHistory({
+      ...newRecord,
+      categoryKey,
+      categoryName: cat.name,
+      savedTo: cat.jsonFile
+    });
 
-  // Append new record
-  existingList.push(newRecord);
+    // 4. Automatic GitHub repository push
+    const githubSync = await autoSyncToGitHub(cat.jsonFile, newRecord.name, cat.name, 'add');
 
-  // 2. Atomic write to local file
-  try {
-    atomicWriteJson(targetPath, existingList);
-  } catch (err) {
     return {
-      success: false,
-      error: `Failed to write to database file ${cat.jsonFile}: ${err.message}`
+      success: true,
+      song: newRecord,
+      targetFile: cat.jsonFile,
+      categoryName: cat.name,
+      pageUrl: cat.pageUrl,
+      totalSongs: existingList.length,
+      githubSync: githubSync,
+      githubCommit: githubSync
     };
-  }
-
-  // 2.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
-  if (categoryKey === 'hindi') {
-    try {
-      const dataJsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
-      const bundleContent = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(existingList, null, 2) + ';\n';
-      fs.writeFileSync(dataJsPath, bundleContent, 'utf8');
-    } catch (bundleErr) {
-      console.warn('Could not sync hindi_songs_data.js bundle:', bundleErr.message);
-    }
-  }
-
-  // 3. Record in history log
-  recordHistory({
-    ...newRecord,
-    categoryKey,
-    categoryName: cat.name,
-    savedTo: cat.jsonFile
   });
-
-  // 4. Automatic GitHub repository and playlist code update
-  const githubSync = await autoSyncToGitHub(cat.jsonFile, newRecord.name, cat.name);
-
-  return {
-    success: true,
-    song: newRecord,
-    targetFile: cat.jsonFile,
-    categoryName: cat.name,
-    pageUrl: cat.pageUrl,
-    totalSongs: existingList.length,
-    githubSync: githubSync,
-    githubCommit: githubSync
-  };
 }
 
 /**
- * Returns overall statistics for all categories
- */
-
-/**
  * Deletes a song from the selected category JSON database.
+ * Serialized via withCategoryLock to prevent race conditions.
  * @param {string} categoryKey 
  * @param {string|number} songId 
  * @returns {Promise<{
@@ -583,79 +648,55 @@ async function addSongToCategory(categoryKey, songData, options = {}) {
  *   error?: string
  * }>}
  */
-async function deleteSongFromCategory(categoryKey, songId) {
-  const cat = categoryDetector.CATEGORIES[categoryKey];
-  if (!cat) {
-    return { success: false, error: 'Invalid category: ' + categoryKey };
-  }
+function deleteSongFromCategory(categoryKey, songId) {
+  return withCategoryLock(categoryKey, async () => {
+    const cat = categoryDetector.CATEGORIES[categoryKey];
+    if (!cat) {
+      return { success: false, error: 'Invalid category: ' + categoryKey };
+    }
 
-  const targetPath = getCategoryFilePath(categoryKey);
-  const existingList = readJsonSafe(targetPath);
+    const targetPath = getCategoryFilePath(categoryKey);
+    const existingList = readJsonSafe(targetPath);
 
-  const idx = existingList.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
-  if (idx === -1) {
-    return { success: false, error: 'Song with ID ' + songId + ' not found in category ' + cat.name };
-  }
+    const idx = existingList.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+    if (idx === -1) {
+      return { success: false, error: 'Song with ID ' + songId + ' not found in category ' + cat.name };
+    }
 
-  const [deletedSong] = existingList.splice(idx, 1);
+    const [deletedSong] = existingList.splice(idx, 1);
 
-  // 1. Atomic write back to local file
-  try {
-    atomicWriteJson(targetPath, existingList);
-  } catch (err) {
-    return {
-      success: false,
-      error: 'Failed to write to database file ' + cat.jsonFile + ': ' + err.message
-    };
-  }
-
-  // 1.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
-  if (categoryKey === 'hindi') {
+    // 1. Atomic write back to local file
     try {
-      const dataJsPath = path.join(PROJECT_ROOT, 'hindi-songs', 'hindi_songs_data.js');
-      const bundleContent = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(existingList, null, 2) + ';\n';
-      fs.writeFileSync(dataJsPath, bundleContent, 'utf8');
-    } catch (bundleErr) {
-      console.warn('Could not sync hindi_songs_data.js bundle:', bundleErr.message);
+      atomicWriteJson(targetPath, existingList);
+    } catch (err) {
+      return {
+        success: false,
+        error: 'Failed to write to database file ' + cat.jsonFile + ': ' + err.message
+      };
     }
-  }
 
-  // 2. Automatic GitHub repository push
-  const songTitle = (deletedSong.name || 'Song').replace(/['"]/g, '');
-  const commitMsg = 'Delete ' + songTitle + ' from ' + cat.name + ' playlist [PlayX Admin]';
-  const normalizedPath = cat.jsonFile.replace(/\\/g, '/');
-
-  let githubSync = { success: false, message: 'Local deletion only' };
-  try {
-    await execShellCommand('git add "' + normalizedPath + '"');
-    if (normalizedPath.includes('hindi_songs.json')) {
-      await execShellCommand('git add "hindi-songs/hindi_songs_data.js"');
+    // 1.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
+    if (categoryKey === 'hindi') {
+      syncHindiBundle(existingList);
     }
-    const commitRes = await execShellCommand('git commit -m "' + commitMsg + '"');
-    if (commitRes.success) {
-      let pushRes = await execShellCommand('git push origin main');
-      if (!pushRes.success && (pushRes.error.includes('fetch first') || pushRes.error.includes('non-fast-forward'))) {
-        await execShellCommand('git pull --rebase origin main');
-        pushRes = await execShellCommand('git push origin main');
-      }
-      if (pushRes.success) {
-        githubSync = { success: true, committed: true, method: 'git-cli' };
-      }
-    }
-  } catch (e) {
-    console.warn('Git push on delete warning:', e.message);
-  }
 
-  return {
-    success: true,
-    deletedSong,
-    targetFile: cat.jsonFile,
-    categoryName: cat.name,
-    totalSongs: existingList.length,
-    githubSync
-  };
+    // 2. Automatic GitHub repository push with fallback
+    const githubSync = await autoSyncToGitHub(cat.jsonFile, deletedSong.name, cat.name, 'delete');
+
+    return {
+      success: true,
+      deletedSong,
+      targetFile: cat.jsonFile,
+      categoryName: cat.name,
+      totalSongs: existingList.length,
+      githubSync
+    };
+  });
 }
 
+/**
+ * Returns overall statistics for all categories
+ */
 function getAllCategoriesSummary() {
   const summary = {};
   for (const [key, cat] of Object.entries(categoryDetector.CATEGORIES)) {
@@ -676,13 +717,16 @@ function getAllCategoriesSummary() {
 
 module.exports = {
   PROJECT_ROOT,
+  withCategoryLock,
   getCategoryFilePath,
   readJsonSafe,
   checkDuplicate,
   atomicWriteJson,
   formatSongRecord,
+  syncHindiBundle,
+  verifyHindiParity,
   addSongToCategory,
+  deleteSongFromCategory,
   getAllCategoriesSummary,
-  getRecentAutoAddedSongs,
-  deleteSongFromCategory
+  getRecentAutoAddedSongs
 };
