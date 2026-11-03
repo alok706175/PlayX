@@ -298,7 +298,6 @@
           toggleTokenBtn.setAttribute('aria-label', isPass ? 'Hide token' : 'Show token');
         }
       });
-    });
     }
 
     // URL Input clear button

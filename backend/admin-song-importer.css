@@ -349,7 +349,7 @@
 
 .token-input {
   width: 100%;
-  padding: 0.65rem 2.4rem 0.65rem 0.95rem;
+  padding: 0.65rem 3rem 0.65rem 0.95rem;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--importer-border-subtle);
   border-radius: var(--importer-radius-sm);
@@ -378,7 +378,7 @@
 
 .token-input {
   width: 100%;
-  padding: 0.65rem 2.6rem 0.65rem 0.95rem;
+  padding: 0.65rem 3rem 0.65rem 0.95rem;
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid var(--importer-border-subtle);
   border-radius: var(--importer-radius-sm);
@@ -391,14 +391,16 @@
 
 .token-eye-btn {
   position: absolute;
-  right: 8px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   border: none;
   color: var(--importer-text-muted, #94a3b8);
   cursor: pointer;
-  padding: 6px;
   border-radius: 6px;
   display: flex !important;
   align-items: center;

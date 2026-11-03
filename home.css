@@ -2424,7 +2424,7 @@ body {
 
 .admin-login-form input {
   width: 100%;
-  padding: 0.75rem 2.8rem 0.75rem 2.6rem;
+  padding: 0.75rem 3.2rem 0.75rem 2.6rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-sm);
@@ -2443,13 +2443,15 @@ body {
 
 .btn-toggle-pwd {
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px;
   border-radius: 6px;
   display: flex !important;
   align-items: center;
@@ -2466,13 +2468,13 @@ body {
 }
 
 .btn-toggle-pwd:active {
-  transform: translateY(-50%) scale(0.94);
+  transform: translateY(-50%) scale(0.92);
 }
 
 .btn-toggle-pwd .eye-icon-svg {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   stroke: currentColor;
   transition: stroke 0.2s ease;
 }
