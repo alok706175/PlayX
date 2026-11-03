@@ -9,9 +9,9 @@
   <title>PlayX | A Largest Music Library Website.</title>
 
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/">
-  <link rel="stylesheet" href="home.css?v=43">
+  <link rel="stylesheet" href="home.css?v=44">
   <link rel="stylesheet" href="dark-light-mode.css">
-  <link rel="stylesheet" href="backend/admin-song-importer.css?v=3.1">
+  <link rel="stylesheet" href="backend/admin-song-importer.css?v=3.2">
 
   <style>
     /* Critical Navbar 3-Dot Dropdown & Admin Modal Styles */
@@ -287,6 +287,35 @@
       border-color: rgba(0, 0, 0, 0.12);
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
     }
+
+    .btn-toggle-pwd {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      line-height: 1;
+      z-index: 10;
+      transition: all 0.2s ease;
+    }
+    .btn-toggle-pwd:hover {
+      color: #ffb800;
+      background: rgba(255, 184, 0, 0.12);
+    }
+    .btn-toggle-pwd .eye-icon-svg {
+      display: block;
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
   </style>
 
   <!-- Early Navbar Dropdown & PWA Controller -->
@@ -497,6 +526,10 @@
         document.body.style.overflow = "";
         var form = document.getElementById("adminLoginForm");
         if (form) form.reset();
+        var pwdInput = document.getElementById("adminPassword");
+        if (pwdInput) pwdInput.type = "password";
+        var toggleBtn = document.getElementById("togglePwdBtn");
+        if (toggleBtn && typeof eyeSvg !== 'undefined') toggleBtn.innerHTML = eyeSvg;
       }
     };
 
@@ -1102,10 +1135,7 @@
             <input type="password" id="adminPassword" name="password" placeholder="••••••••" required
               autocomplete="current-password">
             <button type="button" class="btn-toggle-pwd" id="togglePwdBtn" aria-label="Toggle password visibility" title="Show password">
-              <svg class="eye-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
+              <svg class="eye-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
           </div>
         </div>
@@ -1124,7 +1154,7 @@
 
   <!-- Interactive Scripts -->
   <script src="dark-light-mode.js"></script>
-  <script src="home.js?v=43"></script>
+  <script src="home.js?v=44"></script>
 
   <!-- Event Bindings for Modal & Dropdown -->
   <script>
@@ -1133,8 +1163,8 @@
       // Password toggle with modern vector SVG icons
       var togglePwdBtn = document.getElementById("togglePwdBtn");
       var adminPassword = document.getElementById("adminPassword");
-      var eyeSvg = '<svg class="eye-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-      var eyeOffSvg = '<svg class="eye-icon-svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+      var eyeSvg = '<svg class="eye-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+      var eyeOffSvg = '<svg class="eye-icon-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>';
 
       if (togglePwdBtn && adminPassword) {
         togglePwdBtn.addEventListener("click", function (e) {
@@ -1375,7 +1405,7 @@
   <!-- PlayX Auto Added Songs Importer Engine -->
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="backend/admin-song-importer.js?v=3.4"></script>
+  <script src="backend/admin-song-importer.js?v=3.5"></script>
 </body>
 
 </html>
