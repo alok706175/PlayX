@@ -2102,5 +2102,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-01T21:26:47.444Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 205,
+    "name": "Tere Pyar Mein Main | Ajay Devgn, Neha, Arshad Warsi, Mayuri Kango, Tiku Talsania",
+    "nameEn": "Tere Pyar Mein Main | Ajay Devgn, Neha, Arshad Warsi, Mayuri Kango, Tiku Talsania",
+    "singer": "Jaspinder Narula  & Roop Kumar Rathod",
+    "singerEn": "Jaspinder Narula  & Roop Kumar Rathod",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "XQCz6-anYBo",
+    "youtubeId": "XQCz6-anYBo",
+    "embedUrl": "https://www.youtube.com/embed/XQCz6-anYBo",
+    "originalUrl": "https://youtu.be/XQCz6-anYBo?si=m74vYSz5P4nzY-x0",
+    "duration": "03:45",
+    "thumbnail": "https://i.ytimg.com/vi/XQCz6-anYBo/hqdefault.jpg",
+    "addedAt": "2026-11-03T12:24:06.915Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
