@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v58";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v58";
+const CACHE_NAME = "chhath-pwa-v59";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v59";
 
 const STATIC_ASSETS = [
   "./",
