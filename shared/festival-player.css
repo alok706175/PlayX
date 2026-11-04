@@ -517,12 +517,304 @@ body {
   color: #000;
 }
 
-@media (max-width: 900px) {
+/* =========================================================
+   COMPREHENSIVE RESPONSIVE DESIGN (ALL DEVICES & ORIENTATIONS)
+   ========================================================= */
+
+/* Tablets & Small Desktops (<= 960px) */
+@media (max-width: 960px) {
   .player-page-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 1.75rem 0 3.5rem;
   }
+
   .audio-deck-card {
     position: static;
+    max-width: 620px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .playlist-card {
+    max-width: 620px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}
+
+/* Medium Tablets & Large Mobiles (<= 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .player-navbar {
+    padding: 0.6rem 0;
+  }
+
+  .navbar-inner {
+    gap: 0.75rem;
+  }
+
+  /* Hide time box on tablet & mobile navbar to keep header clean and spacious */
+  .time-box {
+    display: none;
+  }
+
+  .page-title-badge {
+    font-size: 1.2rem;
+  }
+
+  .audio-deck-card {
+    padding: 1.6rem 1.25rem;
+  }
+
+  .vinyl-deck {
+    width: 175px;
+    height: 175px;
+  }
+
+  .vinyl-center-label {
+    width: 66px;
+    height: 66px;
+  }
+
+  .deck-title {
+    font-size: 1.3rem;
+  }
+
+  .playlist-card {
+    padding: 1.35rem 1rem;
+  }
+}
+
+/* Standard Mobile Devices (<= 600px) */
+@media (max-width: 600px) {
+  .playlist-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .playlist-header h3 {
+    text-align: center;
+    font-size: 1.25rem;
+  }
+
+  .playlist-search-box {
+    width: 100%;
+  }
+
+  .playlist-search-box input {
+    width: 100%;
+    font-size: 0.88rem;
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Smartphones (<= 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.75rem;
+  }
+
+  .navbar-inner {
+    gap: 0.5rem;
+  }
+
+  .btn-back-home {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .page-title-badge {
+    font-size: 1.05rem;
+    gap: 0.35rem;
+  }
+
+  .page-title-badge img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-theme {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8rem;
+  }
+
+  .player-page-grid {
+    gap: 1.25rem;
+    padding: 1.25rem 0 2.5rem;
+  }
+
+  .audio-deck-card {
+    padding: 1.25rem 0.85rem;
+    border-radius: var(--radius-md);
+  }
+
+  .vinyl-deck {
+    width: 150px;
+    height: 150px;
+    border-width: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .vinyl-center-label {
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+  }
+
+  .deck-track-info {
+    margin-bottom: 1rem;
+  }
+
+  .deck-title {
+    font-size: 1.15rem;
+    line-height: 1.3;
+    margin-bottom: 0.2rem;
+  }
+
+  .deck-singer {
+    font-size: 0.82rem;
+  }
+
+  .deck-seek-wrap {
+    margin-bottom: 1rem;
+  }
+
+  /* Critical: Responsive playback controls to prevent overflowing on small devices */
+  .deck-controls-row {
+    gap: 0.55rem;
+    width: 100%;
+    margin-bottom: 1rem;
+    justify-content: center;
+  }
+
+  .control-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 0.88rem;
+  }
+
+  .btn-main-play {
+    width: 50px;
+    height: 50px;
+    font-size: 1.15rem;
+  }
+
+  .deck-extra-controls {
+    padding-top: 0.75rem;
+  }
+
+  .volume-slider {
+    width: 60px;
+  }
+
+  .playlist-card {
+    padding: 1rem 0.75rem;
+    border-radius: var(--radius-md);
+  }
+
+  .song-items-list {
+    gap: 0.5rem;
+  }
+
+  .song-item-row {
+    padding: 0.55rem 0.65rem;
+    gap: 0.65rem;
+  }
+
+  .song-num {
+    width: 18px;
+    font-size: 0.75rem;
+  }
+
+  .song-thumb-col {
+    width: 40px;
+    height: 40px;
+  }
+
+  .song-name-text {
+    font-size: 0.86rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .song-singer-text {
+    font-size: 0.74rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  .song-dur-text {
+    font-size: 0.72rem;
+  }
+
+  .row-play-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Compact Smartphones & Foldables (<= 360px, e.g. Galaxy Fold, iPhone SE) */
+@media (max-width: 360px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
+  .btn-back-home {
+    padding: 0.3rem 0.55rem;
+  }
+
+  .btn-back-home span {
+    display: none; /* Show only back arrow on ultra-compact screens */
+  }
+
+  .page-title-badge {
+    font-size: 0.95rem;
+  }
+
+  .vinyl-deck {
+    width: 130px;
+    height: 130px;
+    border-width: 5px;
+  }
+
+  .vinyl-center-label {
+    width: 48px;
+    height: 48px;
+  }
+
+  .deck-controls-row {
+    gap: 0.35rem;
+  }
+
+  .control-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.78rem;
+  }
+
+  .btn-main-play {
+    width: 44px;
+    height: 44px;
+    font-size: 1rem;
+  }
+
+  .song-num {
+    display: none; /* Hide track numbers on 320px to give song title full width */
+  }
+
+  .song-thumb-col {
+    width: 36px;
+    height: 36px;
   }
 }
 
