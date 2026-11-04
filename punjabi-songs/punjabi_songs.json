@@ -52,23 +52,5 @@
     "addedAt": "2026-10-31T09:41:38.319Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 5,
-    "name": "Laung Laachi (Title Track)",
-    "nameEn": "Laung Laachi",
-    "singer": "Mannat Noor",
-    "singerEn": "Mannat Noor",
-    "category": "Punjabi Songs",
-    "tag": "Folk Superhit",
-    "videoId": "YpkJO_Tr44U",
-    "youtubeId": "YpkJO_Tr44U",
-    "embedUrl": "https://www.youtube.com/embed/YpkJO_Tr44U",
-    "originalUrl": "https://www.youtube.com/watch?v=YpkJO_Tr44U",
-    "duration": "03:05",
-    "thumbnail": "https://i.ytimg.com/vi/YpkJO_Tr44U/hqdefault.jpg",
-    "addedAt": "2026-10-31T09:41:38.319Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ]
