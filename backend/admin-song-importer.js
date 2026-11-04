@@ -11,15 +11,29 @@
 
   // Base API configuration (Local server or production fallback)
   const LOCAL_BACKEND_PORT = 3000;
-  const RENDER_BACKEND_URL = 'https://playx-backend.onrender.com';
+  const RENDER_BACKEND_URL = 'https://playx-backend-tcp4.onrender.com';
 
   const API_BASE = (() => {
-    const origin = window.location.origin;
-    if (origin && (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1'))) {
-      return 'http://localhost:3000';
-    }
+    // 1. Direct origin check (when loaded on port 3000 from mobile or desktop)
+    if (window.location.port === '3000') return '';
+
+    // 2. Custom override
     const custom = localStorage.getItem('playx_backend_url');
     if (custom) return custom;
+
+    // 3. Localhost or local network LAN IP (for mobile phones on same Wi-Fi)
+    const hostname = window.location.hostname || '';
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname.startsWith('192.168.') ||
+      hostname.startsWith('10.') ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(hostname)
+    ) {
+      return `${window.location.protocol}//${hostname}:3000`;
+    }
+
+    // 4. Remote Render production backend
     return RENDER_BACKEND_URL;
   })();
 

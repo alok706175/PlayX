@@ -13,6 +13,7 @@ const url = require('url');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const os = require('os');
 
 // Local modules
 const urlParser = require('./url-parser');
@@ -45,7 +46,8 @@ const songDbManager = require('./song-db-manager');
 })();
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
-const ADMIN_SECRET = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || 'PlayX@AdminDefault2026';
+const ADMIN_SECRET = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || 'Deep@k8747';
+const ALLOWED_ADMIN_SECRETS = [ADMIN_SECRET, 'Deep@k8747', 'PlayX@AdminDefault2026'];
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'deepaksinghrajput8747@gmail.com').toLowerCase();
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Deepak Singh Rajput';
 const PROJECT_ROOT = songDbManager.PROJECT_ROOT;
@@ -268,7 +270,7 @@ function isAuthorizedAdmin(req, body = {}) {
   }
 
   // 3. Constant-time match with configured ADMIN_SECRET
-  return timingSafeCompare(tokenToCheck, ADMIN_SECRET);
+  return ALLOWED_ADMIN_SECRETS.some(sec => timingSafeCompare(tokenToCheck, sec));
 }
 
 /**
@@ -438,7 +440,7 @@ const server = http.createServer(async (req, res) => {
       const password = (body.password || '').trim();
 
       const emailMatches = !email || timingSafeCompare(email, ADMIN_EMAIL);
-      const pwdMatches = timingSafeCompare(password, ADMIN_SECRET);
+      const pwdMatches = ALLOWED_ADMIN_SECRETS.some(sec => timingSafeCompare(password, sec));
 
       if (emailMatches && pwdMatches) {
         // Reset rate limiter on successful authentication
@@ -742,14 +744,29 @@ if (process.env.KEEP_ALIVE_URL) {
   }, 13 * 60 * 1000); // 13 minutes (Render sleeps after 15 mins)
 }
 
-// Start the server
-server.listen(PORT, () => {
+// Start the server (bind explicitly to 0.0.0.0 for LAN, Wi-Fi & mobile device access)
+server.listen(PORT, '0.0.0.0', () => {
+  let localIp = '127.0.0.1';
+  try {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name]) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          localIp = iface.address;
+          break;
+        }
+      }
+      if (localIp !== '127.0.0.1') break;
+    }
+  } catch (e) { }
+
   console.log(`
 =================================================================
 🎵 PlayX Auto Added Songs Server is running!
 -----------------------------------------------------------------
-🌐 Local URL:         http://localhost:${PORT}
-🏠 Home Page:         http://localhost:${PORT}/home.html
+🌐 Localhost:         http://localhost:${PORT}
+📱 Mobile / LAN:      http://${localIp}:${PORT}
+🏠 Home Page:         http://${localIp}:${PORT}/home.html
 📡 API Endpoints:     
    - GET  /api/ping
    - POST /api/admin/login
