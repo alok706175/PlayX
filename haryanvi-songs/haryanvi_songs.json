@@ -70,23 +70,5 @@
     "addedAt": "2026-10-31T09:41:38.320Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 6,
-    "name": "Chatak Matak",
-    "nameEn": "Chatak Matak",
-    "singer": "Renuka Panwar & Sapna Choudhary",
-    "singerEn": "Renuka Panwar & Sapna Choudhary",
-    "category": "Haryanvi Songs",
-    "tag": "Dance Dhamaka",
-    "videoId": "_1f5m9x-k88",
-    "youtubeId": "_1f5m9x-k88",
-    "embedUrl": "https://www.youtube.com/embed/_1f5m9x-k88",
-    "originalUrl": "https://www.youtube.com/watch?v=_1f5m9x-k88",
-    "duration": "03:15",
-    "thumbnail": "https://i.ytimg.com/vi/_1f5m9x-k88/hqdefault.jpg",
-    "addedAt": "2026-10-31T09:41:38.320Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ]
