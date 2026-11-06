@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="home.css?v=49">
   <link rel="stylesheet" href="dark-light-mode.css">
   <link rel="stylesheet" href="shared/clear-data.css">
+  <link rel="stylesheet" href="shared/playx-dialog.css">
   <link rel="stylesheet" href="backend/admin-song-importer.css?v=4.1">
 
   <style>
@@ -535,7 +536,11 @@
       try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) { }
       window.closeAdminMenu();
       window.updateAdminAuthState();
-      alert("You have been logged out successfully.");
+      if (window.playxAlert) {
+        window.playxAlert("You have been logged out successfully.", { title: "Logged Out", type: "success" });
+      } else {
+        alert("You have been logged out successfully.");
+      }
     };
 
     var lastToggleTime = 0;
@@ -1463,10 +1468,14 @@
       if (window.closeAdminMenu) window.closeAdminMenu();
       var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
       if (!isLoggedIn) {
-        var proceed = confirm("🔒 Admin Security: Admin login is required to delete songs.\n\nDo you want to log in now?");
-        if (proceed && window.openAdminModal) {
-          window.openAdminModal();
-        }
+        var ask = window.playxConfirm
+          ? window.playxConfirm("🔒 Admin Security: Admin login is required to delete songs.\n\nDo you want to log in now?", { title: "Admin Login Required", confirmText: "Login Now", type: "amber" })
+          : Promise.resolve(confirm("🔒 Admin Security: Admin login is required to delete songs.\n\nDo you want to log in now?"));
+        ask.then(function (proceed) {
+          if (proceed && window.openAdminModal) {
+            window.openAdminModal();
+          }
+        });
         return;
       }
       window.location.href = "admin.html";
@@ -1480,15 +1489,22 @@
       if (window.closeAdminMenu) window.closeAdminMenu();
       var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
       if (!isLoggedIn) {
-        var proceed = confirm("🔒 Admin Security: Admin login is required to approve song imports.\n\nDo you want to log in now?");
-        if (proceed && window.openAdminModal) {
-          window.openAdminModal();
-        }
+        var ask = window.playxConfirm
+          ? window.playxConfirm("🔒 Admin Security: Admin login is required to approve song imports.\n\nDo you want to log in now?", { title: "Admin Login Required", confirmText: "Login Now", type: "amber" })
+          : Promise.resolve(confirm("🔒 Admin Security: Admin login is required to approve song imports.\n\nDo you want to log in now?"));
+        ask.then(function (proceed) {
+          if (proceed && window.openAdminModal) {
+            window.openAdminModal();
+          }
+        });
         return;
       }
       window.location.href = "admin.html";
     };
   </script>
+
+  <!-- PlayX Modern Dialog Engine -->
+  <script src="shared/playx-dialog.js"></script>
 
   <!-- PlayX Global Clear Data & More Menu Engine -->
   <script src="shared/clear-data.js"></script>

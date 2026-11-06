@@ -284,16 +284,37 @@
 
     var ctx = getCurrentPageContext();
 
+    // Helper for Modern Dialogs
+    function askConfirm(msg, opts) {
+      if (typeof window.playxConfirm === "function") {
+        return window.playxConfirm(msg, opts);
+      }
+      return Promise.resolve(confirm(msg));
+    }
+
+    function showNotice(msg, opts) {
+      if (typeof window.playxAlert === "function") {
+        return window.playxAlert(msg, opts);
+      }
+      alert(msg);
+      return Promise.resolve(true);
+    }
+
     // A. HOMEPAGE CLEAR: Clears the entire website's data
     if (ctx.isGlobal) {
-      var confirmedAll = confirm(
+      var confirmedAll = await askConfirm(
         "⚠️ PlayX: Clear Entire Website Data?\n\n" +
         "This will completely reset all data across the WHOLE website:\n" +
         "• All saved favorites across all categories (Hindi, Bhojpuri, Haryanvi, etc.) ❤️\n" +
         "• All offline downloaded audio tracks 💾\n" +
         "• All playback history and settings ⚙️\n" +
         "• All cached offline files and service worker data 🧹\n\n" +
-        "Are you sure you want to clear EVERYTHING?"
+        "Are you sure you want to clear EVERYTHING?",
+        {
+          title: "Clear Entire Website Data",
+          confirmText: "Clear Everything",
+          type: "danger"
+        }
       );
 
       if (!confirmedAll) return;
@@ -346,25 +367,30 @@
           }
         }
 
-        alert("✅ All PlayX website data, favorites, and offline downloads have been successfully cleared!");
+        await showNotice("✅ All PlayX website data, favorites, and offline downloads have been successfully cleared!");
         window.location.reload();
       } catch (err) {
         console.error("Global Clear Data Error:", err);
-        alert("✅ Website data cleared. Reloading page...");
+        await showNotice("✅ Website data cleared. Reloading page...");
         window.location.reload();
       }
       return;
     }
 
     // B. INDIVIDUAL PAGE CLEAR: Clears only this specific category's data
-    var confirmedPage = confirm(
+    var confirmedPage = await askConfirm(
       "⚠️ Clear " + ctx.name + " Data?\n\n" +
       "This action will remove only " + ctx.name + " (" + ctx.hindiName + ") data:\n" +
       "• Saved favorites & likes for " + ctx.name + "\n" +
       "• Playback history & position for " + ctx.name + "\n" +
       "• Offline downloaded tracks for " + ctx.name + "\n\n" +
       "📌 Other pages and music categories will NOT be affected.\n\n" +
-      "Are you sure you want to proceed?"
+      "Are you sure you want to proceed?",
+      {
+        title: "Clear " + ctx.name + " Data",
+        confirmText: "Clear " + ctx.name,
+        type: "danger"
+      }
     );
 
     if (!confirmedPage) return;
@@ -428,11 +454,11 @@
         }
       }
 
-      alert("✅ " + ctx.name + " (" + ctx.hindiName + ") data has been successfully cleared!");
+      await showNotice("✅ " + ctx.name + " (" + ctx.hindiName + ") data has been successfully cleared!");
       window.location.reload();
     } catch (err) {
       console.error("Selective Clear Data Error:", err);
-      alert("✅ " + ctx.name + " data cleared. Reloading page...");
+      await showNotice("✅ " + ctx.name + " data cleared. Reloading page...");
       window.location.reload();
     }
   };

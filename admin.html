@@ -20,8 +20,9 @@
   <!-- Core Theme Stylesheet -->
   <link rel="stylesheet" href="dark-light-mode.css">
   <!-- Dedicated Admin Dashboard Stylesheet -->
-  <link rel="stylesheet" href="admin.css?v=2.0">
+  <link rel="stylesheet" href="admin.css?v=2.1">
   <link rel="stylesheet" href="shared/clear-data.css">
+  <link rel="stylesheet" href="shared/playx-dialog.css">
 </head>
 
 <body>
@@ -121,19 +122,40 @@
 
         <!-- Theme Toggle Button -->
         <button type="button" class="dash-theme-btn" id="dashThemeToggleBtn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
-          <svg class="theme-svg theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.25"></circle>
-            <path d="M12 2v2"></path>
-            <path d="M12 20v2"></path>
-            <path d="m4.93 4.93 1.41 1.41"></path>
-            <path d="m17.66 17.66 1.41 1.41"></path>
-            <path d="M2 12h2"></path>
-            <path d="M20 12h2"></path>
-            <path d="m6.34 17.66-1.41 1.41"></path>
-            <path d="m19.07 4.93-1.41 1.41"></path>
+          <svg class="theme-svg theme-icon-sun" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" style="display:none;" aria-hidden="true">
+            <defs>
+              <linearGradient id="adminSunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fbbf24" />
+                <stop offset="50%" stop-color="#f59e0b" />
+                <stop offset="100%" stop-color="#ea580c" />
+              </linearGradient>
+            </defs>
+            <circle cx="12" cy="12" r="4.5" fill="url(#adminSunGrad)"></circle>
+            <g stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round">
+              <line x1="12" y1="2" x2="12" y2="4.5"></line>
+              <line x1="12" y1="19.5" x2="12" y2="22"></line>
+              <line x1="4.93" y1="4.93" x2="6.7" y2="6.7"></line>
+              <line x1="17.3" y1="17.3" x2="19.07" y2="19.07"></line>
+              <line x1="2" y1="12" x2="4.5" y2="12"></line>
+              <line x1="19.5" y1="12" x2="22" y2="12"></line>
+              <line x1="4.93" y1="19.07" x2="6.7" y2="17.3"></line>
+              <line x1="17.3" y1="6.7" x2="19.07" y2="4.93"></line>
+            </g>
           </svg>
-          <svg class="theme-svg theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" fill="currentColor" fill-opacity="0.25"></path>
+          <svg class="theme-svg theme-icon-moon" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <defs>
+              <linearGradient id="adminMoonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fde047" />
+                <stop offset="50%" stop-color="#f59e0b" />
+                <stop offset="100%" stop-color="#d97706" />
+              </linearGradient>
+              <linearGradient id="adminStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="100%" stop-color="#fde047" />
+              </linearGradient>
+            </defs>
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="url(#adminMoonGrad)"></path>
+            <path d="M19 3.5l.7 1.5 1.5.7-1.5.7-.7 1.5-.7-1.5-1.5-.7 1.5-.7.7-1.5z" fill="url(#adminStarGrad)"></path>
           </svg>
         </button>
 
@@ -693,10 +715,11 @@
 
   <!-- Core Scripts -->
   <script src="dark-light-mode.js"></script>
+  <script src="shared/playx-dialog.js"></script>
   <script src="shared/clear-data.js"></script>
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="admin.js?v=2.0"></script>
+  <script src="admin.js?v=2.1"></script>
 </body>
 
 </html>

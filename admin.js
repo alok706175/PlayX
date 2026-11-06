@@ -228,8 +228,11 @@
 
     const logoutBtn = document.getElementById('dashLogoutBtn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to log out of PlayX Admin Dashboard?')) {
+      logoutBtn.addEventListener('click', async () => {
+        const ok = window.playxConfirm
+          ? await window.playxConfirm('Are you sure you want to log out of PlayX Admin Dashboard?', { title: 'Admin Logout', confirmText: 'Logout', type: 'amber' })
+          : confirm('Are you sure you want to log out of PlayX Admin Dashboard?');
+        if (ok) {
           localStorage.removeItem('playx_admin_logged_in');
           localStorage.removeItem('playx_admin_token');
           lockDashboard();

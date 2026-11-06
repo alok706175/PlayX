@@ -1,0 +1,306 @@
+/* =========================================================
+   PlayX Universal Modern Dialog Engine (Alert & Confirm)
+   Glassmorphism, Dark/Light Theme, Responsive Modal Popups
+   ========================================================= */
+
+/* Modal Backdrop Overlay */
+.playx-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(6, 8, 15, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  z-index: 99999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.24s;
+  box-sizing: border-box;
+}
+
+.playx-dialog-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Modal Card */
+.playx-dialog-card {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  background: linear-gradient(150deg, rgba(22, 27, 42, 0.96), rgba(13, 17, 28, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  padding: 1.75rem 1.6rem 1.5rem;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 1px 1px rgba(255, 255, 255, 0.08);
+  color: #f8fafc;
+  font-family: "Outfit", "Mukta", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-sizing: border-box;
+  transform: scale(0.92) translateY(14px);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  text-align: center;
+}
+
+.playx-dialog-overlay.active .playx-dialog-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Ambient Top Accent Glow */
+.playx-dialog-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--dialog-accent, #f59e0b), transparent);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* Dialog Header & Icon Badge */
+.playx-dialog-icon-box {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 1.15rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+}
+
+.playx-dialog-icon-box.type-warning,
+.playx-dialog-icon-box.type-danger {
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.22), rgba(239, 68, 68, 0.06));
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 0 26px rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.playx-dialog-icon-box.type-amber {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.24), rgba(245, 158, 11, 0.06));
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 0 26px rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+}
+
+.playx-dialog-icon-box.type-success {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.24), rgba(16, 185, 129, 0.06));
+  border-color: rgba(16, 185, 129, 0.45);
+  box-shadow: 0 0 26px rgba(16, 185, 129, 0.25);
+  color: #34d399;
+}
+
+.playx-dialog-icon-box.type-info {
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.24), rgba(59, 130, 246, 0.06));
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 0 26px rgba(59, 130, 246, 0.25);
+  color: #60a5fa;
+}
+
+/* Dialog Title */
+.playx-dialog-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.65rem;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+/* Dialog Message Body */
+.playx-dialog-message {
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: #cbd5e1;
+  margin: 0 0 1.5rem;
+  word-break: break-word;
+  white-space: pre-line;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 0.9rem 1.1rem;
+}
+
+.playx-dialog-message.center-text {
+  text-align: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+/* Dialog Action Buttons Row */
+.playx-dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.playx-dialog-actions.full-width {
+  flex-direction: row-reverse;
+}
+
+.playx-dialog-btn {
+  flex: 1;
+  padding: 0.72rem 1.2rem;
+  min-height: 44px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  border: none;
+  box-sizing: border-box;
+}
+
+/* Cancel Button */
+.playx-dialog-btn.btn-cancel {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+.playx-dialog-btn.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.playx-dialog-btn.btn-cancel:active {
+  transform: scale(0.97);
+}
+
+/* Confirm / Action Button */
+.playx-dialog-btn.btn-primary {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000000;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.32);
+}
+
+.playx-dialog-btn.btn-primary:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
+  transform: translateY(-1.5px);
+}
+
+.playx-dialog-btn.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.35);
+}
+
+.playx-dialog-btn.btn-danger:hover {
+  background: linear-gradient(135deg, #f87171, #ef4444);
+  box-shadow: 0 6px 22px rgba(239, 68, 68, 0.48);
+  transform: translateY(-1.5px);
+}
+
+.playx-dialog-btn.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.32);
+}
+
+.playx-dialog-btn.btn-success:hover {
+  background: linear-gradient(135deg, #34d399, #10b981);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1.5px);
+}
+
+.playx-dialog-btn:active {
+  transform: scale(0.97);
+}
+
+/* =========================================================
+   LIGHT THEME OVERRIDES
+   ========================================================= */
+[data-theme="light"] .playx-dialog-overlay,
+body.light-theme .playx-dialog-overlay,
+body.light-mode .playx-dialog-overlay {
+  background: rgba(15, 23, 42, 0.55);
+}
+
+[data-theme="light"] .playx-dialog-card,
+body.light-theme .playx-dialog-card,
+body.light-mode .playx-dialog-card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2), 0 0 1px 1px rgba(0, 0, 0, 0.06);
+  color: #0f172a;
+}
+
+[data-theme="light"] .playx-dialog-title,
+body.light-theme .playx-dialog-title,
+body.light-mode .playx-dialog-title {
+  color: #0f172a;
+}
+
+[data-theme="light"] .playx-dialog-message,
+body.light-theme .playx-dialog-message,
+body.light-mode .playx-dialog-message {
+  color: #334155;
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .playx-dialog-btn.btn-cancel,
+body.light-theme .playx-dialog-btn.btn-cancel,
+body.light-mode .playx-dialog-btn.btn-cancel {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #334155;
+}
+
+[data-theme="light"] .playx-dialog-btn.btn-cancel:hover,
+body.light-theme .playx-dialog-btn.btn-cancel:hover,
+body.light-mode .playx-dialog-btn.btn-cancel:hover {
+  background: rgba(0, 0, 0, 0.09);
+  color: #0f172a;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .playx-dialog-card {
+    padding: 1.4rem 1.2rem 1.25rem;
+    border-radius: 18px;
+  }
+  .playx-dialog-icon-box {
+    width: 50px;
+    height: 50px;
+    font-size: 1.55rem;
+    margin-bottom: 0.9rem;
+  }
+  .playx-dialog-title {
+    font-size: 1.15rem;
+  }
+  .playx-dialog-message {
+    font-size: 0.88rem;
+    padding: 0.75rem 0.9rem;
+  }
+  .playx-dialog-btn {
+    min-height: 42px;
+    font-size: 0.88rem;
+    padding: 0.65rem 1rem;
+  }
+}
