@@ -88,10 +88,10 @@
         <!-- Header -->
         <div class="importer-header">
           <div class="importer-title-group">
-            <div class="importer-icon-badge">🎵</div>
+            <div class="importer-icon-badge">⚡</div>
             <div class="importer-header-text">
               <h2 id="importerModalTitle">
-                <span>PlayX Song Importer</span>
+                <span>PlayX Admin Page</span>
               </h2>
             </div>
           </div>
@@ -149,13 +149,19 @@
             </div>
           </div>
 
-          <!-- Navigation Tabs: Import Songs vs Delete / Manage Songs -->
+          <!-- Navigation Tabs: Add Song, Delete Song, Edit Song Name, Edit Singer Name -->
           <div class="importer-tabs-bar" id="importerTabsBar">
-            <button type="button" class="importer-tab-btn active" id="tabImportModeBtn">
-              <span>➕</span> <span>Import New Song</span>
+            <button type="button" class="importer-tab-btn active" id="tabImportModeBtn" data-mode="import" title="Add / Import new songs via YouTube link">
+              <span>➕</span> <span>Add Song</span>
             </button>
-            <button type="button" class="importer-tab-btn danger-tab" id="tabDeleteModeBtn">
-              <span>🗑️</span> <span>Delete / Manage Songs</span>
+            <button type="button" class="importer-tab-btn danger-tab" id="tabDeleteModeBtn" data-mode="delete" title="Permanently delete songs from playlists">
+              <span>🗑️</span> <span>Delete Song</span>
+            </button>
+            <button type="button" class="importer-tab-btn edit-tab" id="tabEditTitleModeBtn" data-mode="edit-title" title="Edit song title / name">
+              <span>✏️</span> <span>Edit Song Name</span>
+            </button>
+            <button type="button" class="importer-tab-btn edit-tab" id="tabEditSingerModeBtn" data-mode="edit-singer" title="Edit singer / artist name">
+              <span>🎤</span> <span>Edit Singer Name</span>
             </button>
           </div>
 
@@ -230,11 +236,15 @@
 
   function attachModalListeners() {
 
-    // Mode Switcher Tabs (Import vs Delete)
+    // Mode Switcher Tabs (Add Song, Delete Song, Edit Song Name, Edit Singer Name)
     const tabImportBtn = document.getElementById('tabImportModeBtn');
     const tabDeleteBtn = document.getElementById('tabDeleteModeBtn');
+    const tabEditTitleBtn = document.getElementById('tabEditTitleModeBtn');
+    const tabEditSingerBtn = document.getElementById('tabEditSingerModeBtn');
     if (tabImportBtn) tabImportBtn.addEventListener('click', () => switchTab('import'));
     if (tabDeleteBtn) tabDeleteBtn.addEventListener('click', () => switchTab('delete'));
+    if (tabEditTitleBtn) tabEditTitleBtn.addEventListener('click', () => switchTab('edit-title'));
+    if (tabEditSingerBtn) tabEditSingerBtn.addEventListener('click', () => switchTab('edit-singer'));
 
     // Delete Song Search Filter Listener
     const deleteSearchInput = document.getElementById('deleteSongSearchInput');
@@ -1130,35 +1140,52 @@
    */
   
   // ==========================================================================
-  // Admin Song Deletion & Management Engine
+  // Admin Song Management Engine (Add, Delete, Edit Song Name, Edit Singer Name)
   // ==========================================================================
-  let activeTabMode = 'import'; // 'import' or 'delete'
+  let activeTabMode = 'import'; // 'import', 'delete', 'edit-title', or 'edit-singer'
   let activeDeleteCategory = 'bhojpuri';
   let cachedDeleteSongs = [];
 
   function switchTab(mode) {
-    activeTabMode = mode;
+    activeTabMode = mode || 'import';
     const addSection = document.getElementById('importerAddSection');
     const deleteSection = document.getElementById('importerDeleteSection');
     const tabImportBtn = document.getElementById('tabImportModeBtn');
     const tabDeleteBtn = document.getElementById('tabDeleteModeBtn');
+    const tabEditTitleBtn = document.getElementById('tabEditTitleModeBtn');
+    const tabEditSingerBtn = document.getElementById('tabEditSingerModeBtn');
     const modalTitle = document.getElementById('importerModalTitle');
+    const searchInput = document.getElementById('deleteSongSearchInput');
 
-    if (mode === 'delete') {
-      if (addSection) addSection.style.display = 'none';
-      if (deleteSection) deleteSection.style.display = 'flex';
-      if (tabImportBtn) tabImportBtn.classList.remove('active');
-      if (tabDeleteBtn) tabDeleteBtn.classList.add('active');
-      if (modalTitle) modalTitle.innerHTML = '<span>PlayX Song Manager (Delete / Remove Songs)</span>';
+    [tabImportBtn, tabDeleteBtn, tabEditTitleBtn, tabEditSingerBtn].forEach(b => {
+      if (b) b.classList.remove('active');
+    });
 
-      renderDeleteCategoryPills();
-      loadDeleteCategorySongs(activeDeleteCategory);
-    } else {
+    if (activeTabMode === 'import') {
       if (addSection) addSection.style.display = 'block';
       if (deleteSection) deleteSection.style.display = 'none';
       if (tabImportBtn) tabImportBtn.classList.add('active');
-      if (tabDeleteBtn) tabDeleteBtn.classList.remove('active');
-      if (modalTitle) modalTitle.innerHTML = '<span>PlayX Song Importer</span>';
+      if (modalTitle) modalTitle.innerHTML = '<span>PlayX Admin Page — Add Song</span>';
+    } else {
+      if (addSection) addSection.style.display = 'none';
+      if (deleteSection) deleteSection.style.display = 'flex';
+
+      if (activeTabMode === 'delete') {
+        if (tabDeleteBtn) tabDeleteBtn.classList.add('active');
+        if (modalTitle) modalTitle.innerHTML = '<span>PlayX Admin Page — Delete Song</span>';
+        if (searchInput) searchInput.placeholder = 'Search songs in this category to delete...';
+      } else if (activeTabMode === 'edit-title') {
+        if (tabEditTitleBtn) tabEditTitleBtn.classList.add('active');
+        if (modalTitle) modalTitle.innerHTML = '<span>PlayX Admin Page — Edit Song Name</span>';
+        if (searchInput) searchInput.placeholder = 'Search songs in this category to edit song title...';
+      } else if (activeTabMode === 'edit-singer') {
+        if (tabEditSingerBtn) tabEditSingerBtn.classList.add('active');
+        if (modalTitle) modalTitle.innerHTML = '<span>PlayX Admin Page — Edit Singer Name</span>';
+        if (searchInput) searchInput.placeholder = 'Search songs in this category to edit singer name...';
+      }
+
+      renderDeleteCategoryPills();
+      loadDeleteCategorySongs(activeDeleteCategory);
     }
   }
 
@@ -1250,6 +1277,9 @@
       return;
     }
 
+    const isTitleFocus = activeTabMode === 'edit-title';
+    const isSingerFocus = activeTabMode === 'edit-singer';
+
     listEl.innerHTML = filtered.map(s => {
       const sid = s.id;
       const name = s.name || s.title || 'Untitled Song';
@@ -1258,20 +1288,105 @@
       const thumb = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
 
       return `
-        <div class="delete-song-row" id="deleteSongRow_${sid}">
-          <div class="delete-song-left">
-            <img src="${escapeHtml(thumb)}" class="delete-song-thumb" alt="${escapeHtml(name)}" onerror="this.src='images/playx_icon.png'">
-            <div class="delete-song-info">
-              <div class="delete-song-title" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
-              <div class="delete-song-artist">🎤 ${escapeHtml(singer)} • ⏱️ ${duration} • #${sid}</div>
+        <div class="manage-song-card-wrap" id="manageSongCardWrap_${sid}">
+          <div class="delete-song-row" id="deleteSongRow_${sid}">
+            <div class="delete-song-left">
+              <img src="${escapeHtml(thumb)}" class="delete-song-thumb" alt="${escapeHtml(name)}" onerror="this.src='images/playx_icon.png'">
+              <div class="delete-song-info">
+                <div class="delete-song-title ${isTitleFocus ? 'target-edit-glow' : ''}" id="songTitleDisplay_${sid}" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+                <div class="delete-song-artist ${isSingerFocus ? 'target-edit-glow' : ''}" id="songSingerDisplay_${sid}">🎤 ${escapeHtml(singer)} • ⏱️ ${duration} • #${sid}</div>
+              </div>
+            </div>
+            <div class="manage-song-actions">
+              <button type="button" class="btn-edit-song-action" data-song-id="${sid}" title="Edit song name and singer">
+                <span>✏️</span> <span>Edit</span>
+              </button>
+              <button type="button" class="btn-delete-song-action" data-song-id="${sid}" data-song-name="${escapeHtml(name)}" title="Delete song">
+                <span>🗑️</span> <span>Delete</span>
+              </button>
             </div>
           </div>
-          <button type="button" class="btn-delete-song-action" data-song-id="${sid}" data-song-name="${escapeHtml(name)}">
-            <span>🗑️</span> <span>Delete</span>
-          </button>
+          <!-- Expandable Inline Editor -->
+          <div class="inline-edit-panel" id="inlineEditPanel_${sid}" style="display: none;">
+            <div class="inline-edit-fields">
+              <div class="inline-edit-field">
+                <label for="editNameInput_${sid}">🎵 Song Name (Title):</label>
+                <input type="text" id="editNameInput_${sid}" class="inline-edit-input" value="${escapeHtml(name)}" placeholder="Enter song title">
+              </div>
+              <div class="inline-edit-field">
+                <label for="editSingerInput_${sid}">🎤 Singer Name (Artist):</label>
+                <input type="text" id="editSingerInput_${sid}" class="inline-edit-input" value="${escapeHtml(singer)}" placeholder="Enter singer name">
+              </div>
+            </div>
+            <div class="inline-edit-btn-group">
+              <button type="button" class="btn-save-inline-edit" data-song-id="${sid}">
+                <span>💾</span> <span>Save Changes</span>
+              </button>
+              <button type="button" class="btn-cancel-inline-edit" data-song-id="${sid}">
+                <span>✕</span> <span>Cancel</span>
+              </button>
+            </div>
+          </div>
         </div>
       `;
     }).join('');
+
+    // Attach click listeners to edit action toggle buttons
+    listEl.querySelectorAll('.btn-edit-song-action').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const panel = document.getElementById(`inlineEditPanel_${sid}`);
+        if (!panel) return;
+
+        const isOpening = panel.style.display === 'none';
+        // Close other open edit panels for cleanliness
+        listEl.querySelectorAll('.inline-edit-panel').forEach(p => {
+          if (p !== panel) p.style.display = 'none';
+        });
+
+        panel.style.display = isOpening ? 'flex' : 'none';
+        if (isOpening) {
+          if (activeTabMode === 'edit-singer') {
+            const singerInput = document.getElementById(`editSingerInput_${sid}`);
+            if (singerInput) { singerInput.focus(); singerInput.select(); }
+          } else {
+            const nameInput = document.getElementById(`editNameInput_${sid}`);
+            if (nameInput) { nameInput.focus(); nameInput.select(); }
+          }
+        }
+      });
+    });
+
+    // Attach click listeners to cancel edit buttons
+    listEl.querySelectorAll('.btn-cancel-inline-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const panel = document.getElementById(`inlineEditPanel_${sid}`);
+        if (panel) panel.style.display = 'none';
+      });
+    });
+
+    // Attach click listeners to save edit buttons
+    listEl.querySelectorAll('.btn-save-inline-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const nameInput = document.getElementById(`editNameInput_${sid}`);
+        const singerInput = document.getElementById(`editSingerInput_${sid}`);
+        const newName = (nameInput?.value || '').trim();
+        const newSinger = (singerInput?.value || '').trim();
+
+        if (!newName) {
+          alert('Song name cannot be empty.');
+          if (nameInput) nameInput.focus();
+          return;
+        }
+
+        handleSongUpdateAction(sid, newName, newSinger, btn);
+      });
+    });
 
     // Attach click listeners to delete action buttons
     listEl.querySelectorAll('.btn-delete-song-action').forEach(btn => {
@@ -1282,6 +1397,231 @@
         handleSongDeleteAction(sid, sname, btn);
       });
     });
+  }
+
+  async function handleSongUpdateAction(songId, newName, newSinger, btnElement) {
+    // 1. Verify Admin Authentication
+    const isAdmin = localStorage.getItem('playx_admin_logged_in') === 'true';
+    if (!isAdmin) {
+      const proceed = confirm('🔒 Admin Authentication Required: You must be logged in as an administrator to update songs.\n\nDo you want to log in now?');
+      if (proceed && window.openAdminModal) window.openAdminModal();
+      return;
+    }
+
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === activeDeleteCategory);
+    const catName = catObj ? catObj.name : activeDeleteCategory;
+
+    btnElement.disabled = true;
+    btnElement.innerHTML = `<div class="spinner"></div> <span>Saving...</span>`;
+
+    try {
+      let updateSuccess = false;
+      let updateMessage = '';
+
+      // Strategy 1: Try Local Backend Server
+      try {
+        const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
+        const res = await fetch(`${API_BASE}/api/update-song`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
+          },
+          body: JSON.stringify({
+            category: activeDeleteCategory,
+            id: songId,
+            name: newName,
+            nameEn: newName,
+            singer: newSinger,
+            singerEn: newSinger
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success) {
+            updateSuccess = true;
+            updateMessage = 'Updated via server and pushed to git origin/main!';
+          }
+        }
+      } catch (err) {
+        // Fallback to GitHub Direct REST API
+      }
+
+      // Strategy 2: Direct GitHub REST API Commit (origin/main)
+      if (!updateSuccess) {
+        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
+        if (!ghToken) {
+          throw new Error('Server offline and no GitHub Token configured. Please click "⚙️ GitHub Token" above and enter your PLAYX_TOKEN to commit changes.');
+        }
+
+        btnElement.innerHTML = `<div class="spinner"></div> <span>Pushing to GitHub...</span>`;
+        await updateSongDirectlyOnGitHub(activeDeleteCategory, songId, { name: newName, singer: newSinger }, ghToken);
+        updateSuccess = true;
+        updateMessage = 'Updated and committed directly to GitHub repository (origin/main)!';
+      }
+
+      // Update cached array in place
+      const targetSong = cachedDeleteSongs.find(s => String(s.id) === String(songId) || s.videoId === String(songId));
+      if (targetSong) {
+        targetSong.name = newName;
+        targetSong.nameEn = newName;
+        targetSong.singer = newSinger;
+        targetSong.singerEn = newSinger;
+      }
+
+      // Update DOM displays
+      const titleDisplay = document.getElementById(`songTitleDisplay_${songId}`);
+      const singerDisplay = document.getElementById(`songSingerDisplay_${songId}`);
+      if (titleDisplay) {
+        titleDisplay.textContent = newName;
+        titleDisplay.style.color = '#10b981';
+        setTimeout(() => { titleDisplay.style.color = ''; }, 2000);
+      }
+      if (singerDisplay) {
+        const dur = targetSong?.duration || '--:--';
+        singerDisplay.textContent = `🎤 ${newSinger} • ⏱️ ${dur} • #${songId}`;
+      }
+
+      // Close inline panel
+      const panel = document.getElementById(`inlineEditPanel_${songId}`);
+      if (panel) panel.style.display = 'none';
+
+      btnElement.disabled = false;
+      btnElement.innerHTML = `<span>💾</span> <span>Save Changes</span>`;
+
+      showBanner('info', `✅ "${newName}" updated in ${catName} and pushed to origin/main successfully!`);
+    } catch (err) {
+      alert(`Error updating song:\n${err.message}`);
+      btnElement.disabled = false;
+      btnElement.innerHTML = `<span>💾</span> <span>Save Changes</span>`;
+    }
+  }
+
+  async function updateSongDirectlyOnGitHub(categoryKey, songId, updates, githubToken) {
+    const catObj = CATEGORY_OPTIONS.find(c => c.id === categoryKey);
+    if (!catObj) throw new Error(`Invalid category: ${categoryKey}`);
+
+    const repo = 'alok706175/PlayX';
+    const branch = 'main';
+    const filePath = catObj.file;
+    const url = `https://api.github.com/repos/${repo}/contents/${filePath}?ref=${branch}&_nocache=${Date.now()}`;
+
+    const cleanToken = (githubToken || '').trim().replace(/^Bearer\s+/i, '').replace(/^token\s+/i, '');
+    if (!cleanToken) {
+      throw new Error('GitHub Token is missing. Click "⚙️ GitHub Token" and save your token.');
+    }
+    const authHeader = cleanToken.startsWith('github_pat_') ? `Bearer ${cleanToken}` : `token ${cleanToken}`;
+
+    // 1. Fetch current file
+    let getRes;
+    try {
+      getRes = await fetch(url, { headers: { 'Authorization': authHeader } });
+    } catch (netErr) {
+      try {
+        getRes = await fetch(url);
+      } catch (e) {
+        throw new Error(`Failed to reach GitHub API (${netErr.message}). Check internet connection.`);
+      }
+    }
+
+    if (!getRes.ok) {
+      if (getRes.status === 401) throw new Error('Invalid or expired GitHub Token (401)!');
+      if (getRes.status === 403) throw new Error('GitHub Token Permission Denied (403)! Ensure token has "repo" scope.');
+      throw new Error(`Failed to fetch playlist (${getRes.status})`);
+    }
+
+    const fileMeta = await getRes.json();
+    let currentSongs = [];
+    try {
+      currentSongs = JSON.parse(decodeUtf8Base64(fileMeta.content));
+    } catch (e) {
+      throw new Error(`Could not parse playlist JSON: ${e.message}`);
+    }
+
+    const idx = currentSongs.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+    if (idx === -1) {
+      throw new Error(`Song with ID "${songId}" was not found in the repository playlist.`);
+    }
+
+    const targetSong = currentSongs[idx];
+    if (updates.name) {
+      targetSong.name = updates.name.trim();
+      targetSong.nameEn = updates.nameEn ? updates.nameEn.trim() : targetSong.name;
+    }
+    if (updates.singer) {
+      targetSong.singer = updates.singer.trim();
+      targetSong.singerEn = updates.singerEn ? updates.singerEn.trim() : targetSong.singer;
+    }
+
+    // 2. Commit updated JSON back to GitHub
+    const updatedJsonStr = JSON.stringify(currentSongs, null, 2) + '\n';
+    const encodedContent = encodeUtf8Base64(updatedJsonStr);
+    const commitMsg = `Update '${(targetSong.name || 'Song').replace(/['"]/g, '')}' metadata in ${catObj.name} playlist [PlayX Admin]`;
+
+    const putRes = await fetch(`https://api.github.com/repos/${repo}/contents/${filePath}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: commitMsg,
+        content: encodedContent,
+        sha: fileMeta.sha,
+        branch: branch
+      })
+    });
+
+    if (!putRes.ok) {
+      if (putRes.status === 401 || putRes.status === 403) {
+        throw new Error('GitHub Permission Denied! Ensure your token has write access to repository.');
+      }
+      if (putRes.status === 409) {
+        throw new Error('GitHub Conflict (409): The playlist was recently modified on GitHub. Please retry.');
+      }
+      throw new Error(`GitHub Commit Error (${putRes.status})`);
+    }
+
+    // 3. If Hindi, also keep hindi_songs_data.js in sync
+    if (categoryKey === 'hindi') {
+      try {
+        const bundlePath = 'hindi-songs/hindi_songs_data.js';
+        let bundleSha = null;
+        try {
+          const bGet = await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (bGet.ok) {
+            const bMeta = await bGet.json();
+            bundleSha = bMeta.sha;
+          }
+        } catch (e) {}
+
+        const bundleStr = '/* PlayX Hindi Songs Dataset Bundle (Auto-Synchronized) */\nwindow.PLAYX_HINDI_SONGS_DATA = ' + JSON.stringify(currentSongs, null, 2) + ';\n';
+        await fetch(`https://api.github.com/repos/${repo}/contents/${bundlePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': authHeader,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: `Sync hindi_songs_data.js bundle after updating '${(targetSong.name || 'Song').replace(/['"]/g, '')}'`,
+            content: encodeUtf8Base64(bundleStr),
+            sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (bundleErr) {
+        console.warn('Hindi bundle sync on update error:', bundleErr.message);
+      }
+    }
+
+    return {
+      success: true,
+      updatedSong: targetSong,
+      totalSongs: currentSongs.length
+    };
   }
 
   async function handleSongDeleteAction(songId, songName, btnElement) {
@@ -1489,6 +1829,11 @@
     };
   }
 
+  function openAdminPage(defaultTab = 'import') {
+    openModal();
+    switchTab(defaultTab);
+  }
+
   function openSongManager(categoryKey) {
     if (categoryKey && CATEGORY_OPTIONS.some(c => c.id === categoryKey)) {
       activeDeleteCategory = categoryKey;
@@ -1614,7 +1959,11 @@
   });
 
   // Expose API on window
+  window.openAdminPage = openAdminPage;
+  window.openSongManager = openSongManager;
+
   window.PlayXSongImporter = {
+    openAdminPage,
     openSongManager,
     switchTab,
     openModal,

@@ -392,6 +392,8 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName, action
   const safeSongName = (songName || 'Song').replace(/["`$\r\n]/g, "'");
   const commitMsg = action === 'delete'
     ? `Delete '${safeSongName}' from ${categoryName} playlist [PlayX Admin]`
+    : action === 'update'
+    ? `Update '${safeSongName}' in ${categoryName} playlist [PlayX Admin]`
     : `Add '${safeSongName}' to ${categoryName} playlist [PlayX Auto-Import]`;
   const normalizedPath = relativeFilePath.replace(/\\/g, '/');
 
@@ -718,6 +720,90 @@ function deleteSongFromCategory(categoryKey, songId) {
 }
 
 /**
+ * Updates a song's metadata (e.g. Song Title, Singer Name) in the selected category JSON database.
+ * Serialized via withCategoryLock to prevent race conditions.
+ * @param {string} categoryKey 
+ * @param {string|number} songId 
+ * @param {object} updates - { name, nameEn, singer, singerEn, tag }
+ * @returns {Promise<{
+ *   success: boolean,
+ *   updatedSong?: object,
+ *   targetFile?: string,
+ *   totalSongs?: number,
+ *   githubSync?: object,
+ *   error?: string
+ * }>}
+ */
+function updateSongInCategory(categoryKey, songId, updates = {}) {
+  return withCategoryLock(categoryKey, async () => {
+    const cat = categoryDetector.CATEGORIES[categoryKey];
+    if (!cat) {
+      return { success: false, error: 'Invalid category: ' + categoryKey };
+    }
+
+    // Sync repository with remote origin first to prevent overwriting recent commits
+    try {
+      const gitRemoteCheck = await execShellCommand('git remote');
+      if (gitRemoteCheck.success && gitRemoteCheck.stdout.includes('origin')) {
+        await execShellCommand('git pull --rebase origin main');
+      }
+    } catch (pullErr) {
+      // Non-blocking in offline or detached environments
+    }
+
+    const targetPath = getCategoryFilePath(categoryKey);
+    const existingList = readJsonSafe(targetPath);
+
+    const idx = existingList.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+    if (idx === -1) {
+      return { success: false, error: 'Song with ID ' + songId + ' not found in category ' + cat.name };
+    }
+
+    const song = existingList[idx];
+
+    // Apply updates safely with text sanitization
+    if (updates.name !== undefined && String(updates.name).trim()) {
+      song.name = sanitizeText(String(updates.name).trim());
+      song.nameEn = updates.nameEn ? sanitizeText(String(updates.nameEn).trim()) : song.name;
+    }
+    if (updates.singer !== undefined && String(updates.singer).trim()) {
+      song.singer = sanitizeText(String(updates.singer).trim());
+      song.singerEn = updates.singerEn ? sanitizeText(String(updates.singerEn).trim()) : song.singer;
+    }
+    if (updates.tag !== undefined && String(updates.tag).trim()) {
+      song.tag = sanitizeText(String(updates.tag).trim());
+    }
+
+    // 1. Atomic write back to local file
+    try {
+      atomicWriteJson(targetPath, existingList);
+    } catch (err) {
+      return {
+        success: false,
+        error: 'Failed to write to database file ' + cat.jsonFile + ': ' + err.message
+      };
+    }
+
+    // 1.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
+    if (categoryKey === 'hindi') {
+      syncHindiBundle(existingList);
+    }
+
+    // 2. Automatic GitHub repository push
+    const githubSync = await autoSyncToGitHub(cat.jsonFile, song.name, cat.name, 'update');
+
+    return {
+      success: true,
+      updatedSong: song,
+      targetFile: cat.jsonFile,
+      categoryName: cat.name,
+      totalSongs: existingList.length,
+      githubSync
+    };
+  });
+}
+
+/**
  * Returns overall statistics for all categories
  */
 function getAllCategoriesSummary() {
@@ -750,6 +836,7 @@ module.exports = {
   verifyHindiParity,
   addSongToCategory,
   deleteSongFromCategory,
+  updateSongInCategory,
   getAllCategoriesSummary,
   getRecentAutoAddedSongs
 };

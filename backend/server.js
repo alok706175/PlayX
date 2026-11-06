@@ -405,6 +405,7 @@ const server = http.createServer(async (req, res) => {
         'POST /api/parse-link',
         'POST /api/import-song',
         'POST /api/delete-song',
+        'POST /api/update-song',
         'GET  /api/categories',
         'GET  /api/recent-imports',
         'GET  /api/sync-status',
@@ -624,6 +625,56 @@ const server = http.createServer(async (req, res) => {
       sendJsonResponse(res, 500, {
         success: false,
         error: 'Server error deleting song: ' + err.message
+      });
+    }
+    return;
+  }
+
+  // -------------------------------------------------------------
+  // API ROUTE 3.5: Update Song Metadata (Edit Song Name, Edit Singer Name)
+  // POST /api/update-song
+  // -------------------------------------------------------------
+  if (pathname === '/api/update-song' && method === 'POST') {
+    try {
+      const body = await parseRequestBody(req);
+
+      if (!isAuthorizedAdmin(req, body)) {
+        sendJsonResponse(res, 401, {
+          success: false,
+          error: 'Unauthorized: Admin authentication token required to update songs.'
+        });
+        return;
+      }
+
+      const { category, id, songId, name, nameEn, singer, singerEn, tag } = body;
+      const targetId = id !== undefined && id !== null ? id : songId;
+
+      if (!category || targetId === undefined || targetId === null) {
+        sendJsonResponse(res, 400, {
+          success: false,
+          error: 'Missing required parameters: category and id/songId are required.'
+        });
+        return;
+      }
+
+      const result = await songDbManager.updateSongInCategory(category, targetId, {
+        name,
+        nameEn,
+        singer,
+        singerEn,
+        tag
+      });
+
+      if (!result.success) {
+        sendJsonResponse(res, 400, result);
+        return;
+      }
+
+      sendJsonResponse(res, 200, result);
+    } catch (err) {
+      sendJsonResponse(res, 500, {
+        success: false,
+        error: 'Server error updating song: ' + err.message
       });
     }
     return;

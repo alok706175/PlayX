@@ -171,6 +171,11 @@ async function runTests() {
     'Generate compliant Festival Player schema record'
   );
 
+  assert(
+    typeof songDbManager.updateSongInCategory === 'function',
+    'Verify updateSongInCategory function exists for editing song name and singer'
+  );
+
   // TEST SUITE 4: Security & JWT Signed Token Verification
   console.log('\n📦 Test Suite 4: Security & JWT HMAC-SHA256 Token Engine');
 
