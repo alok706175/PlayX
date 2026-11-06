@@ -2174,5 +2174,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-06T15:16:27.720Z",
     "status": "approved",
     "source": "admin"
+  },
+  {
+    "id": 209,
+    "name": "Tera Dil Mere Paas Rehne | Hungama | Rimi Sen & Aftab Shivdasani",
+    "nameEn": "Tera Dil Mere Paas Rehne | Hungama | Rimi Sen & Aftab Shivdasani",
+    "singer": "Udit Narayan & Alka Yagnik",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "tag": "Hits",
+    "videoId": "playx_mw56w2cb",
+    "youtubeId": "playx_mw56w2cb",
+    "embedUrl": "https://www.youtube.com/embed/playx_mw56w2cb",
+    "originalUrl": "https://www.youtube.com/watch?v=FclVh6PxkF8",
+    "duration": "05:01",
+    "thumbnail": "https://i.ytimg.com/vi/playx_mw56w2cb/hqdefault.jpg",
+    "addedAt": "2026-11-06T16:29:12.888Z",
+    "status": "approved",
+    "source": "admin"
   }
 ];
