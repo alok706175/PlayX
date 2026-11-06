@@ -519,22 +519,47 @@ button {
 .btn-dash-logout {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.95rem;
+  gap: 0.5rem;
+  padding: 0.48rem 1rem;
   background: var(--dash-danger-bg);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
   border-radius: var(--dash-radius-pill);
-  font-size: 0.85rem;
-  font-weight: 700;
+  font-size: 0.86rem;
+  font-weight: 750;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s ease;
+}
+
+.btn-dash-logout svg {
+  stroke-width: 2.3;
+  stroke: currentColor;
+  transition: transform 0.2s ease;
 }
 
 .btn-dash-logout:hover {
   background: #ef4444;
   color: #ffffff;
   border-color: #ef4444;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.btn-dash-logout:hover svg {
+  transform: translateX(2px);
+}
+
+/* Crisp, high-contrast Logout button in Light Mode */
+[data-theme="light"] .btn-dash-logout {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+[data-theme="light"] .btn-dash-logout:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
 }
 
 /* =========================================================
