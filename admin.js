@@ -1,29 +1,31 @@
 /**
- * PlayX Dedicated Admin Dashboard Engine
- * Full-Featured Music Management Control Center:
- * - Add New Song (YouTube link analyzer, oEmbed metadata, category detector, auto-import)
- * - Edit Song Name (Title editing & live sync)
- * - Edit Singer Name (Artist editing & live sync)
- * - Delete Song (Search, confirmation & permanent deletion)
- * - GitHub Auto-Sync & Backend Server Fallback
+ * PlayX Dedicated Admin Dashboard Engine (v2.0)
+ * 4-Feature Navigation Flow:
+ * Admin Dashboard -> Select Feature (4 Cards) -> Select Category -> Select Song / Add Song Form
+ * 
+ * Features:
+ * 1. Add Song - Add a new song with metadata and category tagging
+ * 2. Delete Song - Browse playlists by category and delete songs with confirmation
+ * 3. Edit Singer Name - Update and correct artist / singer names
+ * 4. Edit Song Name - Update and refine song titles
  */
 
 (function () {
   'use strict';
 
-  // Master Categories Definition
-  const CATEGORIES = [
-    { id: 'hindi', name: 'Hindi Songs', icon: '🎵', file: 'hindi-songs/hindi_songs.json', pageUrl: 'hindi-songs/hindi-songs.html', defaultTag: 'Bollywood Hits' },
-    { id: 'bhojpuri', name: 'Bhojpuri Songs', icon: '💃', file: 'bhojpuri-songs/bhojpuri_songs.json', pageUrl: 'bhojpuri-songs/bhojpuri-songs.html', defaultTag: 'Desi Hits' },
-    { id: 'chhath', name: 'Chhath Puja Songs', icon: '🌅', file: 'chhath-puja/youtube_songs.json', pageUrl: 'chhath-puja/chhath-puja.html', defaultTag: 'Chhath Mahaparv' },
-    { id: 'saawan', name: 'Saawan Songs', icon: '🔱', file: 'saawan-songs/saawan_songs.json', pageUrl: 'saawan-songs/saawan-songs.html', defaultTag: 'Shiv Bhajan' },
-    { id: 'durga', name: 'Durga Puja Songs', icon: '🪔', file: 'durga-puja-songs/durga_puja_songs.json', pageUrl: 'durga-puja-songs/durga-puja-songs.html', defaultTag: 'Mata Bhajan' },
-    { id: 'holi', name: 'Holi Songs', icon: '🎨', file: 'holi-songs/holi_songs.json', pageUrl: 'holi-songs/holi-songs.html', defaultTag: 'Fagun Geet' },
-    { id: 'haryanvi', name: 'Haryanvi Songs', icon: '🌾', file: 'haryanvi-songs/haryanvi_songs.json', pageUrl: 'haryanvi-songs/haryanvi-songs.html', defaultTag: 'Haryanvi Ragni' },
-    { id: 'punjabi', name: 'Punjabi Songs', icon: '🥁', file: 'punjabi-songs/punjabi_songs.json', pageUrl: 'punjabi-songs/punjabi-songs.html', defaultTag: 'Punjabi Beats' }
+  // Master Categories Fallback Definition (Used when backend API is offline or static)
+  const DEFAULT_CATEGORIES = [
+    { id: 'hindi', name: 'Hindi Songs', hindiName: 'हिंदी सुपरहिट बॉलीवुड गीत', icon: '🎵', file: 'hindi-songs/hindi_songs.json', pageUrl: 'hindi-songs/hindi-songs.html', defaultTag: 'Bollywood Hits' },
+    { id: 'bhojpuri', name: 'Bhojpuri Songs', hindiName: 'भोजपुरी देसी हिट्स', icon: '💃', file: 'bhojpuri-songs/bhojpuri_songs.json', pageUrl: 'bhojpuri-songs/bhojpuri-songs.html', defaultTag: 'Desi Hits' },
+    { id: 'chhath', name: 'Chhath Puja Songs', hindiName: 'छठ पूजा महापर्व गीत', icon: '🌅', file: 'chhath-puja/youtube_songs.json', pageUrl: 'chhath-puja/chhath-puja.html', defaultTag: 'Chhath Mahaparv' },
+    { id: 'saawan', name: 'Saawan Songs', hindiName: 'सावन शिव भजन व बोल बम', icon: '🔱', file: 'saawan-songs/saawan_songs.json', pageUrl: 'saawan-songs/saawan-songs.html', defaultTag: 'Shiv Bhajan' },
+    { id: 'durga', name: 'Durga Puja Songs', hindiName: 'दुर्गा पूजा व नवरात्रि भजन', icon: '🪔', file: 'durga-puja-songs/durga_puja_songs.json', pageUrl: 'durga-puja-songs/durga-puja-songs.html', defaultTag: 'Mata Bhajan' },
+    { id: 'holi', name: 'Holi Songs', hindiName: 'होली फाग व रंग गुलाल', icon: '🎨', file: 'holi-songs/holi_songs.json', pageUrl: 'holi-songs/holi-songs.html', defaultTag: 'Fagun Geet' },
+    { id: 'haryanvi', name: 'Haryanvi Songs', hindiName: 'हरियाणवी रागनी व डीजे हिट्स', icon: '🌾', file: 'haryanvi-songs/haryanvi_songs.json', pageUrl: 'haryanvi-songs/haryanvi-songs.html', defaultTag: 'Haryanvi Ragni' },
+    { id: 'punjabi', name: 'Punjabi Songs', hindiName: 'पंजाबी बीट्स व भांगड़ा', icon: '🥁', file: 'punjabi-songs/punjabi_songs.json', pageUrl: 'punjabi-songs/punjabi-songs.html', defaultTag: 'Punjabi Beats' }
   ];
 
-  // API Base resolution
+  // API Base Resolution
   const RENDER_BACKEND_URL = 'https://playx-backend-tcp4.onrender.com';
   function getApiBase() {
     if (window.location.port === '3000') return '';
@@ -36,17 +38,12 @@
     return RENDER_BACKEND_URL;
   }
 
-  // Dashboard State
-  let activeTab = 'manage-songs'; // 'manage-songs', 'add-song', 'overview', 'settings-sync'
-  let activeCategory = 'hindi';
-  let activeQuickFilter = 'all'; // 'all', 'edit-title', 'edit-singer', 'delete'
-  let cachedCategorySongs = [];
-  let categoryCounts = {};
-  let currentAnalyzingMeta = null;
-
-  // Selected song for Modal editing or deletion
-  let pendingEditSong = null;
-  let pendingDeleteSong = null;
+  // Dashboard Navigation State
+  let activeFeature = 'add-song'; // 'add-song' | 'delete-song' | 'edit-singer' | 'edit-song-name'
+  let activeCategory = null;     // category object currently selected
+  let dynamicCategories = [];    // dynamically fetched categories with live counts
+  let cachedCategorySongs = [];  // songs belonging to activeCategory
+  let selectedSongForAction = null; // song targeted for modal edit or delete
 
   /* =========================================================
      1. INITIALIZATION & AUTHENTICATION GATE
@@ -54,11 +51,11 @@
   document.addEventListener('DOMContentLoaded', () => {
     initAuthGate();
     initThemeToggle();
-    initDashboardTabs();
-    initSongManagement();
+    initSettingsModal();
+    initNavigationListeners();
+    initSongListControls();
     initAddSongSection();
-    initSettingsSection();
-    initModals();
+    initActionModals();
 
     if (isAuthenticated()) {
       unlockDashboard();
@@ -72,23 +69,27 @@
   }
 
   function lockDashboard() {
-    document.getElementById('adminLoginGate').style.display = 'flex';
-    document.getElementById('adminDashboardLayout').style.display = 'none';
+    const gate = document.getElementById('adminLoginGate');
+    const dash = document.getElementById('adminDashboardLayout');
+    if (gate) gate.style.display = 'flex';
+    if (dash) dash.style.display = 'none';
   }
 
   function unlockDashboard() {
-    document.getElementById('adminLoginGate').style.display = 'none';
-    document.getElementById('adminDashboardLayout').style.display = 'flex';
+    const gate = document.getElementById('adminLoginGate');
+    const dash = document.getElementById('adminDashboardLayout');
+    if (gate) gate.style.display = 'none';
+    if (dash) dash.style.display = 'flex';
 
-    // Update user profile name if available
+    // Update admin profile name
     const userName = localStorage.getItem('playx_admin_user') || 'Deepak Singh Rajput';
     const profileEl = document.getElementById('dashAdminName');
     if (profileEl) profileEl.textContent = userName;
 
-    // Load initial data
-    loadAllCategoryStats();
-    loadCategorySongs(activeCategory);
+    // Load categories and sync status
+    loadCategoriesDynamic();
     checkSyncStatus();
+    switchView('viewDashboardMain');
   }
 
   function initAuthGate() {
@@ -97,7 +98,6 @@
     const eyeBtn = document.getElementById('gateTogglePwdBtn');
     const msgEl = document.getElementById('gateLoginMsg');
 
-    // Password Eye Toggle
     if (eyeBtn && pwdInput) {
       const eyeSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
       const eyeOffSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>`;
@@ -111,274 +111,372 @@
       });
     }
 
-    // Form submission
     if (form) {
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const pwd = (pwdInput.value || '').trim();
         if (!pwd) {
           showGateMsg('error', 'Please enter your admin password.');
-          pwdInput.focus();
           return;
         }
 
         const submitBtn = document.getElementById('gateSubmitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = `<div class="spinner-large" style="width:20px;height:20px;border-width:2px;margin:0;"></div> <span>Verifying...</span>`;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span>Verifying credentials...</span>';
+        }
 
         try {
-          let loginSuccess = false;
-          let token = '';
-          let userName = 'Deepak Singh Rajput';
+          const apiBase = getApiBase();
+          const res = await fetch(`${apiBase}/api/admin/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: pwd })
+          });
 
-          // Strategy 1: Check with Backend API
-          try {
-            const apiBase = getApiBase();
-            const res = await fetch(`${apiBase}/api/admin/login`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ password: pwd, username: 'admin' })
-            });
-
-            if (res.ok) {
-              const data = await res.json();
-              if (data && data.success) {
-                loginSuccess = true;
-                token = data.token || '';
-                userName = data.user?.name || userName;
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.token) {
+              localStorage.setItem('playx_admin_logged_in', 'true');
+              localStorage.setItem('playx_admin_token', data.token);
+              if (data.admin) {
+                localStorage.setItem('playx_admin_user', data.admin.name || 'Deepak Singh Rajput');
               }
-            }
-          } catch (netErr) {
-            // Standalone or offline fallback
-          }
-
-          // Strategy 2: Cryptographic fallback check
-          if (!loginSuccess) {
-            const hash = await sha256Hex(pwd);
-            const ALLOWED_HASHES = [
-              '9839446f04c63aa87050212f4625b09d9fb19e68d1844bdfd4304918f7734bb0', // Deep@k8747
-              'e866872a912bbbcbe4454721495c2560e29b1fa85703f167e42d7b5f6a5b6c86', // Deepak@8747
-              'e18f26a11e1f7f09f029ce68ffb1856c80c2f82ba5dbce9fa0f5ce402f08a4e8'  // PlayX@AdminDefault2026
-            ];
-
-            if (pwd === 'Deep@k8747' || pwd === 'Deepak@8747' || pwd === 'PlayX@AdminDefault2026' || ALLOWED_HASHES.includes(hash)) {
-              loginSuccess = true;
+              showGateMsg('success', 'Authentication successful! Loading dashboard...');
+              setTimeout(() => unlockDashboard(), 400);
+              return;
             }
           }
+        } catch (netErr) {
+          // If offline, check SHA-256 fallback
+        }
 
-          if (loginSuccess) {
-            showGateMsg('success', '✅ Access Granted! Unlocking Dashboard...');
-            localStorage.setItem('playx_admin_logged_in', 'true');
-            localStorage.setItem('playx_admin_user', userName);
-            if (token) localStorage.setItem('playx_admin_token', token);
-            try { sessionStorage.setItem('playx_admin_secret', pwd); } catch (e) {}
-
-            setTimeout(() => {
-              unlockDashboard();
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = `<span>Unlock Admin Dashboard</span>`;
-            }, 600);
-          } else {
-            showGateMsg('error', '❌ Invalid admin password. Please try again.');
+        // SHA-256 fallback verification
+        const hash = await sha256(pwd);
+        if (hash === '2b43b4f697475f850e0569eefc8c1995ba07849c71a3980a37e192f146be4818' || pwd === 'PlayxAdmin@2026' || pwd === 'deepak@playx') {
+          localStorage.setItem('playx_admin_logged_in', 'true');
+          localStorage.setItem('playx_admin_user', 'Deepak Singh Rajput');
+          showGateMsg('success', 'Verified! Loading dashboard...');
+          setTimeout(() => unlockDashboard(), 400);
+        } else {
+          showGateMsg('error', 'Invalid admin password. Access denied.');
+          if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>Unlock Admin Dashboard</span>`;
-            pwdInput.select();
+            submitBtn.innerHTML = `
+              <span>Unlock Admin Dashboard</span>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            `;
           }
-        } catch (err) {
-          showGateMsg('error', 'Authentication error: ' + err.message);
-          submitBtn.disabled = false;
-          submitBtn.innerHTML = `<span>Unlock Admin Dashboard</span>`;
         }
       });
     }
 
-    // Logout Button
     const logoutBtn = document.getElementById('dashLogoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to log out of the Admin Dashboard?')) {
+        if (confirm('Are you sure you want to log out of PlayX Admin Dashboard?')) {
           localStorage.removeItem('playx_admin_logged_in');
           localStorage.removeItem('playx_admin_token');
-          try { sessionStorage.removeItem('playx_admin_secret'); } catch (e) {}
           lockDashboard();
-          showToast('info', 'Logged out of Admin Portal.');
+          showToast('info', 'Logged out successfully.');
         }
       });
     }
   }
 
-  function showGateMsg(type, text) {
+  function showGateMsg(type, msg) {
     const el = document.getElementById('gateLoginMsg');
     if (!el) return;
     el.className = `gate-msg ${type}`;
-    el.textContent = text;
+    el.textContent = msg;
     el.style.display = 'block';
   }
 
-  async function sha256Hex(str) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  async function sha256(str) {
+    const buffer = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
   /* =========================================================
-     2. THEME & TABS SWITCHING
+     2. NAVIGATION & VIEW SWITCHING SYSTEM
      ========================================================= */
-  function initThemeToggle() {
-    const themeBtn = document.getElementById('dashThemeToggleBtn');
-    if (!themeBtn) return;
-
-    themeBtn.addEventListener('click', () => {
-      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = cur === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('playx_theme', next);
-      updateThemeIcon(next);
+  function switchView(viewId) {
+    document.querySelectorAll('.dash-view').forEach(v => {
+      v.classList.remove('active');
+      v.style.display = 'none';
     });
 
-    const savedTheme = localStorage.getItem('playx_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
-  }
-
-  function updateThemeIcon(theme) {
-    const sun = document.querySelector('.theme-icon-sun');
-    const moon = document.querySelector('.theme-icon-moon');
-    if (!sun || !moon) return;
-    if (theme === 'light') {
-      sun.style.display = 'inline-block';
-      moon.style.display = 'none';
-    } else {
-      sun.style.display = 'none';
-      moon.style.display = 'inline-block';
+    const target = document.getElementById(viewId);
+    if (target) {
+      target.style.display = 'block';
+      target.classList.add('active');
     }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function initDashboardTabs() {
-    const tabBtns = document.querySelectorAll('.dash-tab-btn');
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = btn.getAttribute('data-target');
-        switchDashTab(target);
+  function initNavigationListeners() {
+    // 1. The 4 Feature Cards on Main Dashboard
+    const cardAdd = document.getElementById('cardFeatAddSong');
+    const cardDelete = document.getElementById('cardFeatDeleteSong');
+    const cardEditSinger = document.getElementById('cardFeatEditSinger');
+    const cardEditSongName = document.getElementById('cardFeatEditSongName');
+
+    if (cardAdd) {
+      cardAdd.addEventListener('click', () => openFeatureCategorySelect('add-song'));
+      cardAdd.addEventListener('keydown', (e) => { if (e.key === 'Enter') openFeatureCategorySelect('add-song'); });
+    }
+    if (cardDelete) {
+      cardDelete.addEventListener('click', () => openFeatureCategorySelect('delete-song'));
+      cardDelete.addEventListener('keydown', (e) => { if (e.key === 'Enter') openFeatureCategorySelect('delete-song'); });
+    }
+    if (cardEditSinger) {
+      cardEditSinger.addEventListener('click', () => openFeatureCategorySelect('edit-singer'));
+      cardEditSinger.addEventListener('keydown', (e) => { if (e.key === 'Enter') openFeatureCategorySelect('edit-singer'); });
+    }
+    if (cardEditSongName) {
+      cardEditSongName.addEventListener('click', () => openFeatureCategorySelect('edit-song-name'));
+      cardEditSongName.addEventListener('keydown', (e) => { if (e.key === 'Enter') openFeatureCategorySelect('edit-song-name'); });
+    }
+
+    // 2. Back to Dashboard Button from Category Select
+    const btnBackToDash = document.getElementById('btnBackToDashboard');
+    if (btnBackToDash) {
+      btnBackToDash.addEventListener('click', () => {
+        switchView('viewDashboardMain');
       });
-    });
+    }
+
+    // 3. Back to Categories from Song List
+    const btnBackToCats = document.getElementById('btnBackToCategories');
+    if (btnBackToCats) {
+      btnBackToCats.addEventListener('click', () => {
+        openFeatureCategorySelect(activeFeature);
+      });
+    }
+
+    // 4. Back to Categories from Add Song
+    const btnBackToCatsAdd = document.getElementById('btnBackToCategoriesFromAdd');
+    if (btnBackToCatsAdd) {
+      btnBackToCatsAdd.addEventListener('click', () => {
+        openFeatureCategorySelect('add-song');
+      });
+    }
   }
 
-  window.switchDashTab = function (targetTabId) {
-    activeTab = targetTabId;
+  function openFeatureCategorySelect(featureKey) {
+    activeFeature = featureKey;
 
-    // Update tab buttons
-    document.querySelectorAll('.dash-tab-btn').forEach(btn => {
-      const isTarget = btn.getAttribute('data-target') === targetTabId;
-      btn.classList.toggle('active', isTarget);
-      btn.setAttribute('aria-selected', isTarget ? 'true' : 'false');
-    });
+    const badge = document.getElementById('catViewFeatureBadge');
+    const title = document.getElementById('catViewTitle');
+    const desc = document.getElementById('catViewSubtitle');
 
-    // Update tab sections
-    const map = {
-      'manage-songs': 'sectionManageSongs',
-      'add-song': 'sectionAddSong',
-      'overview': 'sectionOverview',
-      'settings-sync': 'sectionSettingsSync'
-    };
-
-    Object.entries(map).forEach(([key, sectionId]) => {
-      const sec = document.getElementById(sectionId);
-      if (sec) {
-        sec.style.display = (key === targetTabId) ? 'flex' : 'none';
+    if (badge && title && desc) {
+      badge.className = 'feature-active-pill';
+      if (featureKey === 'add-song') {
+        badge.classList.add('feat-add');
+        badge.textContent = '➕ Add Song';
+        title.textContent = 'Add Song: Select a Music Category';
+        desc.textContent = 'Choose the playlist category where you want to add a new song.';
+      } else if (featureKey === 'delete-song') {
+        badge.classList.add('feat-delete');
+        badge.textContent = '🗑️ Delete Song';
+        title.textContent = 'Delete Song: Select a Music Category';
+        desc.textContent = 'Select a category to view and delete songs from that playlist.';
+      } else if (featureKey === 'edit-singer') {
+        badge.classList.add('feat-edit-singer');
+        badge.textContent = '🎤 Edit Singer Name';
+        title.textContent = 'Edit Singer: Select a Music Category';
+        desc.textContent = 'Select a category to view songs and update their singer or artist names.';
+      } else if (featureKey === 'edit-song-name') {
+        badge.classList.add('feat-edit-title');
+        badge.textContent = '✏️ Edit Song Name';
+        title.textContent = 'Edit Song Name: Select a Music Category';
+        desc.textContent = 'Select a category to view songs and update or rename their song titles.';
       }
-    });
-
-    // Sub-actions on switch
-    if (targetTabId === 'manage-songs') {
-      loadCategorySongs(activeCategory);
-    } else if (targetTabId === 'overview') {
-      loadAllCategoryStats();
-      loadRecentHistory();
     }
-  };
+
+    renderCategoryCards();
+    switchView('viewCategorySelect');
+  }
 
   /* =========================================================
-     3. SONG MANAGEMENT (EDIT TITLE, EDIT SINGER, DELETE)
+     3. DYNAMIC CATEGORY LOADING & RENDERING
      ========================================================= */
-  function initSongManagement() {
-    renderCategoryPills();
+  async function loadCategoriesDynamic() {
+    let loaded = [];
 
-    // Search filter input
-    const searchInput = document.getElementById('dashSongSearchInput');
-    const clearBtn = document.getElementById('dashClearSearchBtn');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
-        const q = e.target.value.trim();
-        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
-        renderSongsTable(q);
-      });
+    // Strategy 1: Fetch from backend /api/categories
+    try {
+      const apiBase = getApiBase();
+      const res = await fetch(`${apiBase}/api/categories?_t=${Date.now()}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.success && json.categories) {
+          loaded = Object.values(json.categories).map(cat => ({
+            id: cat.id,
+            name: cat.name,
+            hindiName: cat.hindiName || '',
+            file: cat.jsonFile,
+            pageUrl: cat.pageUrl || '',
+            icon: cat.icon || '🎵',
+            count: typeof cat.songCount === 'number' ? cat.songCount : 0
+          }));
+        }
+      }
+    } catch (e) {
+      // Backend offline or running statically
     }
 
-    if (clearBtn && searchInput) {
-      clearBtn.addEventListener('click', () => {
-        searchInput.value = '';
-        clearBtn.style.display = 'none';
-        renderSongsTable('');
-        searchInput.focus();
-      });
+    // Strategy 2: If backend returned empty, use DEFAULT_CATEGORIES and fetch JSON files
+    if (loaded.length === 0) {
+      loaded = DEFAULT_CATEGORIES.map(c => ({ ...c, count: 0 }));
+      await Promise.allSettled(
+        loaded.map(async (cat) => {
+          try {
+            const r = await fetch(`${cat.file}?_t=${Date.now()}`);
+            if (r.ok) {
+              const data = await r.json();
+              if (Array.isArray(data)) cat.count = data.length;
+            }
+          } catch (err) {}
+        })
+      );
     }
 
-    // Quick filter chips (All, Edit Title, Edit Singer, Delete)
-    document.querySelectorAll('.manage-quick-filters .filter-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.manage-quick-filters .filter-chip').forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-        activeQuickFilter = chip.getAttribute('data-filter') || 'all';
-        renderSongsTable(searchInput?.value || '');
-      });
-    });
+    dynamicCategories = loaded;
+
+    // Update Quick Stats Strip on Main Dashboard
+    const totalSongs = dynamicCategories.reduce((acc, c) => acc + (c.count || 0), 0);
+    const totalSongsBadge = document.getElementById('dashTotalSongsBadge');
+    if (totalSongsBadge) {
+      totalSongsBadge.textContent = `${totalSongs.toLocaleString()} Songs in Database`;
+    }
+
+    const totalCatsBadge = document.getElementById('dashTotalCatsBadge');
+    if (totalCatsBadge) {
+      totalCatsBadge.textContent = `${dynamicCategories.length} Active Playlists`;
+    }
+
+    // Re-render category cards if visible
+    renderCategoryCards();
   }
 
-  function renderCategoryPills() {
-    const container = document.getElementById('dashCategoryPillsBar');
-    if (!container) return;
+  function renderCategoryCards() {
+    const grid = document.getElementById('categoryCardsGrid');
+    if (!grid) return;
 
-    container.innerHTML = CATEGORIES.map(cat => {
-      const count = categoryCounts[cat.id] !== undefined ? categoryCounts[cat.id] : '...';
-      const isActive = cat.id === activeCategory;
+    if (dynamicCategories.length === 0) {
+      grid.innerHTML = `
+        <div class="dash-loading-state">
+          <div class="spinner-large"></div>
+          <p>Loading playlist categories from database...</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = dynamicCategories.map(cat => {
+      const countLabel = cat.count === 1 ? '1 Song' : `${cat.count} Songs`;
       return `
-        <button type="button" class="cat-pill-item ${isActive ? 'active' : ''}" data-cat-id="${cat.id}">
-          <span>${cat.icon}</span>
-          <span>${cat.name}</span>
-          <span style="opacity:0.75;font-size:0.75rem;">(${count})</span>
-        </button>
+        <div class="category-card-item" data-cat-id="${cat.id}" role="button" tabindex="0" title="Manage ${escapeHtml(cat.name)}">
+          <div class="cat-item-left">
+            <div class="cat-item-icon-box">${cat.icon}</div>
+            <div>
+              <div class="cat-item-name">${escapeHtml(cat.name)}</div>
+              <div class="cat-item-hindi">${escapeHtml(cat.hindiName)}</div>
+            </div>
+          </div>
+          <div class="cat-item-right">
+            <span class="cat-count-badge">${countLabel}</span>
+            <span class="cat-arrow-icon">→</span>
+          </div>
+        </div>
       `;
     }).join('');
 
-    container.querySelectorAll('.cat-pill-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const catId = btn.getAttribute('data-cat-id');
-        if (catId && catId !== activeCategory) {
-          activeCategory = catId;
-          renderCategoryPills();
-          loadCategorySongs(catId);
-        }
-      });
+    // Attach click handlers to all category cards
+    grid.querySelectorAll('.category-card-item').forEach(card => {
+      const catId = card.getAttribute('data-cat-id');
+      const catObj = dynamicCategories.find(c => c.id === catId);
+      if (!catObj) return;
+
+      const onSelect = () => handleCategorySelection(catObj);
+      card.addEventListener('click', onSelect);
+      card.addEventListener('keydown', (e) => { if (e.key === 'Enter') onSelect(); });
     });
   }
 
-  async function loadCategorySongs(categoryKey) {
-    const tableBody = document.getElementById('dashSongsList');
-    const searchInput = document.getElementById('dashSongSearchInput');
-    if (!tableBody) return;
+  function handleCategorySelection(catObj) {
+    activeCategory = catObj;
 
-    const catObj = CATEGORIES.find(c => c.id === categoryKey);
-    if (!catObj) return;
+    // Navigation Rule: For Add Song, selecting a category should open the Add Song form directly.
+    if (activeFeature === 'add-song') {
+      openAddSongForm(catObj);
+      return;
+    }
+
+    // For Delete Song, Edit Singer Name, and Edit Song Name: Open Song List page
+    openSongListPage(catObj, activeFeature);
+  }
+
+  /* =========================================================
+     4. FLOW: SONG LIST PAGE (Delete, Edit Singer, Edit Title)
+     ========================================================= */
+  async function openSongListPage(catObj, featureKey) {
+    activeCategory = catObj;
+    activeFeature = featureKey;
+
+    const badge = document.getElementById('songListViewFeatureBadge');
+    const title = document.getElementById('songListViewTitle');
+    const desc = document.getElementById('songListViewSubtitle');
+    const searchInput = document.getElementById('songListSearchInput');
+
+    if (searchInput) searchInput.value = '';
+
+    if (badge && title && desc) {
+      badge.className = 'feature-active-pill';
+      if (featureKey === 'delete-song') {
+        badge.classList.add('feat-delete');
+        badge.textContent = '🗑️ Delete Song';
+        title.textContent = `Delete Songs from ${catObj.name}`;
+        desc.textContent = `Select any song from ${catObj.name} to permanently remove it.`;
+      } else if (featureKey === 'edit-singer') {
+        badge.classList.add('feat-edit-singer');
+        badge.textContent = '🎤 Edit Singer Name';
+        title.textContent = `Edit Singer Names in ${catObj.name}`;
+        desc.textContent = `Select a song below to update its singer / artist name.`;
+      } else if (featureKey === 'edit-song-name') {
+        badge.classList.add('feat-edit-title');
+        badge.textContent = '✏️ Edit Song Name';
+        title.textContent = `Edit Song Titles in ${catObj.name}`;
+        desc.textContent = `Select a song below to update or correct its title.`;
+      }
+    }
+
+    switchView('viewSongList');
+    await loadCategorySongs(catObj.id);
+  }
+
+  async function loadCategorySongs(categoryKey) {
+    const tableBody = document.getElementById('songListTableBody');
+    const countBadge = document.getElementById('songListCountBadge');
+    if (!tableBody) return;
 
     tableBody.innerHTML = `
       <div class="dash-loading-state">
         <div class="spinner-large"></div>
-        <p>Loading ${escapeHtml(catObj.name)} songs...</p>
+        <p>Loading songs from database...</p>
       </div>
     `;
+
+    const catObj = dynamicCategories.find(c => c.id === categoryKey) || DEFAULT_CATEGORIES.find(c => c.id === categoryKey);
+    if (!catObj) return;
 
     try {
       const res = await fetch(`${catObj.file}?_t=${Date.now()}`);
@@ -386,874 +484,848 @@
       const data = await res.json();
       cachedCategorySongs = Array.isArray(data) ? data : [];
 
-      // Update badge count
-      categoryCounts[categoryKey] = cachedCategorySongs.length;
-      renderCategoryPills();
+      // Update category count
+      catObj.count = cachedCategorySongs.length;
+      if (countBadge) {
+        countBadge.textContent = `Showing all ${cachedCategorySongs.length} songs`;
+      }
 
-      const tabBadge = document.getElementById('tabManageCountBadge');
-      if (tabBadge) tabBadge.textContent = `${cachedCategorySongs.length}`;
-
-      renderSongsTable(searchInput?.value || '');
+      renderSongsList(cachedCategorySongs);
     } catch (err) {
       tableBody.innerHTML = `
         <div class="dash-empty-state" style="color:var(--dash-danger);">
           <span>⚠️</span>
-          <p>Failed to load ${escapeHtml(catObj.name)}: ${escapeHtml(err.message)}</p>
+          <p>Failed to load songs: ${escapeHtml(err.message)}</p>
         </div>
       `;
     }
   }
 
-  function renderSongsTable(query = '') {
-    const tableBody = document.getElementById('dashSongsList');
-    const statsText = document.getElementById('dashFilteredCountText');
+  function renderSongsList(songsToRender) {
+    const tableBody = document.getElementById('songListTableBody');
+    const countBadge = document.getElementById('songListCountBadge');
     if (!tableBody) return;
 
-    const q = (query || '').toLowerCase().trim();
-    const filtered = cachedCategorySongs.filter(s => {
-      if (!q) return true;
-      const name = (s.name || s.title || '').toLowerCase();
-      const singer = (s.singer || s.singerEn || '').toLowerCase();
-      const id = String(s.id || '');
-      return name.includes(q) || singer.includes(q) || id.includes(q);
-    });
-
-    if (statsText) {
-      const catObj = CATEGORIES.find(c => c.id === activeCategory);
-      statsText.textContent = `${filtered.length} of ${cachedCategorySongs.length} songs (${catObj ? catObj.name : ''})`;
+    if (countBadge) {
+      countBadge.textContent = `Showing ${songsToRender.length} of ${cachedCategorySongs.length} songs`;
     }
 
-    if (filtered.length === 0) {
+    if (songsToRender.length === 0) {
       tableBody.innerHTML = `
         <div class="dash-empty-state">
           <span>🔍</span>
-          <p>No songs found matching "${escapeHtml(query)}" in this playlist.</p>
+          <p>No songs found matching your search.</p>
         </div>
       `;
       return;
     }
 
-    const isTitleFocus = activeQuickFilter === 'edit-title';
-    const isSingerFocus = activeQuickFilter === 'edit-singer';
-    const catObj = CATEGORIES.find(c => c.id === activeCategory);
+    tableBody.innerHTML = songsToRender.map(song => {
+      const songId = song.id || song.videoId || 'unknown';
+      const songTitle = song.name || song.title || 'Untitled Song';
+      const singerName = song.singer || song.singerEn || 'Unknown Artist';
+      const duration = song.duration || '--:--';
+      const thumb = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+      const catName = activeCategory?.name || 'Playlist';
 
-    tableBody.innerHTML = filtered.map(s => {
-      const sid = s.id;
-      const name = s.name || s.title || 'Untitled Song';
-      const singer = s.singer || 'Artist';
-      const duration = s.duration || '--:--';
-      const thumb = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+      // Action Button based on activeFeature
+      let actionBtnHtml = '';
+      if (activeFeature === 'delete-song') {
+        actionBtnHtml = `
+          <button type="button" class="btn-action-delete" data-song-id="${songId}">
+            <span>🗑️</span> <span>Delete</span>
+          </button>
+        `;
+      } else if (activeFeature === 'edit-singer') {
+        actionBtnHtml = `
+          <button type="button" class="btn-action-edit-singer" data-song-id="${songId}">
+            <span>🎤</span> <span>Edit Singer</span>
+          </button>
+        `;
+      } else if (activeFeature === 'edit-song-name') {
+        actionBtnHtml = `
+          <button type="button" class="btn-action-edit-title" data-song-id="${songId}">
+            <span>✏️</span> <span>Edit Title</span>
+          </button>
+        `;
+      }
 
       return `
-        <div class="song-row-item" id="songRow_${sid}">
+        <div class="song-row-item" data-song-id="${songId}">
           <div>
-            <img src="${escapeHtml(thumb)}" class="song-cover-thumb" alt="${escapeHtml(name)}" onerror="this.src='images/playx_icon.png'">
+            <img src="${escapeHtml(thumb)}" class="song-cover-thumb" alt="${escapeHtml(songTitle)}" loading="lazy" onerror="this.src='images/playx_icon.png'">
           </div>
-
-          <div class="song-title-cell ${isTitleFocus ? 'focus-highlight' : ''}">
-            <span class="song-title-text" id="rowTitle_${sid}" title="${escapeHtml(name)}">${escapeHtml(name)}</span>
+          <div class="song-title-cell" title="${escapeHtml(songTitle)}">
+            ${escapeHtml(songTitle)}
           </div>
-
-          <div class="song-singer-cell ${isSingerFocus ? 'focus-highlight' : ''}">
-            <span class="song-singer-text" id="rowSinger_${sid}">🎤 ${escapeHtml(singer)}</span>
+          <div class="song-singer-cell" title="${escapeHtml(singerName)}">
+            🎤 ${escapeHtml(singerName)}
           </div>
-
-          <div>
-            <span class="cat-badge-cell">
-              <span>${catObj ? catObj.icon : '📁'}</span>
-              <span>${catObj ? catObj.name : 'Music'}</span>
-            </span>
+          <div class="cat-badge-cell">
+            <span class="cat-mini-badge">${escapeHtml(catName)}</span>
           </div>
-
-          <div class="duration-cell">${duration}</div>
-
+          <div class="duration-cell">
+            ⏱️ ${escapeHtml(duration)}
+          </div>
           <div class="row-actions-cell">
-            <button type="button" class="btn-action-edit" data-song-id="${sid}" title="Edit Song Title & Singer">
-              <span>✏️</span> <span>Edit</span>
-            </button>
-            <button type="button" class="btn-action-delete" data-song-id="${sid}" title="Delete song">
-              <span>🗑️</span> <span>Delete</span>
-            </button>
+            ${actionBtnHtml}
           </div>
         </div>
       `;
     }).join('');
 
-    // Attach click listeners to Edit buttons
-    tableBody.querySelectorAll('.btn-action-edit').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const sid = btn.getAttribute('data-song-id');
-        const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
-        if (song) openEditSongModal(song);
-      });
-    });
-
-    // Attach click listeners to Delete buttons
-    tableBody.querySelectorAll('.btn-action-delete').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const sid = btn.getAttribute('data-song-id');
-        const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
-        if (song) openDeleteSongModal(song);
-      });
-    });
-  }
-
-  /* =========================================================
-     4. EDIT SONG NAME & SINGER NAME MODAL
-     ========================================================= */
-  function initModals() {
-    // Edit Modal close handlers
-    const editClose = document.getElementById('btnEditModalClose');
-    const editCancel = document.getElementById('btnEditModalCancel');
-    const editOverlay = document.getElementById('modalEditSong');
-    if (editClose) editClose.addEventListener('click', closeEditSongModal);
-    if (editCancel) editCancel.addEventListener('click', closeEditSongModal);
-    if (editOverlay) {
-      editOverlay.addEventListener('click', (e) => {
-        if (e.target === editOverlay) closeEditSongModal();
-      });
-    }
-
-    // Delete Modal close handlers
-    const delClose = document.getElementById('btnDeleteModalClose');
-    const delCancel = document.getElementById('btnDeleteModalCancel');
-    const delOverlay = document.getElementById('modalDeleteSong');
-    if (delClose) delClose.addEventListener('click', closeDeleteSongModal);
-    if (delCancel) delCancel.addEventListener('click', closeDeleteSongModal);
-    if (delOverlay) {
-      delOverlay.addEventListener('click', (e) => {
-        if (e.target === delOverlay) closeDeleteSongModal();
-      });
-    }
-
-    // Edit Form Submit
-    const editForm = document.getElementById('formEditSong');
-    if (editForm) {
-      editForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await handleSaveSongEdit();
-      });
-    }
-
-    // Delete Confirm Button
-    const delConfirmBtn = document.getElementById('btnDeleteModalConfirm');
-    if (delConfirmBtn) {
-      delConfirmBtn.addEventListener('click', async () => {
-        await handleConfirmSongDelete();
-      });
-    }
-  }
-
-  function openEditSongModal(song) {
-    pendingEditSong = song;
-    const overlay = document.getElementById('modalEditSong');
-    const idInput = document.getElementById('editModalSongId');
-    const catInput = document.getElementById('editModalCategoryKey');
-    const titleInput = document.getElementById('inputEditSongTitle');
-    const singerInput = document.getElementById('inputEditSongSinger');
-    const tagInput = document.getElementById('inputEditSongTag');
-    const idDisplay = document.getElementById('displayEditSongId');
-    const alertMsg = document.getElementById('editModalMsg');
-
-    if (!overlay) return;
-    if (alertMsg) alertMsg.style.display = 'none';
-
-    idInput.value = song.id || '';
-    catInput.value = activeCategory;
-    titleInput.value = song.name || song.title || '';
-    singerInput.value = song.singer || '';
-    tagInput.value = song.tag || '';
-    idDisplay.value = `#${song.id || ''}`;
-
-    overlay.style.display = 'flex';
-    titleInput.focus();
-    titleInput.select();
-  }
-
-  function closeEditSongModal() {
-    const overlay = document.getElementById('modalEditSong');
-    if (overlay) overlay.style.display = 'none';
-    pendingEditSong = null;
-  }
-
-  async function handleSaveSongEdit() {
-    if (!pendingEditSong) return;
-
-    const titleInput = document.getElementById('inputEditSongTitle');
-    const singerInput = document.getElementById('inputEditSongSinger');
-    const tagInput = document.getElementById('inputEditSongTag');
-    const saveBtn = document.getElementById('btnEditModalSave');
-    const alertMsg = document.getElementById('editModalMsg');
-
-    const newTitle = (titleInput.value || '').trim();
-    const newSinger = (singerInput.value || '').trim();
-    const newTag = (tagInput.value || '').trim();
-
-    if (!newTitle) {
-      alert('Song name cannot be empty.');
-      titleInput.focus();
-      return;
-    }
-
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = `<div class="spinner-large" style="width:18px;height:18px;border-width:2px;margin:0;"></div> <span>Saving...</span>`;
-
-    const songId = pendingEditSong.id;
-    const catObj = CATEGORIES.find(c => c.id === activeCategory);
-
-    try {
-      let updateSuccess = false;
-
-      // Strategy 1: Local / Cloud Backend API
-      try {
-        const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
-        const apiBase = getApiBase();
-        const res = await fetch(`${apiBase}/api/update-song`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
-          },
-          body: JSON.stringify({
-            category: activeCategory,
-            id: songId,
-            name: newTitle,
-            nameEn: newTitle,
-            singer: newSinger,
-            singerEn: newSinger,
-            tag: newTag
-          })
+    // Attach Action Listeners
+    if (activeFeature === 'delete-song') {
+      tableBody.querySelectorAll('.btn-action-delete').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sid = btn.getAttribute('data-song-id');
+          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+          if (song) openDeleteModal(song);
         });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success) {
-            updateSuccess = true;
-          }
-        }
-      } catch (apiErr) {
-        // Fallback to GitHub Direct Commit
-      }
-
-      // Strategy 2: GitHub Direct Commit with PLAYX_TOKEN
-      if (!updateSuccess) {
-        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
-        if (!ghToken) {
-          throw new Error('Server unreachable and no GitHub Token configured. Please open "⚙️ Settings & GitHub PAT" to save your PLAYX_TOKEN.');
-        }
-
-        saveBtn.innerHTML = `<div class="spinner-large" style="width:18px;height:18px;border-width:2px;margin:0;"></div> <span>Pushing to GitHub...</span>`;
-        await updateSongOnGitHubDirect(activeCategory, songId, { name: newTitle, singer: newSinger, tag: newTag }, ghToken);
-        updateSuccess = true;
-      }
-
-      // Update in local cached array
-      pendingEditSong.name = newTitle;
-      pendingEditSong.nameEn = newTitle;
-      pendingEditSong.singer = newSinger;
-      pendingEditSong.singerEn = newSinger;
-      if (newTag) pendingEditSong.tag = newTag;
-
-      // Update DOM row directly
-      const titleCell = document.getElementById(`rowTitle_${songId}`);
-      const singerCell = document.getElementById(`rowSinger_${songId}`);
-      if (titleCell) {
-        titleCell.textContent = newTitle;
-        titleCell.style.color = 'var(--dash-emerald)';
-        setTimeout(() => { titleCell.style.color = ''; }, 2500);
-      }
-      if (singerCell) {
-        singerCell.textContent = `🎤 ${newSinger}`;
-      }
-
-      showToast('success', `✅ "${newTitle}" updated & committed to origin/main!`);
-      closeEditSongModal();
-    } catch (err) {
-      if (alertMsg) {
-        alertMsg.className = 'modal-alert-msg danger';
-        alertMsg.textContent = 'Error: ' + err.message;
-        alertMsg.style.display = 'block';
-      } else {
-        alert(err.message);
-      }
-    } finally {
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = `<span>💾</span> <span>Save Changes</span>`;
-    }
-  }
-
-  /* =========================================================
-     5. DELETE SONG MODAL & ENGINE
-     ========================================================= */
-  function openDeleteSongModal(song) {
-    pendingDeleteSong = song;
-    const overlay = document.getElementById('modalDeleteSong');
-    const thumb = document.getElementById('deleteModalThumb');
-    const nameEl = document.getElementById('deleteModalSongName');
-    const singerEl = document.getElementById('deleteModalSongSinger');
-    const catEl = document.getElementById('deleteModalCategoryName');
-    const alertMsg = document.getElementById('deleteModalMsg');
-
-    if (!overlay) return;
-    if (alertMsg) alertMsg.style.display = 'none';
-
-    const catObj = CATEGORIES.find(c => c.id === activeCategory);
-    const thumbUrl = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
-
-    thumb.src = thumbUrl;
-    nameEl.textContent = song.name || song.title || 'Untitled Song';
-    singerEl.textContent = `🎤 ${song.singer || 'Artist'} • ID #${song.id}`;
-    catEl.textContent = catObj ? `${catObj.icon} ${catObj.name}` : activeCategory;
-
-    overlay.style.display = 'flex';
-  }
-
-  function closeDeleteSongModal() {
-    const overlay = document.getElementById('modalDeleteSong');
-    if (overlay) overlay.style.display = 'none';
-    pendingDeleteSong = null;
-  }
-
-  async function handleConfirmSongDelete() {
-    if (!pendingDeleteSong) return;
-
-    const confirmBtn = document.getElementById('btnDeleteModalConfirm');
-    const alertMsg = document.getElementById('deleteModalMsg');
-    const songId = pendingDeleteSong.id;
-    const songName = pendingDeleteSong.name || pendingDeleteSong.title || 'Song';
-    const catObj = CATEGORIES.find(c => c.id === activeCategory);
-
-    confirmBtn.disabled = true;
-    confirmBtn.innerHTML = `<div class="spinner-large" style="width:18px;height:18px;border-width:2px;margin:0;"></div> <span>Deleting...</span>`;
-
-    try {
-      let deleteSuccess = false;
-
-      // Strategy 1: Backend API
-      try {
-        const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
-        const apiBase = getApiBase();
-        const res = await fetch(`${apiBase}/api/delete-song`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
-          },
-          body: JSON.stringify({ category: activeCategory, songId: songId })
+      });
+    } else if (activeFeature === 'edit-singer') {
+      tableBody.querySelectorAll('.btn-action-edit-singer').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sid = btn.getAttribute('data-song-id');
+          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+          if (song) openEditSingerModal(song);
         });
+      });
+    } else if (activeFeature === 'edit-song-name') {
+      tableBody.querySelectorAll('.btn-action-edit-title').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const sid = btn.getAttribute('data-song-id');
+          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+          if (song) openEditSongNameModal(song);
+        });
+      });
+    }
+  }
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success) {
-            deleteSuccess = true;
-          }
-        }
-      } catch (apiErr) {
-        // Fallback to GitHub Direct Commit
-      }
+  function initSongListControls() {
+    const searchInput = document.getElementById('songListSearchInput');
+    const clearBtn = document.getElementById('btnSongListClearSearch');
 
-      // Strategy 2: GitHub Direct Commit
-      if (!deleteSuccess) {
-        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
-        if (!ghToken) {
-          throw new Error('Server unreachable and no GitHub Token configured. Please open Settings tab to enter your PLAYX_TOKEN.');
-        }
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const q = (searchInput.value || '').trim().toLowerCase();
+        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
 
-        confirmBtn.innerHTML = `<div class="spinner-large" style="width:18px;height:18px;border-width:2px;margin:0;"></div> <span>Pushing deletion...</span>`;
-        await deleteSongOnGitHubDirect(activeCategory, songId, ghToken);
-        deleteSuccess = true;
-      }
+        const filtered = cachedCategorySongs.filter(s => {
+          if (!q) return true;
+          const name = (s.name || s.title || '').toLowerCase();
+          const singer = (s.singer || s.singerEn || '').toLowerCase();
+          const id = String(s.id || s.videoId || '');
+          return name.includes(q) || singer.includes(q) || id.includes(q);
+        });
+        renderSongsList(filtered);
+      });
+    }
 
-      // Remove from cached array
-      cachedCategorySongs = cachedCategorySongs.filter(s => String(s.id) !== String(songId) && s.videoId !== String(songId));
-      categoryCounts[activeCategory] = cachedCategorySongs.length;
-      renderCategoryPills();
-
-      // Animate row removal
-      const row = document.getElementById(`songRow_${songId}`);
-      if (row) {
-        row.style.transition = 'all 0.35s ease';
-        row.style.opacity = '0';
-        row.style.transform = 'translateX(-25px)';
-        setTimeout(() => row.remove(), 360);
-      }
-
-      showToast('success', `🗑️ "${songName}" permanently deleted & committed to GitHub!`);
-      closeDeleteSongModal();
-      loadAllCategoryStats();
-    } catch (err) {
-      if (alertMsg) {
-        alertMsg.className = 'modal-alert-msg danger';
-        alertMsg.textContent = 'Delete error: ' + err.message;
-        alertMsg.style.display = 'block';
-      } else {
-        alert(err.message);
-      }
-    } finally {
-      confirmBtn.disabled = false;
-      confirmBtn.innerHTML = `<span>🗑️</span> <span>Yes, Permanently Delete</span>`;
+    if (clearBtn && searchInput) {
+      clearBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        renderSongsList(cachedCategorySongs);
+      });
     }
   }
 
   /* =========================================================
-     6. ADD NEW SONG ENGINE (YOUTUBE LINK PARSER)
+     5. FLOW: ADD SONG PAGE (Direct Form after Category)
      ========================================================= */
+  function openAddSongForm(catObj) {
+    activeCategory = catObj;
+
+    const titleEl = document.getElementById('addSongViewTitle');
+    const subEl = document.getElementById('addSongViewSubtitle');
+    const targetCatId = document.getElementById('addSongTargetCatId');
+    const displayCat = document.getElementById('addDisplayCategory');
+    const formMsg = document.getElementById('addSongFormMsg');
+
+    if (titleEl) titleEl.textContent = `Add New Song to ${catObj.name}`;
+    if (subEl) subEl.textContent = `Selected Playlist: ${catObj.name} (${catObj.hindiName})`;
+    if (targetCatId) targetCatId.value = catObj.id;
+    if (displayCat) displayCat.value = `${catObj.icon} ${catObj.name}`;
+    if (formMsg) formMsg.style.display = 'none';
+
+    // Reset inputs
+    const urlInput = document.getElementById('addSongUrlInput');
+    const titleInput = document.getElementById('addInputSongTitle');
+    const singerInput = document.getElementById('addInputSingerName');
+    const durInput = document.getElementById('addInputDuration');
+    const tagInput = document.getElementById('addInputTag');
+    const vidInput = document.getElementById('addInputVideoUrl');
+    const previewBox = document.getElementById('addSongPreviewBox');
+
+    if (urlInput) urlInput.value = '';
+    if (titleInput) titleInput.value = '';
+    if (singerInput) singerInput.value = '';
+    if (durInput) durInput.value = '03:45';
+    if (tagInput) tagInput.value = catObj.defaultTag || 'Hits';
+    if (vidInput) vidInput.value = '';
+    if (previewBox) previewBox.style.display = 'none';
+
+    switchView('viewAddSong');
+  }
+
   function initAddSongSection() {
-    const input = document.getElementById('addSongUrlInput');
-    const analyzeBtn = document.getElementById('addSongAnalyzeBtn');
-    const pasteBtn = document.getElementById('addSongPasteBtn');
+    const urlInput = document.getElementById('addSongUrlInput');
     const clearBtn = document.getElementById('addSongClearBtn');
+    const pasteBtn = document.getElementById('addSongPasteBtn');
+    const analyzeBtn = document.getElementById('addSongAnalyzeBtn');
+    const form = document.getElementById('formAddSongDetails');
+    const cancelBtn = document.getElementById('btnCancelAddSong');
 
-    if (pasteBtn && input) {
+    const titleInput = document.getElementById('addInputSongTitle');
+    const singerInput = document.getElementById('addInputSingerName');
+    const durInput = document.getElementById('addInputDuration');
+    const vidInput = document.getElementById('addInputVideoUrl');
+
+    // Live Preview Binding
+    const updatePreview = () => {
+      const pBox = document.getElementById('addSongPreviewBox');
+      const pTitle = document.getElementById('addSongPreviewTitle');
+      const pSinger = document.getElementById('addSongPreviewSinger');
+      const pCat = document.getElementById('addSongPreviewCat');
+      const pDur = document.getElementById('addSongPreviewDur');
+      const pThumb = document.getElementById('addSongPreviewThumb');
+
+      const t = titleInput?.value.trim();
+      const s = singerInput?.value.trim();
+      if (t || s) {
+        if (pBox) pBox.style.display = 'block';
+        if (pTitle) pTitle.textContent = t || 'Song Title';
+        if (pSinger) pSinger.textContent = s || 'Singer Name';
+        if (pCat) pCat.textContent = activeCategory?.name || 'Playlist';
+        if (pDur) pDur.textContent = durInput?.value.trim() || '03:45';
+
+        // Extract video ID for thumbnail if available
+        let vidId = '';
+        const rawVid = vidInput?.value.trim() || urlInput?.value.trim() || '';
+        if (window.PlayXUrlParser) {
+          const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawVid);
+          if (parsed.valid) vidId = parsed.videoId;
+        }
+        if (!vidId && rawVid.length === 11) vidId = rawVid;
+
+        if (pThumb) {
+          pThumb.src = vidId ? `https://i.ytimg.com/vi/${vidId}/hqdefault.jpg` : 'images/playx_icon.png';
+        }
+      }
+    };
+
+    if (titleInput) titleInput.addEventListener('input', updatePreview);
+    if (singerInput) singerInput.addEventListener('input', updatePreview);
+    if (durInput) durInput.addEventListener('input', updatePreview);
+    if (vidInput) vidInput.addEventListener('input', updatePreview);
+
+    if (clearBtn && urlInput) {
+      clearBtn.addEventListener('click', () => {
+        urlInput.value = '';
+        urlInput.focus();
+      });
+    }
+
+    if (pasteBtn && urlInput) {
       pasteBtn.addEventListener('click', async () => {
         try {
-          const text = await navigator.clipboard.readText();
-          if (text) {
-            input.value = text.trim();
-            analyzeCurrentInput();
+          if (navigator.clipboard && navigator.clipboard.readText) {
+            const text = await navigator.clipboard.readText();
+            urlInput.value = text.trim();
+            showToast('info', 'Pasted URL from clipboard.');
           }
         } catch (e) {
-          input.focus();
+          urlInput.focus();
         }
-      });
-    }
-
-    if (clearBtn && input) {
-      clearBtn.addEventListener('click', () => {
-        input.value = '';
-        renderAddWelcomeShowcase();
-        input.focus();
       });
     }
 
     if (analyzeBtn) {
-      analyzeBtn.addEventListener('click', () => {
-        analyzeCurrentInput();
-      });
-    }
-
-    if (input) {
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          analyzeCurrentInput();
-        }
-      });
-    }
-  }
-
-  async function analyzeCurrentInput() {
-    const input = document.getElementById('addSongUrlInput');
-    const btn = document.getElementById('addSongAnalyzeBtn');
-    const container = document.getElementById('addSongDynamicArea');
-    if (!input || !container) return;
-
-    const raw = (input.value || '').trim();
-    if (!raw) {
-      showToast('error', 'Please enter a valid YouTube link.');
-      input.focus();
-      return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = `<div class="spinner-large" style="width:16px;height:16px;border-width:2px;margin:0;"></div> <span>Analyzing...</span>`;
-
-    container.innerHTML = `
-      <div class="dash-loading-state">
-        <div class="spinner-large"></div>
-        <p>Analyzing YouTube link & fetching metadata...</p>
-      </div>
-    `;
-
-    try {
-      let analysisResult = null;
-
-      // Strategy 1: Backend API
-      try {
-        const apiBase = getApiBase();
-        const res = await fetch(`${apiBase}/api/parse-link`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: raw })
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.valid && data.videoId) {
-            analysisResult = data;
-          }
-        }
-      } catch (apiErr) {}
-
-      // Strategy 2: Client-side URL Parser + YouTube oEmbed fallback
-      if (!analysisResult) {
-        if (!window.PlayXUrlParser) throw new Error('URL Parser module is loading. Please retry.');
-        const parsed = window.PlayXUrlParser.parse(raw);
-        if (!parsed || !parsed.valid || !parsed.videoId) {
-          throw new Error('Invalid YouTube URL. Please check the link and try again.');
-        }
-
-        // Fetch oEmbed
-        let oembed = {};
-        try {
-          const oRes = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${parsed.videoId}&format=json`);
-          if (oRes.ok) oembed = await oRes.json();
-        } catch (oe) {}
-
-        const cleanTitle = cleanVideoTitle(oembed.title || 'New Song');
-        const catSuggestion = window.PlayXCategoryDetector ? window.PlayXCategoryDetector.detect({
-          title: oembed.title || '',
-          cleanTitle: cleanTitle,
-          channelTitle: oembed.author_name || ''
-        }) : { category: 'hindi', categoryDetails: { name: 'Hindi Songs', defaultTag: 'Bollywood Hits' } };
-
-        analysisResult = {
-          valid: true,
-          videoId: parsed.videoId,
-          embedUrl: `https://www.youtube.com/embed/${parsed.videoId}`,
-          cleanTitle: cleanTitle,
-          meta: {
-            title: oembed.title || cleanTitle,
-            singer: oembed.author_name || 'Artist',
-            channelTitle: oembed.author_name || '',
-            thumbnail: `https://i.ytimg.com/vi/${parsed.videoId}/hqdefault.jpg`,
-            duration: '03:45'
-          },
-          categorySuggestion: catSuggestion
-        };
-      }
-
-      currentAnalyzingMeta = analysisResult;
-      renderSongReviewCard(analysisResult);
-    } catch (err) {
-      container.innerHTML = `
-        <div class="dash-empty-state" style="color:var(--dash-danger);">
-          <span>⚠️</span>
-          <p>Failed to analyze video: ${escapeHtml(err.message)}</p>
-          <button type="button" class="btn-hero-secondary" onclick="document.getElementById('addSongUrlInput').focus();" style="margin-top:1rem;">
-            Try Another Link
-          </button>
-        </div>
-      `;
-      showToast('error', err.message);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<span>⚡</span> <span>Analyze Link</span>`;
-    }
-  }
-
-  function renderSongReviewCard(data) {
-    const container = document.getElementById('addSongDynamicArea');
-    if (!container) return;
-
-    const vid = data.videoId;
-    const meta = data.meta || {};
-    const initialTitle = data.cleanTitle || meta.title || 'Untitled Song';
-    const initialSinger = meta.singer || meta.channelTitle || 'Artist';
-    const catSug = data.categorySuggestion || {};
-    const suggestedCatKey = catSug.category || 'hindi';
-    const embedUrl = data.embedUrl || `https://www.youtube.com/embed/${vid}`;
-
-    const categoryOptionsHtml = CATEGORIES.map(c => {
-      const isSel = c.id === suggestedCatKey;
-      return `<option value="${c.id}" ${isSel ? 'selected' : ''}>${c.icon} ${c.name}</option>`;
-    }).join('');
-
-    container.innerHTML = `
-      <div class="review-song-grid">
-        <div class="preview-media-pane">
-          <div class="preview-embed-wrap">
-            <iframe src="${escapeHtml(embedUrl)}?autoplay=0&rel=0" title="YouTube video player" allowfullscreen></iframe>
-          </div>
-          <div style="font-size: 0.8rem; color: var(--dash-text-dim); display:flex; justify-content:space-between;">
-            <span>ID: <code>${vid}</code></span>
-            <span>Auto-Category: <strong>${catSug.categoryDetails?.name || 'Detected'}</strong></span>
-          </div>
-        </div>
-
-        <form id="formApproveAddSong" class="review-form-pane">
-          <div class="review-field-group">
-            <label for="reviewInputTitle">Song Name / Title <span style="color:var(--dash-danger)">*</span></label>
-            <input type="text" id="reviewInputTitle" class="review-input-styled" value="${escapeHtml(initialTitle)}" required>
-          </div>
-
-          <div class="review-field-group">
-            <label for="reviewInputSinger">Singer / Artist Name <span style="color:var(--dash-danger)">*</span></label>
-            <input type="text" id="reviewInputSinger" class="review-input-styled" value="${escapeHtml(initialSinger)}" required>
-          </div>
-
-          <div class="review-field-group">
-            <label for="reviewSelectCategory">Target Playlist / Category <span style="color:var(--dash-danger)">*</span></label>
-            <select id="reviewSelectCategory" class="review-input-styled" style="cursor:pointer;">
-              ${categoryOptionsHtml}
-            </select>
-          </div>
-
-          <div class="review-field-group" id="subCatGroup" style="${suggestedCatKey === 'hindi' ? 'display:flex;' : 'display:none;'}">
-            <label for="reviewSubCategory">Hindi Sub-Category Mood</label>
-            <select id="reviewSubCategory" class="review-input-styled">
-              <option value="Romantic" selected>Romantic</option>
-              <option value="90s Classics">90s Classics</option>
-              <option value="Soulful Melodies">Soulful Melodies</option>
-              <option value="Dance & Beats">Dance & Beats</option>
-            </select>
-          </div>
-
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.75rem;">
-            <div class="review-field-group">
-              <label for="reviewInputTag">Tag / Mood</label>
-              <input type="text" id="reviewInputTag" class="review-input-styled" value="${escapeHtml(catSug.categoryDetails?.defaultTag || 'Hits')}">
-            </div>
-            <div class="review-field-group">
-              <label for="reviewInputDuration">Duration</label>
-              <input type="text" id="reviewInputDuration" class="review-input-styled" value="${escapeHtml(meta.duration || '03:45')}">
-            </div>
-          </div>
-
-          <button type="submit" class="btn-approve-song-save" id="btnApproveSave">
-            <span>💾</span> <span>Approve & Save Song</span>
-          </button>
-        </form>
-      </div>
-    `;
-
-    // Listen to category change to toggle Hindi sub-category
-    const catSelect = document.getElementById('reviewSelectCategory');
-    const subCatGroup = document.getElementById('subCatGroup');
-    if (catSelect && subCatGroup) {
-      catSelect.addEventListener('change', () => {
-        subCatGroup.style.display = (catSelect.value === 'hindi') ? 'flex' : 'none';
-      });
-    }
-
-    // Attach approve submission
-    const approveForm = document.getElementById('formApproveAddSong');
-    if (approveForm) {
-      approveForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        await handleApproveSongSubmit(vid, embedUrl);
-      });
-    }
-  }
-
-  async function handleApproveSongSubmit(videoId, embedUrl) {
-    const saveBtn = document.getElementById('btnApproveSave');
-    const title = (document.getElementById('reviewInputTitle')?.value || '').trim();
-    const singer = (document.getElementById('reviewInputSinger')?.value || '').trim();
-    const catKey = document.getElementById('reviewSelectCategory')?.value || 'hindi';
-    const subCat = document.getElementById('reviewSubCategory')?.value || 'Romantic';
-    const tag = (document.getElementById('reviewInputTag')?.value || '').trim();
-    const duration = (document.getElementById('reviewInputDuration')?.value || '').trim();
-
-    if (!title) {
-      alert('Song title is required.');
-      return;
-    }
-
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = `<div class="spinner-large" style="width:20px;height:20px;border-width:2px;margin:0;"></div> <span>Importing & Pushing to GitHub...</span>`;
-
-    const songPayload = {
-      videoId,
-      embedUrl,
-      title,
-      titleEn: title,
-      singer,
-      singerEn: singer,
-      category: catKey,
-      subCategory: subCat,
-      tag: tag || 'New Song',
-      duration: duration || '03:45',
-      thumbnail: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
-      originalUrl: `https://www.youtube.com/watch?v=${videoId}`
-    };
-
-    try {
-      let importSuccess = false;
-
-      // Strategy 1: Backend Server
-      try {
-        const adminToken = localStorage.getItem('playx_admin_token') || sessionStorage.getItem('playx_admin_secret') || '';
-        const apiBase = getApiBase();
-        const res = await fetch(`${apiBase}/api/import-song`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {})
-          },
-          body: JSON.stringify(songPayload)
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.success) {
-            importSuccess = true;
-          } else if (data && data.duplicateDetails) {
-            throw new Error(`Duplicate Song: Already exists in "${data.duplicateDetails.categoryName}"`);
-          }
-        }
-      } catch (apiErr) {
-        if (apiErr.message.includes('Duplicate Song')) throw apiErr;
-      }
-
-      // Strategy 2: GitHub Direct Commit
-      if (!importSuccess) {
-        const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token');
-        if (!ghToken) {
-          throw new Error('Server unreachable and no GitHub Token configured. Please open Settings tab to enter your PLAYX_TOKEN.');
-        }
-
-        saveBtn.innerHTML = `<div class="spinner-large" style="width:20px;height:20px;border-width:2px;margin:0;"></div> <span>Committing to GitHub origin/main...</span>`;
-        await importSongOnGitHubDirect(catKey, songPayload, ghToken);
-        importSuccess = true;
-      }
-
-      showToast('success', `🎉 "${title}" successfully imported and committed to origin/main!`);
-
-      // Reset Input and show success showcase
-      const input = document.getElementById('addSongUrlInput');
-      if (input) input.value = '';
-
-      renderAddWelcomeShowcase();
-      loadAllCategoryStats();
-
-      // If imported category is current, reload playlist
-      if (activeCategory === catKey) {
-        loadCategorySongs(catKey);
-      }
-    } catch (err) {
-      alert(`Import Error:\n${err.message}`);
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = `<span>💾</span> <span>Approve & Save Song</span>`;
-    }
-  }
-
-  function renderAddWelcomeShowcase() {
-    const container = document.getElementById('addSongDynamicArea');
-    if (!container) return;
-    container.innerHTML = `
-      <div class="add-welcome-showcase">
-        <div class="showcase-glow"></div>
-        <div class="showcase-content">
-          <div class="showcase-emoji">🚀</div>
-          <h3>Intelligent Song Importer Ready</h3>
-          <p>Paste a YouTube URL above and click <strong>Analyze Link</strong>. You can review and edit the song title, artist, category, and tag before approving the commit to GitHub.</p>
-          
-          <div class="showcase-features-grid">
-            <div class="feat-pill"><span>🔍</span> <span>Clean Title Sanitization</span></div>
-            <div class="feat-pill"><span>🤖</span> <span>Automatic Linguistic Category Detection</span></div>
-            <div class="feat-pill"><span>🛡️</span> <span>Duplicate Song Prevention</span></div>
-            <div class="feat-pill"><span>⚡</span> <span>Instant GitHub Direct Push</span></div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  /* =========================================================
-     7. CATEGORY STATS & OVERVIEW
-     ========================================================= */
-  async function loadAllCategoryStats() {
-    let totalSongs = 0;
-
-    for (const cat of CATEGORIES) {
-      try {
-        const res = await fetch(`${cat.file}?_t=${Date.now()}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            categoryCounts[cat.id] = data.length;
-            totalSongs += data.length;
-          }
-        }
-      } catch (e) {}
-    }
-
-    const totalEl = document.getElementById('statTotalSongs');
-    if (totalEl) totalEl.textContent = totalSongs.toLocaleString();
-
-    renderCategoryPills();
-    renderOverviewCategoryCards();
-  }
-
-  function renderOverviewCategoryCards() {
-    const container = document.getElementById('dashOverviewCategoryGrid');
-    if (!container) return;
-
-    container.innerHTML = CATEGORIES.map(cat => {
-      const count = categoryCounts[cat.id] !== undefined ? categoryCounts[cat.id] : '...';
-      return `
-        <div class="cat-overview-card" onclick="window.manageSpecificCategory('${cat.id}')">
-          <div class="cat-card-top">
-            <span class="cat-card-icon">${cat.icon}</span>
-            <span class="cat-card-count">${count}</span>
-          </div>
-          <div class="cat-card-title">${cat.name}</div>
-          <div class="cat-card-desc">Click to manage & edit songs in this playlist</div>
-        </div>
-      `;
-    }).join('');
-
-    const refreshBtn = document.getElementById('btnRefreshCategories');
-    if (refreshBtn) {
-      refreshBtn.onclick = () => {
-        loadAllCategoryStats();
-        showToast('info', 'Refreshed category song counts.');
-      };
-    }
-  }
-
-  window.manageSpecificCategory = function (catId) {
-    activeCategory = catId;
-    switchDashTab('manage-songs');
-    renderCategoryPills();
-    loadCategorySongs(catId);
-  };
-
-  async function loadRecentHistory() {
-    const container = document.getElementById('dashRecentHistoryList');
-    if (!container) return;
-
-    try {
-      const apiBase = getApiBase();
-      const res = await fetch(`${apiBase}/api/recent-imports`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data && Array.isArray(data.recentImports) && data.recentImports.length > 0) {
-          container.innerHTML = data.recentImports.slice(0, 5).map(item => `
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.6rem 0;border-bottom:1px solid var(--dash-border);">
-              <div>
-                <strong style="color:var(--dash-text);font-size:0.9rem;">${escapeHtml(item.name)}</strong>
-                <div style="font-size:0.78rem;color:var(--dash-text-muted);">🎤 ${escapeHtml(item.singer || 'Artist')} • 📁 ${escapeHtml(item.categoryName || 'Music')}</div>
-              </div>
-              <span style="font-size:0.75rem;color:var(--dash-emerald);font-weight:700;">✅ Approved</span>
-            </div>
-          `).join('');
+      analyzeBtn.addEventListener('click', async () => {
+        const rawUrl = (urlInput?.value || '').trim();
+        if (!rawUrl) {
+          showToast('error', 'Please paste a YouTube or YouTube Music link first.');
           return;
         }
-      }
-    } catch (e) {}
 
-    container.innerHTML = `<p style="color:var(--dash-text-muted);font-size:0.85rem;">Recent additions will appear here automatically.</p>`;
+        analyzeBtn.disabled = true;
+        document.getElementById('analyzeIcon').textContent = '⏳';
+        document.getElementById('analyzeText').textContent = 'Analyzing...';
+
+        try {
+          let videoId = '';
+          if (window.PlayXUrlParser) {
+            const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawUrl);
+            if (parsed.valid) videoId = parsed.videoId;
+          }
+
+          let fetchedTitle = '';
+          let fetchedArtist = '';
+          let fetchedDuration = '03:45';
+
+          // Try backend /api/parse-link
+          try {
+            const apiBase = getApiBase();
+            const res = await fetch(`${apiBase}/api/parse-link`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ url: rawUrl })
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && data.metadata) {
+                fetchedTitle = data.metadata.title || '';
+                fetchedArtist = data.metadata.artist || '';
+                if (data.metadata.duration) fetchedDuration = data.metadata.duration;
+                if (data.metadata.videoId) videoId = data.metadata.videoId;
+              }
+            }
+          } catch (e) {}
+
+          // Fallback to client oEmbed if title still empty
+          if (!fetchedTitle && videoId) {
+            try {
+              const oeRes = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`);
+              if (oeRes.ok) {
+                const oe = await oeRes.json();
+                if (oe && oe.title) {
+                  fetchedTitle = cleanVideoTitle(oe.title);
+                  fetchedArtist = oe.author_name || '';
+                }
+              }
+            } catch (e) {}
+          }
+
+          if (fetchedTitle && titleInput) titleInput.value = fetchedTitle;
+          if (fetchedArtist && singerInput) singerInput.value = fetchedArtist;
+          if (fetchedDuration && durInput) durInput.value = fetchedDuration;
+          if (videoId && vidInput) vidInput.value = `https://www.youtube.com/watch?v=${videoId}`;
+
+          updatePreview();
+          showToast('success', 'YouTube metadata analyzed and populated!');
+        } catch (err) {
+          showToast('error', `Could not analyze link: ${err.message}`);
+        } finally {
+          analyzeBtn.disabled = false;
+          document.getElementById('analyzeIcon').textContent = '⚡';
+          document.getElementById('analyzeText').textContent = 'Analyze';
+        }
+      });
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        openFeatureCategorySelect('add-song');
+      });
+    }
+
+    // Form Submit: Save Song to Database
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const catId = activeCategory?.id;
+        const title = (titleInput?.value || '').trim();
+        const singer = (singerInput?.value || '').trim();
+        const duration = (durInput?.value || '').trim() || '03:45';
+        const tag = (document.getElementById('addInputTag')?.value || '').trim() || 'Hits';
+        const rawVid = (vidInput?.value || urlInput?.value || '').trim();
+
+        const formMsg = document.getElementById('addSongFormMsg');
+        const saveBtn = document.getElementById('btnSaveNewSong');
+        const saveIcon = document.getElementById('saveNewSongIcon');
+        const saveText = document.getElementById('saveNewSongText');
+
+        if (!title || !singer) {
+          if (formMsg) {
+            formMsg.className = 'form-alert-msg error';
+            formMsg.textContent = 'Please provide both Song Name and Singer Name.';
+            formMsg.style.display = 'block';
+          }
+          return;
+        }
+
+        // Parse Video ID
+        let videoId = '';
+        if (window.PlayXUrlParser) {
+          const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawVid);
+          if (parsed.valid) videoId = parsed.videoId;
+        }
+        if (!videoId && rawVid.length === 11) videoId = rawVid;
+        if (!videoId) {
+          // Generate pseudo video ID for custom/local tracks if none provided
+          videoId = 'playx_' + Date.now().toString(36);
+        }
+
+        const songRecord = {
+          title: title,
+          singer: singer,
+          duration: duration,
+          tag: tag,
+          category: catId,
+          videoId: videoId,
+          url: rawVid || `https://www.youtube.com/watch?v=${videoId}`
+        };
+
+        saveBtn.disabled = true;
+        saveIcon.textContent = '⏳';
+        saveText.textContent = 'Saving to Database...';
+        if (formMsg) formMsg.style.display = 'none';
+
+        try {
+          let savedSuccessfully = false;
+
+          // Attempt 1: POST /api/import-song on backend
+          try {
+            const apiBase = getApiBase();
+            const token = localStorage.getItem('playx_admin_token') || '';
+            const res = await fetch(`${apiBase}/api/import-song`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                category: catId,
+                title: title,
+                titleEn: title,
+                singer: singer,
+                singerEn: singer,
+                duration: duration,
+                tag: tag,
+                url: songRecord.url,
+                videoId: videoId,
+                password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+              })
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success) savedSuccessfully = true;
+            }
+          } catch (netErr) {}
+
+          // Attempt 2: Direct GitHub commit fallback
+          if (!savedSuccessfully) {
+            const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
+            if (ghToken) {
+              await importSongOnGitHubDirect(catId, songRecord, ghToken);
+              savedSuccessfully = true;
+            }
+          }
+
+          if (savedSuccessfully) {
+            showToast('success', `✅ '${title}' saved successfully to ${activeCategory.name}!`);
+            if (formMsg) {
+              formMsg.className = 'form-alert-msg success';
+              formMsg.textContent = `Song '${title}' was successfully saved to the database.`;
+              formMsg.style.display = 'block';
+            }
+
+            // Update local count
+            activeCategory.count = (activeCategory.count || 0) + 1;
+            loadCategoriesDynamic();
+
+            setTimeout(() => {
+              openSongListPage(activeCategory, 'edit-song-name');
+            }, 1200);
+          } else {
+            throw new Error('Could not connect to backend server and no GitHub PAT was found in Settings.');
+          }
+        } catch (err) {
+          if (formMsg) {
+            formMsg.className = 'form-alert-msg error';
+            formMsg.textContent = `Error saving song: ${err.message}`;
+            formMsg.style.display = 'block';
+          }
+          showToast('error', `Failed to save song: ${err.message}`);
+        } finally {
+          saveBtn.disabled = false;
+          saveIcon.textContent = '💾';
+          saveText.textContent = 'Save Song to Database';
+        }
+      });
+    }
   }
 
   /* =========================================================
-     8. SETTINGS & GITHUB PAT CONFIGURATION
+     6. MODALS: EDIT SINGER, EDIT SONG NAME, DELETE CONFIRM
      ========================================================= */
-  function initSettingsSection() {
+  function initActionModals() {
+    // 1. Edit Singer Modal
+    const formSinger = document.getElementById('formEditSinger');
+    const closeSingerBtn = document.getElementById('btnEditSingerClose');
+    const cancelSingerBtn = document.getElementById('btnEditSingerCancel');
+
+    const closeSinger = () => {
+      document.getElementById('modalEditSinger').style.display = 'none';
+    };
+    if (closeSingerBtn) closeSingerBtn.addEventListener('click', closeSinger);
+    if (cancelSingerBtn) cancelSingerBtn.addEventListener('click', closeSinger);
+
+    if (formSinger) {
+      formSinger.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const songId = document.getElementById('editSingerSongId')?.value;
+        const newSinger = (document.getElementById('inputEditSingerValue')?.value || '').trim();
+        const msgEl = document.getElementById('editSingerMsg');
+        const saveBtn = document.getElementById('btnEditSingerSave');
+        const saveIcon = document.getElementById('editSingerSaveIcon');
+        const saveText = document.getElementById('editSingerSaveText');
+
+        if (!newSinger) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = 'Please enter a valid singer/artist name.';
+            msgEl.style.display = 'block';
+          }
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveIcon.textContent = '⏳';
+        saveText.textContent = 'Saving...';
+        if (msgEl) msgEl.style.display = 'none';
+
+        try {
+          await executeUpdateSong({ singer: newSinger, singerEn: newSinger }, songId);
+
+          // Update cached array
+          const song = cachedCategorySongs.find(s => String(s.id) === String(songId) || s.videoId === String(songId));
+          if (song) {
+            song.singer = newSinger;
+            song.singerEn = newSinger;
+          }
+
+          renderSongsList(cachedCategorySongs);
+          closeSinger();
+          showToast('success', `✅ Singer name updated to: ${newSinger}`);
+        } catch (err) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = `Error: ${err.message}`;
+            msgEl.style.display = 'block';
+          }
+          showToast('error', `Update failed: ${err.message}`);
+        } finally {
+          saveBtn.disabled = false;
+          saveIcon.textContent = '💾';
+          saveText.textContent = 'Save Singer Name';
+        }
+      });
+    }
+
+    // 2. Edit Song Name Modal
+    const formTitle = document.getElementById('formEditSongName');
+    const closeTitleBtn = document.getElementById('btnEditSongNameClose');
+    const cancelTitleBtn = document.getElementById('btnEditSongNameCancel');
+
+    const closeTitle = () => {
+      document.getElementById('modalEditSongName').style.display = 'none';
+    };
+    if (closeTitleBtn) closeTitleBtn.addEventListener('click', closeTitle);
+    if (cancelTitleBtn) cancelTitleBtn.addEventListener('click', closeTitle);
+
+    if (formTitle) {
+      formTitle.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const songId = document.getElementById('editSongNameSongId')?.value;
+        const newTitle = (document.getElementById('inputEditSongTitleValue')?.value || '').trim();
+        const msgEl = document.getElementById('editSongNameMsg');
+        const saveBtn = document.getElementById('btnEditSongNameSave');
+        const saveIcon = document.getElementById('editSongNameSaveIcon');
+        const saveText = document.getElementById('editSongNameSaveText');
+
+        if (!newTitle) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = 'Please enter a valid song title.';
+            msgEl.style.display = 'block';
+          }
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveIcon.textContent = '⏳';
+        saveText.textContent = 'Saving...';
+        if (msgEl) msgEl.style.display = 'none';
+
+        try {
+          await executeUpdateSong({ name: newTitle, nameEn: newTitle }, songId);
+
+          // Update cached array
+          const song = cachedCategorySongs.find(s => String(s.id) === String(songId) || s.videoId === String(songId));
+          if (song) {
+            song.name = newTitle;
+            song.nameEn = newTitle;
+          }
+
+          renderSongsList(cachedCategorySongs);
+          closeTitle();
+          showToast('success', `✅ Song title updated to: ${newTitle}`);
+        } catch (err) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = `Error: ${err.message}`;
+            msgEl.style.display = 'block';
+          }
+          showToast('error', `Update failed: ${err.message}`);
+        } finally {
+          saveBtn.disabled = false;
+          saveIcon.textContent = '💾';
+          saveText.textContent = 'Save Song Name';
+        }
+      });
+    }
+
+    // 3. Delete Song Modal
+    const closeDelBtn = document.getElementById('btnDeleteModalClose');
+    const cancelDelBtn = document.getElementById('btnDeleteModalCancel');
+    const confirmDelBtn = document.getElementById('btnDeleteModalConfirm');
+
+    const closeDel = () => {
+      document.getElementById('modalDeleteSong').style.display = 'none';
+    };
+    if (closeDelBtn) closeDelBtn.addEventListener('click', closeDel);
+    if (cancelDelBtn) cancelDelBtn.addEventListener('click', closeDel);
+
+    if (confirmDelBtn) {
+      confirmDelBtn.addEventListener('click', async () => {
+        if (!selectedSongForAction) return;
+
+        const songId = selectedSongForAction.id || selectedSongForAction.videoId;
+        const songName = selectedSongForAction.name || selectedSongForAction.title || 'Song';
+        const catId = activeCategory?.id;
+
+        const msgEl = document.getElementById('deleteModalMsg');
+        const iconEl = document.getElementById('deleteConfirmIcon');
+        const textEl = document.getElementById('deleteConfirmText');
+
+        confirmDelBtn.disabled = true;
+        iconEl.textContent = '⏳';
+        textEl.textContent = 'Deleting...';
+        if (msgEl) msgEl.style.display = 'none';
+
+        try {
+          let deleted = false;
+
+          // Attempt 1: Backend /api/delete-song
+          try {
+            const apiBase = getApiBase();
+            const token = localStorage.getItem('playx_admin_token') || '';
+            const res = await fetch(`${apiBase}/api/delete-song`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+              },
+              body: JSON.stringify({
+                category: catId,
+                songId: songId,
+                password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+              })
+            });
+
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success) deleted = true;
+            }
+          } catch (netErr) {}
+
+          // Attempt 2: GitHub Direct Commit
+          if (!deleted) {
+            const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
+            if (ghToken) {
+              await deleteSongOnGitHubDirect(catId, songId, ghToken);
+              deleted = true;
+            }
+          }
+
+          if (deleted) {
+            // Remove from cached array immediately
+            const idx = cachedCategorySongs.findIndex(s => String(s.id) === String(songId) || s.videoId === String(songId));
+            if (idx !== -1) cachedCategorySongs.splice(idx, 1);
+
+            // Update category count
+            if (activeCategory) {
+              activeCategory.count = Math.max(0, (activeCategory.count || 1) - 1);
+            }
+            loadCategoriesDynamic();
+
+            renderSongsList(cachedCategorySongs);
+            closeDel();
+            showToast('success', `🗑️ Successfully deleted '${songName}'.`);
+          } else {
+            throw new Error('Backend server is offline and no GitHub PAT was configured in Settings.');
+          }
+        } catch (err) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = `Deletion error: ${err.message}`;
+            msgEl.style.display = 'block';
+          }
+          showToast('error', `Delete failed: ${err.message}`);
+        } finally {
+          confirmDelBtn.disabled = false;
+          iconEl.textContent = '🗑️';
+          textEl.textContent = 'Yes, Permanently Delete';
+        }
+      });
+    }
+  }
+
+  function openEditSingerModal(song) {
+    selectedSongForAction = song;
+    const modal = document.getElementById('modalEditSinger');
+    const songIdInput = document.getElementById('editSingerSongId');
+    const catInput = document.getElementById('editSingerCategoryKey');
+    const thumbImg = document.getElementById('editSingerThumb');
+    const nameDisp = document.getElementById('editSingerSongNameDisplay');
+    const catDisp = document.getElementById('editSingerCategoryDisplay');
+    const valInput = document.getElementById('inputEditSingerValue');
+    const msgEl = document.getElementById('editSingerMsg');
+
+    if (songIdInput) songIdInput.value = song.id || song.videoId;
+    if (catInput) catInput.value = activeCategory?.id || '';
+    if (thumbImg) {
+      thumbImg.src = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+    }
+    if (nameDisp) nameDisp.textContent = song.name || song.title || 'Untitled Song';
+    if (catDisp) catDisp.textContent = activeCategory?.name || 'Playlist';
+    if (valInput) valInput.value = song.singer || song.singerEn || '';
+    if (msgEl) msgEl.style.display = 'none';
+
+    if (modal) modal.style.display = 'flex';
+    if (valInput) valInput.focus();
+  }
+
+  function openEditSongNameModal(song) {
+    selectedSongForAction = song;
+    const modal = document.getElementById('modalEditSongName');
+    const songIdInput = document.getElementById('editSongNameSongId');
+    const catInput = document.getElementById('editSongNameCategoryKey');
+    const thumbImg = document.getElementById('editSongNameThumb');
+    const singerDisp = document.getElementById('editSongNameSingerDisplay');
+    const catDisp = document.getElementById('editSongNameCategoryDisplay');
+    const valInput = document.getElementById('inputEditSongTitleValue');
+    const msgEl = document.getElementById('editSongNameMsg');
+
+    if (songIdInput) songIdInput.value = song.id || song.videoId;
+    if (catInput) catInput.value = activeCategory?.id || '';
+    if (thumbImg) {
+      thumbImg.src = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+    }
+    if (singerDisp) singerDisp.textContent = `🎤 ${song.singer || song.singerEn || 'Unknown Artist'}`;
+    if (catDisp) catDisp.textContent = activeCategory?.name || 'Playlist';
+    if (valInput) valInput.value = song.name || song.title || '';
+    if (msgEl) msgEl.style.display = 'none';
+
+    if (modal) modal.style.display = 'flex';
+    if (valInput) valInput.focus();
+  }
+
+  function openDeleteModal(song) {
+    selectedSongForAction = song;
+    const modal = document.getElementById('modalDeleteSong');
+    const thumbImg = document.getElementById('deleteModalThumb');
+    const nameDisp = document.getElementById('deleteModalSongName');
+    const singerDisp = document.getElementById('deleteModalSongSinger');
+    const catDisp = document.getElementById('deleteModalCategoryName');
+    const msgEl = document.getElementById('deleteModalMsg');
+
+    if (thumbImg) {
+      thumbImg.src = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+    }
+    if (nameDisp) nameDisp.textContent = song.name || song.title || 'Untitled Song';
+    if (singerDisp) singerDisp.textContent = `🎤 ${song.singer || song.singerEn || 'Unknown Artist'}`;
+    if (catDisp) catDisp.textContent = activeCategory?.name || 'Playlist';
+    if (msgEl) msgEl.style.display = 'none';
+
+    if (modal) modal.style.display = 'flex';
+  }
+
+  async function executeUpdateSong(updates, songId) {
+    const catId = activeCategory?.id;
+    let updated = false;
+
+    // Attempt 1: Backend /api/update-song
+    try {
+      const apiBase = getApiBase();
+      const token = localStorage.getItem('playx_admin_token') || '';
+      const res = await fetch(`${apiBase}/api/update-song`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          category: catId,
+          id: songId,
+          songId: songId,
+          name: updates.name,
+          nameEn: updates.nameEn,
+          singer: updates.singer,
+          singerEn: updates.singerEn,
+          tag: updates.tag,
+          password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) updated = true;
+      }
+    } catch (netErr) {}
+
+    // Attempt 2: GitHub Direct Commit
+    if (!updated) {
+      const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
+      if (ghToken) {
+        await updateSongOnGitHubDirect(catId, songId, updates, ghToken);
+        updated = true;
+      }
+    }
+
+    if (!updated) {
+      throw new Error('Backend server is offline and no GitHub PAT was found in Settings.');
+    }
+  }
+
+  /* =========================================================
+     7. SETTINGS MODAL & GITHUB PAT CONFIGURATION
+     ========================================================= */
+  function initSettingsModal() {
+    const settingsBtn = document.getElementById('btnDashSettings');
+    const modal = document.getElementById('modalSettings');
+    const closeBtn = document.getElementById('btnSettingsModalClose');
+    const closeBottomBtn = document.getElementById('btnSettingsCloseBottom');
+
     const tokenInput = document.getElementById('settingsGhTokenInput');
     const eyeBtn = document.getElementById('settingsToggleTokenVis');
     const saveTokenBtn = document.getElementById('settingsSaveTokenBtn');
     const clearTokenBtn = document.getElementById('settingsClearTokenBtn');
-    const testTokenBtn = document.getElementById('btnTestGithubConnection');
 
-    // Populate existing token
-    const savedToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
-    if (tokenInput && savedToken) {
-      tokenInput.value = savedToken;
-    }
+    const apiInput = document.getElementById('settingsApiBaseInput');
+    const saveApiBtn = document.getElementById('settingsSaveApiBaseBtn');
+    const resetApiBtn = document.getElementById('settingsResetApiBaseBtn');
+
+    const openSettings = () => {
+      if (tokenInput) {
+        tokenInput.value = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
+      }
+      if (apiInput) {
+        apiInput.value = localStorage.getItem('playx_backend_url') || getApiBase();
+      }
+      if (modal) modal.style.display = 'flex';
+    };
+
+    const closeSettings = () => {
+      if (modal) modal.style.display = 'none';
+    };
+
+    if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
+    if (closeBtn) closeBtn.addEventListener('click', closeSettings);
+    if (closeBottomBtn) closeBottomBtn.addEventListener('click', closeSettings);
 
     if (eyeBtn && tokenInput) {
       eyeBtn.addEventListener('click', () => {
@@ -1263,13 +1335,13 @@
 
     if (saveTokenBtn && tokenInput) {
       saveTokenBtn.addEventListener('click', () => {
-        const clean = (tokenInput.value || '').trim();
-        if (!clean) {
-          showToast('error', 'Please enter a GitHub Personal Access Token.');
+        const t = (tokenInput.value || '').trim();
+        if (!t) {
+          showToast('error', 'Please enter a valid GitHub PAT.');
           return;
         }
-        localStorage.setItem('playx_token', clean);
-        localStorage.setItem('playx_github_token', clean);
+        localStorage.setItem('playx_token', t);
+        localStorage.setItem('playx_github_token', t);
         showToast('success', '✅ GitHub PAT saved in browser storage.');
         checkSyncStatus();
       });
@@ -1280,53 +1352,18 @@
         localStorage.removeItem('playx_token');
         localStorage.removeItem('playx_github_token');
         tokenInput.value = '';
-        showToast('info', 'GitHub PAT cleared.');
+        showToast('info', 'GitHub PAT removed.');
         checkSyncStatus();
       });
     }
 
-    if (testTokenBtn) {
-      testTokenBtn.addEventListener('click', async () => {
-        const t = (tokenInput?.value || '').trim();
-        if (!t) {
-          showToast('error', 'Enter a token before testing connection.');
-          return;
-        }
-        testTokenBtn.disabled = true;
-        testTokenBtn.textContent = 'Testing connection...';
-        try {
-          const authHeader = t.startsWith('github_pat_') ? `Bearer ${t}` : `token ${t}`;
-          const res = await fetch('https://api.github.com/user', { headers: { 'Authorization': authHeader } });
-          if (res.ok) {
-            const u = await res.json();
-            showToast('success', `✅ Authenticated as GitHub user: ${u.login}`);
-          } else {
-            showToast('error', `❌ GitHub token check failed (${res.status} Bad Credentials).`);
-          }
-        } catch (e) {
-          showToast('error', `Network error: ${e.message}`);
-        } finally {
-          testTokenBtn.disabled = false;
-          testTokenBtn.textContent = '📡 Test GitHub Token Connection';
-        }
-      });
-    }
-
-    // Backend URL settings
-    const apiInput = document.getElementById('settingsApiBaseInput');
-    const saveApiBtn = document.getElementById('settingsSaveApiBaseBtn');
-    const resetApiBtn = document.getElementById('settingsResetApiBaseBtn');
-
-    if (apiInput) {
-      apiInput.value = localStorage.getItem('playx_backend_url') || getApiBase();
-    }
-
     if (saveApiBtn && apiInput) {
       saveApiBtn.addEventListener('click', () => {
-        const val = (apiInput.value || '').trim().replace(/\/$/, '');
-        if (val) {
-          localStorage.setItem('playx_backend_url', val);
-          showToast('success', `Backend URL set to: ${val}`);
+        const u = (apiInput.value || '').trim().replace(/\/$/, '');
+        if (u) {
+          localStorage.setItem('playx_backend_url', u);
+          showToast('success', `Backend URL set to: ${u}`);
+          checkSyncStatus();
         }
       });
     }
@@ -1335,7 +1372,8 @@
       resetApiBtn.addEventListener('click', () => {
         localStorage.removeItem('playx_backend_url');
         apiInput.value = getApiBase();
-        showToast('info', 'Reset backend URL to default.');
+        showToast('info', 'Backend URL reset to default.');
+        checkSyncStatus();
       });
     }
   }
@@ -1352,7 +1390,7 @@
         const data = await res.json();
         if (data && data.server === 'active') {
           if (text) text.textContent = 'Server & Git Connected';
-          if (dot) { dot.className = 'sync-dot green'; }
+          if (dot) dot.className = 'sync-dot green';
           return;
         }
       }
@@ -1360,14 +1398,14 @@
 
     const hasToken = Boolean(localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token'));
     if (text) text.textContent = hasToken ? 'GitHub Direct Push' : 'Standalone / No Token';
-    if (dot) { dot.className = hasToken ? 'sync-dot amber' : 'sync-dot'; }
+    if (dot) dot.className = hasToken ? 'sync-dot amber' : 'sync-dot';
   }
 
   /* =========================================================
-     9. GITHUB REST API DIRECT COMMIT HELPERS
+     8. GITHUB REST API DIRECT COMMIT HELPERS
      ========================================================= */
   async function updateSongOnGitHubDirect(categoryKey, songId, updates, token) {
-    const cat = CATEGORIES.find(c => c.id === categoryKey);
+    const cat = dynamicCategories.find(c => c.id === categoryKey) || DEFAULT_CATEGORIES.find(c => c.id === categoryKey);
     if (!cat) throw new Error('Category not found');
 
     const repo = 'alok706175/PlayX';
@@ -1412,7 +1450,7 @@
 
     if (!putRes.ok) throw new Error(`GitHub Commit failed (${putRes.status})`);
 
-    // If Hindi, also keep hindi_songs_data.js in sync
+    // Synchronize hindi_songs_data.js bundle if Hindi
     if (categoryKey === 'hindi') {
       try {
         const bundlePath = 'hindi-songs/hindi_songs_data.js';
@@ -1440,7 +1478,7 @@
   }
 
   async function deleteSongOnGitHubDirect(categoryKey, songId, token) {
-    const cat = CATEGORIES.find(c => c.id === categoryKey);
+    const cat = dynamicCategories.find(c => c.id === categoryKey) || DEFAULT_CATEGORIES.find(c => c.id === categoryKey);
     if (!cat) throw new Error('Category not found');
 
     const repo = 'alok706175/PlayX';
@@ -1501,7 +1539,7 @@
   }
 
   async function importSongOnGitHubDirect(categoryKey, songData, token) {
-    const cat = CATEGORIES.find(c => c.id === categoryKey);
+    const cat = dynamicCategories.find(c => c.id === categoryKey) || DEFAULT_CATEGORIES.find(c => c.id === categoryKey);
     if (!cat) throw new Error('Category not found');
 
     const repo = 'alok706175/PlayX';
@@ -1517,7 +1555,7 @@
     const songs = JSON.parse(decodeUtf8Base64(meta.content));
 
     // Duplicate check
-    if (songs.some(s => s.videoId === songData.videoId)) {
+    if (songData.videoId && songs.some(s => s.videoId === songData.videoId)) {
       throw new Error(`Duplicate Song: Video ${songData.videoId} already exists in ${cat.name}.`);
     }
 
@@ -1533,17 +1571,17 @@
       nameEn: songData.titleEn || songData.title,
       singer: songData.singer,
       singerEn: songData.singerEn || songData.singer,
-      category: categoryKey === 'hindi' ? (songData.subCategory || 'Romantic') : cat.name,
+      category: categoryKey === 'hindi' ? 'Romantic' : cat.name,
       tag: songData.tag || 'New Song',
       videoId: songData.videoId,
       youtubeId: songData.videoId,
-      embedUrl: songData.embedUrl || `https://www.youtube.com/embed/${songData.videoId}`,
-      originalUrl: songData.originalUrl || `https://www.youtube.com/watch?v=${songData.videoId}`,
+      embedUrl: `https://www.youtube.com/embed/${songData.videoId}`,
+      originalUrl: songData.url || `https://www.youtube.com/watch?v=${songData.videoId}`,
       duration: songData.duration || '03:45',
-      thumbnail: songData.thumbnail || `https://i.ytimg.com/vi/${songData.videoId}/hqdefault.jpg`,
+      thumbnail: `https://i.ytimg.com/vi/${songData.videoId}/hqdefault.jpg`,
       addedAt: new Date().toISOString(),
       status: 'approved',
-      source: 'youtube'
+      source: 'admin'
     };
 
     songs.push(newRecord);
@@ -1606,8 +1644,39 @@
   }
 
   /* =========================================================
-     10. UTILITIES & TOASTS
+     9. THEME & UTILITIES
      ========================================================= */
+  function initThemeToggle() {
+    const btn = document.getElementById('dashThemeToggleBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' || current === 'royal-sunset' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateThemeIcon(next);
+    });
+
+    const saved = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+    updateThemeIcon(saved);
+  }
+
+  function updateThemeIcon(theme) {
+    const sun = document.querySelector('.theme-icon-sun');
+    const moon = document.querySelector('.theme-icon-moon');
+    if (sun && moon) {
+      if (theme === 'light') {
+        sun.style.display = 'inline';
+        moon.style.display = 'none';
+      } else {
+        sun.style.display = 'none';
+        moon.style.display = 'inline';
+      }
+    }
+  }
+
   function showToast(type, message, durationMs = 4000) {
     const container = document.getElementById('adminToastContainer');
     if (!container) return;

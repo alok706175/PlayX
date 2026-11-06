@@ -1,6 +1,6 @@
 /* =========================================================
-   PlayX Dedicated Admin Dashboard Stylesheet
-   Modern Glassmorphism, Responsive Control Center & Theme Engine
+   PlayX Dedicated Admin Dashboard Stylesheet (v2.0)
+   Modern Glassmorphism, 4-Feature Cards Workflow & Theme Engine
    ========================================================= */
 
 :root,
@@ -8,8 +8,8 @@
 [data-theme="royal-sunset"] {
   --dash-bg: #0a0712;
   --dash-bg-subtle: #140d24;
-  --dash-card: rgba(24, 16, 42, 0.76);
-  --dash-card-hover: rgba(35, 24, 62, 0.92);
+  --dash-card: rgba(24, 16, 42, 0.78);
+  --dash-card-hover: rgba(35, 24, 62, 0.94);
   --dash-surface: rgba(255, 255, 255, 0.04);
   --dash-surface-hover: rgba(255, 255, 255, 0.08);
 
@@ -29,6 +29,8 @@
   --dash-emerald-bg: rgba(16, 185, 129, 0.14);
   --dash-danger: #ef4444;
   --dash-danger-bg: rgba(239, 68, 68, 0.15);
+  --dash-purple: #a855f7;
+  --dash-purple-bg: rgba(168, 85, 247, 0.15);
 
   --dash-radius-sm: 8px;
   --dash-radius-md: 14px;
@@ -67,6 +69,8 @@
   --dash-emerald-bg: #d1fae5;
   --dash-danger: #dc2626;
   --dash-danger-bg: #fee2e2;
+  --dash-purple: #9333ea;
+  --dash-purple-bg: #f3e8ff;
 
   --dash-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
   --dash-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
@@ -461,6 +465,7 @@ button {
   text-transform: uppercase;
 }
 
+.dash-settings-btn,
 .dash-theme-btn {
   width: 38px;
   height: 38px;
@@ -470,13 +475,15 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.1rem;
+  color: var(--dash-text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
+.dash-settings-btn:hover,
 .dash-theme-btn:hover {
   background: var(--dash-surface-hover);
+  color: var(--dash-accent);
   border-color: var(--dash-accent);
 }
 
@@ -502,7 +509,7 @@ button {
 }
 
 /* =========================================================
-   3. MAIN CONTENT CONTAINER & HERO
+   3. MAIN VIEW ENGINE & NAVIGATION
    ========================================================= */
 .dash-main-container {
   flex: 1;
@@ -515,25 +522,129 @@ button {
   gap: 1.75rem;
 }
 
-.dash-hero-banner {
+.dash-view {
+  display: none;
+  width: 100%;
+}
+
+.dash-view.active {
+  display: block;
+  animation: dashViewFade 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes dashViewFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Back Navigation Header Bar */
+.view-header-bar {
   display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-dash-back {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding: 1.85rem 2rem;
+  gap: 0.5rem;
+  padding: 0.6rem 1.15rem;
+  background: var(--dash-surface);
+  border: 1.5px solid var(--dash-border);
+  border-radius: var(--dash-radius-pill);
+  color: var(--dash-text);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: var(--dash-shadow-sm);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-dash-back:hover {
+  background: var(--dash-surface-hover);
+  border-color: var(--dash-accent);
+  color: var(--dash-accent);
+  transform: translateX(-3px);
+}
+
+.view-header-title-box {
+  flex: 1;
+}
+
+.view-title {
+  font-size: 1.65rem;
+  font-weight: 850;
+  letter-spacing: -0.015em;
+  margin-top: 0.35rem;
+  margin-bottom: 0.25rem;
+}
+
+.view-subtitle {
+  font-size: 0.9rem;
+  color: var(--dash-text-muted);
+}
+
+.feature-active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--dash-radius-pill);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text);
+}
+
+.feature-active-pill.feat-add {
+  background: var(--dash-emerald-bg);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: var(--dash-emerald);
+}
+
+.feature-active-pill.feat-delete {
+  background: var(--dash-danger-bg);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.feature-active-pill.feat-edit-singer {
+  background: var(--dash-purple-bg);
+  border-color: rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+}
+
+.feature-active-pill.feat-edit-title {
+  background: rgba(255, 184, 0, 0.15);
+  border-color: rgba(255, 184, 0, 0.4);
+  color: var(--dash-accent);
+}
+
+/* =========================================================
+   4. VIEW 1: HERO & 4 FEATURE CARDS GRID
+   ========================================================= */
+.dash-hero-banner {
+  padding: 2rem 2.25rem;
   background: linear-gradient(135deg, rgba(255, 184, 0, 0.08), rgba(233, 30, 99, 0.08)), var(--dash-card);
   border: 1px solid var(--dash-border-subtle);
   border-radius: var(--dash-radius-lg);
   box-shadow: var(--dash-shadow-sm);
   position: relative;
   overflow: hidden;
+  margin-bottom: 1.75rem;
 }
 
 .hero-badge-row {
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.6rem;
 }
 
 .hero-chip {
@@ -553,275 +664,350 @@ button {
 }
 
 .dash-hero-title {
-  font-size: 1.85rem;
-  font-weight: 850;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.015em;
+  font-size: 2rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.4rem;
 }
 
 .dash-hero-desc {
   color: var(--dash-text-muted);
-  font-size: 0.95rem;
-  max-width: 680px;
+  font-size: 0.98rem;
+  max-width: 720px;
 }
 
-.dash-hero-actions {
+/* EXACTLY 4 FEATURE CARDS GRID */
+.feature-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  position: relative;
+  background: var(--dash-card);
+  border: 1.5px solid var(--dash-border);
+  border-radius: var(--dash-radius-lg);
+  padding: 2rem 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  min-width: 200px;
+  justify-content: space-between;
+  min-height: 250px;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: var(--dash-shadow-sm);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 
-.btn-hero-primary {
-  padding: 0.75rem 1.25rem;
-  border: none;
-  border-radius: var(--dash-radius-sm);
-  background: linear-gradient(135deg, #ffb800, #ff5722);
-  color: #fff;
-  font-weight: 750;
-  font-size: 0.92rem;
-  cursor: pointer;
+.feature-card:focus-visible {
+  outline: 2px solid var(--dash-accent);
+  outline-offset: 3px;
+}
+
+.feat-card-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  filter: blur(50px);
+  opacity: 0.25;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+/* Card 1: Add Song */
+.feature-card.feat-add {
+  border-color: rgba(16, 185, 129, 0.25);
+}
+.feature-card.feat-add .feat-card-glow {
+  background: #10b981;
+}
+.feature-card.feat-add .feat-icon-wrapper {
+  background: var(--dash-emerald-bg);
+  border: 1.5px solid rgba(16, 185, 129, 0.4);
+  color: var(--dash-emerald);
+}
+.feature-card.feat-add:hover {
+  transform: translateY(-8px);
+  border-color: #10b981;
+  box-shadow: 0 16px 36px rgba(16, 185, 129, 0.25);
+  background: var(--dash-card-hover);
+}
+.feature-card.feat-add:hover .feat-card-glow {
+  opacity: 0.45;
+  transform: scale(1.2);
+}
+
+/* Card 2: Delete Song */
+.feature-card.feat-delete {
+  border-color: rgba(239, 68, 68, 0.25);
+}
+.feature-card.feat-delete .feat-card-glow {
+  background: #ef4444;
+}
+.feature-card.feat-delete .feat-icon-wrapper {
+  background: var(--dash-danger-bg);
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+.feature-card.feat-delete:hover {
+  transform: translateY(-8px);
+  border-color: #ef4444;
+  box-shadow: 0 16px 36px rgba(239, 68, 68, 0.25);
+  background: var(--dash-card-hover);
+}
+.feature-card.feat-delete:hover .feat-card-glow {
+  opacity: 0.45;
+  transform: scale(1.2);
+}
+
+/* Card 3: Edit Singer Name */
+.feature-card.feat-edit-singer {
+  border-color: rgba(168, 85, 247, 0.25);
+}
+.feature-card.feat-edit-singer .feat-card-glow {
+  background: #a855f7;
+}
+.feature-card.feat-edit-singer .feat-icon-wrapper {
+  background: var(--dash-purple-bg);
+  border: 1.5px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+}
+.feature-card.feat-edit-singer:hover {
+  transform: translateY(-8px);
+  border-color: #a855f7;
+  box-shadow: 0 16px 36px rgba(168, 85, 247, 0.25);
+  background: var(--dash-card-hover);
+}
+.feature-card.feat-edit-singer:hover .feat-card-glow {
+  opacity: 0.45;
+  transform: scale(1.2);
+}
+
+/* Card 4: Edit Song Name */
+.feature-card.feat-edit-title {
+  border-color: rgba(255, 184, 0, 0.25);
+}
+.feature-card.feat-edit-title .feat-card-glow {
+  background: #ffb800;
+}
+.feature-card.feat-edit-title .feat-icon-wrapper {
+  background: rgba(255, 184, 0, 0.15);
+  border: 1.5px solid rgba(255, 184, 0, 0.4);
+  color: var(--dash-accent);
+}
+.feature-card.feat-edit-title:hover {
+  transform: translateY(-8px);
+  border-color: var(--dash-accent);
+  box-shadow: 0 16px 36px rgba(255, 184, 0, 0.25);
+  background: var(--dash-card-hover);
+}
+.feature-card.feat-edit-title:hover .feat-card-glow {
+  opacity: 0.45;
+  transform: scale(1.2);
+}
+
+/* Card Inner Content */
+.feat-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--dash-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  box-shadow: 0 4px 16px rgba(255, 152, 0, 0.35);
-  transition: all 0.2s ease;
+  margin-bottom: 1.35rem;
+  transition: transform 0.25s ease;
 }
 
-.btn-hero-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(255, 152, 0, 0.45);
+.feature-card:hover .feat-icon-wrapper {
+  transform: scale(1.08);
 }
 
-.btn-hero-secondary {
-  padding: 0.65rem 1.25rem;
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-sm);
+.feat-card-title {
+  font-size: 1.35rem;
+  font-weight: 850;
+  margin-bottom: 0.45rem;
   color: var(--dash-text);
-  font-weight: 700;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
+  letter-spacing: -0.01em;
 }
 
-.btn-hero-secondary:hover {
-  background: var(--dash-surface-hover);
-  border-color: var(--dash-cyan);
-  color: var(--dash-cyan);
-}
-
-.btn-hero-ghost {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px dashed var(--dash-border);
-  border-radius: var(--dash-radius-sm);
+.feat-card-desc {
+  font-size: 0.88rem;
   color: var(--dash-text-muted);
-  font-size: 0.82rem;
-  font-weight: 650;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  transition: all 0.2s ease;
+  line-height: 1.45;
+  margin-bottom: 1.5rem;
 }
 
-.btn-hero-ghost:hover {
-  color: var(--dash-text);
-  border-color: var(--dash-text-muted);
+.feat-card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--dash-border);
 }
+
+.feat-action-link {
+  font-size: 0.86rem;
+  font-weight: 750;
+  color: var(--dash-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.feat-action-link .arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover .feat-action-link .arrow {
+  transform: translateX(6px);
+}
+
+/* Quick Summary Ticker */
+.dash-quick-stats-strip {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+  padding: 0.9rem 1.25rem;
+  background: var(--dash-card);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-md);
+  flex-wrap: wrap;
+}
+
+.stats-pill-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  font-weight: 650;
+  color: var(--dash-text-muted);
+}
+
+.stats-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.stats-dot.green { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.stats-dot.blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+.stats-dot.amber { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
 
 /* =========================================================
-   4. STATS OVERVIEW CARDS
+   5. VIEW 2: CATEGORY SELECTION CARDS GRID
    ========================================================= */
-.dash-stats-grid {
+.category-cards-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1.25rem;
 }
 
-.stat-card {
+.category-card-item {
+  position: relative;
   background: var(--dash-card);
   border: 1.5px solid var(--dash-border);
   border-radius: var(--dash-radius-md);
-  padding: 1.25rem 1.35rem;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.stat-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--dash-accent);
-  box-shadow: var(--dash-shadow-md);
-}
-
-.stat-card-header {
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  gap: 1rem;
+  cursor: pointer;
+  box-shadow: var(--dash-shadow-sm);
+  transition: all 0.22s ease;
+  user-select: none;
 }
 
-.stat-label {
-  font-size: 0.78rem;
-  font-weight: 750;
-  text-transform: uppercase;
-  color: var(--dash-text-muted);
-  letter-spacing: 0.04em;
+.category-card-item:hover {
+  transform: translateY(-5px);
+  background: var(--dash-card-hover);
+  border-color: var(--dash-accent);
+  box-shadow: 0 12px 28px rgba(255, 184, 0, 0.18);
 }
 
-.stat-icon {
-  font-size: 1.35rem;
+.cat-item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.stat-value {
-  font-size: 2.1rem;
-  font-weight: 900;
-  line-height: 1.1;
+.cat-item-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--dash-radius-md);
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.category-card-item:hover .cat-item-icon-box {
+  transform: scale(1.1);
+  border-color: var(--dash-accent);
+}
+
+.cat-item-name {
+  font-size: 1.05rem;
+  font-weight: 800;
   color: var(--dash-text);
-  margin-bottom: 0.35rem;
+  margin-bottom: 2px;
 }
 
-.stat-subtext {
+.cat-item-hindi {
   font-size: 0.78rem;
   color: var(--dash-text-dim);
 }
 
-.stat-value.status-active {
-  color: var(--dash-emerald);
-}
-
-/* =========================================================
-   5. TABS NAVIGATION BAR
-   ========================================================= */
-.dash-tabs-bar {
+.cat-item-right {
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
-  padding: 0.45rem;
-  border-radius: var(--dash-radius-md);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
 }
 
-.dash-tab-btn {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  padding: 0.75rem 1.15rem;
-  border: none;
-  background: transparent;
-  color: var(--dash-text-muted);
-  border-radius: var(--dash-radius-sm);
-  font-size: 0.92rem;
-  font-weight: 750;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dash-tab-btn:hover {
-  background: var(--dash-surface);
-  color: var(--dash-text);
-}
-
-.dash-tab-btn.active {
-  background: var(--dash-surface-hover);
-  color: var(--dash-accent);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  border: 1px solid var(--dash-border-subtle);
-}
-
-.tab-badge {
-  font-size: 0.72rem;
-  padding: 0.15rem 0.55rem;
+.cat-count-badge {
+  padding: 0.2rem 0.65rem;
   border-radius: var(--dash-radius-pill);
-  background: rgba(255, 184, 0, 0.16);
-  color: var(--dash-accent);
+  background: var(--dash-cyan-bg);
+  color: var(--dash-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-size: 0.78rem;
   font-weight: 800;
+  white-space: nowrap;
 }
 
-/* Tab Sections */
-.dash-tab-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  animation: tabFade 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+.cat-arrow-icon {
+  font-size: 1.1rem;
+  color: var(--dash-text-dim);
+  transition: transform 0.2s ease, color 0.2s ease;
 }
 
-@keyframes tabFade {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+.category-card-item:hover .cat-arrow-icon {
+  transform: translateX(4px);
+  color: var(--dash-accent);
 }
 
 /* =========================================================
-   6. SONG MANAGEMENT CONTROLS & TABLE
+   6. VIEW 3: SONG LIST PAGE
    ========================================================= */
-.manage-controls-card {
-  background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.category-pills-scroll {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  overflow-x: auto;
-  padding-bottom: 0.35rem;
-  scrollbar-width: thin;
-}
-
-.cat-pill-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.5rem 1rem;
-  border-radius: var(--dash-radius-pill);
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  color: var(--dash-text-muted);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.cat-pill-item:hover {
-  background: var(--dash-surface-hover);
-  color: var(--dash-text);
-  transform: translateY(-1px);
-}
-
-.cat-pill-item.active {
-  background: linear-gradient(135deg, rgba(255, 184, 0, 0.2), rgba(255, 87, 34, 0.2));
-  border-color: var(--dash-accent);
-  color: var(--dash-accent);
-  box-shadow: 0 0 15px var(--dash-accent-glow);
-}
-
-.manage-filter-toolbar {
+.songlist-controls-card {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--dash-card);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-md);
+  margin-bottom: 1.25rem;
   flex-wrap: wrap;
 }
 
@@ -837,16 +1023,16 @@ button {
   position: absolute;
   left: 14px;
   color: var(--dash-text-dim);
-  font-size: 1rem;
+  font-size: 0.95rem;
   pointer-events: none;
 }
 
 .dash-search-input {
   width: 100%;
-  padding: 0.68rem 2.4rem 0.68rem 2.6rem;
+  padding: 0.7rem 2.5rem 0.7rem 2.6rem;
   background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-sm);
+  border: 1.5px solid var(--dash-border);
+  border-radius: var(--dash-radius-pill);
   color: var(--dash-text);
   font-size: 0.92rem;
   outline: none;
@@ -856,6 +1042,7 @@ button {
 .dash-search-input:focus {
   border-color: var(--dash-cyan);
   box-shadow: 0 0 14px var(--dash-cyan-bg);
+  background: var(--dash-surface-hover);
 }
 
 .btn-clear-search {
@@ -865,161 +1052,103 @@ button {
   border: none;
   color: var(--dash-text-dim);
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  padding: 4px;
 }
 
-.manage-quick-filters {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  flex-wrap: wrap;
-}
-
-.filter-chip {
-  padding: 0.45rem 0.85rem;
-  border-radius: var(--dash-radius-pill);
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  color: var(--dash-text-muted);
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filter-chip:hover {
-  background: var(--dash-surface-hover);
-  color: var(--dash-text);
-}
-
-.filter-chip.active {
-  background: var(--dash-cyan-bg);
-  border-color: var(--dash-cyan);
-  color: var(--dash-cyan);
-}
-
-.filter-chip.danger.active {
-  background: var(--dash-danger-bg);
-  border-color: var(--dash-danger);
+.btn-clear-search:hover {
   color: var(--dash-danger);
 }
 
-.manage-stats-pill {
-  font-size: 0.82rem;
+.songlist-count-badge {
+  font-size: 0.85rem;
   font-weight: 700;
-  color: var(--dash-text-dim);
-  white-space: nowrap;
+  color: var(--dash-text-muted);
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--dash-radius-pill);
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
 }
 
-/* =========================================================
-   7. SONGS TABLE / CARD ROWS
-   ========================================================= */
+/* Songs Table */
 .songs-table-container {
   background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
+  border: 1px solid var(--dash-border);
   border-radius: var(--dash-radius-md);
   overflow: hidden;
+  box-shadow: var(--dash-shadow-sm);
 }
 
 .songs-table-header {
   display: grid;
-  grid-template-columns: 70px 2.2fr 1.6fr 1.2fr 90px 180px;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.85rem 1.25rem;
+  grid-template-columns: 70px 2.2fr 1.6fr 1.2fr 100px 150px;
+  padding: 0.9rem 1.25rem;
   background: var(--dash-surface);
   border-bottom: 1px solid var(--dash-border);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--dash-text-dim);
+  align-items: center;
 }
 
 .songs-table-body {
   display: flex;
   flex-direction: column;
-  max-height: 720px;
-  overflow-y: auto;
-  scrollbar-width: thin;
 }
 
 .song-row-item {
   display: grid;
-  grid-template-columns: 70px 2.2fr 1.6fr 1.2fr 90px 180px;
-  align-items: center;
-  gap: 1rem;
+  grid-template-columns: 70px 2.2fr 1.6fr 1.2fr 100px 150px;
   padding: 0.85rem 1.25rem;
   border-bottom: 1px solid var(--dash-border);
-  transition: background 0.2s ease;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+
+.song-row-item:last-child {
+  border-bottom: none;
 }
 
 .song-row-item:hover {
-  background: var(--dash-surface);
+  background: var(--dash-surface-hover);
 }
 
 .song-cover-thumb {
-  width: 58px;
+  width: 54px;
   height: 40px;
   border-radius: 6px;
   object-fit: cover;
   background: #000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .song-title-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-}
-
-.song-title-text {
-  font-weight: 750;
   font-size: 0.92rem;
+  font-weight: 750;
   color: var(--dash-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.song-title-cell.focus-highlight .song-title-text {
-  color: var(--dash-cyan);
-  font-weight: 850;
-  text-shadow: 0 0 10px var(--dash-cyan-bg);
+  padding-right: 1rem;
 }
 
 .song-singer-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-width: 0;
+  font-size: 0.86rem;
   color: var(--dash-text-muted);
-  font-size: 0.85rem;
-}
-
-.song-singer-text {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.song-singer-cell.focus-highlight .song-singer-text {
-  color: var(--dash-accent);
-  font-weight: 850;
+  padding-right: 1rem;
 }
 
 .cat-badge-cell {
   display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.25rem 0.65rem;
+}
+
+.cat-mini-badge {
+  font-size: 0.72rem;
+  font-weight: 750;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--dash-radius-pill);
-  background: var(--dash-surface);
+  background: var(--dash-surface-hover);
   border: 1px solid var(--dash-border);
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--dash-text-muted);
-  white-space: nowrap;
+  color: var(--dash-cyan);
 }
 
 .duration-cell {
@@ -1031,31 +1160,10 @@ button {
 .row-actions-cell {
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  justify-content: flex-end;
+  gap: 0.5rem;
 }
 
-.btn-action-edit {
-  padding: 0.45rem 0.85rem;
-  border-radius: var(--dash-radius-sm);
-  background: var(--dash-cyan-bg);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  color: var(--dash-cyan);
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: all 0.2s ease;
-}
-
-.btn-action-edit:hover {
-  background: var(--dash-cyan);
-  color: #fff;
-  transform: translateY(-1px);
-}
-
+/* Action Buttons inside song row */
 .btn-action-delete {
   padding: 0.45rem 0.85rem;
   border-radius: var(--dash-radius-sm);
@@ -1063,244 +1171,126 @@ button {
   border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 750;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
   transition: all 0.2s ease;
 }
 
 .btn-action-delete:hover {
-  background: var(--dash-danger);
-  color: #ffffff;
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+  transform: translateY(-1px);
+}
+
+.btn-action-edit-singer {
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--dash-radius-sm);
+  background: var(--dash-purple-bg);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #d8b4fe;
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.btn-action-edit-singer:hover {
+  background: #a855f7;
+  color: #fff;
+  border-color: #a855f7;
+  transform: translateY(-1px);
+}
+
+.btn-action-edit-title {
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--dash-radius-sm);
+  background: rgba(255, 184, 0, 0.14);
+  border: 1px solid rgba(255, 184, 0, 0.4);
+  color: #fde047;
+  font-size: 0.82rem;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.btn-action-edit-title:hover {
+  background: #ffb800;
+  color: #000;
+  border-color: #ffb800;
   transform: translateY(-1px);
 }
 
 /* =========================================================
-   8. ADD NEW SONG SECTION
+   7. VIEW 4: ADD SONG PAGE
    ========================================================= */
 .add-song-card {
   background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-lg);
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  box-shadow: var(--dash-shadow-sm);
 }
 
-.card-header-styled {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.header-icon-box {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--dash-radius-md);
-  background: var(--dash-cyan-bg);
-  border: 1px solid rgba(56, 189, 248, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.45rem;
-  color: var(--dash-cyan);
-  flex-shrink: 0;
-}
-
-.card-header-styled h2 {
-  font-size: 1.35rem;
-  font-weight: 850;
-  margin-bottom: 0.25rem;
-}
-
-.card-header-styled p {
-  color: var(--dash-text-muted);
-  font-size: 0.88rem;
-}
-
-.url-input-container {
+.add-song-analyzer-box {
   background: var(--dash-surface);
-  border: 1.5px solid var(--dash-border);
+  border: 1px solid var(--dash-border-subtle);
   border-radius: var(--dash-radius-md);
-  padding: 0.65rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.analyzer-box-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
+}
+
+.analyzer-box-icon {
+  font-size: 1.4rem;
+}
+
+.analyzer-box-header strong {
+  font-size: 0.95rem;
+  color: var(--dash-text);
+  display: block;
+}
+
+.analyzer-box-header p {
+  font-size: 0.82rem;
+  color: var(--dash-text-muted);
 }
 
 .url-input-row {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+  position: relative;
 }
 
 .url-lead-icon {
+  position: absolute;
+  left: 14px;
   color: #ef4444;
-  font-size: 1.2rem;
-  margin-left: 0.5rem;
+  font-size: 1rem;
+  pointer-events: none;
 }
 
 .url-input-field {
   flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--dash-text);
-  font-size: 0.95rem;
-  min-width: 0;
-}
-
-.btn-url-clear {
-  background: transparent;
-  border: none;
-  color: var(--dash-text-dim);
-  cursor: pointer;
-  padding: 0.4rem;
-  font-size: 0.95rem;
-}
-
-.btn-url-paste {
-  padding: 0.5rem 0.95rem;
-  background: var(--dash-surface-hover);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-sm);
-  color: var(--dash-text);
-  font-weight: 650;
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: all 0.2s ease;
-}
-
-.btn-url-analyze {
-  padding: 0.65rem 1.45rem;
-  background: linear-gradient(135deg, #0284c7, #0369a1);
-  border: 1px solid #38bdf8;
-  border-radius: var(--dash-radius-sm);
-  color: #fff;
-  font-weight: 750;
-  font-size: 0.9rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-url-analyze:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.45);
-}
-
-.add-welcome-showcase {
-  padding: 3rem 2rem;
-  background: var(--dash-surface);
-  border: 1px dashed var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  text-align: center;
-}
-
-.showcase-emoji {
-  font-size: 2.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.add-welcome-showcase h3 {
-  font-size: 1.25rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-}
-
-.add-welcome-showcase p {
-  color: var(--dash-text-muted);
-  max-width: 580px;
-  margin: 0 auto 1.5rem;
-  font-size: 0.9rem;
-}
-
-.showcase-features-grid {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.feat-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.95rem;
-  border-radius: var(--dash-radius-pill);
-  background: var(--dash-card);
-  border: 1px solid var(--dash-border);
-  font-size: 0.8rem;
-  font-weight: 650;
-  color: var(--dash-text-muted);
-}
-
-/* Add Song Review Card */
-.review-song-grid {
-  display: grid;
-  grid-template-columns: 1fr 1.35fr;
-  gap: 1.75rem;
-  background: var(--dash-surface);
+  padding: 0.75rem 2.2rem 0.75rem 2.5rem;
+  background: var(--dash-bg-subtle);
   border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  padding: 1.5rem;
-  animation: tabFade 0.3s ease;
-}
-
-.preview-media-pane {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.preview-embed-wrap {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: var(--dash-radius-md);
-  overflow: hidden;
-  background: #000;
-}
-
-.preview-embed-wrap iframe,
-.preview-embed-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border: none;
-}
-
-.review-form-pane {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.review-field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.review-field-group label {
-  font-size: 0.8rem;
-  font-weight: 750;
-  color: var(--dash-text-muted);
-}
-
-.review-input-styled {
-  width: 100%;
-  padding: 0.65rem 0.9rem;
-  background: var(--dash-card);
-  border: 1px solid var(--dash-border);
   border-radius: var(--dash-radius-sm);
   color: var(--dash-text);
   font-size: 0.92rem;
@@ -1308,273 +1298,274 @@ button {
   transition: all 0.2s ease;
 }
 
-.review-input-styled:focus {
-  border-color: var(--dash-accent);
-  box-shadow: 0 0 12px var(--dash-accent-glow);
-}
-
-.btn-approve-song-save {
-  padding: 0.85rem 1.5rem;
-  border: none;
-  border-radius: var(--dash-radius-sm);
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
-  transition: all 0.2s ease;
-  margin-top: 0.5rem;
-}
-
-.btn-approve-song-save:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.55);
-}
-
-/* =========================================================
-   9. CATEGORY OVERVIEW & CARDS
-   ========================================================= */
-.overview-header-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.overview-header-row h2 {
-  font-size: 1.35rem;
-  font-weight: 850;
-  margin-bottom: 0.25rem;
-}
-
-.overview-header-row p {
-  color: var(--dash-text-muted);
-  font-size: 0.88rem;
-}
-
-.btn-refresh-stats {
-  padding: 0.55rem 1rem;
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-pill);
-  color: var(--dash-text);
-  font-size: 0.85rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s ease;
-}
-
-.btn-refresh-stats:hover {
-  background: var(--dash-surface-hover);
+.url-input-field:focus {
   border-color: var(--dash-cyan);
-  color: var(--dash-cyan);
+  box-shadow: 0 0 14px var(--dash-cyan-bg);
 }
 
-.category-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-
-.cat-overview-card {
-  background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  padding: 1.35rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  transition: all 0.25s ease;
-  cursor: pointer;
-}
-
-.cat-overview-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--dash-cyan);
-  box-shadow: var(--dash-shadow-md);
-}
-
-.cat-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.cat-card-icon {
-  font-size: 1.85rem;
-}
-
-.cat-card-count {
-  font-size: 1.65rem;
-  font-weight: 900;
-  color: var(--dash-text);
-}
-
-.cat-card-title {
-  font-weight: 800;
-  font-size: 1rem;
-  color: var(--dash-text);
-}
-
-.cat-card-desc {
-  font-size: 0.78rem;
-  color: var(--dash-text-muted);
-}
-
-/* =========================================================
-   10. SETTINGS & GITHUB PAT CARD
-   ========================================================= */
-.settings-card {
-  background: var(--dash-card);
-  border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-section-box {
-  background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-md);
-  padding: 1.5rem;
-}
-
-.form-section-box h3 {
-  font-size: 1.05rem;
-  font-weight: 800;
-  margin-bottom: 0.4rem;
-}
-
-.section-desc {
-  font-size: 0.85rem;
-  color: var(--dash-text-muted);
-  margin-bottom: 1rem;
-  max-width: 720px;
-}
-
-.token-input-group {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  flex-wrap: wrap;
-}
-
-.token-input-wrapper {
-  position: relative;
-  flex: 1;
-  min-width: 260px;
-  display: flex;
-  align-items: center;
-}
-
-.settings-input {
-  width: 100%;
-  padding: 0.75rem 3rem 0.75rem 1rem;
-  background: var(--dash-card);
-  border: 1px solid var(--dash-border);
-  border-radius: var(--dash-radius-sm);
-  color: var(--dash-text);
-  font-size: 0.9rem;
-  font-family: monospace;
-  outline: none;
-}
-
-.settings-input:focus {
-  border-color: var(--dash-cyan);
-  box-shadow: 0 0 12px var(--dash-cyan-bg);
-}
-
-.btn-toggle-token-eye {
+.btn-url-clear {
   position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
+  right: 210px;
+  background: transparent;
+  border: none;
   color: var(--dash-text-dim);
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  appearance: none;
-  -webkit-appearance: none;
+  font-size: 0.9rem;
+  padding: 4px;
 }
 
-.btn-save-token {
-  padding: 0.75rem 1.25rem;
-  background: var(--dash-cyan);
-  border: 1px solid var(--dash-cyan);
-  border-radius: var(--dash-radius-sm);
-  color: #fff;
-  font-weight: 750;
-  font-size: 0.88rem;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s ease;
-}
-
-.btn-clear-token {
+.btn-url-paste {
   padding: 0.75rem 1.15rem;
   background: var(--dash-surface-hover);
   border: 1px solid var(--dash-border);
   border-radius: var(--dash-radius-sm);
-  color: var(--dash-text-muted);
-  font-weight: 650;
+  color: var(--dash-text);
+  font-weight: 700;
   font-size: 0.88rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.token-helper-links {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  margin-top: 1rem;
-  flex-wrap: wrap;
+.btn-url-paste:hover {
+  background: var(--dash-surface);
+  border-color: var(--dash-text-muted);
 }
 
-.token-guide-btn {
-  padding: 0.45rem 0.85rem;
-  border-radius: var(--dash-radius-pill);
+.btn-url-analyze {
+  padding: 0.75rem 1.45rem;
+  background: linear-gradient(135deg, #ffb800, #ff5722);
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  color: #fff;
+  font-weight: 750;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-url-analyze:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.45);
+}
+
+/* Add Song Form */
+.add-song-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.dash-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.dash-field-group label {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--dash-text-muted);
+}
+
+.dash-field-group .required {
+  color: var(--dash-danger);
+}
+
+.dash-form-input {
+  width: 100%;
+  padding: 0.75rem 0.95rem;
+  background: var(--dash-surface);
+  border: 1.5px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  color: var(--dash-text);
+  font-size: 0.92rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.dash-form-input:focus {
+  border-color: var(--dash-emerald);
+  box-shadow: 0 0 12px var(--dash-emerald-bg);
+}
+
+.dash-form-input.readonly-input {
+  opacity: 0.85;
   background: var(--dash-surface-hover);
-  border: 1px solid var(--dash-border);
-  color: var(--dash-cyan);
-  font-size: 0.78rem;
+  cursor: not-allowed;
+  border-color: var(--dash-border-subtle);
+  color: var(--dash-accent);
   font-weight: 700;
+}
+
+/* Live Song Preview Box */
+.add-song-preview-box {
+  background: var(--dash-surface);
+  border: 1px dashed var(--dash-border);
+  border-radius: var(--dash-radius-md);
+  padding: 1.25rem;
+  margin-top: 0.5rem;
+}
+
+.preview-badge {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: var(--dash-cyan);
+  display: block;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.preview-card-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.preview-thumb {
+  width: 90px;
+  height: 60px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.preview-title {
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: var(--dash-text);
+}
+
+.preview-singer {
+  font-size: 0.9rem;
+  color: var(--dash-text-muted);
+}
+
+.preview-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 2px;
+}
+
+.preview-cat-tag {
+  font-size: 0.72rem;
+  font-weight: 750;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--dash-radius-pill);
+  background: var(--dash-cyan-bg);
+  color: var(--dash-cyan);
+}
+
+.preview-dur-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--dash-text-dim);
+  font-family: monospace;
+}
+
+.form-alert-msg {
+  padding: 0.75rem 1rem;
+  border-radius: var(--dash-radius-sm);
+  font-size: 0.85rem;
+}
+
+.form-alert-msg.error {
+  background: var(--dash-danger-bg);
+  border: 1px solid var(--dash-danger);
+  color: #fca5a5;
+}
+
+.form-alert-msg.success {
+  background: var(--dash-emerald-bg);
+  border: 1px solid var(--dash-emerald);
+  color: #6ee7b7;
+}
+
+.form-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.btn-cancel-add {
+  padding: 0.75rem 1.35rem;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  color: var(--dash-text-muted);
+  font-size: 0.9rem;
+  font-weight: 650;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.token-guide-btn:hover {
-  background: var(--dash-cyan-bg);
-  border-color: var(--dash-cyan);
+.btn-cancel-add:hover {
+  background: var(--dash-surface-hover);
+  color: var(--dash-text);
+}
+
+.btn-submit-add {
+  padding: 0.75rem 1.65rem;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  color: #fff;
+  font-weight: 750;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-submit-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(16, 185, 129, 0.45);
 }
 
 /* =========================================================
-   11. MODALS (Edit Song & Delete Confirm)
+   8. MODALS (Edit Singer, Edit Song Name, Delete, Settings)
    ========================================================= */
 .dash-modal-overlay {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1589,7 +1580,7 @@ button {
 
 .dash-modal-card {
   width: 100%;
-  max-width: 540px;
+  max-width: 520px;
   background: var(--dash-card);
   border: 1.5px solid var(--dash-border);
   border-radius: var(--dash-radius-lg);
@@ -1608,21 +1599,41 @@ button {
   background: var(--dash-surface);
 }
 
+.dash-modal-header.feat-edit-singer-header {
+  background: rgba(168, 85, 247, 0.12);
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.dash-modal-header.feat-edit-title-header {
+  background: rgba(255, 184, 0, 0.12);
+  border-color: rgba(255, 184, 0, 0.3);
+}
+
 .dash-modal-header.danger-header {
   background: var(--dash-danger-bg);
   border-color: rgba(239, 68, 68, 0.3);
 }
 
 .modal-icon-badge {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: var(--dash-radius-sm);
   background: var(--dash-cyan-bg);
   border: 1px solid rgba(56, 189, 248, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
+  font-size: 1.2rem;
+}
+
+.modal-icon-badge.feat-edit-singer-badge {
+  background: var(--dash-purple-bg);
+  border-color: rgba(168, 85, 247, 0.4);
+}
+
+.modal-icon-badge.feat-edit-title-badge {
+  background: rgba(255, 184, 0, 0.15);
+  border-color: rgba(255, 184, 0, 0.4);
 }
 
 .modal-icon-badge.danger {
@@ -1631,12 +1642,12 @@ button {
 }
 
 .dash-modal-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 850;
 }
 
 .modal-subtitle {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   color: var(--dash-text-muted);
 }
 
@@ -1668,14 +1679,46 @@ button {
   gap: 1.15rem;
 }
 
+.modal-song-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--dash-surface);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+}
+
+.modal-thumb-img {
+  width: 60px;
+  height: 44px;
+  border-radius: 6px;
+  object-fit: cover;
+  background: #000;
+}
+
+.modal-summary-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--dash-text);
+}
+
+.modal-summary-cat {
+  font-size: 0.75rem;
+  color: var(--dash-accent);
+  font-weight: 750;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
 .modal-field {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .modal-field label {
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 750;
   color: var(--dash-text-muted);
 }
@@ -1686,7 +1729,7 @@ button {
 
 .modal-input {
   width: 100%;
-  padding: 0.7rem 0.9rem;
+  padding: 0.75rem 0.95rem;
   background: var(--dash-surface);
   border: 1.5px solid var(--dash-border);
   border-radius: var(--dash-radius-sm);
@@ -1699,11 +1742,6 @@ button {
 .modal-input:focus {
   border-color: var(--dash-cyan);
   box-shadow: 0 0 12px var(--dash-cyan-bg);
-}
-
-.modal-field-row {
-  display: flex;
-  gap: 1rem;
 }
 
 .modal-alert-msg {
@@ -1761,9 +1799,19 @@ button {
   transition: all 0.2s ease;
 }
 
+.btn-modal-save.save-singer-btn {
+  background: linear-gradient(135deg, #9333ea, #7e22ce);
+  border-color: #a855f7;
+}
+
+.btn-modal-save.save-title-btn {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #f59e0b;
+}
+
 .btn-modal-save:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 /* Delete Modal Specifics */
@@ -1831,8 +1879,73 @@ button {
   box-shadow: 0 4px 14px rgba(239, 68, 68, 0.4);
 }
 
+/* Settings Modal Specifics */
+.token-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.token-input-wrapper {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.settings-input {
+  width: 100%;
+  padding: 0.7rem 2.5rem 0.7rem 0.85rem;
+  background: var(--dash-surface);
+  border: 1.5px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  color: var(--dash-text);
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.settings-input:focus {
+  border-color: var(--dash-cyan);
+}
+
+.btn-toggle-token-eye {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: var(--dash-text-dim);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-save-token {
+  padding: 0.7rem 1.15rem;
+  background: var(--dash-cyan);
+  border: none;
+  border-radius: var(--dash-radius-sm);
+  color: #fff;
+  font-weight: 750;
+  font-size: 0.85rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-clear-token {
+  padding: 0.7rem 1rem;
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  color: var(--dash-text-muted);
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
 /* =========================================================
-   12. TOAST NOTIFICATIONS
+   9. TOAST NOTIFICATIONS & SPINNERS
    ========================================================= */
 .toast-container {
   position: fixed;
@@ -1882,7 +1995,6 @@ button {
   background: rgba(12, 74, 110, 0.95);
 }
 
-/* Spinner */
 .spinner-large {
   width: 36px;
   height: 36px;
@@ -1938,10 +2050,10 @@ button {
 }
 
 /* =========================================================
-   13. RESPONSIVE MEDIA QUERIES
+   10. RESPONSIVE MEDIA QUERIES
    ========================================================= */
 @media (max-width: 1024px) {
-  .dash-stats-grid {
+  .feature-grid-4 {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1982,24 +2094,18 @@ button {
   }
 
   .dash-hero-banner {
-    flex-direction: column;
-    align-items: stretch;
-    padding: 1.25rem;
+    padding: 1.35rem;
   }
 
-  .dash-hero-actions {
-    min-width: 100%;
+  .dash-hero-title {
+    font-size: 1.5rem;
   }
 
-  .dash-stats-grid {
+  .feature-grid-4 {
     grid-template-columns: 1fr;
   }
 
   .category-cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .review-song-grid {
     grid-template-columns: 1fr;
   }
 
@@ -2008,47 +2114,38 @@ button {
   }
 
   .song-row-item {
-    grid-template-columns: 56px 1fr;
-    grid-template-rows: auto auto auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.6rem;
-    padding: 0.85rem 0.95rem;
+    padding: 1rem;
   }
 
-  .song-cover-thumb {
-    grid-row: 1 / 3;
-    width: 56px;
-    height: 40px;
-  }
-
-  .song-title-cell {
-    grid-column: 2 / 3;
-  }
-
-  .song-singer-cell {
-    grid-column: 2 / 3;
-  }
-
-  .cat-badge-cell {
-    grid-column: 2 / 3;
-    justify-self: start;
+  .song-row-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   .row-actions-cell {
-    grid-column: 1 / 3;
     justify-content: flex-end;
     margin-top: 0.25rem;
     padding-top: 0.5rem;
     border-top: 1px dashed var(--dash-border);
   }
 
-  .dash-tabs-bar {
-    gap: 0.35rem;
-    padding: 0.35rem;
+  .form-grid-2, .form-grid-3 {
+    grid-template-columns: 1fr;
   }
 
-  .dash-tab-btn {
-    padding: 0.6rem 0.75rem;
-    font-size: 0.82rem;
+  .url-input-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-url-clear {
+    right: 14px;
+    top: 14px;
   }
 
   .dash-footer {
