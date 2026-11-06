@@ -20,12 +20,21 @@
   <!-- Core Theme Stylesheet -->
   <link rel="stylesheet" href="dark-light-mode.css">
   <!-- Dedicated Admin Dashboard Stylesheet -->
-  <link rel="stylesheet" href="admin.css?v=2.2">
+  <link rel="stylesheet" href="admin.css?v=2.3">
   <link rel="stylesheet" href="shared/clear-data.css">
   <link rel="stylesheet" href="shared/playx-dialog.css">
 </head>
 
 <body>
+  <!-- Instant Hydration Script: Guarantees zero black screen flash -->
+  <script>
+    (function() {
+      try {
+        var isAuth = localStorage.getItem('playx_admin_logged_in') === 'true';
+        document.documentElement.classList.add(isAuth ? 'admin-authed' : 'admin-locked');
+      } catch (e) {}
+    })();
+  </script>
   <!-- =========================================================
        1. ADMIN AUTHENTICATION GATE (Visible if not logged in)
        ========================================================= -->
@@ -719,7 +728,7 @@
   <script src="shared/clear-data.js"></script>
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="admin.js?v=2.2"></script>
+  <script src="admin.js?v=2.3"></script>
 </body>
 
 </html>

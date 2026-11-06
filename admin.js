@@ -1451,12 +1451,10 @@
         }
       }
     }
-        updated = true;
-      }
-    }
 
     if (!updated) {
-      throw new Error('Backend server is offline and no GitHub PAT was found in Settings.');
+      const detail = backendUpdErr ? `: ${backendUpdErr}` : '';
+      throw new Error(`Failed to update song${detail}. Check server connection or GitHub PAT in Settings.`);
     }
   }
 
