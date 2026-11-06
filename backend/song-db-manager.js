@@ -518,6 +518,9 @@ function formatSongRecord(categoryKey, nextId, inputData) {
   const tag = sanitizeText(inputData.tag || cat?.defaultTag || 'Hits');
   const categoryDisplay = cat?.name || 'PlayX Music';
 
+  const validHindiCats = ['Romantic', '90s Classics', 'Soulful Melodies', 'Dance & Beats'];
+  const hindiCategory = validHindiCats.includes(inputData.subCategory) ? inputData.subCategory : 'Romantic';
+
   // Uniform standard schema across all PlayX playlists
   return {
     id: parseInt(nextId, 10),
@@ -525,7 +528,7 @@ function formatSongRecord(categoryKey, nextId, inputData) {
     nameEn: titleEn,
     singer: singer,
     singerEn: singerEn,
-    category: categoryKey === 'hindi' ? (inputData.subCategory || 'Romantic') : categoryDisplay,
+    category: categoryKey === 'hindi' ? hindiCategory : categoryDisplay,
     tag: tag,
     videoId: videoId,
     youtubeId: videoId,
@@ -577,6 +580,16 @@ function addSongToCategory(categoryKey, songData, options = {}) {
           duplicateDetails: dupCheck
         };
       }
+    }
+
+    // Sync repository with remote origin first to prevent overwriting recent commits
+    try {
+      const gitRemoteCheck = await execShellCommand('git remote');
+      if (gitRemoteCheck.success && gitRemoteCheck.stdout.includes('origin')) {
+        await execShellCommand('git pull --rebase origin main');
+      }
+    } catch (pullErr) {
+      // Non-blocking in offline or detached environments
     }
 
     const targetPath = getCategoryFilePath(categoryKey);
@@ -653,6 +666,16 @@ function deleteSongFromCategory(categoryKey, songId) {
     const cat = categoryDetector.CATEGORIES[categoryKey];
     if (!cat) {
       return { success: false, error: 'Invalid category: ' + categoryKey };
+    }
+
+    // Sync repository with remote origin first to prevent overwriting recent commits
+    try {
+      const gitRemoteCheck = await execShellCommand('git remote');
+      if (gitRemoteCheck.success && gitRemoteCheck.stdout.includes('origin')) {
+        await execShellCommand('git pull --rebase origin main');
+      }
+    } catch (pullErr) {
+      // Non-blocking in offline or detached environments
     }
 
     const targetPath = getCategoryFilePath(categoryKey);

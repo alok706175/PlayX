@@ -31,7 +31,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       chhathPills: ["25+ Sacred Songs", "320 Kbps HD", "Offline Player"],
       hindiTitle: "Hindi Superhit Bollywood Songs",
       hindiDesc: "Evergreen 90s classics, romantic melodies, and dance tracks by Arijit Singh, Sonu Nigam, Lata Mangeshkar, Kumar Sanu, and Alka Yagnik.",
-      hindiPills: ["205 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
+      hindiPills: ["207 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
       saawanTitle: "Saawan Shiv Bhajan & Bol Bam",
       saawanDesc: "Sacred Shiv Bhajans, Kanwar Geet, and Bol Bam devotional melodies by top devotional artists.",
       saawanPills: ["25+ Shiv Bhajans", "HD Audio", "PlayX Special"],
@@ -77,7 +77,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       hindiTitle: "Hindi Song",
       hindiSub: "Evergreen Classics & Romantic Melodies",
       hindiDesc: "Timeless 90s classics, romantic blockbusters, and energetic dance tracks from Arijit Singh, Sonu Nigam, Lata Mangeshkar, and Kumar Sanu.",
-      hindiPills: ["205 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
+      hindiPills: ["207 Classic Hits", "320 Kbps HD", "Dark Mode Player"],
 
       haryanviTitle: "Haryanvi Song",
       haryanviSub: "Sapna Choudhary & DJ Bass Hits",
