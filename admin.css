@@ -993,19 +993,22 @@ button {
   width: 52px;
   height: 52px;
   border-radius: var(--dash-radius-md);
-  background: var(--dash-surface-hover);
-  border: 1px solid var(--dash-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  overflow: hidden;
+  padding: 3px;
+}
+
+.cat-item-icon-box .cat-card-icon-img {
+  display: block;
+  pointer-events: none;
 }
 
 .category-card-item:hover .cat-item-icon-box {
-  transform: scale(1.1);
-  border-color: var(--dash-accent);
+  transform: scale(1.08);
 }
 
 .cat-item-name {

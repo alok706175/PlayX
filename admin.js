@@ -25,6 +25,58 @@
     { id: 'punjabi', name: 'Punjabi Songs', hindiName: 'पंजाबी बीट्स व भांगड़ा', icon: '🥁', file: 'punjabi-songs/punjabi_songs.json', pageUrl: 'punjabi-songs/punjabi-songs.html', defaultTag: 'Punjabi Beats' }
   ];
 
+  // Exact category icons & emblems matching the homepage cards
+  const CATEGORY_ICON_CONFIG = {
+    hindi: {
+      html: '<img src="hindi-songs/images/hindi_song_icon.png" alt="Superhit Hindi Music" class="cat-card-icon-img" width="38" height="38" style="object-fit: cover; border-radius: 6px;">',
+      bg: 'linear-gradient(135deg, #0d1033, #1f144d)',
+      border: 'rgba(236, 72, 153, 0.45)',
+      boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)'
+    },
+    haryanvi: {
+      html: '<img src="haryanvi-songs/images/haryanvi_logo.svg" alt="Haryanvi Superhit Music" class="cat-card-icon-img" width="38" height="38" style="object-fit: contain;">',
+      bg: '#09091f',
+      border: 'rgba(236, 72, 153, 0.45)',
+      boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)'
+    },
+    punjabi: {
+      html: '<img src="punjabi-songs/images/punjabi_logo.png" alt="Punjabi Superhit Music" class="cat-card-icon-img" width="34" height="34" style="border-radius: 50%; object-fit: cover;">',
+      bg: '#09091f',
+      border: 'rgba(168, 85, 247, 0.45)',
+      boxShadow: '0 4px 14px rgba(168, 85, 247, 0.35)'
+    },
+    durga: {
+      html: '<img src="durga-puja-songs/images/durga_puja_logo.png" alt="Durga Puja & Navratri" class="cat-card-icon-img" width="38" height="38" style="object-fit: contain;">',
+      bg: 'linear-gradient(135deg, #e11d48, #fbbf24)',
+      border: 'rgba(225, 29, 72, 0.45)',
+      boxShadow: '0 4px 14px rgba(225, 29, 72, 0.35)'
+    },
+    saawan: {
+      html: '<img src="saawan-songs/images/trishul_damru.svg" alt="Trishul & Damru" class="cat-card-icon-img" width="30" height="38" style="object-fit: contain;">',
+      bg: 'linear-gradient(135deg, #0284c7, #06b6d4)',
+      border: 'rgba(6, 182, 212, 0.45)',
+      boxShadow: '0 4px 14px rgba(2, 132, 199, 0.35)'
+    },
+    chhath: {
+      html: '<span class="cat-card-icon-emoji" style="font-size: 1.85rem; line-height: 1;">🌅</span>',
+      bg: 'linear-gradient(135deg, #f59e0b, #d97706)',
+      border: 'rgba(245, 158, 11, 0.45)',
+      boxShadow: '0 4px 14px rgba(245, 158, 11, 0.35)'
+    },
+    holi: {
+      html: '<img src="holi-songs/images/holi_logo.svg" alt="Holi Music" class="cat-card-icon-img" width="38" height="38" style="object-fit: contain;">',
+      bg: '#ffffff',
+      border: 'rgba(244, 63, 94, 0.45)',
+      boxShadow: '0 4px 14px rgba(244, 63, 94, 0.35)'
+    },
+    bhojpuri: {
+      html: '<img src="bhojpuri-songs/images/bhojpuri_logo.png" alt="Bhojpuri Superhit Music" class="cat-card-icon-img" width="38" height="38" style="object-fit: contain;">',
+      bg: '#ffffff',
+      border: 'rgba(239, 68, 68, 0.45)',
+      boxShadow: '0 4px 14px rgba(239, 68, 68, 0.35)'
+    }
+  };
+
   // API Base Resolution
   const RENDER_BACKEND_URL = 'https://playx-backend-tcp4.onrender.com';
   function getApiBase() {
@@ -383,10 +435,19 @@
 
     grid.innerHTML = dynamicCategories.map(cat => {
       const countLabel = cat.count === 1 ? '1 Song' : `${cat.count} Songs`;
+      const iconConfig = CATEGORY_ICON_CONFIG[cat.id] || {
+        html: cat.icon || '🎵',
+        bg: 'var(--dash-surface-hover)',
+        border: 'var(--dash-border)',
+        boxShadow: 'none'
+      };
+
       return `
         <div class="category-card-item" data-cat-id="${cat.id}" role="button" tabindex="0" title="Manage ${escapeHtml(cat.name)}">
           <div class="cat-item-left">
-            <div class="cat-item-icon-box">${cat.icon}</div>
+            <div class="cat-item-icon-box" style="background: ${iconConfig.bg}; border: 1.5px solid ${iconConfig.border}; box-shadow: ${iconConfig.boxShadow};">
+              ${iconConfig.html}
+            </div>
             <div>
               <div class="cat-item-name">${escapeHtml(cat.name)}</div>
               <div class="cat-item-hindi">${escapeHtml(cat.hindiName)}</div>
@@ -646,7 +707,7 @@
     if (titleEl) titleEl.textContent = `Add New Song to ${catObj.name}`;
     if (subEl) subEl.textContent = `Selected Playlist: ${catObj.name} (${catObj.hindiName})`;
     if (targetCatId) targetCatId.value = catObj.id;
-    if (displayCat) displayCat.value = `${catObj.icon} ${catObj.name}`;
+    if (displayCat) displayCat.value = catObj.name;
     if (formMsg) formMsg.style.display = 'none';
 
     // Reset inputs
