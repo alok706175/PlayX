@@ -2192,5 +2192,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-06T16:29:12.888Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 210,
+    "name": "Pairon Mein Bandhan Hai (Mohabbatein)",
+    "nameEn": "Pairon Mein Bandhan Hai (Mohabbatein)",
+    "singer": "Udbhav, Manohar Shetty, Ishaan, Shweta Pandit, Sonali Bhatawdekar, Pritha Mazumdar",
+    "singerEn": "Udbhav, Manohar Shetty, Ishaan, Shweta Pandit, Sonali Bhatawdekar, Pritha Mazumdar",
+    "category": "Romantic",
+    "tag": "Hits",
+    "videoId": "bC7RmYYMqTw",
+    "youtubeId": "bC7RmYYMqTw",
+    "embedUrl": "https://www.youtube.com/embed/bC7RmYYMqTw",
+    "originalUrl": "https://www.youtube.com/watch?v=bC7RmYYMqTw",
+    "duration": "06:52",
+    "thumbnail": "https://i.ytimg.com/vi/bC7RmYYMqTw/hqdefault.jpg",
+    "addedAt": "2026-11-06T18:47:32.604Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
