@@ -2012,8 +2012,8 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "id": 199,
     "name": "तूने जिंदगी में आके (डुएट)",
     "nameEn": "Tune Zindagi Mein Aake Duet Version (Humraaz)",
-    "singer": "उदित नारायण & अलका याग्निक",
-    "singerEn": "Udit Narayan & Alka Yagnik",
+    "singer": "Alka Yagnik , Udit Narayan",
+    "singerEn": "Alka Yagnik , Udit Narayan",
     "category": "Romantic",
     "duration": "4:44",
     "file": "https://res.cloudinary.com/pelthrid/video/upload/v1792750657/Tune_Zindagi_Mein_Aake_Duet_Version_-_From_Humraaz.mp3"
@@ -2022,8 +2022,8 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "id": 200,
     "name": "ज़रा देख मेरा दीवानापन",
     "nameEn": "Zara Dekh Mera Deewanapan (Footpath)",
-    "singer": "उदित नारायण & अलका याग्निक",
-    "singerEn": "Udit Narayan & Alka Yagnik",
+    "singer": "Alka Yagnik , Udit Narayan",
+    "singerEn": "Alka Yagnik , Udit Narayan",
     "category": "Romantic",
     "duration": "03:45",
     "videoId": "QchmQDNMXjE",
@@ -2156,5 +2156,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-05T16:58:13.882Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 208,
+    "name": "Woh Tassavur Ka Aalam | Aitraaz | Kareena Kapoor | Akshay Kumar",
+    "nameEn": "Woh Tassavur Ka Aalam | Aitraaz | Kareena Kapoor | Akshay Kumar",
+    "singer": "Udit Narayan & Alka Yagnik",
+    "singerEn": "Udit Narayan & Alka Yagnik",
+    "category": "Romantic",
+    "tag": "Hits",
+    "videoId": "playx_mw5398ky",
+    "youtubeId": "playx_mw5398ky",
+    "embedUrl": "https://www.youtube.com/embed/playx_mw5398ky",
+    "originalUrl": "https://www.youtube.com/watch?v=Uxo1FWm4zK4",
+    "duration": "0:42",
+    "thumbnail": "https://i.ytimg.com/vi/playx_mw5398ky/hqdefault.jpg",
+    "addedAt": "2026-11-06T14:47:36.389Z",
+    "status": "approved",
+    "source": "admin"
   }
 ];
