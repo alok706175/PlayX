@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v67";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v67";
+const CACHE_NAME = "chhath-pwa-v68";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v68";
 
 const STATIC_ASSETS = [
   "./",
@@ -79,7 +79,10 @@ const STATIC_ASSETS = [
   "./backend/admin-song-importer.css",
   "./backend/url-parser.js",
   "./backend/category-detector.js",
-  "./backend/admin-song-importer.js"
+  "./backend/admin-song-importer.js",
+  "./admin.html",
+  "./admin.css",
+  "./admin.js"
 ];
 
 // Install Event - Pre-cache core app shell assets
@@ -148,7 +151,9 @@ self.addEventListener("fetch", (event) => {
           if (cachedRes) return cachedRes;
 
           // Route fallback based on URL path
-          if (url.pathname.includes("hindi-songs")) {
+          if (url.pathname.includes("admin")) {
+            return (await caches.match("./admin.html")) || caches.match("./home.html");
+          } else if (url.pathname.includes("hindi-songs")) {
             return (await caches.match("./hindi-songs/hindi-songs.html")) || caches.match("./home.html");
           } else if (url.pathname.includes("chhath-puja")) {
             return (await caches.match("./chhath-puja/chhath-puja.html")) || caches.match("./home.html");

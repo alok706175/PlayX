@@ -520,21 +520,13 @@
       }
     };
 
-    window.handleOpenAdminPage = function (e, defaultTab) {
+    window.handleOpenAdminPage = function (e) {
       if (e) {
         if (e.preventDefault) e.preventDefault();
         if (e.stopPropagation) e.stopPropagation();
       }
       window.closeAdminMenu();
-      var tab = defaultTab || "import";
-      if (window.openAdminPage) {
-        window.openAdminPage(tab);
-      } else if (window.PlayXSongImporter && window.PlayXSongImporter.openAdminPage) {
-        window.PlayXSongImporter.openAdminPage(tab);
-      } else if (window.PlayXSongImporter && window.PlayXSongImporter.openModal) {
-        window.PlayXSongImporter.openModal();
-        if (window.PlayXSongImporter.switchTab) window.PlayXSongImporter.switchTab(tab);
-      }
+      window.location.href = "admin.html";
     };
 
     window.handleAdminLogout = function (e) {
@@ -1495,11 +1487,7 @@
         }
         return;
       }
-      if (window.PlayXSongImporter && window.PlayXSongImporter.openSongManager) {
-        window.PlayXSongImporter.openSongManager();
-      } else if (window.PlayXSongImporter) {
-        window.PlayXSongImporter.openModal();
-      }
+      window.location.href = "admin.html";
     };
 
     window.handleOpenSongImporter = function (e) {
@@ -1516,9 +1504,7 @@
         }
         return;
       }
-      if (window.PlayXSongImporter) {
-        window.PlayXSongImporter.openModal();
-      }
+      window.location.href = "admin.html";
     };
   </script>
 
