@@ -515,7 +515,7 @@ function formatSongRecord(categoryKey, nextId, inputData) {
   const titleEn = sanitizeText(inputData.titleEn || inputData.title || title);
   const singer = sanitizeText(inputData.singer || inputData.channelTitle || 'Artist');
   const singerEn = sanitizeText(inputData.singerEn || singer);
-  const duration = sanitizeText(inputData.duration && inputData.duration !== '--:--' ? inputData.duration : '03:45');
+  const duration = sanitizeText(inputData.duration && inputData.duration !== '--:--' ? inputData.duration : (inputData.duration || '--:--'));
   const thumbnail = inputData.thumbnail || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
   const tag = sanitizeText(inputData.tag || cat?.defaultTag || 'Hits');
   const categoryDisplay = cat?.name || 'PlayX Music';

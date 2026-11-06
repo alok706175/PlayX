@@ -646,7 +646,7 @@
               <div class="media-play-overlay">
                 <div class="play-circle-icon">▶</div>
               </div>
-              <span class="media-duration-tag">⏱️ ${meta.duration || '03:45'}</span>
+              <span class="media-duration-tag">⏱️ ${meta.duration || '--:--'}</span>
             </div>
 
             <!-- Embedded Player (Hidden until requested) -->
@@ -706,7 +706,7 @@
 
               <div class="form-field">
                 <label for="editSongDuration">Duration</label>
-                <input type="text" id="editSongDuration" value="${escapeHtml(meta.duration && meta.duration !== '--:--' ? meta.duration : '03:45')}">
+                <input type="text" id="editSongDuration" value="${escapeHtml(meta.duration && meta.duration !== '--:--' ? meta.duration : '')}" placeholder="mm:ss">
               </div>
 
               <div class="form-field">
@@ -1026,7 +1026,7 @@
       youtubeId: songData.videoId,
       embedUrl: songData.embedUrl || `https://www.youtube.com/embed/${songData.videoId}`,
       originalUrl: songData.originalUrl || `https://www.youtube.com/watch?v=${songData.videoId}`,
-      duration: songData.duration || '03:45',
+      duration: songData.duration || '--:--',
       thumbnail: songData.thumbnail || `https://i.ytimg.com/vi/${songData.videoId}/hqdefault.jpg`,
       addedAt: nowIso,
       status: 'approved',

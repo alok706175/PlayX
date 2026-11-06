@@ -722,7 +722,7 @@
     if (urlInput) urlInput.value = '';
     if (titleInput) titleInput.value = '';
     if (singerInput) singerInput.value = '';
-    if (durInput) durInput.value = '03:45';
+    if (durInput) durInput.value = '';
     if (tagInput) tagInput.value = catObj.defaultTag || 'Hits';
     if (vidInput) vidInput.value = '';
     if (previewBox) previewBox.style.display = 'none';
@@ -759,7 +759,7 @@
         if (pTitle) pTitle.textContent = t || 'Song Title';
         if (pSinger) pSinger.textContent = s || 'Singer Name';
         if (pCat) pCat.textContent = activeCategory?.name || 'Playlist';
-        if (pDur) pDur.textContent = durInput?.value.trim() || '03:45';
+        if (pDur) pDur.textContent = durInput?.value.trim() || '--:--';
 
         // Extract video ID for thumbnail if available
         let vidId = '';
@@ -823,7 +823,7 @@
 
           let fetchedTitle = '';
           let fetchedArtist = '';
-          let fetchedDuration = '03:45';
+          let fetchedDuration = '';
 
           // Try backend /api/parse-link
           try {
@@ -838,7 +838,9 @@
               if (data.success && data.metadata) {
                 fetchedTitle = data.metadata.title || '';
                 fetchedArtist = data.metadata.artist || '';
-                if (data.metadata.duration) fetchedDuration = data.metadata.duration;
+                if (data.metadata.duration && data.metadata.duration !== '--:--') {
+                  fetchedDuration = data.metadata.duration;
+                }
                 if (data.metadata.videoId) videoId = data.metadata.videoId;
               }
             }
@@ -858,9 +860,19 @@
             } catch (e) {}
           }
 
+          // If duration was not found via API, attempt auto-detection from title
+          if (!fetchedDuration) {
+            const durationMatch = (fetchedTitle || rawUrl).match(/[([{\s](\d{1,2}:\d{2})[)\]}\s]/);
+            if (durationMatch) {
+              let d = durationMatch[1];
+              if (d.length === 4) d = '0' + d;
+              fetchedDuration = d;
+            }
+          }
+
           if (fetchedTitle && titleInput) titleInput.value = fetchedTitle;
           if (fetchedArtist && singerInput) singerInput.value = fetchedArtist;
-          if (fetchedDuration && durInput) durInput.value = fetchedDuration;
+          if (durInput) durInput.value = fetchedDuration || '';
           if (videoId && vidInput) vidInput.value = `https://www.youtube.com/watch?v=${videoId}`;
 
           updatePreview();
@@ -888,7 +900,7 @@
         const catId = activeCategory?.id;
         const title = (titleInput?.value || '').trim();
         const singer = (singerInput?.value || '').trim();
-        const duration = (durInput?.value || '').trim() || '03:45';
+        const duration = (durInput?.value || '').trim() || '--:--';
         const tag = (document.getElementById('addInputTag')?.value || '').trim() || 'Hits';
         const rawVid = (vidInput?.value || urlInput?.value || '').trim();
 
@@ -1638,7 +1650,7 @@
       youtubeId: songData.videoId,
       embedUrl: `https://www.youtube.com/embed/${songData.videoId}`,
       originalUrl: songData.url || `https://www.youtube.com/watch?v=${songData.videoId}`,
-      duration: songData.duration || '03:45',
+      duration: songData.duration || '--:--',
       thumbnail: `https://i.ytimg.com/vi/${songData.videoId}/hqdefault.jpg`,
       addedAt: new Date().toISOString(),
       status: 'approved',

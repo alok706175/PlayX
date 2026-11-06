@@ -65,7 +65,7 @@ async function main() {
   console.log(`   📌 Video ID:        ${metadata.videoId}`);
   console.log(`   🎵 Song Title:      ${metadata.cleanTitle || metadata.rawTitle}`);
   console.log(`   🎤 Singer / Artist:  ${metadata.singer}`);
-  console.log(`   ⏱️ Duration:        ${metadata.duration || '03:45'}`);
+  console.log(`   ⏱️ Duration:        ${metadata.duration || '--:--'}`);
   console.log(`   📁 Category:        ${categoryDetector.CATEGORIES[targetCategory]?.name || targetCategory} (${targetCategory})`);
   console.log(`   🎯 Categorization:  ${categoryDetectionNote}`);
   console.log(`   🖼️ Thumbnail:       ${metadata.thumbnail}`);

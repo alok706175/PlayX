@@ -304,9 +304,9 @@ async function fetchViaOEmbed(videoId) {
     }
   }
 
-  // Fallback 2: Reasonable default if all else fails
+  // Fallback 2: If duration cannot be detected, leave empty rather than assuming 03:45
   if (!durationStr || durationStr === '--:--') {
-    durationStr = '03:45';
+    durationStr = '';
   }
 
   return {
