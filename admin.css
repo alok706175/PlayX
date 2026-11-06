@@ -184,6 +184,13 @@ button {
 .gate-input-icon {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  font-size: 1.05rem;
   color: var(--dash-text-dim);
   pointer-events: none;
 }
@@ -283,6 +290,11 @@ button {
   box-shadow: 0 6px 24px rgba(255, 152, 0, 0.45);
 }
 
+.btn-gate-submit svg {
+  display: block;
+  flex-shrink: 0;
+}
+
 .gate-footer {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
@@ -378,6 +390,7 @@ button {
 .btn-back-website {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.45rem 0.95rem;
   background: var(--dash-surface);
@@ -386,7 +399,14 @@ button {
   color: var(--dash-text-muted);
   font-size: 0.85rem;
   font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
   transition: all 0.2s ease;
+}
+
+.btn-back-website svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .btn-back-website:hover {
@@ -403,8 +423,9 @@ button {
 }
 
 .sync-indicator-pill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.4rem 0.85rem;
   background: var(--dash-surface);
@@ -413,6 +434,7 @@ button {
   font-size: 0.78rem;
   font-weight: 650;
   color: var(--dash-text-muted);
+  line-height: 1;
 }
 
 .sync-dot {
@@ -420,6 +442,8 @@ button {
   height: 8px;
   border-radius: 50%;
   display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 
 .sync-dot.amber {
@@ -433,17 +457,23 @@ button {
 }
 
 .dash-profile-capsule {
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.6rem;
   padding: 0.35rem 0.75rem;
   background: var(--dash-surface);
   border: 1px solid var(--dash-border);
   border-radius: var(--dash-radius-pill);
+  line-height: 1.15;
 }
 
 .dash-avatar {
   font-size: 1.25rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dash-profile-meta {
@@ -480,6 +510,14 @@ button {
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   position: relative;
+  padding: 0;
+  line-height: 1;
+}
+
+.dash-settings-btn svg {
+  display: block;
+  flex-shrink: 0;
+  margin: auto;
 }
 
 .dash-settings-btn:hover,
@@ -495,6 +533,8 @@ button {
   width: 19px;
   height: 19px;
   display: block;
+  flex-shrink: 0;
+  margin: auto;
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.2s ease, fill 0.2s ease;
 }
 
@@ -519,6 +559,7 @@ button {
 .btn-dash-logout {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.48rem 1rem;
   background: var(--dash-danger-bg);
@@ -527,6 +568,7 @@ button {
   border-radius: var(--dash-radius-pill);
   font-size: 0.86rem;
   font-weight: 750;
+  line-height: 1;
   cursor: pointer;
   transition: all 0.22s ease;
 }
@@ -534,6 +576,8 @@ button {
 .btn-dash-logout svg {
   stroke-width: 2.3;
   stroke: currentColor;
+  display: block;
+  flex-shrink: 0;
   transition: transform 0.2s ease;
 }
 
@@ -602,6 +646,7 @@ button {
 .btn-dash-back {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.6rem 1.15rem;
   background: var(--dash-surface);
@@ -610,10 +655,16 @@ button {
   color: var(--dash-text);
   font-size: 0.88rem;
   font-weight: 700;
+  line-height: 1;
   cursor: pointer;
   white-space: nowrap;
   box-shadow: var(--dash-shadow-sm);
   transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.btn-dash-back svg {
+  display: block;
   flex-shrink: 0;
 }
 
@@ -654,6 +705,14 @@ button {
   background: var(--dash-surface-hover);
   border: 1px solid var(--dash-border);
   color: var(--dash-text);
+  line-height: 1;
+}
+
+.feature-active-pill span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .feature-active-pill.feat-add {
@@ -874,6 +933,14 @@ button {
   justify-content: center;
   margin-bottom: 1.35rem;
   transition: transform 0.25s ease;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.feat-icon-wrapper svg {
+  display: block;
+  flex-shrink: 0;
+  margin: auto;
 }
 
 .feature-card:hover .feat-icon-wrapper {
@@ -908,10 +975,14 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  line-height: 1;
 }
 
 .feat-action-link .arrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   transition: transform 0.2s ease;
 }
 
@@ -933,12 +1004,13 @@ button {
 }
 
 .stats-pill-item {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-size: 0.84rem;
   font-weight: 650;
   color: var(--dash-text-muted);
+  line-height: 1;
 }
 
 .stats-dot {
@@ -946,6 +1018,8 @@ button {
   height: 8px;
   border-radius: 50%;
   display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
 }
 .stats-dot.green { background: #10b981; box-shadow: 0 0 8px #10b981; }
 .stats-dot.blue { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
@@ -1000,11 +1074,21 @@ button {
   transition: transform 0.22s ease, box-shadow 0.22s ease;
   overflow: hidden;
   padding: 3px;
+  line-height: 1;
 }
 
 .cat-item-icon-box .cat-card-icon-img {
   display: block;
   pointer-events: none;
+  margin: auto;
+}
+
+.cat-item-icon-box .cat-card-icon-emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  margin: auto;
 }
 
 .category-card-item:hover .cat-item-icon-box {
@@ -1031,6 +1115,9 @@ button {
 }
 
 .cat-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.2rem 0.65rem;
   border-radius: var(--dash-radius-pill);
   background: var(--dash-cyan-bg);
@@ -1039,11 +1126,18 @@ button {
   font-size: 0.78rem;
   font-weight: 800;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .cat-arrow-icon {
   font-size: 1.1rem;
   color: var(--dash-text-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
   transition: transform 0.2s ease, color 0.2s ease;
 }
 
@@ -1079,6 +1173,12 @@ button {
 .search-box-icon {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   color: var(--dash-text-dim);
   font-size: 0.95rem;
   pointer-events: none;
@@ -1105,15 +1205,27 @@ button {
 .btn-clear-search {
   position: absolute;
   right: 12px;
-  background: transparent;
-  border: none;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border-subtle);
   color: var(--dash-text-dim);
   cursor: pointer;
-  font-size: 0.95rem;
-  padding: 4px;
+  font-size: 0.85rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
 }
 
 .btn-clear-search:hover {
+  background: var(--dash-danger-bg);
+  border-color: var(--dash-danger);
   color: var(--dash-danger);
 }
 
@@ -1125,6 +1237,10 @@ button {
   border-radius: var(--dash-radius-pill);
   background: var(--dash-surface);
   border: 1px solid var(--dash-border);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 /* Songs Table */
@@ -1221,19 +1337,43 @@ button {
 }
 
 /* Action Buttons inside song row */
-.btn-action-delete {
+.btn-action-delete,
+.btn-action-edit-singer,
+.btn-action-edit-title {
   padding: 0.45rem 0.85rem;
   border-radius: var(--dash-radius-sm);
-  background: var(--dash-danger-bg);
-  border: 1px solid rgba(239, 68, 68, 0.4);
-  color: #fca5a5;
   font-size: 0.82rem;
   font-weight: 750;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.35rem;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
   transition: all 0.2s ease;
+}
+
+.btn-action-delete span,
+.btn-action-edit-singer span,
+.btn-action-edit-title span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-action-delete span:first-child,
+.btn-action-edit-singer span:first-child,
+.btn-action-edit-title span:first-child {
+  font-size: 0.95rem;
+}
+
+.btn-action-delete {
+  background: var(--dash-danger-bg);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
 }
 
 .btn-action-delete:hover {
@@ -1244,18 +1384,9 @@ button {
 }
 
 .btn-action-edit-singer {
-  padding: 0.45rem 0.85rem;
-  border-radius: var(--dash-radius-sm);
   background: var(--dash-purple-bg);
   border: 1px solid rgba(168, 85, 247, 0.4);
   color: #d8b4fe;
-  font-size: 0.82rem;
-  font-weight: 750;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  transition: all 0.2s ease;
 }
 
 .btn-action-edit-singer:hover {
@@ -1266,18 +1397,9 @@ button {
 }
 
 .btn-action-edit-title {
-  padding: 0.45rem 0.85rem;
-  border-radius: var(--dash-radius-sm);
   background: rgba(255, 184, 0, 0.14);
   border: 1px solid rgba(255, 184, 0, 0.4);
   color: #fde047;
-  font-size: 0.82rem;
-  font-weight: 750;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  transition: all 0.2s ease;
 }
 
 .btn-action-edit-title:hover {
@@ -1315,6 +1437,10 @@ button {
 
 .analyzer-box-icon {
   font-size: 1.4rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .analyzer-box-header strong {
@@ -1332,20 +1458,32 @@ button {
   display: flex;
   align-items: center;
   gap: 0.65rem;
+}
+
+.url-input-wrap {
   position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .url-lead-icon {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   color: #ef4444;
-  font-size: 1rem;
+  font-size: 0.85rem;
   pointer-events: none;
 }
 
 .url-input-field {
-  flex: 1;
-  padding: 0.75rem 2.2rem 0.75rem 2.5rem;
+  width: 100%;
+  padding: 0.75rem 2.4rem 0.75rem 2.5rem;
   background: var(--dash-bg-subtle);
   border: 1.5px solid var(--dash-border);
   border-radius: var(--dash-radius-sm);
@@ -1362,13 +1500,29 @@ button {
 
 .btn-url-clear {
   position: absolute;
-  right: 210px;
-  background: transparent;
-  border: none;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border-subtle);
   color: var(--dash-text-dim);
   cursor: pointer;
-  font-size: 0.9rem;
-  padding: 4px;
+  font-size: 0.85rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.btn-url-clear:hover {
+  background: var(--dash-danger-bg);
+  border-color: var(--dash-danger);
+  color: var(--dash-danger);
 }
 
 .btn-url-paste {
@@ -1382,9 +1536,18 @@ button {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.4rem;
+  line-height: 1;
   white-space: nowrap;
   transition: all 0.2s ease;
+}
+
+.btn-url-paste span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-url-paste:hover {
@@ -1399,6 +1562,24 @@ button {
   border-radius: var(--dash-radius-sm);
   color: #fff;
   font-weight: 750;
+  font-size: 0.92rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-url-analyze span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
   font-size: 0.92rem;
   cursor: pointer;
   display: inline-flex;
@@ -1584,6 +1765,11 @@ button {
   font-size: 0.9rem;
   font-weight: 650;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  line-height: 1;
   transition: all 0.2s ease;
 }
 
@@ -1603,9 +1789,18 @@ button {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
+  line-height: 1;
   box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
   transition: all 0.2s ease;
+}
+
+.btn-submit-add span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-submit-add:hover {
@@ -1672,15 +1867,17 @@ button {
 }
 
 .modal-icon-badge {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: var(--dash-radius-sm);
   background: var(--dash-cyan-bg);
   border: 1px solid rgba(56, 189, 248, 0.35);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 .modal-icon-badge.feat-edit-singer-badge {
@@ -1712,14 +1909,17 @@ button {
   background: var(--dash-surface);
   border: 1px solid var(--dash-border);
   color: var(--dash-text-muted);
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
   transition: all 0.2s ease;
 }
 
@@ -1833,6 +2033,10 @@ button {
   font-weight: 650;
   font-size: 0.88rem;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   transition: all 0.2s ease;
 }
 
@@ -1852,8 +2056,17 @@ button {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
+  line-height: 1;
   transition: all 0.2s ease;
+}
+
+.btn-modal-save span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-modal-save.save-singer-btn {
@@ -1926,8 +2139,17 @@ button {
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
+  line-height: 1;
   transition: all 0.2s ease;
+}
+
+.btn-modal-delete-confirm span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-modal-delete-confirm:hover {
@@ -1968,6 +2190,10 @@ button {
 .btn-toggle-token-eye {
   position: absolute;
   right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
   background: transparent;
   border: none;
   color: var(--dash-text-dim);
@@ -1975,6 +2201,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+  padding: 0;
 }
 
 .btn-save-token {
@@ -1987,6 +2215,26 @@ button {
   font-size: 0.85rem;
   cursor: pointer;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-clear-token {
+  padding: 0.7rem 1rem;
+  background: var(--dash-surface-hover);
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-sm);
+  color: var(--dash-text-muted);
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .btn-clear-token {

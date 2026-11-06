@@ -937,13 +937,30 @@ body {
 }
 
 .search-clear-btn {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--text-muted);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
-  padding: 0.3rem 0.6rem;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
   display: none;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.search-clear-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ef4444;
+}
+
+[data-theme="light"] .search-clear-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
 }
 
 /* Quick Stat Counters */
@@ -2417,6 +2434,7 @@ body {
 .dropdown-item-btn svg {
   color: var(--accent-gold);
   flex-shrink: 0;
+  display: block;
 }
 
 .dropdown-divider {
@@ -2444,6 +2462,20 @@ body {
 .dropdown-item-btn.admin-logout-btn:hover {
   background: rgba(239, 68, 68, 0.16);
   color: #ef4444;
+}
+
+.dropdown-item-btn.admin-page-btn {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.dropdown-item-btn.admin-page-btn svg {
+  color: #38bdf8;
+}
+
+.dropdown-item-btn.admin-page-btn:hover {
+  background: rgba(56, 189, 248, 0.16);
+  color: #7dd3fc;
 }
 
 
@@ -2547,6 +2579,20 @@ body {
   color: #dc2626;
 }
 
+[data-theme="light"] .dropdown-item-btn.admin-page-btn {
+  color: #0284c7;
+  font-weight: 700;
+}
+
+[data-theme="light"] .dropdown-item-btn.admin-page-btn svg {
+  color: #0284c7;
+}
+
+[data-theme="light"] .dropdown-item-btn.admin-page-btn:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
 
 [data-theme="light"] .dropdown-profile-header {
   background: #fef3c7;
@@ -2618,6 +2664,10 @@ body {
 
 .admin-shield-icon {
   font-size: 1.6rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-modal-title-group h3 {
@@ -2637,6 +2687,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
   cursor: pointer;
   font-size: 1.1rem;
   transition: all 0.2s ease;
@@ -2798,6 +2851,11 @@ body {
 
 .btn-admin-submit:active {
   transform: translateY(0);
+}
+
+.btn-admin-submit svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 /* Light mode for modal */

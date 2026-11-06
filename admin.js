@@ -670,7 +670,7 @@
     if (searchInput) {
       searchInput.addEventListener('input', () => {
         const q = (searchInput.value || '').trim().toLowerCase();
-        if (clearBtn) clearBtn.style.display = q ? 'block' : 'none';
+        if (clearBtn) clearBtn.style.display = q ? 'flex' : 'none';
 
         const filtered = cachedCategorySongs.filter(s => {
           if (!q) return true;
@@ -782,10 +782,16 @@
     if (vidInput) vidInput.addEventListener('input', updatePreview);
 
     if (clearBtn && urlInput) {
+      const toggleUrlClear = () => {
+        clearBtn.style.display = urlInput.value.trim() ? 'flex' : 'none';
+      };
+      urlInput.addEventListener('input', toggleUrlClear);
       clearBtn.addEventListener('click', () => {
         urlInput.value = '';
+        toggleUrlClear();
         urlInput.focus();
       });
+      toggleUrlClear();
     }
 
     if (pasteBtn && urlInput) {
