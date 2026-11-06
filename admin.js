@@ -1666,13 +1666,22 @@
   function updateThemeIcon(theme) {
     const sun = document.querySelector('.theme-icon-sun');
     const moon = document.querySelector('.theme-icon-moon');
+    const btn = document.getElementById('dashThemeToggleBtn');
     if (sun && moon) {
       if (theme === 'light') {
-        sun.style.display = 'inline';
+        sun.style.display = 'block';
         moon.style.display = 'none';
+        if (btn) {
+          btn.title = 'Switch to Dark Mode';
+          btn.setAttribute('aria-label', 'Switch to Dark Mode');
+        }
       } else {
         sun.style.display = 'none';
-        moon.style.display = 'inline';
+        moon.style.display = 'block';
+        if (btn) {
+          btn.title = 'Switch to Light Mode';
+          btn.setAttribute('aria-label', 'Switch to Light Mode');
+        }
       }
     }
   }

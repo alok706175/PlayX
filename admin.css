@@ -467,17 +467,19 @@ button {
 
 .dash-settings-btn,
 .dash-theme-btn {
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--dash-surface);
-  border: 1px solid var(--dash-border);
+  border: 1.5px solid var(--dash-border);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--dash-text-muted);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: relative;
 }
 
 .dash-settings-btn:hover,
@@ -485,6 +487,33 @@ button {
   background: var(--dash-surface-hover);
   color: var(--dash-accent);
   border-color: var(--dash-accent);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 14px var(--dash-accent-glow);
+}
+
+.dash-theme-btn .theme-svg {
+  width: 19px;
+  height: 19px;
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.2s ease, fill 0.2s ease;
+}
+
+.dash-theme-btn .theme-icon-sun {
+  color: #f59e0b;
+}
+
+.dash-theme-btn .theme-icon-moon {
+  color: #ffb800;
+}
+
+.dash-theme-btn:hover .theme-icon-sun {
+  transform: rotate(45deg) scale(1.1);
+  color: #ff9800;
+}
+
+.dash-theme-btn:hover .theme-icon-moon {
+  transform: rotate(-18deg) scale(1.1);
+  color: #ffd700;
 }
 
 .btn-dash-logout {
