@@ -666,15 +666,27 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         const fetched = await res.json();
         if (Array.isArray(fetched) && fetched.length > 0) {
           const hadPrior = Array.isArray(songs) && songs.length > 0;
-          const wasLengthChanged = !hadPrior || songs.length !== fetched.length;
+          const hasDataChanged =
+            !hadPrior ||
+            songs.length !== fetched.length ||
+            (songs.length > 0 && fetched.length > 0 && songs[songs.length - 1]?.id !== fetched[fetched.length - 1]?.id) ||
+            (songs.length > 0 && fetched.length > 0 && songs[songs.length - 1]?.title !== fetched[fetched.length - 1]?.title);
+
           songs = fetched;
           window.PLAYX_HINDI_SONGS_DATA = fetched;
+
           if (!hadPrior) {
             initSongUIAndDeepLinking();
-          } else if (wasLengthChanged) {
+          } else if (hasDataChanged) {
             updateSongCategoryCounts();
             renderPlaylist();
             renderSongCardsGrid();
+            if (songIndex >= songs.length) {
+              songIndex = 0;
+            }
+            if (songs[songIndex]) {
+              currentSong = songs[songIndex];
+            }
           }
         }
       }
