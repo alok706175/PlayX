@@ -710,6 +710,18 @@
     if (displayCat) displayCat.value = catObj.name;
     if (formMsg) formMsg.style.display = 'none';
 
+    // Show or hide sub-category for Hindi songs
+    const subCatGroup = document.getElementById('addSubCategoryGroup');
+    const subCatSelect = document.getElementById('addSelectSubCategory');
+    if (subCatGroup) {
+      if (catObj.id === 'hindi') {
+        subCatGroup.style.display = 'block';
+        if (subCatSelect) subCatSelect.value = 'Romantic';
+      } else {
+        subCatGroup.style.display = 'none';
+      }
+    }
+
     // Reset inputs
     const urlInput = document.getElementById('addSongUrlInput');
     const titleInput = document.getElementById('addInputSongTitle');
@@ -766,7 +778,7 @@
         const rawVid = vidInput?.value.trim() || urlInput?.value.trim() || '';
         if (window.PlayXUrlParser) {
           const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawVid);
-          if (parsed.valid) vidId = parsed.videoId;
+          if (parsed && (parsed.isValid || parsed.valid || parsed.videoId)) vidId = parsed.videoId;
         }
         if (!vidId && rawVid.length === 11) vidId = rawVid;
 
@@ -824,7 +836,7 @@
           let videoId = '';
           if (window.PlayXUrlParser) {
             const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawUrl);
-            if (parsed.valid) videoId = parsed.videoId;
+            if (parsed && (parsed.isValid || parsed.valid || parsed.videoId)) videoId = parsed.videoId;
           }
 
           let fetchedTitle = '';
@@ -928,7 +940,7 @@
         let videoId = '';
         if (window.PlayXUrlParser) {
           const parsed = window.PlayXUrlParser.parseYouTubeUrl(rawVid);
-          if (parsed.valid) videoId = parsed.videoId;
+          if (parsed && (parsed.isValid || parsed.valid || parsed.videoId)) videoId = parsed.videoId;
         }
         if (!videoId && rawVid.length === 11) videoId = rawVid;
         if (!videoId) {
@@ -936,12 +948,16 @@
           videoId = 'playx_' + Date.now().toString(36);
         }
 
+        const subCatSelect = document.getElementById('addSelectSubCategory');
+        const subCategory = (catId === 'hindi' && subCatSelect) ? subCatSelect.value : '';
+
         const songRecord = {
           title: title,
           singer: singer,
           duration: duration,
           tag: tag,
           category: catId,
+          subCategory: subCategory,
           videoId: videoId,
           url: rawVid || `https://www.youtube.com/watch?v=${videoId}`
         };
@@ -966,6 +982,7 @@
               },
               body: JSON.stringify({
                 category: catId,
+                subCategory: subCategory,
                 title: title,
                 titleEn: title,
                 singer: singer,
@@ -1650,7 +1667,7 @@
       nameEn: songData.titleEn || songData.title,
       singer: songData.singer,
       singerEn: songData.singerEn || songData.singer,
-      category: categoryKey === 'hindi' ? 'Romantic' : cat.name,
+      category: categoryKey === 'hindi' ? (songData.subCategory || 'Romantic') : cat.name,
       tag: songData.tag || 'New Song',
       videoId: songData.videoId,
       youtubeId: songData.videoId,

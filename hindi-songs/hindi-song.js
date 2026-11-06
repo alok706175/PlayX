@@ -35,14 +35,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       timeWidgetTitle: "भारतीय मानक समय (IST)",
       navBackText: "होम (Home)",
       navBackTitle: "मुख्य पृष्ठ पर जाएं (Go Home)",
-      heroBadge: "✨ 205 सुपरहिट बॉलीवुड क्लासिक्स",
+      heroBadge: "✨ 209 सुपरहिट बॉलीवुड क्लासिक्स",
       mainLogoTitle1: "हिंदी सुपरहिट",
       mainLogoTitle2: "गीत संग्रह",
       taglineText: "॥ बॉलीवुड क्लासिक्स • रोमांटिक हिट्स • दिलकश नगमे • डांस बीट्स ॥",
       loadingSong: "गीत लोड हो रहा है...",
       playlistTitle: "हिंदी गीत सूची",
       playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
-      searchPlaceholder: "205 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
+      searchPlaceholder: "209 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
       noSongsFound: "कोई गीत नहीं मिला",
       noFavsFound: "कोई पसंदीदा गीत नहीं मिला। किसी भी गीत पर ❤️ क्लिक करके पसंदीदा बनाएं!",
       prevSongTitle: "पिछला गीत (J)",
@@ -85,14 +85,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       timeWidgetTitle: "Indian Standard Time (IST)",
       navBackText: "Go Home",
       navBackTitle: "Go to Home",
-      heroBadge: "✨ 205 SUPERHIT BOLLYWOOD CLASSICS",
+      heroBadge: "✨ 209 SUPERHIT BOLLYWOOD CLASSICS",
       mainLogoTitle1: "Superhit Hindi",
       mainLogoTitle2: "Songs Collection",
       taglineText: "॥ Bollywood Classics • Romantic Hits • Soulful Melodies • Dance Beats ॥",
       loadingSong: "Loading Hindi Songs...",
       playlistTitle: "Hindi Songs Playlist",
       playlistSearchPlaceholder: "Search song, movie, or singer name...",
-      searchPlaceholder: "Search 205 Hindi songs, movies, or artists...",
+      searchPlaceholder: "Search 209 Hindi songs, movies, or artists...",
       noSongsFound: "No songs found matching your search",
       noFavsFound: "No favorite songs yet. Click ❤️ on any song to add to your favorites!",
       prevSongTitle: "Previous Track (J)",
@@ -2612,7 +2612,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (navBackBtn && t.navBackTitle) navBackBtn.title = t.navBackTitle;
 
     const heroBadge = document.getElementById("heroBadge");
-    if (heroBadge) heroBadge.textContent = t.heroBadge;
+    if (heroBadge) heroBadge.textContent = t.heroBadge.replace(/\d+/, songs.length);
 
     const mainLogo = document.getElementById("mainLogoText");
     if (mainLogo) {
@@ -2649,7 +2649,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     if (taglineText) taglineText.textContent = t.taglineText;
     if (gridTitleText) gridTitleText.textContent = t.gridTitleText;
-    if (mainSearchInput) mainSearchInput.placeholder = t.searchPlaceholder;
+    if (mainSearchInput) mainSearchInput.placeholder = t.searchPlaceholder.replace(/\d+/, songs.length);
     if (playlistSearch) playlistSearch.placeholder = t.playlistSearchPlaceholder;
 
     displaySongInfo(currentSong);
