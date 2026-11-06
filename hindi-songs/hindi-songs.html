@@ -47,6 +47,7 @@
     rel="stylesheet">
 
   <link rel="stylesheet" href="hindi-song.css">
+  <link rel="stylesheet" href="../shared/clear-data.css">
 
   <script type="application/ld+json">
   {
@@ -181,6 +182,28 @@
             <button class="share-menu-item btn-copy-link" id="copyLinkBtn" type="button" role="menuitem">
               <span>🔗</span>
               <span id="copyLinkText">Copy Link</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- More Options (3 Vertical Dots) -->
+        <div class="nav-more-menu-wrap" id="hindiMoreMenuWrap">
+          <button class="btn-nav-more" id="hindiMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" title="More Options" aria-label="More Options">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <circle cx="12" cy="5" r="2.2"></circle>
+              <circle cx="12" cy="12" r="2.2"></circle>
+              <circle cx="12" cy="19" r="2.2"></circle>
+            </svg>
+          </button>
+          <div class="nav-more-dropdown" id="hindiMoreDropdown" role="menu">
+            <button class="nav-more-item btn-clear-data" type="button" onclick="window.handleClearPlayXData(event)" role="menuitem">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+              <span>Clear Data</span>
             </button>
           </div>
         </div>
@@ -621,6 +644,7 @@
   <!-- Interactive JavaScript for Hindi Songs -->
   <script src="hindi_songs_data.js?v=49"></script>
   <script src="../offline-manager.js"></script>
+  <script src="../shared/clear-data.js"></script>
   <script src="hindi-song.js?v=49"></script>
 </body>
 

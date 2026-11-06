@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="dark-light-mode.css">
   <!-- Dedicated Admin Dashboard Stylesheet -->
   <link rel="stylesheet" href="admin.css?v=2.0">
+  <link rel="stylesheet" href="shared/clear-data.css">
 </head>
 
 <body>
@@ -145,6 +146,28 @@
           </svg>
           <span>Logout</span>
         </button>
+
+        <!-- More Options (3 Vertical Dots) -->
+        <div class="nav-more-menu-wrap" id="adminMoreMenuWrap">
+          <button class="btn-nav-more" id="adminMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" title="More Options" aria-label="More Options">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <circle cx="12" cy="5" r="2.2"></circle>
+              <circle cx="12" cy="12" r="2.2"></circle>
+              <circle cx="12" cy="19" r="2.2"></circle>
+            </svg>
+          </button>
+          <div class="nav-more-dropdown" id="adminMoreDropdown" role="menu">
+            <button class="nav-more-item btn-clear-data" type="button" onclick="window.handleClearPlayXData(event)" role="menuitem">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"></path>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>
+              <span>Clear Data</span>
+            </button>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -670,6 +693,7 @@
 
   <!-- Core Scripts -->
   <script src="dark-light-mode.js"></script>
+  <script src="shared/clear-data.js"></script>
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
   <script src="admin.js?v=2.0"></script>

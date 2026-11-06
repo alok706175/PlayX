@@ -1,0 +1,168 @@
+/* =========================================================
+   PlayX Global Navigation More Menu & Clear Data Styles
+   Compatible with Dark & Light Mode across all pages
+   ========================================================= */
+
+.nav-more-menu-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.btn-nav-more {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.btn-nav-more svg {
+  pointer-events: none;
+  display: block;
+}
+
+.btn-nav-more:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: scale(1.06);
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.18);
+}
+
+.btn-nav-more:active {
+  transform: scale(0.95);
+}
+
+.btn-nav-more.active {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: #f59e0b;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+}
+
+/* Dropdown Container */
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 175px;
+  background: #11141f;
+  background: rgba(17, 20, 31, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65);
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 999999;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.nav-more-dropdown.active {
+  display: flex !important;
+  animation: navMoreDropAnim 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes navMoreDropAnim {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dropdown Menu Item */
+.nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+  white-space: nowrap;
+  outline: none;
+}
+
+.nav-more-item svg {
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.nav-more-item.btn-clear-data {
+  color: #f87171;
+}
+
+.nav-more-item.btn-clear-data:hover {
+  background: rgba(239, 68, 68, 0.16);
+  color: #ef4444;
+}
+
+.nav-more-item:active {
+  transform: scale(0.98);
+}
+
+/* Light Theme Overrides */
+[data-theme="light"] .btn-nav-more,
+body.light-theme .btn-nav-more,
+body.light-mode .btn-nav-more {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.15);
+  color: #0f172a;
+}
+
+[data-theme="light"] .btn-nav-more:hover,
+body.light-theme .btn-nav-more:hover,
+body.light-mode .btn-nav-more:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .nav-more-dropdown,
+body.light-theme .nav-more-dropdown,
+body.light-mode .nav-more-dropdown {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .nav-more-item.btn-clear-data,
+body.light-theme .nav-more-item.btn-clear-data,
+body.light-mode .nav-more-item.btn-clear-data {
+  color: #dc2626;
+}
+
+[data-theme="light"] .nav-more-item.btn-clear-data:hover,
+body.light-theme .nav-more-item.btn-clear-data:hover,
+body.light-mode .nav-more-item.btn-clear-data:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #b91c1c;
+}
