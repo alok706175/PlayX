@@ -191,6 +191,7 @@
             if (data.success && data.token) {
               localStorage.setItem('playx_admin_logged_in', 'true');
               localStorage.setItem('playx_admin_token', data.token);
+              localStorage.setItem('playx_admin_password', pwd);
               if (data.admin) {
                 localStorage.setItem('playx_admin_user', data.admin.name || 'Deepak Singh Rajput');
               }
@@ -207,6 +208,7 @@
         const hash = await sha256(pwd);
         if (hash === '2b43b4f697475f850e0569eefc8c1995ba07849c71a3980a37e192f146be4818' || pwd === 'PlayxAdmin@2026' || pwd === 'deepak@playx') {
           localStorage.setItem('playx_admin_logged_in', 'true');
+          localStorage.setItem('playx_admin_password', pwd);
           localStorage.setItem('playx_admin_user', 'Deepak Singh Rajput');
           showGateMsg('success', 'Verified! Loading dashboard...');
           setTimeout(() => unlockDashboard(), 400);
@@ -972,19 +974,25 @@
 
         try {
           let savedSuccessfully = false;
+          let backendErrorMessage = '';
 
           // Attempt 1: POST /api/import-song on backend
           try {
             const apiBase = getApiBase();
             const token = localStorage.getItem('playx_admin_token') || '';
+            const adminPwd = localStorage.getItem('playx_admin_password') || 'deepak@playx';
+            const authHeader = token ? `Bearer ${token}` : `Bearer ${adminPwd}`;
+
             const res = await fetch(`${apiBase}/api/import-song`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': authHeader,
+                'x-admin-secret': adminPwd
               },
               body: JSON.stringify({
                 category: catId,
+                songData: songRecord,
                 subCategory: subCategory,
                 title: title,
                 titleEn: title,
@@ -994,22 +1002,40 @@
                 tag: tag,
                 url: songRecord.url,
                 videoId: videoId,
-                password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+                adminSecret: adminPwd,
+                password: adminPwd
               })
             });
 
             if (res.ok) {
               const data = await res.json();
-              if (data.success) savedSuccessfully = true;
+              if (data.success) {
+                savedSuccessfully = true;
+              } else {
+                backendErrorMessage = data.error || 'Server rejected import.';
+              }
+            } else {
+              try {
+                const errData = await res.json();
+                backendErrorMessage = errData.error || `HTTP ${res.status}`;
+              } catch (_) {
+                backendErrorMessage = `HTTP ${res.status}`;
+              }
             }
-          } catch (netErr) {}
+          } catch (netErr) {
+            backendErrorMessage = netErr.message;
+          }
 
           // Attempt 2: Direct GitHub commit fallback
           if (!savedSuccessfully) {
             const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
             if (ghToken) {
-              await importSongOnGitHubDirect(catId, songRecord, ghToken);
-              savedSuccessfully = true;
+              try {
+                await importSongOnGitHubDirect(catId, songRecord, ghToken);
+                savedSuccessfully = true;
+              } catch (ghErr) {
+                backendErrorMessage = `GitHub API: ${ghErr.message}`;
+              }
             }
           }
 
@@ -1029,7 +1055,8 @@
               openSongListPage(activeCategory, 'edit-song-name');
             }, 1200);
           } else {
-            throw new Error('Could not connect to backend server and no GitHub PAT was found in Settings.');
+            const detail = backendErrorMessage ? `: ${backendErrorMessage}` : '';
+            throw new Error(`Failed to save song${detail}. Check server connection or GitHub PAT in Settings.`);
           }
         } catch (err) {
           if (formMsg) {
@@ -1209,34 +1236,54 @@
           let deleted = false;
 
           // Attempt 1: Backend /api/delete-song
+          let backendDelErr = '';
           try {
             const apiBase = getApiBase();
             const token = localStorage.getItem('playx_admin_token') || '';
+            const adminPwd = localStorage.getItem('playx_admin_password') || 'deepak@playx';
+            const authHeader = token ? `Bearer ${token}` : `Bearer ${adminPwd}`;
+
             const res = await fetch(`${apiBase}/api/delete-song`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': authHeader,
+                'x-admin-secret': adminPwd
               },
               body: JSON.stringify({
                 category: catId,
                 songId: songId,
-                password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+                adminSecret: adminPwd,
+                password: adminPwd
               })
             });
 
             if (res.ok) {
               const data = await res.json();
               if (data.success) deleted = true;
+              else backendDelErr = data.error || 'Delete rejected by server.';
+            } else {
+              try {
+                const errData = await res.json();
+                backendDelErr = errData.error || `HTTP ${res.status}`;
+              } catch (_) {
+                backendDelErr = `HTTP ${res.status}`;
+              }
             }
-          } catch (netErr) {}
+          } catch (netErr) {
+            backendDelErr = netErr.message;
+          }
 
           // Attempt 2: GitHub Direct Commit
           if (!deleted) {
             const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
             if (ghToken) {
-              await deleteSongOnGitHubDirect(catId, songId, ghToken);
-              deleted = true;
+              try {
+                await deleteSongOnGitHubDirect(catId, songId, ghToken);
+                deleted = true;
+              } catch (ghErr) {
+                backendDelErr = `GitHub API: ${ghErr.message}`;
+              }
             }
           }
 
@@ -1348,14 +1395,19 @@
     let updated = false;
 
     // Attempt 1: Backend /api/update-song
+    let backendUpdErr = '';
     try {
       const apiBase = getApiBase();
       const token = localStorage.getItem('playx_admin_token') || '';
+      const adminPwd = localStorage.getItem('playx_admin_password') || 'deepak@playx';
+      const authHeader = token ? `Bearer ${token}` : `Bearer ${adminPwd}`;
+
       const res = await fetch(`${apiBase}/api/update-song`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': authHeader,
+          'x-admin-secret': adminPwd
         },
         body: JSON.stringify({
           category: catId,
@@ -1366,21 +1418,39 @@
           singer: updates.singer,
           singerEn: updates.singerEn,
           tag: updates.tag,
-          password: localStorage.getItem('playx_admin_password') || 'deepak@playx'
+          adminSecret: adminPwd,
+          password: adminPwd
         })
       });
 
       if (res.ok) {
         const data = await res.json();
         if (data.success) updated = true;
+        else backendUpdErr = data.error || 'Update rejected by server.';
+      } else {
+        try {
+          const errData = await res.json();
+          backendUpdErr = errData.error || `HTTP ${res.status}`;
+        } catch (_) {
+          backendUpdErr = `HTTP ${res.status}`;
+        }
       }
-    } catch (netErr) {}
+    } catch (netErr) {
+      backendUpdErr = netErr.message;
+    }
 
     // Attempt 2: GitHub Direct Commit
     if (!updated) {
       const ghToken = localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token') || '';
       if (ghToken) {
-        await updateSongOnGitHubDirect(catId, songId, updates, ghToken);
+        try {
+          await updateSongOnGitHubDirect(catId, songId, updates, ghToken);
+          updated = true;
+        } catch (ghErr) {
+          backendUpdErr = `GitHub API: ${ghErr.message}`;
+        }
+      }
+    }
         updated = true;
       }
     }

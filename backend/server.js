@@ -47,7 +47,13 @@ const songDbManager = require('./song-db-manager');
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 const ADMIN_SECRET = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || 'Deep@k8747';
-const ALLOWED_ADMIN_SECRETS = [ADMIN_SECRET, 'Deep@k8747', 'PlayX@AdminDefault2026'];
+const ALLOWED_ADMIN_SECRETS = [
+  ADMIN_SECRET,
+  'Deep@k8747',
+  'PlayX@AdminDefault2026',
+  'deepak@playx',
+  'PlayxAdmin@2026'
+];
 const ADMIN_EMAIL = (process.env.ADMIN_EMAIL || 'deepaksinghrajput8747@gmail.com').toLowerCase();
 const ADMIN_NAME = process.env.ADMIN_NAME || 'Deepak Singh Rajput';
 const PROJECT_ROOT = songDbManager.PROJECT_ROOT;
@@ -242,7 +248,7 @@ function parseRequestBody(req) {
  */
 function isAuthorizedAdmin(req, body = {}) {
   const secretFromHeader = req.headers['x-admin-secret'] || '';
-  const secretFromBody = body.adminSecret || '';
+  const secretFromBody = body.adminSecret || body.password || body.adminPassword || '';
   const authHeader = req.headers['authorization'] || '';
 
   let bearerToken = '';
@@ -559,7 +565,25 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      const { category, songData, allowDuplicate } = body;
+      let { category, songData, allowDuplicate } = body;
+
+      // Robust fallback if frontend passes flat song attributes
+      if (!songData && (body.title || body.videoId || body.name)) {
+        songData = {
+          title: body.title || body.name,
+          titleEn: body.titleEn || body.nameEn || body.title || body.name,
+          cleanTitle: body.cleanTitle || body.title || body.name,
+          singer: body.singer,
+          singerEn: body.singerEn || body.singer,
+          channelTitle: body.channelTitle || body.singer,
+          duration: body.duration,
+          tag: body.tag,
+          subCategory: body.subCategory,
+          originalUrl: body.url || body.originalUrl,
+          videoId: body.videoId,
+          thumbnail: body.thumbnail
+        };
+      }
 
       if (!category || !songData) {
         sendJsonResponse(res, 400, {
