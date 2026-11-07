@@ -105,7 +105,7 @@ button {
 }
 
 /* =========================================================
-   1. ADMIN AUTHENTICATION GATE
+   1. ADMIN AUTHENTICATION GATE (Ultra-Modern Glassmorphic UI)
    ========================================================= */
 .admin-login-gate {
   position: fixed;
@@ -114,67 +114,220 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.25rem;
-  background: radial-gradient(circle at top center, rgba(139, 92, 246, 0.18), transparent 70%), var(--dash-bg);
-  backdrop-filter: blur(20px);
+  padding: 1.5rem;
+  background: #080914;
+  overflow: hidden;
 }
 
+/* Ambient dynamic background lighting effects */
+.gate-ambient-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  pointer-events: none;
+  opacity: 0.45;
+  will-change: transform;
+}
+
+.gate-glow-1 {
+  width: 520px;
+  height: 520px;
+  top: -120px;
+  right: -80px;
+  background: radial-gradient(circle, rgba(236, 72, 153, 0.45), rgba(139, 92, 246, 0.25), transparent 70%);
+  animation: gateOrbFloat1 18s ease-in-out infinite alternate;
+}
+
+.gate-glow-2 {
+  width: 480px;
+  height: 480px;
+  bottom: -100px;
+  left: -80px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.35), rgba(99, 102, 241, 0.2), transparent 70%);
+  animation: gateOrbFloat2 15s ease-in-out infinite alternate;
+}
+
+.gate-ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.8) 0%, transparent 80%);
+  pointer-events: none;
+}
+
+@keyframes gateOrbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, 80px) scale(1.12); }
+  100% { transform: translate(-100px, 40px) scale(0.95); }
+}
+
+@keyframes gateOrbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(70px, -60px) scale(1.1); }
+  100% { transform: translate(110px, -30px) scale(0.92); }
+}
+
+/* Glassmorphic Login Card */
 .login-gate-card {
+  position: relative;
   width: 100%;
-  max-width: 440px;
-  background: var(--dash-card);
-  border: 1.5px solid var(--dash-border-subtle);
-  border-radius: var(--dash-radius-lg);
-  padding: 2.5rem 2rem;
-  box-shadow: var(--dash-shadow-lg);
+  max-width: 450px;
+  background: rgba(18, 20, 38, 0.78);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  padding: 2.6rem 2.25rem;
+  box-shadow: 
+    0 30px 80px -20px rgba(0, 0, 0, 0.85),
+    0 0 50px -10px rgba(139, 92, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   text-align: center;
-  animation: gateFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  animation: gateFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-gate-card.shake {
+  animation: gateCardShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes gateCardShake {
+  10%, 90% { transform: translate3d(-3px, 0, 0); }
+  20%, 80% { transform: translate3d(5px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
 }
 
 @keyframes gateFadeIn {
-  from { opacity: 0; transform: scale(0.96) translateY(12px); }
+  from { opacity: 0; transform: scale(0.94) translateY(18px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-.gate-icon-badge {
-  width: 58px;
-  height: 58px;
+/* Security Status Chip */
+.gate-security-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.32rem 0.9rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #34d399;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 1.4rem;
+}
+
+.gate-security-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: rgba(255, 184, 0, 0.12);
-  border: 1px solid var(--dash-accent);
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: gatePulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes gatePulseGlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.85); }
+}
+
+/* Radiant Brand Emblem */
+.gate-brand-emblem {
+  width: 66px;
+  height: 66px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(236, 72, 153, 0.2));
+  border: 1.5px solid rgba(245, 158, 11, 0.45);
+  box-shadow: 
+    0 10px 25px -4px rgba(245, 158, 11, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.85rem;
-  margin: 0 auto 1.2rem;
-  box-shadow: 0 0 25px var(--dash-accent-glow);
+  margin: 0 auto 1.3rem;
+  color: #f59e0b;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.login-gate-header h1 {
-  font-size: 1.65rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
+.gate-brand-emblem:hover {
+  transform: scale(1.08) rotate(-4deg);
+  box-shadow: 0 14px 32px -4px rgba(245, 158, 11, 0.5);
 }
 
-.login-gate-header p {
-  color: var(--dash-text-muted);
-  font-size: 0.9rem;
+.gate-emblem-svg {
+  display: block;
+}
+
+/* Typography */
+.gate-title {
+  font-size: 1.8rem;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.45rem;
+  color: #ffffff;
+}
+
+.gate-title-gradient {
+  background: linear-gradient(135deg, #f59e0b 10%, #ec4899 65%, #a855f7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gate-subtitle {
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.86rem;
+  line-height: 1.48;
   margin-bottom: 1.75rem;
 }
 
+/* Form Groups & Labels */
 .gate-form-group {
   text-align: left;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.35rem;
 }
 
-.gate-form-group label {
-  display: block;
+.gate-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.gate-label-row label {
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--dash-text-muted);
-  margin-bottom: 0.45rem;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.01em;
 }
 
+.gate-hint-btn {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.32);
+  border-radius: 6px;
+  color: #fbbf24;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.18rem 0.55rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gate-hint-btn:hover {
+  background: rgba(245, 158, 11, 0.28);
+  border-color: #f59e0b;
+  transform: translateY(-1px);
+}
+
+/* Input Wrapper & Inputs */
 .gate-input-wrap {
   position: relative;
   display: flex;
@@ -186,40 +339,44 @@ button {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  font-size: 1.05rem;
-  color: var(--dash-text-dim);
+  color: rgba(255, 255, 255, 0.4);
   pointer-events: none;
+  transition: color 0.2s ease;
 }
 
 .gate-input-wrap input {
   width: 100%;
-  padding: 0.8rem 3.2rem 0.8rem 2.6rem;
-  background: var(--dash-surface);
-  border: 1.5px solid var(--dash-border);
-  border-radius: var(--dash-radius-sm);
-  color: var(--dash-text);
-  font-size: 0.95rem;
+  padding: 0.88rem 3.2rem 0.88rem 2.8rem;
+  background: rgba(10, 12, 26, 0.75);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 0.96rem;
   outline: none;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gate-input-wrap input::placeholder {
+  color: rgba(255, 255, 255, 0.32);
 }
 
 .gate-input-wrap input:focus {
-  border-color: var(--dash-accent);
-  box-shadow: 0 0 15px var(--dash-accent-glow);
-  background: var(--dash-surface-hover);
+  border-color: #f59e0b;
+  background: rgba(15, 18, 40, 0.95);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2), 0 0 25px rgba(245, 158, 11, 0.25);
+}
+
+.gate-input-wrap input:focus ~ .gate-input-icon {
+  color: #f59e0b;
 }
 
 .gate-eye-toggle {
   position: absolute;
-  right: 14px;
+  right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   background: transparent !important;
   border: none !important;
   outline: none !important;
@@ -228,91 +385,169 @@ button {
   display: flex !important;
   align-items: center;
   justify-content: center;
-  color: var(--dash-text-dim);
-  appearance: none;
-  -webkit-appearance: none;
-  user-select: none;
-  transition: color 0.2s ease;
+  color: rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .gate-eye-toggle:hover {
-  color: var(--dash-accent);
+  color: #fbbf24;
+  background: rgba(255, 255, 255, 0.08) !important;
 }
 
-.gate-eye-svg {
-  display: block;
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
+/* CapsLock Warning */
+.gate-caps-warning {
+  margin-top: 0.45rem;
+  padding: 0.32rem 0.65rem;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 6px;
+  font-size: 0.74rem;
+  color: #fbbf24;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
+/* Feedback Messages */
 .gate-msg {
-  padding: 0.65rem 0.9rem;
-  border-radius: var(--dash-radius-sm);
-  font-size: 0.85rem;
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  font-size: 0.86rem;
   margin-bottom: 1.25rem;
   text-align: left;
+  line-height: 1.45;
+  animation: gateFadeIn 0.25s ease;
 }
 
 .gate-msg.error {
-  background: var(--dash-danger-bg);
-  border: 1px solid var(--dash-danger);
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.4);
   color: #fca5a5;
 }
 
 .gate-msg.success {
-  background: var(--dash-emerald-bg);
-  border: 1px solid var(--dash-emerald);
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.4);
   color: #6ee7b7;
 }
 
+/* Primary Unlock Button */
 .btn-gate-submit {
   width: 100%;
-  padding: 0.85rem;
+  padding: 0.9rem 1.25rem;
   border: none;
-  border-radius: var(--dash-radius-sm);
-  background: linear-gradient(135deg, #ff9800, #e91e63);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ec4899 50%, #8b5cf6 100%);
+  background-size: 200% 200%;
   color: #ffffff;
   font-size: 1rem;
   font-weight: 750;
+  letter-spacing: 0.01em;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
-  box-shadow: 0 4px 18px rgba(255, 152, 0, 0.35);
-  transition: all 0.25s ease;
+  gap: 0.65rem;
+  box-shadow: 0 6px 25px -4px rgba(236, 72, 153, 0.45), 0 2px 8px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-gate-submit:hover {
+.btn-gate-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 24px rgba(255, 152, 0, 0.45);
+  background-position: 100% 100%;
+  box-shadow: 0 10px 32px -4px rgba(236, 72, 153, 0.65), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.btn-gate-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-gate-submit:disabled {
+  opacity: 0.8;
+  cursor: wait;
 }
 
 .btn-gate-submit svg {
   display: block;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
 
-.gate-footer {
-  margin-top: 1.5rem;
+.btn-gate-submit:hover:not(:disabled) svg {
+  transform: translateX(3px);
+}
+
+/* Trust Badges Row */
+.gate-trust-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.6rem;
   padding-top: 1.25rem;
-  border-top: 1px solid var(--dash-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.28rem 0.65rem;
+  border-radius: 6px;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.trust-badge:hover {
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.trust-badge-icon {
+  font-size: 0.82rem;
+}
+
+/* Footer & Back Link */
+.gate-footer {
+  margin-top: 1.35rem;
 }
 
 .gate-back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  color: var(--dash-text-muted);
+  color: rgba(255, 255, 255, 0.55);
   font-size: 0.85rem;
   font-weight: 600;
-  transition: color 0.2s ease;
+  padding: 0.45rem 0.95rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
 .gate-back-link:hover {
-  color: var(--dash-accent);
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.3);
+  transform: translateY(-1px);
+}
+
+.gate-back-link svg {
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.gate-back-link:hover svg {
+  transform: translateX(-3px);
 }
 
 /* =========================================================

@@ -215,15 +215,16 @@
           setTimeout(() => unlockDashboard(), 400);
         } else {
           showGateMsg('error', 'Invalid admin password. Access denied.');
+          const card = document.querySelector('.login-gate-card');
+          if (card) {
+            card.classList.remove('shake');
+            void card.offsetWidth;
+            card.classList.add('shake');
+          }
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = `
-              <span>Unlock Admin Dashboard</span>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-                <polyline points="12 5 19 12 12 19"></polyline>
-              </svg>
-            `;
+            const submitText = document.getElementById('gateSubmitText');
+            if (submitText) submitText.textContent = 'Unlock Admin Dashboard';
           }
         }
       });
