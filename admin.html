@@ -20,7 +20,7 @@
   <!-- Core Theme Stylesheet -->
   <link rel="stylesheet" href="dark-light-mode.css">
   <!-- Dedicated Admin Dashboard Stylesheet -->
-  <link rel="stylesheet" href="admin.css?v=2.3">
+  <link rel="stylesheet" href="admin.css?v=2.5">
   <link rel="stylesheet" href="shared/clear-data.css">
   <link rel="stylesheet" href="shared/playx-dialog.css">
 </head>
@@ -365,6 +365,10 @@
             <input type="text" id="songListSearchInput" class="dash-search-input" placeholder="Search songs by title, singer, or ID in this category..." autocomplete="off">
             <button type="button" class="btn-clear-search" id="btnSongListClearSearch" title="Clear search" style="display: none;">✕</button>
           </div>
+          <button type="button" class="btn-scan-links" id="btnCheckBrokenLinks" title="Scan playlist to detect unavailable or dead YouTube links">
+            <span id="scanLinksIcon">🩺</span>
+            <span id="scanLinksText">Scan Broken Links</span>
+          </button>
           <div class="songlist-count-badge" id="songListCountBadge">
             Loading songs...
           </div>
@@ -527,6 +531,119 @@
         <a href="chhath-puja/chhath-puja.html" class="footer-link">Chhath Songs</a>
       </div>
     </footer>
+  </div>
+
+  <!-- =========================================================
+       MODAL 0: FULL SONG EDIT (Title, Singer, Video Link/ID, Duration, Sub-Category, Tag)
+       ========================================================= -->
+  <div id="modalEditSongFull" class="dash-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalEditSongFullTitle">
+    <div class="dash-modal-card modal-full-edit-card">
+      <div class="dash-modal-header feat-edit-title-header">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <div class="modal-icon-badge feat-edit-title-badge">✏️</div>
+          <div>
+            <h3 id="modalEditSongFullTitle">Edit Full Song Details</h3>
+            <p class="modal-subtitle">Update title, artist, YouTube video link, duration, and sub-category.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnEditSongFullClose">✕</button>
+      </div>
+
+      <form id="formEditSongFull" class="dash-modal-body">
+        <input type="hidden" id="editFullSongId">
+        <input type="hidden" id="editFullCategoryKey">
+
+        <!-- Live Thumbnail & ID Header -->
+        <div class="modal-song-summary">
+          <img id="editFullThumb" src="images/playx_icon.png" class="modal-thumb-img" alt="Song Thumbnail" onerror="this.src='images/playx_icon.png'">
+          <div style="flex:1;">
+            <div id="editFullSongNameDisplay" class="modal-summary-title">Song Title</div>
+            <div id="editFullCategoryDisplay" class="modal-summary-cat">Category</div>
+          </div>
+          <div class="modal-song-id-pill" id="editFullIdPill">ID #--</div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="modal-field">
+            <label for="inputEditFullTitle">Song Title / Name <span class="required">*</span></label>
+            <input type="text" id="inputEditFullTitle" class="modal-input" required placeholder="Enter song title">
+          </div>
+          <div class="modal-field">
+            <label for="inputEditFullSinger">Singer / Artist Name <span class="required">*</span></label>
+            <input type="text" id="inputEditFullSinger" class="modal-input" required placeholder="Enter singer / artist name">
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <label for="inputEditFullVideoUrl">YouTube Video Link or Video ID (Editable) <span class="required">*</span></label>
+          <div class="url-input-wrap">
+            <span class="url-lead-icon">▶</span>
+            <input type="text" id="inputEditFullVideoUrl" class="modal-input" required placeholder="e.g. https://www.youtube.com/watch?v=... or 11-char ID">
+          </div>
+          <small class="field-hint" style="color: var(--dash-text-muted); font-size: 0.78rem; margin-top: 0.35rem; display: block;">If the original video was deleted or blocked by copyright, paste a new link to fix it.</small>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="modal-field">
+            <label for="inputEditFullDuration">Duration (mm:ss)</label>
+            <input type="text" id="inputEditFullDuration" class="modal-input" placeholder="e.g. 04:15">
+          </div>
+
+          <div class="modal-field" id="editFullSubCatGroup" style="display: none;">
+            <label for="selectEditFullSubCat">Hindi Sub-Category</label>
+            <select id="selectEditFullSubCat" class="modal-input">
+              <option value="Romantic">Romantic</option>
+              <option value="90s Classics">90s Classics</option>
+              <option value="Dance & Beats">Dance & Beats</option>
+              <option value="Soulful Melodies">Soulful Melodies</option>
+            </select>
+          </div>
+
+          <div class="modal-field">
+            <label for="inputEditFullTag">Tag / Mood</label>
+            <input type="text" id="inputEditFullTag" class="modal-input" placeholder="e.g. Hits, Devotional">
+          </div>
+        </div>
+
+        <div id="editFullMsg" class="modal-alert-msg" style="display: none;"></div>
+
+        <div class="modal-actions-row">
+          <button type="button" class="btn-modal-cancel" id="btnEditSongFullCancel">Cancel</button>
+          <button type="submit" class="btn-modal-save save-title-btn" id="btnEditSongFullSave">
+            <span id="editFullSaveIcon">💾</span>
+            <span id="editFullSaveText">Save Changes</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL: LIVE SONG PREVIEW & AUDIO PLAYER
+       ========================================================= -->
+  <div id="modalSongPreview" class="dash-modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalPreviewTitle">
+    <div class="dash-modal-card modal-preview-card">
+      <div class="dash-modal-header preview-header">
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <div class="modal-icon-badge preview-badge">🎧</div>
+          <div>
+            <h3 id="modalPreviewTitle">Song Preview</h3>
+            <p class="modal-subtitle" id="modalPreviewSubtitle">Listen to verify song audio and video stream.</p>
+          </div>
+        </div>
+        <button type="button" class="btn-modal-close" id="btnPreviewModalClose">✕</button>
+      </div>
+
+      <div class="dash-modal-body">
+        <div class="preview-player-container" id="previewPlayerContainer">
+          <!-- Live iframe or audio element injected dynamically -->
+        </div>
+        <div class="preview-meta-box">
+          <div class="preview-title" id="previewSongTitle">Song Name</div>
+          <div class="preview-artist" id="previewSongArtist">Singer</div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- =========================================================
@@ -728,7 +845,7 @@
   <script src="shared/clear-data.js"></script>
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="admin.js?v=2.3"></script>
+  <script src="admin.js?v=2.5"></script>
 </body>
 
 </html>

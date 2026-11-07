@@ -670,7 +670,7 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      const { category, id, songId, name, nameEn, singer, singerEn, tag } = body;
+      const { category, id, songId, name, nameEn, singer, singerEn, tag, videoId, duration, subCategory, url } = body;
       const targetId = id !== undefined && id !== null ? id : songId;
 
       if (!category || targetId === undefined || targetId === null) {
@@ -686,7 +686,11 @@ const server = http.createServer(async (req, res) => {
         nameEn,
         singer,
         singerEn,
-        tag
+        tag,
+        videoId,
+        duration,
+        subCategory,
+        url
       });
 
       if (!result.success) {

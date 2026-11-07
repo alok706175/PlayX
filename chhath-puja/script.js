@@ -854,64 +854,44 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   async function loadOfflineSongs() {
     try {
-      let rawList = [];
+      let unifiedList = [];
 
-      // 1. Try fetching songs.json directly
+      // 1. Fetch primary unified master list from youtube_songs.json
       try {
-        const res = await fetch("songs.json", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data) && data.length > 0) {
-            rawList = data;
-          }
+        const ytRes = await fetch("youtube_songs.json?_v=" + Date.now(), { cache: "no-store" });
+        if (ytRes.ok) {
+          const data = await ytRes.json();
+          if (Array.isArray(data) && data.length > 0) unifiedList = data;
         }
-      } catch (e) {
-        console.warn("Primary songs.json fetch notice, trying fallback:", e);
-      }
-
-      // 2. Fallback to cloudinary_songs.json if needed
-      if (!rawList || rawList.length === 0) {
-        try {
-          const res = await fetch("cloudinary_songs.json", { cache: "no-store" });
-          if (res.ok) {
-            const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
-              rawList = data;
-            }
-          }
-        } catch (e) {
-          console.warn("Cloudinary fallback fetch error:", e);
-        }
-      }
-
-      // 3. Fetch YouTube metadata for dual online video mode
-      let ytList = [];
-      try {
-        const ytRes = await fetch("youtube_songs.json", { cache: "no-store" });
-        if (ytRes.ok) ytList = await ytRes.json();
       } catch (e) { }
 
-      // 4. Merge & Normalize
-      const maxLen = Math.max(rawList.length, ytList.length);
-      if (maxLen === 0) {
+      // 2. Fallback to songs.json if needed
+      if (!unifiedList || unifiedList.length === 0) {
+        try {
+          const sRes = await fetch("songs.json?_v=" + Date.now(), { cache: "no-store" });
+          if (sRes.ok) {
+            const data = await sRes.json();
+            if (Array.isArray(data) && data.length > 0) unifiedList = data;
+          }
+        } catch (e) { }
+      }
+
+      // 3. Fallback to cloudinary_songs.json if needed
+      if (!unifiedList || unifiedList.length === 0) {
+        try {
+          const cRes = await fetch("cloudinary_songs.json?_v=" + Date.now(), { cache: "no-store" });
+          if (cRes.ok) {
+            const data = await cRes.json();
+            if (Array.isArray(data) && data.length > 0) unifiedList = data;
+          }
+        } catch (e) { }
+      }
+
+      if (!unifiedList || unifiedList.length === 0) {
         throw new Error("Empty playlist received");
       }
 
-      songs = [];
-      for (let i = 0; i < maxLen; i++) {
-        const r = rawList[i] || {};
-        const y = ytList[i] || {};
-        const merged = {
-          ...r,
-          videoId: y.videoId || r.videoId || "",
-          embedUrl: y.embedUrl || r.embedUrl || "",
-          ytName: y.name || r.title || r.name || "",
-          ytNameEn: y.nameEn || r.titleEn || r.nameEn || "",
-          ytSinger: y.singer || r.artist || r.singer || "",
-          ytSingerEn: y.singerEn || r.artistEn || r.singerEn || ""
-        };
-        songs.push(normalizeSong(merged, i));
-      }
+      songs = unifiedList.map((item, i) => normalizeSong(item, i));
 
       // Restore saved volume and mute preferences from localStorage
       restoreVolumeAndMuteState();

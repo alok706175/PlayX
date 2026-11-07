@@ -96,6 +96,7 @@
   let dynamicCategories = [];    // dynamically fetched categories with live counts
   let cachedCategorySongs = [];  // songs belonging to activeCategory
   let selectedSongForAction = null; // song targeted for modal edit or delete
+  const brokenVideoIds = new Set(); // Video IDs flagged as dead/unavailable
 
   /* =========================================================
      1. INITIALIZATION & AUTHENTICATION GATE
@@ -592,37 +593,29 @@
       const singerName = song.singer || song.singerEn || 'Unknown Artist';
       const duration = song.duration || '--:--';
       const thumb = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
-      const catName = activeCategory?.name || 'Playlist';
+      const catName = (activeCategory?.id === 'hindi' && song.category) ? song.category : (activeCategory?.name || 'Playlist');
+      const isBroken = song.videoId && brokenVideoIds.has(song.videoId);
 
-      // Action Button based on activeFeature
-      let actionBtnHtml = '';
-      if (activeFeature === 'delete-song') {
-        actionBtnHtml = `
-          <button type="button" class="btn-action-delete" data-song-id="${songId}">
-            <span>🗑️</span> <span>Delete</span>
-          </button>
-        `;
-      } else if (activeFeature === 'edit-singer') {
-        actionBtnHtml = `
-          <button type="button" class="btn-action-edit-singer" data-song-id="${songId}">
-            <span>🎤</span> <span>Edit Singer</span>
-          </button>
-        `;
-      } else if (activeFeature === 'edit-song-name') {
-        actionBtnHtml = `
-          <button type="button" class="btn-action-edit-title" data-song-id="${songId}">
-            <span>✏️</span> <span>Edit Title</span>
-          </button>
-        `;
-      }
+      const actionBtnHtml = `
+        <button type="button" class="btn-action-preview" data-song-id="${songId}" title="Preview / Listen">
+          <span>▶</span> <span>Preview</span>
+        </button>
+        <button type="button" class="btn-action-edit-full" data-song-id="${songId}" title="Edit Full Details">
+          <span>✏️</span> <span>Edit</span>
+        </button>
+        <button type="button" class="btn-action-delete" data-song-id="${songId}" title="Delete Song">
+          <span>🗑️</span> <span>Delete</span>
+        </button>
+      `;
 
       return `
-        <div class="song-row-item" data-song-id="${songId}">
+        <div class="song-row-item ${isBroken ? 'row-broken-link' : ''}" data-song-id="${songId}">
           <div>
             <img src="${escapeHtml(thumb)}" class="song-cover-thumb" alt="${escapeHtml(songTitle)}" loading="lazy" onerror="this.src='images/playx_icon.png'">
           </div>
           <div class="song-title-cell" title="${escapeHtml(songTitle)}">
-            ${escapeHtml(songTitle)}
+            <span class="song-title-text">${escapeHtml(songTitle)}</span>
+            ${isBroken ? '<span class="badge-broken-link" title="Video unavailable or deleted on YouTube">⚠️ Broken Link</span>' : ''}
           </div>
           <div class="song-singer-cell" title="${escapeHtml(singerName)}">
             🎤 ${escapeHtml(singerName)}
@@ -641,36 +634,38 @@
     }).join('');
 
     // Attach Action Listeners
-    if (activeFeature === 'delete-song') {
-      tableBody.querySelectorAll('.btn-action-delete').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const sid = btn.getAttribute('data-song-id');
-          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
-          if (song) openDeleteModal(song);
-        });
+    tableBody.querySelectorAll('.btn-action-preview').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+        if (song) openPreviewModal(song);
       });
-    } else if (activeFeature === 'edit-singer') {
-      tableBody.querySelectorAll('.btn-action-edit-singer').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const sid = btn.getAttribute('data-song-id');
-          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
-          if (song) openEditSingerModal(song);
-        });
+    });
+
+    tableBody.querySelectorAll('.btn-action-edit-full').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+        if (song) openFullEditModal(song);
       });
-    } else if (activeFeature === 'edit-song-name') {
-      tableBody.querySelectorAll('.btn-action-edit-title').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const sid = btn.getAttribute('data-song-id');
-          const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
-          if (song) openEditSongNameModal(song);
-        });
+    });
+
+    tableBody.querySelectorAll('.btn-action-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const sid = btn.getAttribute('data-song-id');
+        const song = cachedCategorySongs.find(s => String(s.id) === String(sid) || s.videoId === String(sid));
+        if (song) openDeleteModal(song);
       });
-    }
+    });
   }
 
   function initSongListControls() {
     const searchInput = document.getElementById('songListSearchInput');
     const clearBtn = document.getElementById('btnSongListClearSearch');
+    const scanBtn = document.getElementById('btnCheckBrokenLinks');
 
     if (searchInput) {
       searchInput.addEventListener('input', () => {
@@ -693,6 +688,60 @@
         searchInput.value = '';
         clearBtn.style.display = 'none';
         renderSongsList(cachedCategorySongs);
+      });
+    }
+
+    // Broken links scanner
+    if (scanBtn) {
+      scanBtn.addEventListener('click', async () => {
+        if (!cachedCategorySongs || cachedCategorySongs.length === 0) {
+          showToast('info', 'No songs loaded in playlist to scan.');
+          return;
+        }
+
+        scanBtn.disabled = true;
+        const origContent = scanBtn.innerHTML;
+        scanBtn.innerHTML = '<span>⏳</span> <span>Scanning (0/' + cachedCategorySongs.length + ')...</span>';
+
+        let deadCount = 0;
+        let checked = 0;
+
+        for (const song of cachedCategorySongs) {
+          checked++;
+          if (checked % 5 === 0 || checked === cachedCategorySongs.length) {
+            scanBtn.innerHTML = `<span>⏳</span> <span>Scanning (${checked}/${cachedCategorySongs.length})...</span>`;
+          }
+
+          const vid = song.videoId;
+          if (!vid || vid.startsWith('playx_')) continue;
+
+          try {
+            const checkUrl = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${encodeURIComponent(vid)}`;
+            const res = await fetch(checkUrl);
+            if (res.ok) {
+              const data = await res.json();
+              if (data.error || !data.title) {
+                brokenVideoIds.add(vid);
+                deadCount++;
+              } else {
+                brokenVideoIds.delete(vid);
+              }
+            } else {
+              brokenVideoIds.add(vid);
+              deadCount++;
+            }
+          } catch (_) {}
+        }
+
+        scanBtn.disabled = false;
+        scanBtn.innerHTML = origContent;
+        renderSongsList(cachedCategorySongs);
+
+        if (deadCount > 0) {
+          showToast('warning', `⚠️ Scan Complete: Detected ${deadCount} unavailable or dead link(s). Highlighted in list!`);
+        } else {
+          showToast('success', `✅ Scan Complete: All ${cachedCategorySongs.length} song links are healthy and playable!`);
+        }
       });
     }
   }
@@ -1055,8 +1104,13 @@
               openSongListPage(activeCategory, 'edit-song-name');
             }, 1200);
           } else {
-            const detail = backendErrorMessage ? `: ${backendErrorMessage}` : '';
-            throw new Error(`Failed to save song${detail}. Check server connection or GitHub PAT in Settings.`);
+            let detail = '';
+            if (backendErrorMessage) {
+              detail = `Server error: ${backendErrorMessage}.`;
+            } else {
+              detail = 'Backend server is unreachable or waking up (Render takes ~40s).';
+            }
+            throw new Error(`${detail} Tip: Add your GitHub PAT in Settings (⚙️) to save directly without backend dependency.`);
           }
         } catch (err) {
           if (formMsg) {
@@ -1320,6 +1374,123 @@
     }
   }
 
+
+    // 4. Full Edit Song Modal
+    const modalFull = document.getElementById('modalEditSongFull');
+    const formFull = document.getElementById('formEditSongFull');
+    const closeFullBtn = document.getElementById('btnEditSongFullClose');
+    const cancelFullBtn = document.getElementById('btnEditSongFullCancel');
+
+    const closeFull = () => {
+      if (modalFull) modalFull.style.display = 'none';
+    };
+    if (closeFullBtn) closeFullBtn.addEventListener('click', closeFull);
+    if (cancelFullBtn) cancelFullBtn.addEventListener('click', closeFull);
+
+    if (formFull) {
+      formFull.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const songId = document.getElementById('editSongFullId')?.value;
+        const newTitle = (document.getElementById('inputEditSongFullTitle')?.value || '').trim();
+        const newSinger = (document.getElementById('inputEditSongFullSinger')?.value || '').trim();
+        const rawVid = (document.getElementById('inputEditSongFullVideo')?.value || '').trim();
+        const newDur = (document.getElementById('inputEditSongFullDuration')?.value || '').trim();
+        const newTag = (document.getElementById('inputEditSongFullTag')?.value || '').trim();
+        const subCatSelect = document.getElementById('selectEditSongFullSubCategory');
+        const newSubCat = (activeCategory?.id === 'hindi' && subCatSelect) ? subCatSelect.value : '';
+
+        const msgEl = document.getElementById('editSongFullMsg');
+        const saveBtn = document.getElementById('btnEditSongFullSave');
+        const saveIcon = document.getElementById('editSongFullSaveIcon');
+        const saveText = document.getElementById('editSongFullSaveText');
+
+        if (!newTitle || !newSinger) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = 'Please provide both Title and Singer name.';
+            msgEl.style.display = 'block';
+          }
+          return;
+        }
+
+        let newVidId = '';
+        if (rawVid) {
+          if (window.PlayXUrlParser) {
+            const p = window.PlayXUrlParser.parseYouTubeUrl(rawVid);
+            if (p && (p.isValid || p.valid || p.videoId)) newVidId = p.videoId;
+          }
+          if (!newVidId && rawVid.length === 11) newVidId = rawVid;
+        }
+
+        saveBtn.disabled = true;
+        saveIcon.textContent = '⏳';
+        saveText.textContent = 'Updating...';
+        if (msgEl) msgEl.style.display = 'none';
+
+        try {
+          const updates = {
+            name: newTitle,
+            nameEn: newTitle,
+            singer: newSinger,
+            singerEn: newSinger,
+            duration: newDur || undefined,
+            tag: newTag || undefined,
+            videoId: newVidId || undefined,
+            subCategory: newSubCat || undefined,
+            category: (activeCategory?.id === 'hindi' && newSubCat) ? newSubCat : undefined
+          };
+
+          await executeUpdateSong(updates, songId);
+
+          // Update cached song in array
+          const song = cachedCategorySongs.find(s => String(s.id) === String(songId) || s.videoId === String(songId));
+          if (song) {
+            song.name = newTitle;
+            song.nameEn = newTitle;
+            song.singer = newSinger;
+            song.singerEn = newSinger;
+            if (newDur) song.duration = newDur;
+            if (newTag) song.tag = newTag;
+            if (newVidId) {
+              song.videoId = newVidId;
+              song.youtubeId = newVidId;
+              song.embedUrl = `https://www.youtube.com/embed/${newVidId}`;
+              song.thumbnail = `https://i.ytimg.com/vi/${newVidId}/hqdefault.jpg`;
+              brokenVideoIds.delete(newVidId);
+            }
+            if (newSubCat) song.category = newSubCat;
+          }
+
+          renderSongsList(cachedCategorySongs);
+          closeFull();
+          showToast('success', `✅ Updated '${newTitle}' successfully!`);
+        } catch (err) {
+          if (msgEl) {
+            msgEl.className = 'modal-alert-msg danger';
+            msgEl.textContent = `Error: ${err.message}`;
+            msgEl.style.display = 'block';
+          }
+          showToast('error', `Update failed: ${err.message}`);
+        } finally {
+          saveBtn.disabled = false;
+          saveIcon.textContent = '💾';
+          saveText.textContent = 'Save All Changes';
+        }
+      });
+    }
+
+    // 5. Preview Modal Close
+    const closePreviewBtn = document.getElementById('btnPreviewModalClose');
+    if (closePreviewBtn) closePreviewBtn.addEventListener('click', closePreviewModal);
+
+    const modalPreview = document.getElementById('modalSongPreview');
+    if (modalPreview) {
+      modalPreview.addEventListener('click', (e) => {
+        if (e.target === modalPreview) closePreviewModal();
+      });
+    }
+
+
   function openEditSingerModal(song) {
     selectedSongForAction = song;
     const modal = document.getElementById('modalEditSinger');
@@ -1390,6 +1561,121 @@
     if (modal) modal.style.display = 'flex';
   }
 
+  function openPreviewModal(song) {
+    selectedSongForAction = song;
+    const modal = document.getElementById('modalSongPreview');
+    const titleEl = document.getElementById('previewModalSongTitle');
+    const singerEl = document.getElementById('previewModalSinger');
+    const container = document.getElementById('previewPlayerContainer');
+    if (!modal || !container) return;
+
+    const sTitle = song.name || song.title || 'Untitled Song';
+    const sSinger = song.singer || song.singerEn || 'Unknown Artist';
+
+    if (titleEl) titleEl.textContent = sTitle;
+    if (singerEl) singerEl.textContent = `🎤 ${sSinger}`;
+
+    container.innerHTML = '';
+
+    if (song.videoId && !song.videoId.startsWith('playx_')) {
+      const iframe = document.createElement('iframe');
+      iframe.className = 'preview-iframe';
+      iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(song.videoId)}?autoplay=1&rel=0`;
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      container.appendChild(iframe);
+    } else if (song.file || song.src || song.url) {
+      const audioUrl = song.file || song.src || song.url;
+      const audio = document.createElement('audio');
+      audio.controls = true;
+      audio.autoplay = true;
+      audio.style.width = '100%';
+      audio.style.marginTop = '18px';
+      audio.src = audioUrl;
+      container.appendChild(audio);
+    } else {
+      container.innerHTML = `
+        <div style="padding: 24px; text-align: center; color: var(--dash-text-muted);">
+          <p>⚠️ No preview stream or YouTube video available for this song.</p>
+        </div>
+      `;
+    }
+
+    modal.style.display = 'flex';
+  }
+
+  function closePreviewModal() {
+    const modal = document.getElementById('modalSongPreview');
+    const container = document.getElementById('previewPlayerContainer');
+    if (container) container.innerHTML = '';
+    if (modal) modal.style.display = 'none';
+  }
+
+  function openFullEditModal(song) {
+    selectedSongForAction = song;
+    const modal = document.getElementById('modalEditSongFull');
+    const songIdInput = document.getElementById('editSongFullId');
+    const catInput = document.getElementById('editSongFullCatKey');
+    const thumbImg = document.getElementById('editSongFullThumb');
+    const titleDisp = document.getElementById('editSongFullTitleDisplay');
+    const titleIn = document.getElementById('inputEditSongFullTitle');
+    const singerIn = document.getElementById('inputEditSongFullSinger');
+    const videoIn = document.getElementById('inputEditSongFullVideo');
+    const durIn = document.getElementById('inputEditSongFullDuration');
+    const tagIn = document.getElementById('inputEditSongFullTag');
+    const subCatGroup = document.getElementById('editSongFullSubCategoryGroup');
+    const subCatSelect = document.getElementById('selectEditSongFullSubCategory');
+    const msgEl = document.getElementById('editSongFullMsg');
+
+    if (!modal) return;
+
+    if (songIdInput) songIdInput.value = song.id || song.videoId;
+    if (catInput) catInput.value = activeCategory?.id || '';
+    if (thumbImg) {
+      thumbImg.src = song.thumbnail || (song.videoId ? `https://i.ytimg.com/vi/${song.videoId}/hqdefault.jpg` : 'images/playx_icon.png');
+    }
+    if (titleDisp) titleDisp.textContent = song.name || song.title || 'Untitled Track';
+    if (titleIn) titleIn.value = song.name || song.title || '';
+    if (singerIn) singerIn.value = song.singer || song.singerEn || '';
+    if (videoIn) {
+      videoIn.value = song.videoId ? `https://www.youtube.com/watch?v=${song.videoId}` : (song.url || song.originalUrl || '');
+    }
+    if (durIn) durIn.value = (song.duration && song.duration !== '--:--') ? song.duration : '';
+    if (tagIn) tagIn.value = song.tag || '';
+
+    if (subCatGroup) {
+      if (activeCategory?.id === 'hindi') {
+        subCatGroup.style.display = 'block';
+        if (subCatSelect) {
+          subCatSelect.value = song.category || 'Romantic';
+        }
+      } else {
+        subCatGroup.style.display = 'none';
+      }
+    }
+
+    if (msgEl) msgEl.style.display = 'none';
+
+    if (videoIn && thumbImg) {
+      const updateThumbFromInput = () => {
+        const val = videoIn.value.trim();
+        let vid = '';
+        if (window.PlayXUrlParser) {
+          const p = window.PlayXUrlParser.parseYouTubeUrl(val);
+          if (p && (p.isValid || p.valid || p.videoId)) vid = p.videoId;
+        }
+        if (!vid && val.length === 11) vid = val;
+        if (vid) {
+          thumbImg.src = `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
+        }
+      };
+      videoIn.oninput = updateThumbFromInput;
+    }
+
+    modal.style.display = 'flex';
+  }
+
+
   async function executeUpdateSong(updates, songId) {
     const catId = activeCategory?.id;
     let updated = false;
@@ -1414,10 +1700,14 @@
           id: songId,
           songId: songId,
           name: updates.name,
-          nameEn: updates.nameEn,
+          nameEn: updates.nameEn || updates.name,
           singer: updates.singer,
-          singerEn: updates.singerEn,
+          singerEn: updates.singerEn || updates.singer,
           tag: updates.tag,
+          duration: updates.duration,
+          subCategory: updates.subCategory,
+          categoryName: updates.subCategory,
+          videoId: updates.videoId,
           adminSecret: adminPwd,
           password: adminPwd
         })
@@ -1564,8 +1854,8 @@
     } catch (e) {}
 
     const hasToken = Boolean(localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token'));
-    if (text) text.textContent = hasToken ? 'GitHub Direct Push' : 'Standalone / No Token';
-    if (dot) dot.className = hasToken ? 'sync-dot amber' : 'sync-dot';
+    if (text) text.textContent = hasToken ? 'GitHub Direct Push' : 'Server Offline (Needs PAT)';
+    if (dot) dot.className = hasToken ? 'sync-dot amber' : 'sync-dot red';
   }
 
   /* =========================================================
@@ -1599,6 +1889,20 @@
     }
     if (updates.tag) {
       songs[idx].tag = updates.tag.trim();
+    }
+    if (updates.duration) {
+      songs[idx].duration = updates.duration.trim();
+    }
+    if (updates.subCategory) {
+      songs[idx].category = updates.subCategory.trim();
+    }
+    if (updates.videoId) {
+      const v = updates.videoId.trim();
+      songs[idx].videoId = v;
+      songs[idx].youtubeId = v;
+      songs[idx].embedUrl = `https://www.youtube.com/embed/${v}`;
+      songs[idx].originalUrl = `https://www.youtube.com/watch?v=${v}`;
+      songs[idx].thumbnail = `https://i.ytimg.com/vi/${v}/hqdefault.jpg`;
     }
 
     const updatedContent = JSON.stringify(songs, null, 2) + '\n';
@@ -1637,6 +1941,31 @@
             message: `Sync hindi_songs_data.js bundle after updating '${songs[idx].name}'`,
             content: encodeUtf8Base64(bundleStr),
             sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (e) {}
+    }
+
+    // Synchronize chhath-puja/songs.json if Chhath
+    if (categoryKey === 'chhath') {
+      try {
+        const cPath = 'chhath-puja/songs.json';
+        let cSha = null;
+        try {
+          const cGet = await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (cGet.ok) cSha = (await cGet.json()).sha;
+        } catch (e) {}
+
+        await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}`, {
+          method: 'PUT',
+          headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Sync chhath-puja/songs.json master dataset [PlayX Admin]`,
+            content: encodeUtf8Base64(JSON.stringify(songs, null, 2) + '\n'),
+            sha: cSha,
             branch: branch
           })
         });
@@ -1698,6 +2027,31 @@
             message: `Sync hindi_songs_data.js bundle after deleting '${deleted.name || 'Song'}'`,
             content: encodeUtf8Base64(bundleStr),
             sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (e) {}
+    }
+
+    // Synchronize chhath-puja/songs.json if Chhath
+    if (categoryKey === 'chhath') {
+      try {
+        const cPath = 'chhath-puja/songs.json';
+        let cSha = null;
+        try {
+          const cGet = await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (cGet.ok) cSha = (await cGet.json()).sha;
+        } catch (e) {}
+
+        await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}`, {
+          method: 'PUT',
+          headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Sync chhath-puja/songs.json master dataset [PlayX Admin]`,
+            content: encodeUtf8Base64(JSON.stringify(songs, null, 2) + '\n'),
+            sha: cSha,
             branch: branch
           })
         });
@@ -1788,6 +2142,31 @@
             message: `Sync hindi_songs_data.js bundle after adding '${newRecord.name}'`,
             content: encodeUtf8Base64(bundleStr),
             sha: bundleSha,
+            branch: branch
+          })
+        });
+      } catch (e) {}
+    }
+
+    // Synchronize chhath-puja/songs.json if Chhath
+    if (categoryKey === 'chhath') {
+      try {
+        const cPath = 'chhath-puja/songs.json';
+        let cSha = null;
+        try {
+          const cGet = await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}?ref=${branch}&_nocache=${Date.now()}`, {
+            headers: { 'Authorization': authHeader }
+          });
+          if (cGet.ok) cSha = (await cGet.json()).sha;
+        } catch (e) {}
+
+        await fetch(`https://api.github.com/repos/${repo}/contents/${cPath}`, {
+          method: 'PUT',
+          headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: `Sync chhath-puja/songs.json master dataset [PlayX Admin]`,
+            content: encodeUtf8Base64(JSON.stringify(songs, null, 2) + '\n'),
+            sha: cSha,
             branch: branch
           })
         });

@@ -82,17 +82,20 @@ function readJsonSafe(filePath) {
  *   song?: object
  * }}
  */
-function checkDuplicate(videoId, originalUrl = '') {
-  if (!videoId) return { exists: false };
+function checkDuplicate(videoId, originalUrl = '', title = '', singer = '') {
+  if (!videoId && !title) return { exists: false };
+
+  const normTitle = title ? String(title).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
+  const normSinger = singer ? String(singer).toLowerCase().replace(/[^a-z0-9]/g, '') : '';
 
   for (const [catKey, cat] of Object.entries(categoryDetector.CATEGORIES)) {
     const filePath = path.join(PROJECT_ROOT, cat.jsonFile);
     const songs = readJsonSafe(filePath);
 
     for (const song of songs) {
-      const matchId = (song.videoId === videoId) || 
+      const matchId = videoId && ((song.videoId === videoId) || 
                       (song.youtubeId === videoId) ||
-                      (song.id === `youtube_${videoId}`);
+                      (song.id === `youtube_${videoId}`));
 
       const matchUrl = originalUrl && (song.originalUrl === originalUrl || song.embedUrl?.includes(videoId));
 
@@ -106,10 +109,43 @@ function checkDuplicate(videoId, originalUrl = '') {
           song
         };
       }
+
+      // Title & Singer duplicate heuristic (Prevents adding the same song from different channels)
+      if (normTitle && normTitle.length > 5 && normSinger && normSinger.length > 3) {
+        const sTitle = String(song.name || song.title || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const sSinger = String(song.singer || song.artist || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (sTitle && sTitle === normTitle && (sSinger.includes(normSinger) || normSinger.includes(sSinger))) {
+          return {
+            exists: true,
+            isFuzzyMatch: true,
+            foundInCategory: catKey,
+            categoryName: cat.name,
+            categoryHindi: cat.hindiName,
+            foundInFile: cat.jsonFile,
+            song
+          };
+        }
+      }
     }
   }
 
   return { exists: false };
+}
+
+/**
+ * Synchronizes chhath-puja/songs.json with latest chhath-puja/youtube_songs.json
+ * @param {Array<object>} songsList 
+ * @returns {boolean}
+ */
+function syncChhathSongs(songsList) {
+  try {
+    const songsPath = path.join(PROJECT_ROOT, 'chhath-puja', 'songs.json');
+    atomicWriteJson(songsPath, songsList);
+    return true;
+  } catch (err) {
+    console.warn('Could not sync chhath-puja/songs.json:', err.message);
+    return false;
+  }
 }
 
 /**
@@ -408,6 +444,9 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName, action
     if (normalizedPath.includes('hindi_songs.json')) {
       await execShellCommand(`git add "hindi-songs/hindi_songs_data.js"`);
     }
+    if (normalizedPath.includes('youtube_songs.json')) {
+      await execShellCommand(`git add "chhath-puja/songs.json"`);
+    }
 
     const commitRes = await execShellCommand(`git commit -m "${commitMsg}"`);
     if (commitRes.success || commitRes.stdout.includes('nothing to commit')) {
@@ -463,6 +502,39 @@ async function autoSyncToGitHub(relativeFilePath, songName, categoryName, action
 
       if (apiRes.success) {
         console.log(`✅ [GitHub Auto-Sync] Successfully committed via GitHub REST API!`);
+
+        // Dual-bundle sync for Hindi Songs via REST API
+        if (normalizedPath.includes('hindi_songs.json')) {
+          try {
+            const bundleRel = 'hindi-songs/hindi_songs_data.js';
+            const bundleContent = fs.readFileSync(path.join(PROJECT_ROOT, bundleRel), 'utf8');
+            await commitToGitHub(bundleRel, bundleContent, `Sync hindi_songs_data.js bundle [PlayX Auto-Sync]`, {
+              token: ghToken,
+              repo: ghRepo,
+              branch: ghBranch
+            });
+            console.log(`✅ [GitHub Auto-Sync] Synced hindi_songs_data.js via GitHub REST API!`);
+          } catch (bErr) {
+            console.warn(`⚠️ [GitHub Auto-Sync] REST API bundle sync notice: ${bErr.message}`);
+          }
+        }
+
+        // Dual-dataset sync for Chhath Puja Songs via REST API
+        if (normalizedPath.includes('youtube_songs.json')) {
+          try {
+            const chhathSongsRel = 'chhath-puja/songs.json';
+            const chhathContent = fs.readFileSync(path.join(PROJECT_ROOT, chhathSongsRel), 'utf8');
+            await commitToGitHub(chhathSongsRel, chhathContent, `Sync chhath-puja/songs.json [PlayX Auto-Sync]`, {
+              token: ghToken,
+              repo: ghRepo,
+              branch: ghBranch
+            });
+            console.log(`✅ [GitHub Auto-Sync] Synced chhath-puja/songs.json via GitHub REST API!`);
+          } catch (cErr) {
+            console.warn(`⚠️ [GitHub Auto-Sync] REST API chhath sync notice: ${cErr.message}`);
+          }
+        }
+
         return {
           success: true,
           committed: true,
@@ -624,6 +696,9 @@ function addSongToCategory(categoryKey, songData, options = {}) {
     if (categoryKey === 'hindi') {
       syncHindiBundle(existingList);
     }
+    if (categoryKey === 'chhath') {
+      syncChhathSongs(existingList);
+    }
 
     // 3. Record in history log
     recordHistory({
@@ -704,6 +779,9 @@ function deleteSongFromCategory(categoryKey, songId) {
     if (categoryKey === 'hindi') {
       syncHindiBundle(existingList);
     }
+    if (categoryKey === 'chhath') {
+      syncChhathSongs(existingList);
+    }
 
     // 2. Automatic GitHub repository push with fallback
     const githubSync = await autoSyncToGitHub(cat.jsonFile, deletedSong.name, cat.name, 'delete');
@@ -773,6 +851,22 @@ function updateSongInCategory(categoryKey, songId, updates = {}) {
     if (updates.tag !== undefined && String(updates.tag).trim()) {
       song.tag = sanitizeText(String(updates.tag).trim());
     }
+    if (updates.duration !== undefined && String(updates.duration).trim()) {
+      song.duration = sanitizeText(String(updates.duration).trim());
+    }
+    if (updates.videoId !== undefined && String(updates.videoId).trim()) {
+      const vid = String(updates.videoId).trim();
+      song.videoId = vid;
+      song.youtubeId = vid;
+      song.embedUrl = `https://www.youtube.com/embed/${vid}`;
+      song.originalUrl = `https://www.youtube.com/watch?v=${vid}`;
+      song.thumbnail = `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`;
+    }
+    if (updates.subCategory !== undefined && String(updates.subCategory).trim()) {
+      song.category = sanitizeText(String(updates.subCategory).trim());
+    } else if (updates.category !== undefined && String(updates.category).trim() && categoryKey === 'hindi') {
+      song.category = sanitizeText(String(updates.category).trim());
+    }
 
     // 1. Atomic write back to local file
     try {
@@ -787,6 +881,9 @@ function updateSongInCategory(categoryKey, songId, updates = {}) {
     // 1.1 Keep preloaded bundle hindi_songs_data.js in sync for Hindi songs
     if (categoryKey === 'hindi') {
       syncHindiBundle(existingList);
+    }
+    if (categoryKey === 'chhath') {
+      syncChhathSongs(existingList);
     }
 
     // 2. Automatic GitHub repository push
