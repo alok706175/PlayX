@@ -20,7 +20,7 @@
       return {
         id: "hindi",
         name: "Hindi Songs",
-        hindiName: "हिंदी गीत",
+        hindiName: "Bollywood Classics",
         storagePrefixes: ["hindi_"],
         storageExactKeys: [
           "hindi_songs_favs",
@@ -50,7 +50,7 @@
       return {
         id: "haryanvi",
         name: "Haryanvi Songs",
-        hindiName: "हरियाणवी गीत",
+        hindiName: "Haryanvi Ragni & DJ Hits",
         storagePrefixes: ["fav_Haryanvi", "last_Haryanvi", "haryanvi_"],
         storageExactKeys: ["fav_Haryanvi Songs"],
         matchDbItem: function (item) {
@@ -69,7 +69,7 @@
       return {
         id: "bhojpuri",
         name: "Bhojpuri Songs",
-        hindiName: "भोजपुरी गीत",
+        hindiName: "Desi Bhojpuri Hits",
         storagePrefixes: ["fav_Bhojpuri", "last_Bhojpuri", "bhojpuri_"],
         storageExactKeys: ["fav_Bhojpuri Songs"],
         matchDbItem: function (item) {
@@ -88,7 +88,7 @@
       return {
         id: "chhath",
         name: "Chhath Puja Songs",
-        hindiName: "छठ पूजा गीत",
+        hindiName: "Chhath Puja Devotional",
         storagePrefixes: ["chhath_"],
         storageExactKeys: [
           "chhath_player_last_song",
@@ -114,7 +114,7 @@
       return {
         id: "durga",
         name: "Durga Puja Songs",
-        hindiName: "दुर्गा पूजा भजन",
+        hindiName: "Durga Puja & Navratri",
         storagePrefixes: ["fav_Durga", "last_Durga", "durga_"],
         storageExactKeys: ["fav_Durga Puja Songs"],
         matchDbItem: function (item) {
@@ -133,7 +133,7 @@
       return {
         id: "holi",
         name: "Holi Songs",
-        hindiName: "होली गीत",
+        hindiName: "Holi Fagun Songs",
         storagePrefixes: ["fav_Holi", "last_Holi", "holi_"],
         storageExactKeys: ["fav_Holi Songs"],
         matchDbItem: function (item) {
@@ -152,7 +152,7 @@
       return {
         id: "punjabi",
         name: "Punjabi Songs",
-        hindiName: "पंजाबी गीत",
+        hindiName: "Punjabi Beats & Bhangra",
         storagePrefixes: ["fav_Punjabi", "last_Punjabi", "punjabi_"],
         storageExactKeys: ["fav_Punjabi Songs"],
         matchDbItem: function (item) {
@@ -171,7 +171,7 @@
       return {
         id: "saawan",
         name: "Saawan Songs",
-        hindiName: "सावन शिव भजन",
+        hindiName: "Lord Shiva Saawan Bhajans",
         storagePrefixes: ["fav_Saawan", "last_Saawan", "saawan_"],
         storageExactKeys: ["fav_Saawan Songs"],
         matchDbItem: function (item) {
@@ -190,7 +190,7 @@
       return {
         id: "admin",
         name: "Admin Dashboard",
-        hindiName: "एडमिन डैशबोर्ड",
+        hindiName: "Admin Dashboard Cache",
         storagePrefixes: ["playx_admin_"],
         storageExactKeys: [
           "playx_admin_logged_in",
@@ -210,7 +210,7 @@
     return {
       id: "global",
       name: "PlayX Whole Website",
-      hindiName: "संपूर्ण वेबसाइट (होम)",
+      hindiName: "All Website Data (Full Reset)",
       isGlobal: true
     };
   }

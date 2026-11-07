@@ -1,5 +1,5 @@
 /* =========================================================
-   छठ घाट (Chhath Ghat) - Superhit Hindi Songs Interactive Engine
+   PlayX - Superhit Hindi Songs Interactive Engine
    Eye-Comfort, Dark Aesthetics, Glassmorphism Audio Player
    ========================================================= */
 
@@ -28,57 +28,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   const i18n = {
-    hi: {
-      langBtnText: "हिंदी",
-      langBtnTitle: "भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)",
-      langBtnAria: "अंग्रेज़ी भाषा में बदलें",
-      timeWidgetTitle: "भारतीय मानक समय (IST)",
-      navBackText: "होम (Home)",
-      navBackTitle: "मुख्य पृष्ठ पर जाएं (Go Home)",
-      heroBadge: "✨ 209 सुपरहिट बॉलीवुड क्लासिक्स",
-      mainLogoTitle1: "हिंदी सुपरहिट",
-      mainLogoTitle2: "गीत संग्रह",
-      taglineText: "॥ बॉलीवुड क्लासिक्स • रोमांटिक हिट्स • दिलकश नगमे • डांस बीट्स ॥",
-      loadingSong: "गीत लोड हो रहा है...",
-      playlistTitle: "हिंदी गीत सूची",
-      playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
-      searchPlaceholder: "209 हिंदी गीत, फिल्म या गायक का नाम खोजें...",
-      noSongsFound: "कोई गीत नहीं मिला",
-      noFavsFound: "कोई पसंदीदा गीत नहीं मिला। किसी भी गीत पर ❤️ क्लिक करके पसंदीदा बनाएं!",
-      prevSongTitle: "पिछला गीत (J)",
-      playBtnTitle: "चलाएं / रोकें (Space)",
-      nextSongTitle: "अगला गीत (K)",
-      playlistBtnTitle: "गीत सूची (Playlist)",
-      playlistCloseTitle: "गीत सूची बंद करें",
-      muteBtnTitle: "ध्वनि म्यूट / अनम्यूट (M)",
-      speedBtnTitle: "प्लेबैक स्पीड बदलें",
-      volumeSliderTitle: "वॉल्यूम कम या ज्यादा करें",
-      seekSliderTitle: "गीत को आगे या पीछे करें",
-      gridTitleText: "हिंदी सुपरहिट बॉलीवुड संग्रह",
-      showingSongsPrefix: "दिखाए जा रहे हैं: ",
-      songsSuffix: " गीत",
-      shareBtnLabel: "शेयर",
-      shareBtnTitle: "हिंदी गीत संग्रह शेयर करें",
-      whatsappLabel: "WhatsApp",
-      facebookLabel: "Facebook",
-      instagramLabel: "Instagram",
-      copyLinkText: "लिंक कॉपी करें",
-      toastLangSwitched: "भाषा बदलकर हिंदी कर दी गई है",
-      toastMuted: "🔇 ध्वनि म्यूट की गई",
-      toastUnmuted: "🔊 ध्वनि अनम्यूट की गई",
-      toastSpeed: "⚡ प्लेबैक स्पीड: ",
-      toastFavAdded: "❤️ पसंदीदा सूची में जोड़ा गया",
-      toastFavRemoved: "🤍 पसंदीदा सूची से हटाया गया",
-      toastShuffleOn: "🔀 शफ़ल मोड चालू",
-      toastShuffleOff: "➡️ सामान्य क्रम मोड",
-      toastRepeatOff: "➡️ रिपीट बंद",
-      toastRepeatAll: "🔁 सभी गीत रिपीट",
-      toastRepeatOne: "🔂 केवल यह गीत रिपीट (Repeat 1)",
-      toastTheme: "🎨 थीम बदली गई: ",
-      toastCopied: "🔗 लिंक कॉपी हो गया!",
-      nowPlayingPrefix: "🎶 बज रहा है: "
-    },
     en: {
+
       langBtnText: "English",
       langBtnTitle: "Language: English (Click to switch to Hindi)",
       langBtnAria: "Switch language to Hindi",
@@ -88,7 +39,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       heroBadge: "✨ 209 SUPERHIT BOLLYWOOD CLASSICS",
       mainLogoTitle1: "Superhit Hindi",
       mainLogoTitle2: "Songs Collection",
-      taglineText: "॥ Bollywood Classics • Romantic Hits • Soulful Melodies • Dance Beats ॥",
+      taglineText: "★ Bollywood Classics • Romantic Hits • Soulful Melodies • Dance Beats ★",
       loadingSong: "Loading Hindi Songs...",
       playlistTitle: "Hindi Songs Playlist",
       playlistSearchPlaceholder: "Search song, movie, or singer name...",
@@ -179,7 +130,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
 
     if (notify) {
-      const t = i18n[currentLang] || i18n.en;
+      const t = i18n.en;
       showToast(t.toastTheme + THEMES[themeKey].name);
     }
   }
@@ -248,8 +199,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const suffix = hours >= 12 ? "PM" : "AM";
     hours = hours % 12 || 12;
 
-    const days = langDays[currentLang] || langDays.en;
-    const months = langMonths[currentLang] || langMonths.en;
+    const days = langDays.en;
+    const months = langMonths.en;
 
     const timeEl = document.getElementById("currentTime");
     const dateEl = document.getElementById("currentDate");
@@ -501,7 +452,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   /* Toggle Favorite for a song */
   function toggleSongFavorite(songId, event) {
     if (event) event.stopPropagation();
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
 
     if (likedSongs.has(songId)) {
       likedSongs.delete(songId);
@@ -567,7 +518,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (countDance) countDance.textContent = songs.filter(s => s.category === "Dance & Beats").length;
     if (countFavs) countFavs.textContent = likedSongs.size;
 
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
     if (playlistTitleText) {
       playlistTitleText.textContent = `${t.playlistTitle} (${songs.length})`;
     }
@@ -965,7 +916,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
       if (!playback.canPlay) {
         setPlaybackState(false);
-        showToast(currentLang === "en" ? "📴 You're offline. Download this song while online to listen offline!" : "📴 आप ऑफ़लाइन हैं। बिना इंटरनेट सुनने के लिए इस गीत को ऑनलाइन रहते हुए डाउनलोड करें।");
+        showToast("📴 You're offline. Download this song while online to listen offline!");
         return;
       }
 
@@ -977,7 +928,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
 
       if (playback.isOffline) {
-        showToast("💾 " + (currentLang === "en" ? "Playing local offline copy" : "ऑफ़लाइन लोकल कॉपी बज रही है"));
+        showToast("💾 Playing local offline copy");
       }
 
       const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
@@ -2000,7 +1951,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       isShuffle = !isShuffle;
       shuffleBtn.classList.toggle("active", isShuffle);
       shuffleBtn.title = isShuffle ? "Shuffle Mode: ON (S)" : "Shuffle Mode: OFF (S)";
-      const t = i18n[currentLang] || i18n.en;
+      const t = i18n.en;
       showToast(isShuffle ? t.toastShuffleOn : t.toastShuffleOff);
     });
   }
@@ -2008,7 +1959,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   if (repeatBtn) {
     repeatBtn.addEventListener("click", () => {
       repeatMode = (repeatMode + 1) % 3;
-      const t = i18n[currentLang] || i18n.en;
+      const t = i18n.en;
       if (repeatMode === 0) {
         repeatBtn.innerHTML = REPEAT_OFF_ICON;
         repeatBtn.classList.remove("active");
@@ -2168,7 +2119,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const isMuted = activeAudioSource === "youtube"
         ? (ytAudioPlayer && typeof ytAudioPlayer.isMuted === "function" ? ytAudioPlayer.isMuted() : false)
         : (offlineAudio ? offlineAudio.volume === 0 : false);
-      const t = i18n[currentLang] || i18n.en;
+      const t = i18n.en;
       if (isMuted) {
         const targetVol = lastVolume > 0 ? Math.round(lastVolume * 100) : 100;
         if (offlineAudio) offlineAudio.volume = targetVol / 100;
@@ -2217,7 +2168,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         }
       });
     }
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
     showToast((t.toastSpeed || "⚡ Playback Speed: ") + `${r}x`);
   }
 
@@ -2292,7 +2243,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     const filtered = getFilteredAndSortedSongs(query);
     const isEn = currentLang === "en";
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
 
     if (filtered.length === 0) {
       playlistList.innerHTML = `<div style="text-align:center;padding:30px 10px;color:var(--text-muted);font-size:14px;">${selectedCategory === "favorites" ? t.noFavsFound : t.noSongsFound}</div>`;
@@ -2345,7 +2296,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const query = mainSearchInput ? mainSearchInput.value : "";
     const filtered = getFilteredAndSortedSongs(query);
     const isEn = currentLang === "en";
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
 
     if (gridCounterBadge) {
       gridCounterBadge.textContent = `${t.showingSongsPrefix}${filtered.length}${t.songsSuffix}`;
@@ -2397,7 +2348,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
             </button>
             <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
               <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
-              <span>${isCardPlaying && isPlaying ? (isEn ? "Pause" : "रोकें") : (isEn ? "Play" : "सुनें")}</span>
+              <span>${isCardPlaying && isPlaying ? "Pause" : "Play"}</span>
             </button>
           </div>
         </div>
@@ -2426,13 +2377,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         dlBtn.addEventListener("click", async (e) => {
           e.stopPropagation();
           if (s.videoId || s.youtubeId) {
-            showToast(currentLang === "en" ? "🎶 Online streaming song: Click Play to listen" : "🎶 ऑनलाइन गीत: सुनने के लिए 'Play' दबाएं");
+            showToast("🎶 Online streaming song: Click Play to listen");
             return;
           }
           if (!window.OfflineManager) return;
           dlBtn.className = "song-card-download-btn downloading";
           dlBtn.textContent = "0%";
-          showToast((currentLang === "en" ? "Downloading: " : "डाउनलोड हो रहा है: ") + (s.name || "Song"));
+          showToast("Downloading: " + (s.name || "Song"));
 
           try {
             await window.OfflineManager.downloadSong(s, (prog) => {
@@ -2445,14 +2396,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
             dlBtn.className = "song-card-download-btn downloaded";
             dlBtn.textContent = "✓";
             dlBtn.title = "Downloaded ✓";
-            showToast(currentLang === "en" ? "Downloaded for offline listening ✓" : "ऑफ़लाइन सुनने के लिए डाउनलोड पूरा हुआ ✓");
+            showToast("Downloaded for offline listening ✓");
             await refreshDownloadedHindiSongs();
             renderSongCardsGrid();
           } catch (err) {
             console.error("Download failed:", err);
             dlBtn.className = "song-card-download-btn";
             dlBtn.textContent = "↓";
-            showToast(currentLang === "en" ? "Download failed. Please try again." : "डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।");
+            showToast("Download failed. Please try again.");
           }
         });
       }
@@ -2725,11 +2676,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const isEn = currentLang === "en";
       const title = isEn ? (s.nameEn || s.name) : s.name;
       const singer = isEn ? (s.singerEn || s.singer) : s.singer;
-      const albumName = isEn ? "Superhit Bollywood Classics" : "हिंदी सुपरहिट बॉलीवुड संग्रह";
+      const albumName = "Superhit Bollywood Classics";
 
       navigator.mediaSession.metadata = new MediaMetadata({
         title: title,
-        artist: singer || (isEn ? "Bollywood Singer" : "बॉलीवुड गायक"),
+        artist: singer || "Bollywood Singer",
         album: albumName,
         artwork: getArtworkList(s)
       });
@@ -2932,7 +2883,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const accepted = await window.OfflineManager.promptPwaInstall();
       if (accepted) {
         pwaInstallBtn.classList.remove("visible");
-        showToast(currentLang === "en" ? "🎉 App installed successfully!" : "🎉 ऐप सफलतापूर्वक इंस्टॉल हो गया!");
+        showToast("🎉 App installed successfully!");
       }
     });
   }

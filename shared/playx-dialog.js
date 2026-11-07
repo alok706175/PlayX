@@ -82,16 +82,16 @@
 
   function detectTypeFromContent(text) {
     var str = String(text || "");
-    if (str.indexOf("✅") !== -1 || str.indexOf("success") !== -1 || str.indexOf("सफलता") !== -1) {
+    if (str.indexOf("✅") !== -1 || str.indexOf("success") !== -1 || str.indexOf("Success") !== -1) {
       return { type: "success", icon: "✅", title: "Success" };
     }
     if (str.indexOf("🔒") !== -1 || str.indexOf("Admin") !== -1 || str.indexOf("Login") !== -1) {
       return { type: "amber", icon: "🔒", title: "Security Notice" };
     }
-    if (str.indexOf("⚠️") !== -1 || str.indexOf("Delete") !== -1 || str.indexOf("Clear") !== -1 || str.indexOf("हटाएं") !== -1) {
+    if (str.indexOf("⚠️") !== -1 || str.indexOf("Delete") !== -1 || str.indexOf("Clear") !== -1 || str.indexOf("Remove") !== -1) {
       return { type: "danger", icon: "⚠️", title: "Confirm Action" };
     }
-    if (str.indexOf("❌") !== -1 || str.indexOf("Error") !== -1 || str.indexOf("गलती") !== -1) {
+    if (str.indexOf("❌") !== -1 || str.indexOf("Error") !== -1 || str.indexOf("Danger") !== -1) {
       return { type: "danger", icon: "❌", title: "Alert" };
     }
     return { type: "info", icon: "✨", title: "Notice" };

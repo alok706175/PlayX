@@ -17,7 +17,7 @@
     chhath: {
       id: 'chhath',
       name: 'Chhath Puja Songs',
-      hindiName: 'छठ पूजा महापर्व गीत',
+      hindiName: 'Chhath Mahaparv Devotional',
       jsonFile: 'chhath-puja/youtube_songs.json',
       targetDir: 'chhath-puja',
       pageUrl: 'chhath-puja/chhath-puja.html',
@@ -39,7 +39,7 @@
     hindi: {
       id: 'hindi',
       name: 'Hindi Songs',
-      hindiName: 'हिंदी सुपरहिट बॉलीवुड गीत',
+      hindiName: 'Superhit Bollywood Classics',
       jsonFile: 'hindi-songs/hindi_songs.json',
       targetDir: 'hindi-songs',
       pageUrl: 'hindi-songs/hindi-songs.html',
@@ -61,7 +61,7 @@
     saawan: {
       id: 'saawan',
       name: 'Saawan Songs',
-      hindiName: 'सावन शिव भजन व बोल बम',
+      hindiName: 'Lord Shiva & Bol Bam Bhajans',
       jsonFile: 'saawan-songs/saawan_songs.json',
       targetDir: 'saawan-songs',
       pageUrl: 'saawan-songs/saawan-songs.html',
@@ -82,7 +82,7 @@
     durga: {
       id: 'durga',
       name: 'Durga Puja Songs',
-      hindiName: 'दुर्गा पूजा व नवरात्रि भक्ति',
+      hindiName: 'Durga Puja & Navratri Bhajans',
       jsonFile: 'durga-puja-songs/durga_puja_songs.json',
       targetDir: 'durga-puja-songs',
       pageUrl: 'durga-puja-songs/durga-puja-songs.html',
@@ -103,7 +103,7 @@
     holi: {
       id: 'holi',
       name: 'Holi Songs',
-      hindiName: 'होली के रंग-बिरंगे गाने',
+      hindiName: 'Holi Fagun & Colors Special',
       jsonFile: 'holi-songs/holi_songs.json',
       targetDir: 'holi-songs',
       pageUrl: 'holi-songs/holi-songs.html',
@@ -123,7 +123,7 @@
     bhojpuri: {
       id: 'bhojpuri',
       name: 'Bhojpuri Songs',
-      hindiName: 'भोजपुरी सुपरहिट गाने',
+      hindiName: 'Desi Bhojpuri Hits',
       jsonFile: 'bhojpuri-songs/bhojpuri_songs.json',
       targetDir: 'bhojpuri-songs',
       pageUrl: 'bhojpuri-songs/bhojpuri-songs.html',
@@ -145,7 +145,7 @@
     haryanvi: {
       id: 'haryanvi',
       name: 'Haryanvi Songs',
-      hindiName: 'हरियाणवी सुपरहिट गाने',
+      hindiName: 'Haryanvi Ragni & DJ Hits',
       jsonFile: 'haryanvi-songs/haryanvi_songs.json',
       targetDir: 'haryanvi-songs',
       pageUrl: 'haryanvi-songs/haryanvi-songs.html',
@@ -167,7 +167,7 @@
     punjabi: {
       id: 'punjabi',
       name: 'Punjabi Songs',
-      hindiName: 'पंजाबी सुपरहिट गाने',
+      hindiName: 'Punjabi Beats & Bhangra',
       jsonFile: 'punjabi-songs/punjabi_songs.json',
       targetDir: 'punjabi-songs',
       pageUrl: 'punjabi-songs/punjabi-songs.html',

@@ -42,14 +42,14 @@
   let isSubmitting = false;
 
   const CATEGORY_OPTIONS = [
-    { id: 'hindi', name: 'Hindi Songs', hindi: 'हिंदी गीत', icon: '🎵', page: 'hindi-songs/hindi-songs.html', file: 'hindi-songs/hindi_songs.json' },
-    { id: 'chhath', name: 'Chhath Puja Songs', hindi: 'छठ पूजा', icon: '☀️', page: 'chhath-puja/chhath-puja.html', file: 'chhath-puja/youtube_songs.json' },
-    { id: 'saawan', name: 'Saawan Songs', hindi: 'सावन शिव भजन', icon: '🔱', page: 'saawan-songs/saawan-songs.html', file: 'saawan-songs/saawan_songs.json' },
-    { id: 'durga', name: 'Durga Puja Songs', hindi: 'दुर्गा पूजा', icon: '🌸', page: 'durga-puja-songs/durga-puja-songs.html', file: 'durga-puja-songs/durga_puja_songs.json' },
-    { id: 'bhojpuri', name: 'Bhojpuri Songs', hindi: 'भोजपुरी हिट्स', icon: '🌾', page: 'bhojpuri-songs/bhojpuri-songs.html', file: 'bhojpuri-songs/bhojpuri_songs.json' },
-    { id: 'holi', name: 'Holi Songs', hindi: 'होली स्पेशल', icon: '🎨', page: 'holi-songs/holi-songs.html', file: 'holi-songs/holi_songs.json' },
-    { id: 'haryanvi', name: 'Haryanvi Songs', hindi: 'हरियाणवी', icon: '🚜', page: 'haryanvi-songs/haryanvi-songs.html', file: 'haryanvi-songs/haryanvi_songs.json' },
-    { id: 'punjabi', name: 'Punjabi Songs', hindi: 'पंजाबी भांगड़ा', icon: '🥁', page: 'punjabi-songs/punjabi-songs.html', file: 'punjabi-songs/punjabi_songs.json' }
+    { id: 'hindi', name: 'Hindi Songs', subtitle: 'Bollywood Hits', icon: '🎵', page: 'hindi-songs/hindi-songs.html', file: 'hindi-songs/hindi_songs.json' },
+    { id: 'chhath', name: 'Chhath Puja Songs', subtitle: 'Chhath Devotional', icon: '☀️', page: 'chhath-puja/chhath-puja.html', file: 'chhath-puja/youtube_songs.json' },
+    { id: 'saawan', name: 'Saawan Songs', subtitle: 'Shiv Bhajan', icon: '🔱', page: 'saawan-songs/saawan-songs.html', file: 'saawan-songs/saawan_songs.json' },
+    { id: 'durga', name: 'Durga Puja Songs', subtitle: 'Durga Bhajan', icon: '🌸', page: 'durga-puja-songs/durga-puja-songs.html', file: 'durga-puja-songs/durga_puja_songs.json' },
+    { id: 'bhojpuri', name: 'Bhojpuri Songs', subtitle: 'Desi Bhojpuri', icon: '🌾', page: 'bhojpuri-songs/bhojpuri-songs.html', file: 'bhojpuri-songs/bhojpuri_songs.json' },
+    { id: 'holi', name: 'Holi Songs', subtitle: 'Holi Special', icon: '🎨', page: 'holi-songs/holi-songs.html', file: 'holi-songs/holi_songs.json' },
+    { id: 'haryanvi', name: 'Haryanvi Songs', subtitle: 'Haryanvi Hits', icon: '🚜', page: 'haryanvi-songs/haryanvi-songs.html', file: 'haryanvi-songs/haryanvi_songs.json' },
+    { id: 'punjabi', name: 'Punjabi Songs', subtitle: 'Punjabi Bhangra', icon: '🥁', page: 'punjabi-songs/punjabi-songs.html', file: 'punjabi-songs/punjabi_songs.json' }
   ];
 
   /**

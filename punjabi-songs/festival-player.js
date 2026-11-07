@@ -432,7 +432,7 @@
     sleepTimerBtn.id = "playerSleepBtn";
     sleepTimerBtn.className = "btn-speed";
     sleepTimerBtn.type = "button";
-    sleepTimerBtn.title = "Sleep Timer (स्लीप टाइमर)";
+    sleepTimerBtn.title = "Sleep Timer";
     sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:none;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;"></span>`;
 
     sleepTimerMenu = document.createElement("div");
@@ -440,12 +440,12 @@
     sleepTimerMenu.style.cssText = "display:none;position:absolute;bottom:calc(100% + 8px);right:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px;min-width:160px;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,0.6);";
 
     const options = [
-      { label: "Off (बंद)", val: 0 },
-      { label: "15 min (15 मिनट)", val: 15 },
-      { label: "30 min (30 मिनट)", val: 30 },
-      { label: "45 min (45 मिनट)", val: 45 },
-      { label: "60 min (1 घंटा)", val: 60 },
-      { label: "End of Song (गाना खत्म होने पर)", val: -1 }
+      { label: "Off", val: 0 },
+      { label: "15 min", val: 15 },
+      { label: "30 min", val: 30 },
+      { label: "45 min", val: 45 },
+      { label: "60 min (1 hour)", val: 60 },
+      { label: "End of Song", val: -1 }
     ];
 
     options.forEach(opt => {

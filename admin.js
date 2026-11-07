@@ -15,14 +15,14 @@
 
   // Master Categories Fallback Definition (Used when backend API is offline or static)
   const DEFAULT_CATEGORIES = [
-    { id: 'hindi', name: 'Hindi Songs', hindiName: 'हिंदी सुपरहिट बॉलीवुड गीत', icon: '🎵', file: 'hindi-songs/hindi_songs.json', pageUrl: 'hindi-songs/hindi-songs.html', defaultTag: 'Bollywood Hits' },
-    { id: 'bhojpuri', name: 'Bhojpuri Songs', hindiName: 'भोजपुरी देसी हिट्स', icon: '💃', file: 'bhojpuri-songs/bhojpuri_songs.json', pageUrl: 'bhojpuri-songs/bhojpuri-songs.html', defaultTag: 'Desi Hits' },
-    { id: 'chhath', name: 'Chhath Puja Songs', hindiName: 'छठ पूजा महापर्व गीत', icon: '🌅', file: 'chhath-puja/youtube_songs.json', pageUrl: 'chhath-puja/chhath-puja.html', defaultTag: 'Chhath Mahaparv' },
-    { id: 'saawan', name: 'Saawan Songs', hindiName: 'सावन शिव भजन व बोल बम', icon: '🔱', file: 'saawan-songs/saawan_songs.json', pageUrl: 'saawan-songs/saawan-songs.html', defaultTag: 'Shiv Bhajan' },
-    { id: 'durga', name: 'Durga Puja Songs', hindiName: 'दुर्गा पूजा व नवरात्रि भजन', icon: '🪔', file: 'durga-puja-songs/durga_puja_songs.json', pageUrl: 'durga-puja-songs/durga-puja-songs.html', defaultTag: 'Mata Bhajan' },
-    { id: 'holi', name: 'Holi Songs', hindiName: 'होली फाग व रंग गुलाल', icon: '🎨', file: 'holi-songs/holi_songs.json', pageUrl: 'holi-songs/holi-songs.html', defaultTag: 'Fagun Geet' },
-    { id: 'haryanvi', name: 'Haryanvi Songs', hindiName: 'हरियाणवी रागनी व डीजे हिट्स', icon: '🌾', file: 'haryanvi-songs/haryanvi_songs.json', pageUrl: 'haryanvi-songs/haryanvi-songs.html', defaultTag: 'Haryanvi Ragni' },
-    { id: 'punjabi', name: 'Punjabi Songs', hindiName: 'पंजाबी बीट्स व भांगड़ा', icon: '🥁', file: 'punjabi-songs/punjabi_songs.json', pageUrl: 'punjabi-songs/punjabi-songs.html', defaultTag: 'Punjabi Beats' }
+    { id: 'hindi', name: 'Hindi Songs', hindiName: 'Superhit Bollywood Classics', icon: '🎵', file: 'hindi-songs/hindi_songs.json', pageUrl: 'hindi-songs/hindi-songs.html', defaultTag: 'Bollywood Hits' },
+    { id: 'bhojpuri', name: 'Bhojpuri Songs', hindiName: 'Desi Bhojpuri Hits', icon: '💃', file: 'bhojpuri-songs/bhojpuri_songs.json', pageUrl: 'bhojpuri-songs/bhojpuri-songs.html', defaultTag: 'Desi Hits' },
+    { id: 'chhath', name: 'Chhath Puja Songs', hindiName: 'Chhath Mahaparv Devotional', icon: '🌅', file: 'chhath-puja/youtube_songs.json', pageUrl: 'chhath-puja/chhath-puja.html', defaultTag: 'Chhath Mahaparv' },
+    { id: 'saawan', name: 'Saawan Songs', hindiName: 'Lord Shiva & Bol Bam Bhajans', icon: '🔱', file: 'saawan-songs/saawan_songs.json', pageUrl: 'saawan-songs/saawan-songs.html', defaultTag: 'Shiv Bhajan' },
+    { id: 'durga', name: 'Durga Puja Songs', hindiName: 'Durga Puja & Navratri Bhajans', icon: '🪔', file: 'durga-puja-songs/durga_puja_songs.json', pageUrl: 'durga-puja-songs/durga-puja-songs.html', defaultTag: 'Mata Bhajan' },
+    { id: 'holi', name: 'Holi Songs', hindiName: 'Holi Fagun & Colors Special', icon: '🎨', file: 'holi-songs/holi_songs.json', pageUrl: 'holi-songs/holi-songs.html', defaultTag: 'Fagun Geet' },
+    { id: 'haryanvi', name: 'Haryanvi Songs', hindiName: 'Haryanvi Ragni & DJ Hits', icon: '🌾', file: 'haryanvi-songs/haryanvi_songs.json', pageUrl: 'haryanvi-songs/haryanvi-songs.html', defaultTag: 'Haryanvi Ragni' },
+    { id: 'punjabi', name: 'Punjabi Songs', hindiName: 'Punjabi Beats & Bhangra', icon: '🥁', file: 'punjabi-songs/punjabi_songs.json', pageUrl: 'punjabi-songs/punjabi-songs.html', defaultTag: 'Punjabi Beats' }
   ];
 
   // Exact category icons & emblems matching the homepage cards

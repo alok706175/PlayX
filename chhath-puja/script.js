@@ -1,5 +1,5 @@
 /* =========================================================
-   छठ घाट (Chhath Ghat) - Audio Player & Interactive Script
+   PlayX - Chhath Ghat Audio Player & Interactive Script
    ========================================================= */
 
 (function () {
@@ -12,122 +12,8 @@
 try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   const i18n = {
-    hi: {
-      langBtnText: "हिंदी",
-      langBtnTitle: "भाषा: हिंदी (अंग्रेज़ी में बदलने के लिए क्लिक करें)",
-      langBtnAria: "अंग्रेज़ी भाषा में बदलें",
-      timeWidgetTitle: "भारतीय मानक समय (IST)",
-      navHomeText: "होम (Home)",
-      navHomeTitle: "मुख्य पृष्ठ पर जाएं (Go Home)",
-      navHomeAria: "मुख्य पृष्ठ पर जाएं",
-      navAboutText: "परिचय",
-      navAboutTitle: "छठ महापर्व के बारे में",
-      navAboutAria: "छठ महापर्व के बारे में",
-      navHindiSongText: "हिंदी गीत",
-      navHindiSongTitle: "हिंदी गीत संग्रह पर जाएं",
-      navHindiSongAria: "हिंदी गीत संग्रह पर जाएं",
-      modeOfflineText: "ऑफलाइन",
-      modeOfflineTitle: "ऑफलाइन मोड (ऑनलाइन संगीत मोड चालू करने के लिए क्लिक करें)",
-      modeOfflineAria: "ऑनलाइन संगीत मोड पर जाएं",
-      modeOnlineText: "ऑनलाइन",
-      modeOnlineTitle: "ऑनलाइन मोड (ऑफलाइन ऑडियो मोड पर जाने के लिए क्लिक करें)",
-      modeOnlineAria: "ऑफलाइन ऑडियो मोड पर जाएं",
-      mainLogoText: "छठ घाट",
-      taglineText: "॥ जय छठी मईया ॥",
-      pillNum1: "१",
-      pillText1: "नहाय-खाय",
-      pillNum2: "२",
-      pillText2: "खरना",
-      pillNum3: "३",
-      pillText3: "संध्या अर्घ्य",
-      pillNum4: "४",
-      pillText4: "उषा अर्घ्य",
-      loadingSong: "Loading Chhath Geet...",
-      playlistTitleOffline: "छठ गीत संग्रह (ऑफलाइन)",
-      playlistTitleOnline: "छठ संगीत संग्रह (ऑनलाइन)",
-      playlistTitle: "छठ गीत संग्रह",
-      playlistSubtitle: "पसंदीदा गीत चुनें और सुनें",
-      playlistSearchPlaceholder: "गीत या गायक का नाम खोजें...",
-      playlistSearchPlaceholderOffline: "गीत या गायक का नाम खोजें...",
-      playlistSearchPlaceholderOnline: "वीडियो या गायक का नाम खोजें...",
-      noSongsFound: "कोई गीत नहीं मिला",
-      prevSongTitle: "पिछला गीत",
-      playBtnTitle: "चलाएं / रोकें",
-      nextSongTitle: "अगला गीत",
-      playlistBtnTitle: "गीत सूची (Playlist)",
-      playlistCloseTitle: "गीत सूची बंद करें",
-      muteBtnTitle: "ध्वनि म्यूट / अनम्यूट",
-      speedBtnTitle: "प्लेबैक स्पीड बदलें (Playback Speed)",
-      speedMenuHeader: "स्पीड चुनें",
-      speedMenuSlow: "धीमा",
-      speedMenuSlowLight: "हल्का धीमा",
-      speedMenuNormal: "सामान्य",
-      speedMenuFastLight: "हल्का तेज़",
-      speedMenuFast: "तेज़",
-      speedMenuFastMore: "काफ़ी तेज़",
-      volumeSliderTitle: "वॉल्यूम कम या ज्यादा करें",
-      seekSliderTitle: "गीत को आगे या पीछे करें",
-      ritualsBadge: "पवित्र परंपरा",
-      ritualsHeading: "छठ महापर्व: चार दिवसीय अनुष्ठान",
-      ritualsSubtitle: "लोक आस्था और प्रकृति की आराधना का पावन विधान",
-      ritual1DayBadge: "प्रथम दिवस",
-      ritual1Title: "नहाय-खाय",
-      ritual1Desc: "छठ पर्व की शुरुआत पवित्र स्नान और शुद्ध सात्विक भोजन से होती है। इस दिन व्रती नदी या जलाशय में स्नान कर अरवा चावल, चने की दाल और कद्दू (लौकी) का प्रसाद ग्रहण करते हैं।",
-      ritual1Highlight: "विशेष प्रसाद: कद्दू-भात एवं चना दाल",
-      ritual2DayBadge: "द्वितीय दिवस",
-      ritual2Title: "खरना (लोहंडा)",
-      ritual2Desc: "इस दिन व्रती दिनभर निर्जला उपवास रखते हैं और शाम को मिट्टी के चूल्हे पर गुड़, अरवा चावल और गाय के दूध से बनी खीर तथा रोटी का भोग छठी मईया को अर्पित कर प्रसाद ग्रहण करते हैं।",
-      ritual2Highlight: "विशेष प्रसाद: गुड़ की खीर और रोटी",
-      ritual3DayBadge: "तृतीय दिवस",
-      ritual3Title: "संध्या अर्घ्य (पहला अर्घ्य)",
-      ritual3Desc: "कार्तिक शुक्ल षष्ठी की शाम को सूप, दउरा में ठेकुआ, मौसमी फल लेकर नदी/तालाब के घाट पर जाकर कमर तक जल में खड़े होकर अस्ताचलगामी (डूबते हुए) भगवान सूर्य को अर्घ्य दिया जाता है।",
-      ritual3Highlight: "विशेष अर्घ्य: अस्ताचलगामी सूर्य देव को अर्घ्य",
-      ritual4DayBadge: "चतुर्थ दिवस",
-      ritual4Title: "उषा अर्घ्य (पारन)",
-      ritual4Desc: "सप्तमी की भोर में उदीयमान (उगते हुए) सूर्य को अर्घ्य देकर 36 घंटे के कठिन निर्जला व्रत का समापन (पारन) होता है। छठी मईया से परिवार के सुख, स्वास्थ्य एवं दीर्घायु की प्रार्थना की जाती है।",
-      ritual4Highlight: "विशेष अर्घ्य: उदीयमान सूर्य देव को अर्घ्य व पारन",
-      mantraTitle: "॥ श्री सूर्य गायत्री मंत्र ॥",
-      shareBtnLabel: "शेयर",
-      shareBtnTitle: "छठ घाट शेयर करें",
-      shareBtnAria: "शेयर विकल्प",
-      whatsappLabel: "व्हाट्सएप",
-      whatsappTitle: "व्हाट्सएप पर शेयर करें",
-      whatsappAria: "व्हाट्सएप पर शेयर करें",
-      facebookLabel: "फेसबुक",
-      facebookTitle: "फेसबुक पर शेयर करें",
-      facebookAria: "फेसबुक पर शेयर करें",
-      instagramLabel: "इंस्टाग्राम",
-      instagramTitle: "इंस्टाग्राम पर शेयर करें",
-      instagramAria: "इंस्टाग्राम पर शेयर करें",
-      copyMantraBtnText: "कॉपी",
-      copyMantraTitle: "सूर्य गायत्री मंत्र कॉपी करें",
-      shareMantraBtnText: "व्हाट्सएप पर शेयर करें",
-      shareMantraTitle: "सूर्य गायत्री मंत्र व्हाट्सएप पर शेयर करें",
-      toastOnline: "🌐 ऑनलाइन संगीत मोड चालू (YouTube Audio)",
-      toastOffline: "📴 ऑफ़लाइन ऑडियो मोड चालू (MP3 Music)",
-      toastLangSwitched: "भाषा बदलकर 'हिन्दी' कर दी गई है",
-      toastMantraCopied: "✅ सूर्य गायत्री मंत्र कॉपी हो गया!",
-      toastMuted: "🔇 म्यूट किया गया",
-      toastUnmuted: "🔊 ध्वनि चालू",
-      toastSpeed: "⚡ प्लेबैक गति: ",
-      nowPlayingPrefix: "🎶 अब बज रहा है: ",
-      downloadsTitle: "डाउनलोड्स",
-      downloadsNavTitle: "डाउनलोड किए गए गीत देखें",
-      allSongsTab: "सभी गीत",
-      downloadedTab: "डाउनलोड्स",
-      noDownloadsFound: "अभी कोई गीत डाउनलोड नहीं किया गया है। ऑफ़लाइन सुनने के लिए किसी भी गीत के पास ↓ बटन दबाएं।",
-      storageLabel: "ऑफ़लाइन स्टोरेज:",
-      clearStorageConfirm: "क्या आप सभी डाउनलोड किए गए गीतों को हटाना चाहते हैं?",
-      clearStorageSuccess: "🗑 सभी डाउनलोड किए गए गीत हटा दिए गए हैं।",
-      downloadingToast: "डाउनलोड हो रहा है: ",
-      downloadCompleteToast: "ऑफ़लाइन सुनने के लिए डाउनलोड पूरा हुआ ✓",
-      downloadFailedToast: "डाउनलोड विफल रहा। कृपया पुनः प्रयास करें।",
-      songDeletedToast: "🗑 गीत स्टोरेज से हटा दिया गया।",
-      offlineSongPlaying: "ऑफ़लाइन लोकल कॉपी चल रही है",
-      installAppBtn: "ऐप इंस्टॉल करें",
-      offlinePlaybackWarning: "📴 आप ऑफ़लाइन हैं। बिना इंटरनेट सुनने के लिए इस गीत को ऑनलाइन रहते हुए डाउनलोड करें।"
-    },
     en: {
+
       langBtnText: "English",
       langBtnTitle: "Language: English (Click to switch to Hindi)",
       langBtnAria: "Switch language to Hindi",
@@ -370,16 +256,16 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const SHARE_URL = "https://www.mahaparvchhathpuja.me/";
 
   function shareOnWhatsApp(customHeading) {
-    const title = customHeading || "🌅 छठ महापर्व की हार्दिक शुभकामनाएं! 🙏";
+    const title = customHeading || "🌅 Warmest wishes on the sacred Chhath Mahaparv! 🙏";
     const body =
       `${title}\n\n` +
-      `सूर्य देव और छठी मईया की कृपा आप और आपके पूरे परिवार पर सदा बनी रहे।\n\n` +
-      `🎶 *छठ पूजा के पावन एवं मधुर गीत यहां सुनें:* \n${SHARE_URL}\n\n` +
-      `॥ जय छठी मईया • ॐ सूर्याय नमः ॥ ☀️`;
+      `May Lord Surya and Chhathi Maiya bless you and your family with peace, prosperity, and longevity.\n\n` +
+      `🎶 *Stream sacred Chhath devotional songs here:* \n${SHARE_URL}\n\n` +
+      `॥ Jai Chhathi Maiya • Om Suryaya Namah ॥ ☀️`;
 
     const waLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(body)}`;
     window.open(waLink, "_blank", "noopener,noreferrer");
-    showToast("✨ व्हाट्सएप पर साझा किया जा रहा है...");
+    showToast("✨ Sharing on WhatsApp...");
   }
 
   /* Share Dropdown Trigger & Mobile Tap Support */
@@ -403,7 +289,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   const waShareBtn = document.getElementById("whatsappShareBtn");
   if (waShareBtn) {
     waShareBtn.addEventListener("click", () => {
-      shareOnWhatsApp("🌅 छठ घाट — पावन छठ महापर्व के मधुर गीत 🙏");
+      shareOnWhatsApp("🌅 Chhath Ghat — Sacred Chhath Mahaparv Devotional Songs 🙏");
     });
   }
 
@@ -413,7 +299,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     fbShareBtn.addEventListener("click", () => {
       const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SHARE_URL)}&quote=${encodeURIComponent("🌅 छठ महापर्व की हार्दिक शुभकामनाएं! 🙏 सुनिए पावन छठ पूजा के गीत")}`;
       window.open(fbUrl, "_blank", "noopener,noreferrer,width=600,height=500");
-      showToast("✨ फेसबुक पर साझा किया जा रहा है...");
+      showToast("✨ Sharing on Facebook...");
     });
   }
 
@@ -423,9 +309,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     instaShareBtn.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(SHARE_URL);
-        showToast("✨ लिंक कॉपी हुआ! Instagram पर शेयर करें 📸");
+        showToast("✨ Link copied! Share on Instagram 📸");
       } catch (e) {
-        showToast("✨ Instagram खोला जा रहा है...");
+        showToast("✨ Opening Instagram...");
       }
       setTimeout(() => {
         window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
@@ -441,7 +327,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         `Om Adityaaya Vidmahe Divakaraya Dhimahi\nTannah Suryaah Prachodayat\n\n` +
         `"Om, let me meditate on the Sun God, the maker of the day. Give me higher intellect, and let the Sun God illuminate my mind."\n\n` +
         `Listen to devotional Chhath songs on Chhath Ghat: ${SHARE_URL}`
-        : `☀️ *श्री सूर्य गायत्री मंत्र:*\n` +
+        : `☀️ *Surya Gayatri Mantra:*\n` +
         `ॐ आदित्याय विद्महे दिवाकराय धीमहि।\nतन्नः सूर्यः प्रचोदयात् ॥\n\n` +
         `"हम समस्त संसार को प्रकाशित करने वाले परम तेजस्वी भगवान सूर्य देव का ध्यान करते हैं। वे भुवन भास्कर हमारी बुद्धि को ज्ञान और सन्मार्ग की ओर प्रेरित करें।"` +
         `\n\nछठ घाट पर सुनें भक्तिमय छठ गीत: ${SHARE_URL}`;
@@ -468,7 +354,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           copyMantraBtn.style.borderColor = "";
         }, 2200);
       } catch (err) {
-        showToast((currentLang === "en" ? "📋 Copied: " : "📋 कॉपी हुआ: ") + mantra);
+        showToast("📋 Copied: " + mantra);
       }
     });
   }
@@ -821,9 +707,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   function normalizeSong(item, idx) {
     const title = item.title || item.name || `Chhath Geet ${idx + 1}`;
     const titleEn = item.titleEn || item.nameEn || title;
-    const artist = item.artist || item.singer || (currentLang === "en" ? "Chhath Mahaparv" : "छठ महापर्व");
+    const artist = item.artist || item.singer || "Chhath Mahaparv";
     const artistEn = item.artistEn || item.singerEn || artist;
-    const album = item.album || (currentLang === "en" ? "Chhath Ghat" : "छठ घाट");
+    const album = item.album || "Chhath Ghat";
     const src = item.src || item.file || "";
     const cover = item.cover || item.artwork || "../favicon.io/android-chrome-512x512.png";
     const videoId = item.videoId || "";
@@ -1063,7 +949,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       singer = isEn ? (s.ytSingerEn || singer) : (s.ytSinger || singer);
     }
 
-    const fullSinger = singer || (isEn ? "Chhath Devotional" : "छठ भक्ति");
+    const fullSinger = singer || "Chhath Devotional";
 
     let isOfflineReady = false;
     if (window.OfflineManager) {
@@ -1478,7 +1364,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     if (isPlaying) {
       pauseChhathWithFadeOut();
-      showToast("⏸️ " + (currentLang === "en" ? "Audio Paused" : "गीत पॉज़ किया गया"));
+      showToast("⏸️ Audio Paused");
     } else {
       // Play
       if (isOnlineMode) {
@@ -1520,13 +1406,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
               .catch((err) => {
                 console.warn("Playback could not start:", err);
                 setPlayerState("paused");
-                showToast("⚠️ " + (currentLang === "en" ? "Click play to start" : "गीत शुरू करने के लिए प्ले दबाएं"));
+                showToast("⚠️ Click play to start");
               });
           }
         }
       }
       updateChhathTabTitle();
-      showToast("▶️ " + (currentLang === "en" ? "Playing Chhath Geet" : "छठ गीत शुरू हुआ!"));
+      showToast("▶️ Playing Chhath Song");
     }
   }
 
@@ -2010,7 +1896,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   async function renderPlaylist(filterQuery = "") {
     if (!playlistList) return;
     const query = filterQuery.toLowerCase().trim();
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
 
     // Refresh badge counts in background
     refreshOfflineBadgesAndStorage();
@@ -2188,7 +2074,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           : (isEn ? (s.titleEn || s.title) : s.title);
         const songSingerName = isOnlineMode
           ? (isEn ? (s.ytSingerEn || s.artistEn || s.artist) : (s.ytSinger || s.artist || (isEn ? "Devotional Song" : "भक्ति गीत")))
-          : (isEn ? (s.artistEn || s.artist) : (s.artist || (isEn ? "Devotional Song" : "भक्ति गीत")));
+          : (isEn ? (s.artistEn || s.artist) : (s.artist || "Devotional Song"));
 
         const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : (s.src || s.file);
         const isDownloaded = downloadedMap.has(songKey);
@@ -2434,7 +2320,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const accepted = await window.OfflineManager.promptPwaInstall();
       if (accepted) {
         pwaInstallBtn.classList.remove("visible");
-        showToast(currentLang === "en" ? "🎉 App installed successfully!" : "🎉 ऐप सफलतापूर्वक इंस्टॉल हो गया!");
+        showToast("🎉 App installed successfully!");
       }
     });
   }
@@ -2468,7 +2354,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const isEn = currentLang === "en";
       const songTitle = isEn ? (s.titleEn || s.title) : s.title;
       const songArtist = isEn ? (s.artistEn || s.artist) : s.artist;
-      const albumName = isEn ? (s.album || "Chhath Ghat") : (s.album || "छठ घाट");
+      const albumName = s.album || "Chhath Ghat";
 
       const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
       const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
@@ -2492,7 +2378,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
       navigator.mediaSession.metadata = new MediaMetadata({
         title: songTitle,
-        artist: songArtist || (isEn ? "Chhath Mahaparv" : "छठ महापर्व"),
+        artist: songArtist || "Chhath Mahaparv",
         album: albumName,
         artwork: artwork
       });
@@ -2623,7 +2509,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     console.warn("Audio playback/network error:", err);
     setPlayerState("error");
 
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
     const msg = (err && err.message) || (t.toastPlaybackError || "⚠️ Audio loading error. Retrying next song...");
     showToast(msg);
 
@@ -2896,7 +2782,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   function updateModeButtonUI() {
-    const t = i18n[currentLang] || i18n.en;
+    const t = i18n.en;
     if (modeToggleBtn) {
       modeToggleBtn.setAttribute("data-mode", isOnlineMode ? "online" : "offline");
       modeToggleBtn.title = isOnlineMode ? t.modeOnlineTitle : t.modeOfflineTitle;
@@ -3032,7 +2918,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       seoContainer.innerHTML = `
         <h2 id="seoHeading">Chhath Puja Geet, Devotional Songs & Mahaparv Significance</h2>
         <p>
-          Welcome to <strong>Chhath Ghat (छठ घाट)</strong>, a dedicated spiritual platform to listen to traditional Chhath Puja Geet, Bhojpuri Chhath songs, Chhathi Maiya Bhajan, and Lord Surya Dev devotional music online. Our high-definition music player brings you soul-stirring melodies by legends like Sharda Sinha, Anuradha Paudwal, Pawan Singh, Kalpana Patowary, Devi, and Neelkamal Singh.
+          Welcome to <strong>Chhath Ghat</strong>, a dedicated spiritual platform to listen to traditional Chhath Puja Geet, Bhojpuri Chhath songs, Chhathi Maiya Bhajan, and Lord Surya Dev devotional music online. Our high-definition music player brings you soul-stirring melodies by legends like Sharda Sinha, Anuradha Paudwal, Pawan Singh, Kalpana Patowary, Devi, and Neelkamal Singh.
         </p>
         <h2>Mythological & Cultural Significance of Chhath Mahaparv</h2>
         <p>
@@ -3048,28 +2934,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           <li><strong>Dihi Darshan Suruj Gosaiya</strong> — Devi</li>
           <li><strong>Kaanch Hi Baans Ke Bahangiya</strong> — Sharda Sinha</li>
           <li><strong>Koshiya Bharaye Lagal</strong> — Neelkamal Singh & Priyanka Singh</li>
-        </ul>
-      `;
-    } else {
-      seoContainer.innerHTML = `
-        <h2 id="seoHeading">छठ पूजा के मधुर गीत एवं महापर्व का महत्व</h2>
-        <p>
-          <strong>छठ घाट (Chhath Ghat)</strong> पर आपका हार्दिक स्वागत है। यह पारंपरिक छठ पूजा के मधुर गीत, भोजपुरी छठ गीत, छठी मईया के भजन और प्रत्यक्ष देव भगवान सूर्य की उपासना का एक पावन भक्ति मंच है। हमारे आधुनिक प्लेयर पर आप शारदा सिन्हा, अनुराधा पौडवाल, पवन सिंह, कल्पना पटवारी, देवी और नीलकमल सिंह जैसे महान कलाकारों के पावन भजन सुन सकते हैं।
-        </p>
-        <h2>छठ पर्व का पौराणिक एवं सांस्कृतिक महत्व</h2>
-        <p>
-          छठ पर्व सनातन धर्म का अत्यंत पवित्र, कठिन और लोक-आस्था का महापर्व है जिसमें प्रत्यक्ष देव भगवान भास्कर (सूर्य) तथा उनकी बहन षष्ठी देवी (छठी मईया) की आराधना की जाती है। यह पर्व कार्तिक मास के शुक्ल पक्ष की षष्ठी को श्रद्धाभाव से मनाया जाता है।
-        </p>
-        <h2>लोकप्रिय छठ पूजा गीत संग्रह (Popular Chhath Geet Collection)</h2>
-        <ul class="seo-song-list">
-          <li><strong>उगी हे दीनानाथ</strong> — कल्पना पटवारी</li>
-          <li><strong>केलवा के पात पर</strong> — शारदा सिन्हा</li>
-          <li><strong>जल बीच खड़ा होई जोड़े जोड़े फलवा</strong> — पवन सिंह</li>
-          <li><strong>उगा हो सुरुजदेव भेल भिनसरवा</strong> — अनुराधा पौडवाल</li>
-          <li><strong>केरवा के पातवा पे नेवता</strong> — पवन सिंह</li>
-          <li><strong>दिही दर्शन सुरुज गोसइया</strong> — देवी</li>
-          <li><strong>काँच ही बाँस के बहंगिया</strong> — शारदा सिन्हा</li>
-          <li><strong>कोशिया भराये लागल</strong> — नीलकमल सिंह व प्रियंका सिंह</li>
         </ul>
       `;
     }
