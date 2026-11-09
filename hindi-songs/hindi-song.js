@@ -471,10 +471,41 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
   }
 
-  function updateFavoriteUI() {
-    // Update category chip count for favorites
+  function updateFavoritesChipVisibility() {
+    const favBtn = document.getElementById("catFavoritesBtn") || document.querySelector('.category-chip[data-cat="favorites"]');
     const countFavs = document.getElementById("countFavs");
-    if (countFavs) countFavs.textContent = likedSongs.size;
+    const favCount = likedSongs ? likedSongs.size : 0;
+    if (countFavs) countFavs.textContent = favCount;
+    if (favBtn) {
+      if (favCount >= 1) {
+        favBtn.style.display = "inline-flex";
+      } else {
+        favBtn.style.display = "none";
+        if (selectedCategory === "favorites") {
+          selectCategory("all");
+        }
+      }
+    }
+  }
+
+  function selectCategory(cat) {
+    selectedCategory = cat;
+    if (categoryChips) {
+      categoryChips.forEach(c => {
+        if ((c.getAttribute("data-cat") || "all") === cat) {
+          c.classList.add("active");
+        } else {
+          c.classList.remove("active");
+        }
+      });
+    }
+    renderSongCardsGrid();
+    renderPlaylist(playlistSearch ? playlistSearch.value : "");
+  }
+
+  function updateFavoriteUI() {
+    // Update category chip count and visibility for favorites
+    updateFavoritesChipVisibility();
 
     // Update player favorite button
     const currentSongObj = songs[currentSong];
@@ -503,20 +534,20 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
   }
 
-    function updateSongCategoryCounts() {
+  function updateSongCategoryCounts() {
     const countAll = document.getElementById("countAll");
     const countRomantic = document.getElementById("countRomantic");
     const count90s = document.getElementById("count90s");
     const countSoulful = document.getElementById("countSoulful");
     const countDance = document.getElementById("countDance");
-    const countFavs = document.getElementById("countFavs");
 
     if (countAll) countAll.textContent = songs.length;
     if (countRomantic) countRomantic.textContent = songs.filter(s => s.category === "Romantic").length;
     if (count90s) count90s.textContent = songs.filter(s => s.category === "90s Classics").length;
     if (countSoulful) countSoulful.textContent = songs.filter(s => s.category === "Soulful Melodies").length;
     if (countDance) countDance.textContent = songs.filter(s => s.category === "Dance & Beats").length;
-    if (countFavs) countFavs.textContent = likedSongs.size;
+
+    updateFavoritesChipVisibility();
 
     const t = i18n.en;
     if (playlistTitleText) {
@@ -653,17 +684,33 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   let downloadedHindiSongs = new Set();
   async function refreshDownloadedHindiSongs() {
+    const downloadsBtn = document.getElementById("catDownloadsBtn") || document.querySelector('.category-chip[data-cat="downloads"]');
+    const countDownloadsEl = document.getElementById("countDownloads");
+
     if (window.OfflineManager) {
       try {
         const list = await window.OfflineManager.getAllDownloadedSongs();
         downloadedHindiSongs = new Set(list.map(x => x.key));
-        const countDownloadsEl = document.getElementById("countDownloads");
+        const pageDownloadedCount = songs.filter(s => downloadedHindiSongs.has(window.OfflineManager.getSongKey(s))).length;
         if (countDownloadsEl) {
-          const pageDownloadedCount = songs.filter(s => downloadedHindiSongs.has(window.OfflineManager.getSongKey(s))).length;
           countDownloadsEl.textContent = pageDownloadedCount.toString();
         }
+        if (downloadsBtn) {
+          if (pageDownloadedCount >= 1) {
+            downloadsBtn.style.display = "inline-flex";
+          } else {
+            downloadsBtn.style.display = "none";
+            if (selectedCategory === "downloads") {
+              selectCategory("all");
+            }
+          }
+        }
+        return;
       } catch (e) {}
     }
+
+    if (countDownloadsEl) countDownloadsEl.textContent = "0";
+    if (downloadsBtn) downloadsBtn.style.display = "none";
   }
 
   function escapeHTML(text) {
@@ -2783,11 +2830,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   if (categoryChips) {
     categoryChips.forEach(chip => {
       chip.addEventListener("click", () => {
-        categoryChips.forEach(c => c.classList.remove("active"));
-        chip.classList.add("active");
-        selectedCategory = chip.getAttribute("data-cat") || "all";
-        renderSongCardsGrid();
-        renderPlaylist(playlistSearch ? playlistSearch.value : "");
+        const cat = chip.getAttribute("data-cat") || "all";
+        selectCategory(cat);
       });
     });
   }
