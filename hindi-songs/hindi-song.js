@@ -1055,7 +1055,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let hindiSleepBadge = null;
   let hindiSleepTimerId = null;
   let hindiSleepTimerEndTime = null;
-  let hindiSleepTimerMode = 30; // 0: off, 1, 2, 5, 10, 15, 30, 60, -1: end of song (Default: 30m)
+  let hindiSleepTimerMode = 0; // 0: off by default
 
   function initHindiSleepTimerUI() {
     const moreDropdown = document.getElementById("playerMoreDropdown");
@@ -1165,8 +1165,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     });
 
-    // Default 30 minutes sleep timer active
-    setHindiSleepTimer(30, false);
+    // Default sleep timer off
+    setHindiSleepTimer(0, false);
   }
 
   function setHindiSleepTimer(val, showToastMsg = true) {
