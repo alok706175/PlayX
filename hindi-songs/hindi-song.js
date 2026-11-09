@@ -2580,6 +2580,15 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     return card;
   }
 
+  function triggerAutoLoad() {
+    if (gridIsLoadingBatch) return;
+    if (gridCurrentRenderedCount >= gridCurrentFilteredList.length) {
+      updateGridSentinel(false);
+      return;
+    }
+    renderSongCardsBatch();
+  }
+
   function renderSongCardsBatch() {
     if (gridIsLoadingBatch) return;
     const grid = document.getElementById("songsCardsGrid");
@@ -2594,39 +2603,41 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
 
     gridIsLoadingBatch = true;
-    const isEn = currentLang === "en";
-    const endIndex = Math.min(total, startIndex + GRID_PAGE_SIZE);
+    try {
+      const isEn = currentLang === "en";
+      const endIndex = Math.min(total, startIndex + GRID_PAGE_SIZE);
 
-    const fragment = document.createDocumentFragment();
-    for (let i = startIndex; i < endIndex; i++) {
-      const s = gridCurrentFilteredList[i];
-      if (s) {
-        fragment.appendChild(createSongCardElement(s, isEn));
+      const fragment = document.createDocumentFragment();
+      for (let i = startIndex; i < endIndex; i++) {
+        const s = gridCurrentFilteredList[i];
+        if (s) {
+          fragment.appendChild(createSongCardElement(s, isEn));
+        }
       }
-    }
-    grid.appendChild(fragment);
-    gridCurrentRenderedCount = endIndex;
+      grid.appendChild(fragment);
+      gridCurrentRenderedCount = endIndex;
 
-    // Update counter badge: "Showing X of Y Songs"
-    if (gridCounterBadge) {
-      const t = i18n.en;
-      if (gridCurrentRenderedCount < total) {
-        gridCounterBadge.textContent = `${t.showingSongsPrefix}${gridCurrentRenderedCount} / ${total}${t.songsSuffix}`;
-      } else {
-        gridCounterBadge.textContent = `${t.showingSongsPrefix}${total}${t.songsSuffix}`;
+      // Update counter badge: "Showing X of Y Songs"
+      if (gridCounterBadge) {
+        const t = i18n.en;
+        if (gridCurrentRenderedCount < total) {
+          gridCounterBadge.textContent = `${t.showingSongsPrefix}${gridCurrentRenderedCount} / ${total}${t.songsSuffix}`;
+        } else {
+          gridCounterBadge.textContent = `${t.showingSongsPrefix}${total}${t.songsSuffix}`;
+        }
       }
-    }
 
-    // Attach / update sentinel if more items remain
-    if (gridCurrentRenderedCount < total) {
-      updateGridSentinel(true, total - gridCurrentRenderedCount);
-    } else {
-      updateGridSentinel(false);
-    }
-
-    setTimeout(() => {
+      // Attach / update sentinel if more items remain
+      const hasMore = gridCurrentRenderedCount < total;
+      updateGridSentinel(hasMore, total - gridCurrentRenderedCount);
+    } finally {
       gridIsLoadingBatch = false;
-    }, 60);
+    }
+
+    // Check if sentinel is still in view / near viewport to auto-load next batch immediately
+    requestAnimationFrame(() => {
+      checkAndTriggerAutoLoad();
+    });
   }
 
   function updateGridSentinel(hasMore, remainingCount = 0) {
@@ -2664,7 +2675,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const loadBtn = sentinel.querySelector("#btnManualLoadMore");
     if (loadBtn) {
       loadBtn.addEventListener("click", () => {
-        renderSongCardsBatch();
+        triggerAutoLoad();
       });
     }
 
@@ -2676,28 +2687,38 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     if ("IntersectionObserver" in window) {
       gridIntersectionObserver = new IntersectionObserver((entries) => {
-        if (entries[0] && entries[0].isIntersecting) {
-          renderSongCardsBatch();
+        const entry = entries[0];
+        if (entry && entry.isIntersecting) {
+          triggerAutoLoad();
         }
       }, {
         root: null,
-        rootMargin: "650px", // Trigger 650px early before reaching bottom for seamless auto-load
+        rootMargin: "800px 0px 800px 0px", // Trigger 800px early before reaching bottom for seamless auto-load
         threshold: 0
       });
       gridIntersectionObserver.observe(sentinel);
     }
   }
 
-  // Automatic Infinite Scroll fallback on window scroll
-  window.addEventListener("scroll", () => {
+  // Automatic Infinite Scroll triggers - works reliably across mobile & desktop browsers
+  function checkAndTriggerAutoLoad() {
     if (gridIsLoadingBatch) return;
     if (gridCurrentRenderedCount >= gridCurrentFilteredList.length) return;
-    const scrollPos = window.innerHeight + window.scrollY;
-    const threshold = document.documentElement.scrollHeight - 750;
-    if (scrollPos >= threshold) {
-      renderSongCardsBatch();
+    const sentinel = document.getElementById("gridInfiniteSentinel");
+    if (!sentinel || sentinel.style.display === "none") return;
+
+    // Viewport-relative check via getBoundingClientRect
+    const rect = sentinel.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+    if (rect.top <= viewportHeight + 700) {
+      triggerAutoLoad();
     }
-  }, { passive: true });
+  }
+
+  window.addEventListener("scroll", checkAndTriggerAutoLoad, { passive: true });
+  window.addEventListener("touchmove", checkAndTriggerAutoLoad, { passive: true });
+  window.addEventListener("wheel", checkAndTriggerAutoLoad, { passive: true });
+  window.addEventListener("resize", checkAndTriggerAutoLoad, { passive: true });
 
   /* Render Song Cards Grid Section */
   function renderSongCardsGrid() {
