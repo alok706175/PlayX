@@ -715,6 +715,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
 
     updateFavoriteUI();
+    updateCardPlayingState();
   }
 
   /* =========================================================
@@ -2109,6 +2110,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     }
     renderPlaylist(playlistSearch ? playlistSearch.value : "");
+    updateCardPlayingState();
     updateMediaSessionMetadata();
     updateHindiTabTitle();
   }
@@ -2599,22 +2601,187 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     });
   }
 
+  /* =========================================================
+     PROGRESSIVE LAZY BATCH RENDERING & EVENT DELEGATION
+     ========================================================= */
+  const GRID_PAGE_SIZE = 24; // 24 cards per batch (fills viewport smoothly without mobile DOM lag)
+  let gridCurrentRenderedCount = 0;
+  let gridCurrentFilteredList = [];
+  let gridIntersectionObserver = null;
+
+  function createSongCardElement(s, isEn) {
+    const card = document.createElement("div");
+    const isCardPlaying = s.originalIdx === currentSong;
+    card.className = "song-card" + (isCardPlaying ? " now-playing" : "");
+    card.setAttribute("data-song-idx", s.originalIdx);
+    card.setAttribute("data-song-id", s.id);
+
+    const title = isEn ? (s.nameEn || s.name) : s.name;
+    const singer = isEn ? (s.singerEn || s.singer) : s.singer;
+    const isYtSong = Boolean(s.videoId || s.youtubeId);
+    const isLiked = likedSongs.has(s.id);
+    const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
+    const isDownloaded = !isYtSong && downloadedHindiSongs.has(songKey);
+
+    const actionBtnHtml = isYtSong ? `
+          <button class="song-card-stream-badge" type="button" title="Online Streaming Track (Click to Stream)" aria-label="Stream ${title}">
+            <span class="stream-dot"></span>Stream
+          </button>
+    ` : `
+          <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
+            ${isDownloaded ? '✓' : '↓'}
+          </button>
+    `;
+
+    card.innerHTML = `
+      <div class="song-card-header">
+        <div class="card-number-badge">${s.originalIdx === currentSong && isPlaying ? "❚❚" : (s.id || s.originalIdx + 1)}</div>
+        <div class="song-card-cat">${s.category || "Bollywood"}</div>
+        <button class="card-like-btn ${isLiked ? 'liked' : ''}" type="button" data-fav-id="${s.id}" title="Favorite / Like">
+          ${isLiked ? '❤️' : '🤍'}
+        </button>
+      </div>
+
+      <div class="song-card-body">
+        <div class="song-card-title">${title}</div>
+        <div class="song-card-singer">🎤 ${singer}</div>
+      </div>
+
+      <div class="song-card-footer">
+        <div class="song-card-duration">⏱️ ${s.duration || "320 Kbps"}</div>
+        <div class="song-card-actions">
+          <button class="song-card-queue-btn" type="button" title="Add to Up Next queue" aria-label="Add ${title} to queue">➕</button>
+          ${actionBtnHtml}
+          <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
+            <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
+            <span>${isCardPlaying && isPlaying ? "Pause" : "Play"}</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    return card;
+  }
+
+  function renderSongCardsBatch() {
+    const grid = document.getElementById("songsCardsGrid");
+    if (!grid) return;
+
+    const isEn = currentLang === "en";
+    const total = gridCurrentFilteredList.length;
+    const startIndex = gridCurrentRenderedCount;
+    const endIndex = Math.min(total, startIndex + GRID_PAGE_SIZE);
+
+    if (startIndex >= total) {
+      updateGridSentinel(false);
+      return;
+    }
+
+    // Temporarily remove sentinel before appending fragment
+    const oldSentinel = document.getElementById("gridInfiniteSentinel");
+    if (oldSentinel) oldSentinel.remove();
+
+    const fragment = document.createDocumentFragment();
+    for (let i = startIndex; i < endIndex; i++) {
+      const s = gridCurrentFilteredList[i];
+      if (s) {
+        fragment.appendChild(createSongCardElement(s, isEn));
+      }
+    }
+    grid.appendChild(fragment);
+    gridCurrentRenderedCount = endIndex;
+
+    // Update counter badge: "Showing X of Y Songs"
+    if (gridCounterBadge) {
+      const t = i18n.en;
+      if (gridCurrentRenderedCount < total) {
+        gridCounterBadge.textContent = `${t.showingSongsPrefix}${gridCurrentRenderedCount} / ${total}${t.songsSuffix}`;
+      } else {
+        gridCounterBadge.textContent = `${t.showingSongsPrefix}${total}${t.songsSuffix}`;
+      }
+    }
+
+    // Attach sentinel if more items remain
+    if (gridCurrentRenderedCount < total) {
+      updateGridSentinel(true, total - gridCurrentRenderedCount);
+    } else {
+      updateGridSentinel(false);
+    }
+  }
+
+  function updateGridSentinel(hasMore, remainingCount = 0) {
+    const gridSection = document.getElementById("songsGridSection");
+    let sentinel = document.getElementById("gridInfiniteSentinel");
+
+    if (!hasMore) {
+      if (sentinel) sentinel.remove();
+      if (gridIntersectionObserver) {
+        gridIntersectionObserver.disconnect();
+        gridIntersectionObserver = null;
+      }
+      return;
+    }
+
+    if (!sentinel) {
+      sentinel = document.createElement("div");
+      sentinel.id = "gridInfiniteSentinel";
+      sentinel.className = "grid-infinite-sentinel";
+      if (gridSection) gridSection.appendChild(sentinel);
+    }
+
+    sentinel.innerHTML = `
+      <div class="sentinel-content">
+        <span class="sentinel-spinner"></span>
+        <span class="sentinel-text">Loading more songs... (${remainingCount} remaining)</span>
+        <button type="button" class="sentinel-load-btn" id="btnManualLoadMore">Load More</button>
+      </div>
+    `;
+
+    const loadBtn = sentinel.querySelector("#btnManualLoadMore");
+    if (loadBtn) {
+      loadBtn.addEventListener("click", () => {
+        renderSongCardsBatch();
+      });
+    }
+
+    if (!gridIntersectionObserver && "IntersectionObserver" in window) {
+      gridIntersectionObserver = new IntersectionObserver((entries) => {
+        if (entries[0] && entries[0].isIntersecting) {
+          renderSongCardsBatch();
+        }
+      }, {
+        root: null,
+        rootMargin: "350px", // Trigger early for imperceptible, zero-jank loading
+        threshold: 0.05
+      });
+      gridIntersectionObserver.observe(sentinel);
+    }
+  }
+
   /* Render Song Cards Grid Section */
   function renderSongCardsGrid() {
     const grid = document.getElementById("songsCardsGrid");
     if (!grid) return;
+
+    if (gridIntersectionObserver) {
+      gridIntersectionObserver.disconnect();
+      gridIntersectionObserver = null;
+    }
+    const oldSentinel = document.getElementById("gridInfiniteSentinel");
+    if (oldSentinel) oldSentinel.remove();
+
     grid.innerHTML = "";
+    gridCurrentRenderedCount = 0;
 
     const query = mainSearchInput ? mainSearchInput.value : "";
-    const filtered = getFilteredAndSortedSongs(query);
+    gridCurrentFilteredList = getFilteredAndSortedSongs(query);
     const isEn = currentLang === "en";
     const t = i18n.en;
 
-    if (gridCounterBadge) {
-      gridCounterBadge.textContent = `${t.showingSongsPrefix}${filtered.length}${t.songsSuffix}`;
-    }
-
-    if (filtered.length === 0) {
+    if (gridCurrentFilteredList.length === 0) {
+      if (gridCounterBadge) {
+        gridCounterBadge.textContent = `${t.showingSongsPrefix}0${t.songsSuffix}`;
+      }
       grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 48px 16px; background: var(--bg-surface); border: 1px dashed var(--border-medium); border-radius: 20px;">
           <div style="font-size: 38px; margin-bottom: 8px;">🎵</div>
@@ -2625,130 +2792,121 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       return;
     }
 
-    filtered.forEach((s) => {
-      const card = document.createElement("div");
-      const isCardPlaying = s.originalIdx === currentSong;
-      card.className = "song-card" + (isCardPlaying ? " now-playing" : "");
-      card.setAttribute("data-song-idx", s.originalIdx);
+    // Render initial batch (instant paint in <15ms!)
+    renderSongCardsBatch();
 
-      const title = isEn ? (s.nameEn || s.name) : s.name;
-      const singer = isEn ? (s.singerEn || s.singer) : s.singer;
-      const isYtSong = Boolean(s.videoId || s.youtubeId);
-      const isLiked = likedSongs.has(s.id);
-      const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
-      const isDownloaded = !isYtSong && downloadedHindiSongs.has(songKey);
+    // Ensure event delegation is hooked
+    initSongGridEventDelegation();
+  }
 
-      const actionBtnHtml = isYtSong ? `
-            <button class="song-card-stream-badge" type="button" title="Online Streaming Track (Click to Stream)" aria-label="Stream ${title}">
-              <span class="stream-dot"></span>Stream
-            </button>
-      ` : `
-            <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
-              ${isDownloaded ? '✓' : '↓'}
-            </button>
-      `;
+  /* Event Delegation for Songs Grid (Replaces 840+ individual listeners with 1 efficient listener) */
+  function initSongGridEventDelegation() {
+    const grid = document.getElementById("songsCardsGrid");
+    if (!grid || grid.dataset.delegated === "true") return;
+    grid.dataset.delegated = "true";
 
-      card.innerHTML = `
-        <div class="song-card-header">
-          <div class="card-number-badge">${s.originalIdx === currentSong && isPlaying ? "❚❚" : (s.id || s.originalIdx + 1)}</div>
-          <div class="song-card-cat">${s.category || "Bollywood"}</div>
-          <button class="card-like-btn ${isLiked ? 'liked' : ''}" type="button" data-fav-id="${s.id}" title="Favorite / Like">
-            ${isLiked ? '❤️' : '🤍'}
-          </button>
-        </div>
+    grid.addEventListener("click", async (e) => {
+      const card = e.target.closest(".song-card");
+      if (!card) return;
 
-        <div class="song-card-body">
-          <div class="song-card-title">${title}</div>
-          <div class="song-card-singer">🎤 ${singer}</div>
-        </div>
+      const songIdx = parseInt(card.getAttribute("data-song-idx"), 10);
+      const song = songs[songIdx];
+      if (!song) return;
 
-        <div class="song-card-footer">
-          <div class="song-card-duration">⏱️ ${s.duration || "320 Kbps"}</div>
-          <div class="song-card-actions">
-            <button class="song-card-queue-btn" type="button" title="Add to Up Next queue" aria-label="Add ${title} to queue">➕</button>
-            ${actionBtnHtml}
-            <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
-              <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
-              <span>${isCardPlaying && isPlaying ? "Pause" : "Play"}</span>
-            </button>
-          </div>
-        </div>
-      `;
-
-      // Heart like button listener
-      const likeBtn = card.querySelector(".card-like-btn");
+      // 1. Heart Like / Favorite
+      const likeBtn = e.target.closest(".card-like-btn");
       if (likeBtn) {
-        likeBtn.addEventListener("click", (e) => {
-          toggleSongFavorite(s.id, e);
-        });
+        e.stopPropagation();
+        toggleSongFavorite(song.id, e);
+        const isNowLiked = likedSongs.has(song.id);
+        likeBtn.classList.toggle("liked", isNowLiked);
+        likeBtn.textContent = isNowLiked ? "❤️" : "🤍";
+        return;
       }
 
-      // Queue button listener
-      const qBtn = card.querySelector(".song-card-queue-btn");
+      // 2. Queue Button
+      const qBtn = e.target.closest(".song-card-queue-btn");
       if (qBtn) {
-        qBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          addToQueue(s.originalIdx);
-        });
+        e.stopPropagation();
+        addToQueue(songIdx);
+        return;
       }
 
-      // Stream button listener (for YouTube tracks)
-      const streamBtn = card.querySelector(".song-card-stream-badge");
+      // 3. YouTube Stream Button
+      const streamBtn = e.target.closest(".song-card-stream-badge");
       if (streamBtn) {
-        streamBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          if (s.originalIdx === currentSong && isPlaying) {
-            togglePlayback();
-          } else {
-            playSong(s.originalIdx);
-          }
-        });
-      }
-
-      // Download button listener (for MP3 tracks)
-      const dlBtn = card.querySelector(".song-card-download-btn");
-      if (dlBtn) {
-        dlBtn.addEventListener("click", async (e) => {
-          e.stopPropagation();
-          if (!window.OfflineManager) return;
-          dlBtn.className = "song-card-download-btn downloading";
-          dlBtn.textContent = "0%";
-          showToast("Downloading: " + (s.name || "Song"));
-
-          try {
-            await window.OfflineManager.downloadSong(s, (prog) => {
-              if (prog.percent >= 0) {
-                dlBtn.textContent = `${prog.percent}%`;
-              } else {
-                dlBtn.textContent = "⏳";
-              }
-            });
-            dlBtn.className = "song-card-download-btn downloaded";
-            dlBtn.textContent = "✓";
-            dlBtn.title = "Downloaded ✓";
-            showToast("Downloaded for offline listening ✓");
-            await refreshDownloadedHindiSongs();
-            renderSongCardsGrid();
-          } catch (err) {
-            console.error("Download failed:", err);
-            dlBtn.className = "song-card-download-btn";
-            dlBtn.textContent = "↓";
-            showToast("Download failed. Please try again.");
-          }
-        });
-      }
-
-      // Card click listener
-      card.addEventListener("click", (e) => {
-        if (e.target.closest(".song-card-download-btn") || e.target.closest(".song-card-stream-badge") || e.target.closest(".card-like-btn") || e.target.closest(".song-card-queue-btn")) return;
-        if (s.originalIdx === currentSong && isPlaying) {
+        e.stopPropagation();
+        if (songIdx === currentSong && isPlaying) {
           togglePlayback();
         } else {
-          playSong(s.originalIdx);
+          playSong(songIdx);
         }
-      });
+        return;
+      }
 
-      grid.appendChild(card);
+      // 4. Download Button
+      const dlBtn = e.target.closest(".song-card-download-btn");
+      if (dlBtn) {
+        e.stopPropagation();
+        if (!window.OfflineManager) return;
+        dlBtn.className = "song-card-download-btn downloading";
+        dlBtn.textContent = "0%";
+        showToast("Downloading: " + (song.name || "Song"));
+
+        try {
+          await window.OfflineManager.downloadSong(song, (prog) => {
+            if (prog.percent >= 0) {
+              dlBtn.textContent = `${prog.percent}%`;
+            } else {
+              dlBtn.textContent = "⏳";
+            }
+          });
+          dlBtn.className = "song-card-download-btn downloaded";
+          dlBtn.textContent = "✓";
+          dlBtn.title = "Downloaded ✓";
+          showToast("Downloaded for offline listening ✓");
+          await refreshDownloadedHindiSongs();
+          renderSongCardsGrid();
+        } catch (err) {
+          console.error("Download failed:", err);
+          dlBtn.className = "song-card-download-btn";
+          dlBtn.textContent = "↓";
+          showToast("Download failed. Please try again.");
+        }
+        return;
+      }
+
+      // 5. Play / Pause Button or Card body click
+      if (songIdx === currentSong && isPlaying) {
+        togglePlayback();
+      } else {
+        playSong(songIdx);
+      }
+    });
+  }
+
+  /* Real-Time Card Active State Update (Zero DOM Re-rendering) */
+  function updateCardPlayingState() {
+    const cards = document.querySelectorAll("#songsCardsGrid .song-card");
+    cards.forEach(card => {
+      const idx = parseInt(card.getAttribute("data-song-idx"), 10);
+      const isCardActive = idx === currentSong;
+      card.classList.toggle("now-playing", isCardActive);
+
+      const numBadge = card.querySelector(".card-number-badge");
+      const playBtnSpan = card.querySelector(".song-card-play-btn span:first-child");
+      const playBtnLabel = card.querySelector(".song-card-play-btn span:last-child");
+
+      if (isCardActive) {
+        if (numBadge) numBadge.textContent = isPlaying ? "❚❚" : "▶";
+        if (playBtnSpan) playBtnSpan.textContent = isPlaying ? "❚❚" : "▶";
+        if (playBtnLabel) playBtnLabel.textContent = isPlaying ? "Pause" : "Play";
+      } else {
+        const originalId = card.getAttribute("data-song-id") || (idx + 1);
+        if (numBadge) numBadge.textContent = originalId;
+        if (playBtnSpan) playBtnSpan.textContent = "▶";
+        if (playBtnLabel) playBtnLabel.textContent = "Play";
+      }
     });
   }
 

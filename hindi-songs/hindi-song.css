@@ -3165,3 +3165,78 @@
   transform: scale(1.15);
   opacity: 0.95;
 }
+
+/* =========================================================
+   PROGRESSIVE INFINITE SCROLL & LAZY BATCH SENTINEL
+   ========================================================= */
+.grid-infinite-sentinel {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 12px 36px 12px;
+  width: 100%;
+}
+
+.sentinel-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-elevated, #161b26);
+  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  animation: sentinelFadeIn 0.3s ease;
+}
+
+@keyframes sentinelFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sentinel-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(245, 158, 11, 0.25);
+  border-top-color: var(--accent-color, #f59e0b);
+  border-radius: 50%;
+  animation: sentinelSpin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes sentinelSpin {
+  to { transform: rotate(360deg); }
+}
+
+.sentinel-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary, #cbd5e1);
+  letter-spacing: 0.2px;
+}
+
+.sentinel-load-btn {
+  background: var(--accent-color, #f59e0b);
+  color: #000000;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  font-family: inherit;
+  flex-shrink: 0;
+}
+
+.sentinel-load-btn:hover {
+  opacity: 0.92;
+  transform: scale(1.05);
+}
+
+.sentinel-load-btn:active {
+  transform: scale(0.96);
+}
