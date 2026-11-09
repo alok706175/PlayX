@@ -3264,18 +3264,19 @@
 }
 
 /* =========================================================
-   APPLE DYNAMIC ISLAND "NOW PLAYING" WIDGET
+   APPLE DYNAMIC ISLAND "NOW PLAYING" (PIXEL-PERFECT MATCH)
    ========================================================= */
 .dynamic-island-container {
   position: fixed;
-  top: 8px;
+  top: 10px;
   left: 50%;
-  transform: translateX(-50%) translateY(-24px) scale(0.85);
-  z-index: 150;
+  transform: translateX(-50%) translateY(-28px) scale(0.9);
+  z-index: 10000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Outfit", "Segoe UI", sans-serif;
 }
 
 .dynamic-island-container.active {
@@ -3284,318 +3285,202 @@
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-/* Compact Pill Mode */
+/* Image 2: Compact Pill Mode */
 .dynamic-island-compact {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-width: 220px;
-  max-width: 380px;
-  height: 38px;
-  padding: 0 12px 0 6px;
+  width: 175px;
+  height: 35px;
+  padding: 0 12px 0 5px;
   background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 40px;
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.85), 0 0 1px 1px rgba(255, 255, 255, 0.12) inset;
+  border-radius: 9999px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.95);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dynamic-island-compact:hover {
-  transform: scale(1.03);
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.95), 0 0 20px rgba(245, 158, 11, 0.25);
+  transform: scale(1.04);
 }
 
-/* Left: Album Art */
-.island-compact-left {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-}
-
-.island-art-disc {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #181d29;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+.island-compact-art-box {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
-  overflow: hidden;
-  position: relative;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.island-art-disc.spinning {
-  animation: islandVinylSpin 6s linear infinite;
-}
-
-@keyframes islandVinylSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.island-art-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-/* Center: Song info */
-.island-compact-center {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  overflow: hidden;
-  white-space: nowrap;
-  font-size: 11.5px;
-  flex: 1;
-}
-
-.island-song-title {
-  color: #ffffff;
-  font-weight: 700;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 120px;
-}
-
-.island-separator {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 10px;
-}
-
-.island-song-singer {
-  color: #94a3b8;
-  font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 90px;
-}
-
-/* Right: Apple Live Waveform */
-.island-compact-right {
-  display: flex;
-  align-items: center;
+  background: #1c1c1e;
   flex-shrink: 0;
 }
 
-.island-waveform {
+.island-compact-art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Pink / Magenta Live Waveform Visualizer (Image 2) */
+.island-compact-waveform {
   display: flex;
   align-items: center;
   gap: 2.5px;
-  height: 18px;
-  padding: 0 2px;
+  height: 16px;
+  padding-right: 2px;
 }
 
-.island-wave-bar {
+.island-compact-waveform .island-wave-bar {
   width: 3px;
   height: 4px;
-  border-radius: 2px;
-  background: var(--accent-color, #f59e0b);
+  border-radius: 3px;
+  background: #ff2d55; /* Apple Music signature hot pink */
   transition: height 0.2s ease, opacity 0.2s ease;
 }
 
-.island-waveform.playing .island-wave-bar {
-  animation: islandWaveBounce 0.8s ease-in-out infinite alternate;
+.island-compact-waveform.playing .island-wave-bar {
+  animation: islandWaveformBlink 0.75s ease-in-out infinite alternate;
 }
 
-.island-waveform .island-wave-bar.b1 {
-  background: #22c55e;
-  animation-delay: 0.1s;
+.island-compact-waveform .island-wave-bar.b1 { animation-delay: 0.1s; }
+.island-compact-waveform .island-wave-bar.b2 { animation-delay: 0.3s; }
+.island-compact-waveform .island-wave-bar.b3 { animation-delay: 0.15s; }
+.island-compact-waveform .island-wave-bar.b4 { animation-delay: 0.4s; }
+.island-compact-waveform .island-wave-bar.b5 { animation-delay: 0.25s; }
+
+@keyframes islandWaveformBlink {
+  0% { height: 3px; }
+  50% { height: 16px; }
+  100% { height: 6px; }
 }
 
-.island-waveform .island-wave-bar.b2 {
-  background: #f59e0b;
-  animation-delay: 0.3s;
-}
-
-.island-waveform .island-wave-bar.b3 {
-  background: #ec4899;
-  animation-delay: 0.2s;
-}
-
-.island-waveform .island-wave-bar.b4 {
-  background: #06b6d4;
-  animation-delay: 0.4s;
-}
-
-@keyframes islandWaveBounce {
-  0% {
-    height: 4px;
-  }
-  50% {
-    height: 16px;
-  }
-  100% {
-    height: 7px;
-  }
-}
-
-.island-waveform:not(.playing) .island-wave-bar {
+.island-compact-waveform:not(.playing) .island-wave-bar {
   height: 3px;
-  opacity: 0.4;
+  opacity: 0.5;
 }
 
-/* Expanded Card Mode */
+/* Image 1: Expanded Card Mode */
 .dynamic-island-expanded {
-  width: 330px;
+  width: 360px;
   max-width: calc(100vw - 24px);
   background: #000000;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 26px;
-  padding: 16px 18px 14px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.95), 0 0 1px 1px rgba(255, 255, 255, 0.12) inset;
+  border-radius: 28px;
+  padding: 16px 18px 14px 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.98);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  animation: islandExpandSpring 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: islandSpringOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
 }
 
-@keyframes islandExpandSpring {
-  0% {
-    transform: scale(0.85);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+@keyframes islandSpringOpen {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.island-expanded-header {
+/* Row 1: Top Metadata */
+.island-expanded-top {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.island-expanded-art-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: #161b26;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  overflow: hidden;
-  flex-shrink: 0;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
-}
-
-.island-expanded-img {
-  width: 100%;
-  height: 100%;
+.island-expanded-art {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
   object-fit: cover;
-  border-radius: 12px;
+  background: #1c1c1e;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
 }
 
-.island-expanded-meta {
+.island-expanded-info {
   flex: 1;
   overflow: hidden;
-}
-
-.island-now-playing-tag {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.8px;
-  color: #22c55e;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .island-expanded-title {
-  margin: 0;
-  font-size: 13.5px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffffff;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
 }
 
 .island-expanded-singer {
-  margin: 0;
-  font-size: 11.5px;
-  color: #94a3b8;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #8e8e93;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
 }
 
-.island-collapse-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  color: #cbd5e1;
+.island-expanded-headphone {
+  color: #8e8e93;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
   flex-shrink: 0;
+  padding: 4px;
 }
 
-.island-collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  transform: scale(1.08);
-}
-
-/* Seekbar Progress Row */
-.island-progress-row {
+/* Row 2: Seekbar */
+.island-expanded-seekbar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.island-time {
-  font-size: 10px;
-  font-weight: 600;
-  color: #64748b;
-  font-family: 'Outfit', sans-serif;
-  min-width: 26px;
+.island-time-left,
+.island-time-right {
+  font-size: 11px;
+  font-weight: 500;
+  color: #8e8e93;
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
 }
 
-.island-progress-track {
+.island-time-right {
+  text-align: right;
+}
+
+.island-track-wrap {
   flex: 1;
   height: 4px;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 2px;
-  overflow: hidden;
-  cursor: pointer;
   position: relative;
+  cursor: pointer;
+  overflow: hidden;
 }
 
-.island-progress-fill {
+.island-track-fill {
   height: 100%;
-  background: linear-gradient(90deg, #22c55e, #f59e0b, #ec4899);
+  background: #ffffff;
   border-radius: 2px;
   transition: width 0.1s linear;
 }
 
-/* Controls */
-.island-controls-row {
+/* Row 3: Controls */
+.island-expanded-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding-top: 2px;
+  justify-content: space-between;
+  padding: 4px 6px 2px 6px;
 }
 
-.island-ctrl-btn {
+.island-expanded-controls button {
   background: transparent;
   border: none;
   color: #ffffff;
@@ -3604,33 +3489,30 @@
   align-items: center;
   justify-content: center;
   padding: 6px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
+  transition: transform 0.15s ease, opacity 0.15s ease;
 }
 
-.island-ctrl-btn:hover {
-  color: var(--accent-color, #f59e0b);
-  transform: scale(1.15);
+.island-expanded-controls button:active {
+  transform: scale(0.88);
 }
 
-.island-ctrl-btn:active {
-  transform: scale(0.92);
+.island-btn-fav {
+  color: #ffffff;
 }
 
-.island-play-btn {
-  width: 40px;
-  height: 40px;
-  background: #ffffff;
-  color: #000000;
-  border-radius: 50%;
-  box-shadow: 0 4px 14px rgba(255, 255, 255, 0.25);
-  font-size: 15px;
-  font-weight: 800;
+.island-btn-fav.active {
+  color: #22c55e;
 }
 
-.island-play-btn:hover {
-  background: #f1f5f9;
-  color: #000000;
-  transform: scale(1.1);
-  box-shadow: 0 6px 18px rgba(255, 255, 255, 0.35);
+.island-btn-prev,
+.island-btn-next {
+  color: #ffffff;
+}
+
+.island-btn-play {
+  color: #ffffff;
+}
+
+.island-btn-cast {
+  color: #8e8e93;
 }
