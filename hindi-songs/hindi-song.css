@@ -2226,6 +2226,60 @@
   height: 30px;
 }
 
+/* YouTube Online Streaming Badge / Button */
+.song-card-stream-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.32);
+  color: #ef4444;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  flex-shrink: 0;
+  letter-spacing: 0.3px;
+  user-select: none;
+}
+
+.song-card-stream-badge:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #ff5555;
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.song-card-stream-badge:active {
+  transform: scale(0.97);
+}
+
+.song-card-stream-badge .stream-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
+  animation: pulseStreamLive 1.8s infinite ease-in-out;
+}
+
+@keyframes pulseStreamLive {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.75);
+  }
+}
+
 .offline-playback-badge {
   display: inline-flex;
   align-items: center;

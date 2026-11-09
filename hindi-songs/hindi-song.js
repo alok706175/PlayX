@@ -2326,9 +2326,20 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
       const title = isEn ? (s.nameEn || s.name) : s.name;
       const singer = isEn ? (s.singerEn || s.singer) : s.singer;
+      const isYtSong = Boolean(s.videoId || s.youtubeId);
       const isLiked = likedSongs.has(s.id);
       const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
-      const isDownloaded = downloadedHindiSongs.has(songKey);
+      const isDownloaded = !isYtSong && downloadedHindiSongs.has(songKey);
+
+      const actionBtnHtml = isYtSong ? `
+            <button class="song-card-stream-badge" type="button" title="Online Streaming Track (Click to Stream)" aria-label="Stream ${title}">
+              <span class="stream-dot"></span>Stream
+            </button>
+      ` : `
+            <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
+              ${isDownloaded ? '✓' : '↓'}
+            </button>
+      `;
 
       card.innerHTML = `
         <div class="song-card-header">
@@ -2348,9 +2359,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           <div class="song-card-duration">⏱️ ${s.duration || "320 Kbps"}</div>
           <div class="song-card-actions">
             <button class="song-card-queue-btn" type="button" title="Add to Up Next queue" aria-label="Add ${title} to queue">➕</button>
-            <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
-              ${isDownloaded ? '✓' : '↓'}
-            </button>
+            ${actionBtnHtml}
             <button class="song-card-play-btn" type="button" aria-label="Play ${title}">
               <span>${isCardPlaying && isPlaying ? "❚❚" : "▶"}</span>
               <span>${isCardPlaying && isPlaying ? "Pause" : "Play"}</span>
@@ -2376,15 +2385,24 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         });
       }
 
-      // Download button listener
+      // Stream button listener (for YouTube tracks)
+      const streamBtn = card.querySelector(".song-card-stream-badge");
+      if (streamBtn) {
+        streamBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (s.originalIdx === currentSong && isPlaying) {
+            togglePlayback();
+          } else {
+            playSong(s.originalIdx);
+          }
+        });
+      }
+
+      // Download button listener (for MP3 tracks)
       const dlBtn = card.querySelector(".song-card-download-btn");
       if (dlBtn) {
         dlBtn.addEventListener("click", async (e) => {
           e.stopPropagation();
-          if (s.videoId || s.youtubeId) {
-            showToast("🎶 Online streaming song: Click Play to listen");
-            return;
-          }
           if (!window.OfflineManager) return;
           dlBtn.className = "song-card-download-btn downloading";
           dlBtn.textContent = "0%";
@@ -2415,7 +2433,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
       // Card click listener
       card.addEventListener("click", (e) => {
-        if (e.target.closest(".song-card-download-btn") || e.target.closest(".card-like-btn")) return;
+        if (e.target.closest(".song-card-download-btn") || e.target.closest(".song-card-stream-badge") || e.target.closest(".card-like-btn") || e.target.closest(".song-card-queue-btn")) return;
         if (s.originalIdx === currentSong && isPlaying) {
           togglePlayback();
         } else {
