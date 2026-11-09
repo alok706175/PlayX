@@ -986,7 +986,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       step++;
       const factor = Math.max(0, 1 - (step / steps));
 
-      if (activeAudioSource === "offline" && offlineAudio) {
+      if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
         offlineAudio.volume = (volNum / 100) * factor;
       } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
         try { ytAudioPlayer.setVolume(Math.round(volNum * factor)); } catch (e) {}
@@ -1005,7 +1005,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const interval = Math.max(20, Math.floor(durationMs / steps));
     let step = 0;
 
-    if (activeAudioSource === "offline" && offlineAudio) {
+    if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
       offlineAudio.volume = 0;
     } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
       try { ytAudioPlayer.setVolume(0); } catch (e) {}
@@ -1015,7 +1015,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       step++;
       const factor = Math.min(1, step / steps);
 
-      if (activeAudioSource === "offline" && offlineAudio) {
+      if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
         offlineAudio.volume = (volNum / 100) * factor;
       } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
         try { ytAudioPlayer.setVolume(Math.round(volNum * factor)); } catch (e) {}
@@ -1038,7 +1038,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       updateHindiTabTitle();
       const volNum = volumeSlider ? parseInt(volumeSlider.value, 10) : 100;
       setTimeout(() => {
-        if (activeAudioSource === "offline" && offlineAudio) {
+        if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
           offlineAudio.volume = volNum / 100;
         } else if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.setVolume === "function") {
           try { ytAudioPlayer.setVolume(volNum); } catch (e) {}
@@ -1550,7 +1550,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") {
       updateLiveProgress();
-      if (activeAudioSource === "offline" && offlineAudio) {
+      if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
         if (!offlineAudio.paused && !isPlaying) {
           setPlaybackState(true);
         } else if (offlineAudio.paused && isPlaying) {
@@ -1763,7 +1763,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   window.addEventListener("online", () => {
     if (isPlaying) {
-      if (activeAudioSource === "offline" && offlineAudio) {
+      if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
         if (offlineAudio.paused) {
           offlineAudio.play().catch(() => {});
         }
