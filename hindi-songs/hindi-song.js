@@ -1073,11 +1073,22 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     if (!moreDropdown || !moreBtn) return;
 
+    const moreMenuEl = document.getElementById("playerMoreMenu");
+
+    function closeMoreMenu() {
+      if (moreDropdown) moreDropdown.classList.remove("open");
+      if (moreBtn) moreBtn.setAttribute("aria-expanded", "false");
+      if (moreMenuEl) moreMenuEl.style.display = "none";
+      if (sleepView) sleepView.style.display = "none";
+      if (mainView) mainView.style.display = "block";
+    }
+
     // Toggle 3-dots menu
     moreBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const isOpen = moreDropdown.classList.toggle("open");
       moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      if (moreMenuEl) moreMenuEl.style.display = isOpen ? "block" : "none";
       if (isOpen) {
         // Reset to main view whenever opened
         if (mainView) mainView.style.display = "block";
@@ -1109,10 +1120,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         e.stopPropagation();
         const val = parseInt(btn.getAttribute("data-val"), 10);
         setHindiSleepTimer(val, true);
-        moreDropdown.classList.remove("open");
-        moreBtn.setAttribute("aria-expanded", "false");
-        if (sleepView) sleepView.style.display = "none";
-        if (mainView) mainView.style.display = "block";
+        closeMoreMenu();
       });
     });
 
@@ -1120,8 +1128,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (shortcutsMenuBtn) {
       shortcutsMenuBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        moreDropdown.classList.remove("open");
-        moreBtn.setAttribute("aria-expanded", "false");
+        closeMoreMenu();
         toggleShortcuts();
       });
     }
@@ -1130,8 +1137,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (shareMenuBtn) {
       shareMenuBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        moreDropdown.classList.remove("open");
-        moreBtn.setAttribute("aria-expanded", "false");
+        closeMoreMenu();
         const curSong = songs[currentSong];
         const title = curSong ? (currentLang === "en" ? (curSong.nameEn || curSong.name) : curSong.name) : "PlayX Song";
         const shareUrl = window.location.href;
@@ -1155,10 +1161,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     // Click outside closes dropdown
     document.addEventListener("click", (e) => {
       if (moreDropdown && !moreDropdown.contains(e.target)) {
-        moreDropdown.classList.remove("open");
-        moreBtn.setAttribute("aria-expanded", "false");
-        if (sleepView) sleepView.style.display = "none";
-        if (mainView) mainView.style.display = "block";
+        closeMoreMenu();
       }
     });
 
@@ -3113,6 +3116,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       closeShortcuts();
       const moreDropdown = document.getElementById("playerMoreDropdown");
       if (moreDropdown) moreDropdown.classList.remove("open");
+      const moreMenu = document.getElementById("playerMoreMenu");
+      if (moreMenu) moreMenu.style.display = "none";
       if (speedDropdown) speedDropdown.classList.remove("open");
       if (themeDropdown) themeDropdown.classList.remove("open");
       if (shareDropdown) shareDropdown.classList.remove("open");
