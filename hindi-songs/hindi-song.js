@@ -1175,14 +1175,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const moreBtn = document.getElementById("playerMoreBtn");
     hindiSleepTimerBtn = moreBtn;
     hindiSleepBadge = document.getElementById("playerMoreSleepBadge");
-
-    const mainView = document.getElementById("menuMainView");
-    const sleepView = document.getElementById("menuSleepView");
-    const openSleepSubmenu = document.getElementById("openSleepTimerSubmenu");
-    const sleepBackBtn = document.getElementById("sleepSubmenuBack");
     const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
-    const shortcutsMenuBtn = document.getElementById("openShortcutsFromMenu");
-    const shareMenuBtn = document.getElementById("shareSongFromMenu");
+    const sleepSubmenuClose = document.getElementById("sleepSubmenuClose");
 
     if (!moreDropdown || !moreBtn) return;
 
@@ -1192,41 +1186,23 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       if (moreDropdown) moreDropdown.classList.remove("open");
       if (moreBtn) moreBtn.setAttribute("aria-expanded", "false");
       if (moreMenuEl) moreMenuEl.style.display = "none";
-      if (sleepView) sleepView.style.display = "none";
-      if (mainView) mainView.style.display = "block";
     }
 
-    // Toggle 3-dots menu
+    // Toggle 3-dots menu directly opens the Sleep Timer popup
     moreBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const isOpen = moreDropdown.classList.toggle("open");
       moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
       if (moreMenuEl) moreMenuEl.style.display = isOpen ? "block" : "none";
       if (isOpen) {
-        // Reset to main view whenever opened
-        if (mainView) mainView.style.display = "block";
-        if (sleepView) sleepView.style.display = "none";
         updateHindiSleepTimerDisplay();
       }
     });
 
-    // Open Sleep Timer Submenu
-    if (openSleepSubmenu) {
-      openSleepSubmenu.addEventListener("click", (e) => {
+    if (sleepSubmenuClose) {
+      sleepSubmenuClose.addEventListener("click", (e) => {
         e.stopPropagation();
-        if (mainView) mainView.style.display = "none";
-        if (sleepView) sleepView.style.display = "block";
-        updateHindiSleepTimerDisplay();
-      });
-    }
-
-    // Back to Main Menu from Submenu
-    if (sleepBackBtn) {
-      sleepBackBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (sleepView) sleepView.style.display = "none";
-        if (mainView) mainView.style.display = "block";
-        updateHindiSleepTimerDisplay();
+        closeMoreMenu();
       });
     }
 
@@ -1239,45 +1215,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         closeMoreMenu();
       });
     });
-
-    // Shortcuts from menu
-    if (shortcutsMenuBtn) {
-      shortcutsMenuBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        closeMoreMenu();
-        toggleShortcuts();
-      });
-    }
-
-    // Share Song from menu
-    if (shareMenuBtn) {
-      shareMenuBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        closeMoreMenu();
-        const curSong = songs[currentSong];
-        const title = curSong ? (currentLang === "en" ? (curSong.nameEn || curSong.name) : curSong.name) : "PlayX Song";
-        const shareUrl = window.location.href;
-        if (navigator.share) {
-          navigator.share({
-            title: `🎵 Listen to ${title} on PlayX`,
-            text: `Stream ${title} on PlayX Music!`,
-            url: shareUrl
-          }).catch(() => {});
-        } else {
-          try {
-            navigator.clipboard.writeText(shareUrl);
-            showToast("🔗 Link copied to clipboard!");
-          } catch (err) {
-            showToast("🔗 Share: " + shareUrl);
-          }
-        }
-      });
-    }
-
-    const mainMenuClose = document.getElementById("mainMenuClose");
-    const sleepSubmenuClose = document.getElementById("sleepSubmenuClose");
-    if (mainMenuClose) mainMenuClose.addEventListener("click", (e) => { e.stopPropagation(); closeMoreMenu(); });
-    if (sleepSubmenuClose) sleepSubmenuClose.addEventListener("click", (e) => { e.stopPropagation(); closeMoreMenu(); });
 
     // Click outside closes dropdown
     document.addEventListener("click", (e) => {
