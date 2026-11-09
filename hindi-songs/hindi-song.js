@@ -1050,12 +1050,125 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   /* =========================================================
      SMART SLEEP TIMER & 3-DOTS MORE OPTIONS ENGINE
+     (Screen-Off Triggered Countdown)
      ========================================================= */
   let hindiSleepTimerBtn = null;
   let hindiSleepBadge = null;
   let hindiSleepTimerId = null;
-  let hindiSleepTimerEndTime = null;
-  let hindiSleepTimerMode = 0; // 0: off by default
+  let hindiSleepTimerMode = 0; // 0: off by default, -1: end of song, >0: minutes
+  let hindiSleepRemainingSeconds = 0;
+  let hindiSleepLastActiveTs = null;
+
+  function isDeviceScreenOff() {
+    return document.visibilityState === "hidden";
+  }
+
+  function updateHindiSleepTimerDisplay() {
+    const statusText = document.getElementById("moreMenuSleepStatus");
+    const badge = document.getElementById("playerMoreSleepBadge") || hindiSleepBadge;
+
+    if (hindiSleepTimerMode === 0) {
+      if (statusText) statusText.textContent = "Off";
+      if (badge) badge.style.display = "none";
+      if (hindiSleepTimerBtn) {
+        hindiSleepTimerBtn.classList.remove("has-sleep-timer");
+        hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
+      }
+      return;
+    }
+
+    if (hindiSleepTimerMode === -1) {
+      if (statusText) statusText.textContent = "End of Song";
+      if (badge) {
+        badge.textContent = "1s";
+        badge.style.display = "none";
+      }
+      if (hindiSleepTimerBtn) {
+        hindiSleepTimerBtn.classList.add("has-sleep-timer");
+        hindiSleepTimerBtn.title = "Sleep Timer: Stop after current song";
+      }
+      return;
+    }
+
+    const mins = Math.max(1, Math.ceil(hindiSleepRemainingSeconds / 60));
+    if (hindiSleepTimerBtn) {
+      hindiSleepTimerBtn.classList.add("has-sleep-timer");
+    }
+
+    if (isDeviceScreenOff()) {
+      if (statusText) statusText.textContent = `Screen Off Active (${mins}m left)`;
+      if (hindiSleepTimerBtn) hindiSleepTimerBtn.title = `Sleep Timer: ${mins}m left (Screen Off counting)`;
+    } else {
+      if (hindiSleepRemainingSeconds === (hindiSleepTimerMode * 60)) {
+        if (statusText) statusText.textContent = `Screen Off pe ${mins}m`;
+        if (hindiSleepTimerBtn) hindiSleepTimerBtn.title = `Sleep Timer: ${mins}m (Starts when screen turns off)`;
+      } else {
+        const consumedMins = hindiSleepTimerMode - mins;
+        if (statusText) statusText.textContent = `Paused (${mins}m left • Screen Off pe resume)`;
+        if (hindiSleepTimerBtn) hindiSleepTimerBtn.title = `Sleep Timer: ${mins}m left (Paused while screen is ON)`;
+      }
+    }
+  }
+
+  function checkHindiSleepTimerTick() {
+    if (hindiSleepTimerMode <= 0) return;
+    const isScreenOff = isDeviceScreenOff();
+    const now = Date.now();
+
+    if (isScreenOff && isPlaying) {
+      if (hindiSleepLastActiveTs) {
+        const elapsed = Math.floor((now - hindiSleepLastActiveTs) / 1000);
+        if (elapsed > 0) {
+          hindiSleepRemainingSeconds = Math.max(0, hindiSleepRemainingSeconds - elapsed);
+          hindiSleepLastActiveTs = now;
+        }
+      } else {
+        hindiSleepLastActiveTs = now;
+      }
+
+      if (hindiSleepRemainingSeconds <= 7 && hindiSleepRemainingSeconds > 0) {
+        fadeHindiVolumeDown(hindiSleepRemainingSeconds * 1000);
+      }
+
+      if (hindiSleepRemainingSeconds <= 0) {
+        triggerHindiSleepTimerEnd();
+        return;
+      }
+    } else {
+      // Screen is ON or song paused: pause counting, preserve remaining seconds
+      if (hindiSleepLastActiveTs) {
+        const elapsed = Math.floor((now - hindiSleepLastActiveTs) / 1000);
+        hindiSleepRemainingSeconds = Math.max(0, hindiSleepRemainingSeconds - elapsed);
+        hindiSleepLastActiveTs = null;
+      }
+    }
+    updateHindiSleepTimerDisplay();
+  }
+
+  function triggerHindiSleepTimerEnd() {
+    if (hindiSleepTimerId) {
+      clearInterval(hindiSleepTimerId);
+      hindiSleepTimerId = null;
+    }
+    hindiSleepTimerMode = 0;
+    hindiSleepRemainingSeconds = 0;
+    hindiSleepLastActiveTs = null;
+
+    if (hindiSleepTimerBtn) {
+      hindiSleepTimerBtn.classList.remove("has-sleep-timer");
+      hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
+    }
+    const statusText = document.getElementById("moreMenuSleepStatus");
+    if (statusText) statusText.textContent = "Off";
+
+    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
+    sleepOptBtns.forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-val") === "0");
+    });
+
+    pauseHindiWithFadeOut();
+    showToast("🌙 Sleep Timer: Device screen off होने के बाद का समय पूरा हो गया। शुभरात्रि! 😴");
+  }
 
   function initHindiSleepTimerUI() {
     const moreDropdown = document.getElementById("playerMoreDropdown");
@@ -1093,6 +1206,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         // Reset to main view whenever opened
         if (mainView) mainView.style.display = "block";
         if (sleepView) sleepView.style.display = "none";
+        updateHindiSleepTimerDisplay();
       }
     });
 
@@ -1102,6 +1216,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         e.stopPropagation();
         if (mainView) mainView.style.display = "none";
         if (sleepView) sleepView.style.display = "block";
+        updateHindiSleepTimerDisplay();
       });
     }
 
@@ -1111,6 +1226,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         e.stopPropagation();
         if (sleepView) sleepView.style.display = "none";
         if (mainView) mainView.style.display = "block";
+        updateHindiSleepTimerDisplay();
       });
     }
 
@@ -1179,84 +1295,47 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       clearInterval(hindiSleepTimerId);
       hindiSleepTimerId = null;
     }
-    hindiSleepTimerMode = val;
-    const badge = document.getElementById("playerMoreSleepBadge") || hindiSleepBadge;
-    const statusText = document.getElementById("moreMenuSleepStatus");
-    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
 
-    // Update active highlight on option buttons
+    hindiSleepTimerMode = val;
+    hindiSleepLastActiveTs = null;
+
+    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
     sleepOptBtns.forEach(btn => {
       const btnVal = parseInt(btn.getAttribute("data-val"), 10);
       btn.classList.toggle("active", btnVal === val);
     });
 
     if (val === 0) {
-      hindiSleepTimerEndTime = null;
-      if (badge) badge.style.display = "none";
-      if (hindiSleepTimerBtn) {
-        hindiSleepTimerBtn.classList.remove("has-sleep-timer");
-        hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
-      }
-      if (statusText) statusText.textContent = "Off";
+      hindiSleepRemainingSeconds = 0;
+      updateHindiSleepTimerDisplay();
       if (showToastMsg) showToast("🌙 Sleep Timer turned off");
       return;
     }
 
     if (val === -1) {
-      if (badge) {
-        badge.textContent = "1s";
-        badge.style.display = "inline-block";
-      }
-      if (hindiSleepTimerBtn) {
-        hindiSleepTimerBtn.classList.add("has-sleep-timer");
-        hindiSleepTimerBtn.title = "Sleep Timer: Stop after current song";
-      }
-      if (statusText) statusText.textContent = "End of Song";
+      hindiSleepRemainingSeconds = 0;
+      updateHindiSleepTimerDisplay();
       if (showToastMsg) showToast("🌙 Sleep Timer set: Stop after current song");
       return;
     }
 
-    hindiSleepTimerEndTime = Date.now() + (val * 60 * 1000);
-    if (badge) {
-      badge.textContent = `${val}m`;
-      badge.style.display = "inline-block";
+    // Release screen wake lock so device screen is allowed to turn off naturally
+    releaseWakeLock();
+
+    hindiSleepRemainingSeconds = val * 60;
+    if (isDeviceScreenOff() && isPlaying) {
+      hindiSleepLastActiveTs = Date.now();
+    } else {
+      hindiSleepLastActiveTs = null;
     }
-    if (hindiSleepTimerBtn) {
-      hindiSleepTimerBtn.classList.add("has-sleep-timer");
-      hindiSleepTimerBtn.title = `Sleep Timer: ${val}m remaining`;
+
+    updateHindiSleepTimerDisplay();
+
+    if (showToastMsg) {
+      showToast(`🌙 Sleep Timer: ${val}m सेट! डिवाइस Screen Off होने के बाद से टाइमर काउंट करेगा 📱💤`);
     }
-    if (statusText) statusText.textContent = `Active (${val}m)`;
-    if (showToastMsg) showToast(`🌙 Sleep Timer set: ${val} ${val === 1 ? 'minute' : 'minutes'}`);
 
-    hindiSleepTimerId = setInterval(() => {
-      const remaining = Math.max(0, Math.round((hindiSleepTimerEndTime - Date.now()) / 1000));
-      const mins = Math.ceil(remaining / 60);
-
-      if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
-      if (statusText) statusText.textContent = mins > 0 ? `Active (${mins}m left)` : "Ending...";
-
-      if (remaining <= 7 && remaining > 0) {
-        fadeHindiVolumeDown(remaining * 1000);
-      }
-
-      if (remaining <= 0) {
-        clearInterval(hindiSleepTimerId);
-        hindiSleepTimerId = null;
-        hindiSleepTimerEndTime = null;
-        hindiSleepTimerMode = 0;
-        if (badge) badge.style.display = "none";
-        if (hindiSleepTimerBtn) {
-          hindiSleepTimerBtn.classList.remove("has-sleep-timer");
-          hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
-        }
-        if (statusText) statusText.textContent = "Off";
-        sleepOptBtns.forEach(btn => {
-          btn.classList.toggle("active", btn.getAttribute("data-val") === "0");
-        });
-        pauseHindiWithFadeOut();
-        showToast("🌙 Sleep Timer ended. Goodnight! 😴");
-      }
-    }, 1000);
+    hindiSleepTimerId = setInterval(checkHindiSleepTimerTick, 1000);
   }
 
   function togglePlayback() {
@@ -1622,6 +1701,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   async function requestWakeLock() {
+    if (hindiSleepTimerMode > 0) return; // Allow screen to turn off naturally when Sleep Timer is armed
     if ("wakeLock" in navigator && !wakeLockSentinel && document.visibilityState === "visible") {
       try {
         wakeLockSentinel = await navigator.wakeLock.request("screen");
@@ -1642,6 +1722,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   document.addEventListener("visibilitychange", () => {
+    if (hindiSleepTimerMode > 0) {
+      checkHindiSleepTimerTick();
+    }
     if (document.visibilityState === "visible") {
       updateLiveProgress();
       if ((activeAudioSource === "mp3" || activeAudioSource === "offline") && offlineAudio) {
@@ -1870,6 +1953,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
   function setPlaybackState(playing) {
     isPlaying = playing;
+    if (typeof checkHindiSleepTimerTick === "function") {
+      checkHindiSleepTimerTick();
+    }
     if (playing) {
       if (playIcon) playIcon.textContent = "❚❚";
       if (miniPlayBtn) miniPlayBtn.textContent = "❚❚";
@@ -1951,6 +2037,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   function updateLiveProgress() {
+    if (typeof checkHindiSleepTimerTick === "function") {
+      checkHindiSleepTimerTick();
+    }
     if (isSeeking) return;
 
     if (activeAudioSource === "youtube") {

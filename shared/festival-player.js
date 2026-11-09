@@ -417,8 +417,9 @@
   let sleepTimerBtn = null;
   let sleepTimerMenu = null;
   let sleepTimerId = null;
-  let sleepTimerEndTime = null;
-  let sleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
+  let sleepTimerMode = 0; // 0: off by default, 15, 30, 45, 60, -1: end of song
+  let sleepTimerRemainingSeconds = 0;
+  let sleepTimerLastActiveTs = null;
 
   function initSleepTimerUI() {
     const parent = document.querySelector(".deck-extra-controls");
@@ -432,8 +433,8 @@
     sleepTimerBtn.id = "playerSleepBtn";
     sleepTimerBtn.className = "btn-speed";
     sleepTimerBtn.type = "button";
-    sleepTimerBtn.title = "Sleep Timer: 30m";
-    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:inline;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;">30m</span>`;
+    sleepTimerBtn.title = "Sleep Timer: Off";
+    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:none;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;"></span>`;
 
     sleepTimerMenu = document.createElement("div");
     sleepTimerMenu.id = "playerSleepMenu";
@@ -491,8 +492,62 @@
       }
     });
 
-    // Default 30 minutes sleep timer active
-    setSleepTimer(30);
+    // Default sleep timer off
+    setSleepTimer(0);
+  }
+
+  function checkFestivalSleepTimerTick() {
+    if (sleepTimerMode <= 0) return;
+    const isScreenOff = document.visibilityState === "hidden";
+    const now = Date.now();
+    const isAudioPlaying = typeof isPlaying !== "undefined" ? isPlaying : true;
+
+    if (isScreenOff && isAudioPlaying) {
+      if (sleepTimerLastActiveTs) {
+        const elapsed = Math.floor((now - sleepTimerLastActiveTs) / 1000);
+        if (elapsed > 0) {
+          sleepTimerRemainingSeconds = Math.max(0, sleepTimerRemainingSeconds - elapsed);
+          sleepTimerLastActiveTs = now;
+        }
+      } else {
+        sleepTimerLastActiveTs = now;
+      }
+
+      if (sleepTimerRemainingSeconds <= 7 && sleepTimerRemainingSeconds > 0) {
+        fadeVolumeDown(sleepTimerRemainingSeconds * 1000);
+      }
+
+      if (sleepTimerRemainingSeconds <= 0) {
+        if (sleepTimerId) {
+          clearInterval(sleepTimerId);
+          sleepTimerId = null;
+        }
+        sleepTimerMode = 0;
+        sleepTimerRemainingSeconds = 0;
+        sleepTimerLastActiveTs = null;
+        const badge = document.getElementById("sleepTimerBadge");
+        if (badge) badge.style.display = "none";
+        if (sleepTimerBtn) {
+          sleepTimerBtn.style.borderColor = "";
+          sleepTimerBtn.title = "Sleep Timer: Off";
+        }
+        pauseWithFadeOut();
+        return;
+      }
+    } else {
+      if (sleepTimerLastActiveTs) {
+        const elapsed = Math.floor((now - sleepTimerLastActiveTs) / 1000);
+        sleepTimerRemainingSeconds = Math.max(0, sleepTimerRemainingSeconds - elapsed);
+        sleepTimerLastActiveTs = null;
+      }
+    }
+
+    const badge = document.getElementById("sleepTimerBadge");
+    if (badge && sleepTimerRemainingSeconds > 0) {
+      const mins = Math.max(1, Math.ceil(sleepTimerRemainingSeconds / 60));
+      badge.textContent = `${mins}m`;
+      badge.style.display = "inline";
+    }
   }
 
   function setSleepTimer(val) {
@@ -501,51 +556,47 @@
       sleepTimerId = null;
     }
     sleepTimerMode = val;
+    sleepTimerLastActiveTs = null;
     const badge = document.getElementById("sleepTimerBadge");
 
     if (val === 0) {
-      sleepTimerEndTime = null;
+      sleepTimerRemainingSeconds = 0;
       if (badge) badge.style.display = "none";
-      if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "";
+      if (sleepTimerBtn) {
+        sleepTimerBtn.style.borderColor = "";
+        sleepTimerBtn.title = "Sleep Timer: Off";
+      }
       return;
     }
 
     if (val === -1) {
+      sleepTimerRemainingSeconds = 0;
       if (badge) {
         badge.textContent = "1 Song";
         badge.style.display = "inline";
       }
-      if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "#38bdf8";
+      if (sleepTimerBtn) {
+        sleepTimerBtn.style.borderColor = "#38bdf8";
+        sleepTimerBtn.title = "Sleep Timer: Stop after current song";
+      }
       return;
     }
 
-    sleepTimerEndTime = Date.now() + (val * 60 * 1000);
+    sleepTimerRemainingSeconds = val * 60;
     if (badge) {
       badge.textContent = `${val}m`;
       badge.style.display = "inline";
     }
-    if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "#38bdf8";
+    if (sleepTimerBtn) {
+      sleepTimerBtn.style.borderColor = "#38bdf8";
+      sleepTimerBtn.title = `Sleep Timer: ${val}m (Starts when screen turns off)`;
+    }
 
-    sleepTimerId = setInterval(() => {
-      const remaining = Math.max(0, Math.round((sleepTimerEndTime - Date.now()) / 1000));
-      const mins = Math.ceil(remaining / 60);
+    if (document.visibilityState === "hidden" && typeof isPlaying !== "undefined" && isPlaying) {
+      sleepTimerLastActiveTs = Date.now();
+    }
 
-      if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
-
-      if (remaining <= 7 && remaining > 0) {
-        fadeVolumeDown(remaining * 1000);
-      }
-
-      if (remaining <= 0) {
-        clearInterval(sleepTimerId);
-        sleepTimerId = null;
-        sleepTimerEndTime = null;
-        sleepTimerMode = 0;
-        if (badge) badge.style.display = "none";
-        if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "";
-        pauseWithFadeOut();
-      }
-    }, 1000);
+    sleepTimerId = setInterval(checkFestivalSleepTimerTick, 1000);
   }
 
   /* =========================================================
