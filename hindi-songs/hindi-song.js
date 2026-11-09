@@ -938,8 +938,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       offlineAudio.playbackRate = activeRate;
 
       offlineAudio.play().then(() => {
-        initEqualizerEngine();
-        if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
         setPlaybackState(true);
         fadeHindiVolumeUp(300);
         preloadNextTrack();
@@ -1186,8 +1184,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         offlineAudio.volume = volNum / 100;
         offlineAudio.playbackRate = activeRate;
         offlineAudio.play().then(() => {
-          initEqualizerEngine();
-          if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
           preloadNextTrack();
           fadeHindiVolumeUp(300);
         }).catch(console.warn);
@@ -1208,309 +1204,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   
-  /* =========================================================
-     AUDIO EQUALIZER & SOUND FX (REAL WEB AUDIO API DSP ENGINE)
-     ========================================================= */
-  let audioCtx = null;
-  let audioSourceNode = null;
-  let bassFilter = null;
-  let midFilter = null;
-  let trebleFilter = null;
-  let analyserNode = null;
-  let eqGainNode = null;
-  let isEqInitialized = false;
-  let visualizerAnimFrame = null;
-
-  const EQ_PRESETS = {
-    flat: { name: "Flat (Normal)", bass: 0, mid: 0, treble: 0, gain: 1.0 },
-    bass: { name: "Bass Boost 🔊", bass: 8, mid: 0, treble: 2, gain: 0.88 },
-    vocal: { name: "Vocal Clarity 🎙️", bass: -2, mid: 6, treble: 3, gain: 0.95 },
-    party: { name: "Party / Club 🔥", bass: 7, mid: 2, treble: 6, gain: 0.85 },
-    treble: { name: "Treble Boost 📻", bass: -1, mid: 2, treble: 7, gain: 0.92 },
-    custom: { name: "Custom 🎛️", bass: 0, mid: 0, treble: 0, gain: 1.0 }
-  };
-
-  let currentEqPreset = "flat";
-  let currentEqValues = { bass: 0, mid: 0, treble: 0, gain: 1.0 };
-
-  function initEqualizerEngine() {
-    if (isEqInitialized) {
-      if (audioCtx && audioCtx.state === "suspended") {
-        audioCtx.resume().catch(() => {});
-      }
-      return;
-    }
-    if (!offlineAudio) return;
-
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) {
-      const statusEl = document.getElementById("eqEngineStatus");
-      if (statusEl) statusEl.textContent = "Web Audio API unsupported in this browser";
-      return;
-    }
-
-    try {
-      audioCtx = new AudioContextClass();
-
-      // Create MediaElementSource ONLY ONCE from offlineAudio
-      audioSourceNode = audioCtx.createMediaElementSource(offlineAudio);
-
-      // 1. Bass filter (Low-shelf 100Hz)
-      bassFilter = audioCtx.createBiquadFilter();
-      bassFilter.type = "lowshelf";
-      bassFilter.frequency.value = 100;
-      bassFilter.gain.value = currentEqValues.bass;
-
-      // 2. Mid / Vocal filter (Peaking 1kHz, Q 1.0)
-      midFilter = audioCtx.createBiquadFilter();
-      midFilter.type = "peaking";
-      midFilter.frequency.value = 1000;
-      midFilter.Q.value = 1.0;
-      midFilter.gain.value = currentEqValues.mid;
-
-      // 3. Treble filter (High-shelf 3.5kHz)
-      trebleFilter = audioCtx.createBiquadFilter();
-      trebleFilter.type = "highshelf";
-      trebleFilter.frequency.value = 3500;
-      trebleFilter.gain.value = currentEqValues.treble;
-
-      // 4. Analyser node for live frequency spectrum
-      analyserNode = audioCtx.createAnalyser();
-      analyserNode.fftSize = 64;
-      analyserNode.smoothingTimeConstant = 0.8;
-
-      // 5. Gain node for headroom
-      eqGainNode = audioCtx.createGain();
-      eqGainNode.gain.value = currentEqValues.gain;
-
-      // Connect: Audio -> Bass -> Mid -> Treble -> Gain -> Analyser -> Speakers
-      audioSourceNode.connect(bassFilter);
-      bassFilter.connect(midFilter);
-      midFilter.connect(trebleFilter);
-      trebleFilter.connect(eqGainNode);
-      eqGainNode.connect(analyserNode);
-      analyserNode.connect(audioCtx.destination);
-
-      isEqInitialized = true;
-
-      // Update status dot in modal
-      const statusEl = document.getElementById("eqEngineStatus");
-      if (statusEl) statusEl.textContent = "Web Audio DSP Engine Active";
-      const statusDot = document.querySelector(".eq-status-dot");
-      if (statusDot) statusDot.classList.add("active");
-
-      // Start live visualizer
-      startLiveEqualizerVisualizer();
-    } catch (err) {
-      console.warn("Web Audio API Equalizer initialization error:", err);
-    }
-  }
-
-  function applyEqualizerGains(bassDb, midDb, trebleDb, masterGain = 1.0) {
-    currentEqValues.bass = bassDb;
-    currentEqValues.mid = midDb;
-    currentEqValues.treble = trebleDb;
-    currentEqValues.gain = masterGain;
-
-    // Update UI elements
-    const valBass = document.getElementById("valBass");
-    const valMid = document.getElementById("valMid");
-    const valTreble = document.getElementById("valTreble");
-    const rangeBass = document.getElementById("rangeBass");
-    const rangeMid = document.getElementById("rangeMid");
-    const rangeTreble = document.getElementById("rangeTreble");
-
-    if (valBass) valBass.textContent = `${bassDb > 0 ? '+' : ''}${bassDb} dB`;
-    if (valMid) valMid.textContent = `${midDb > 0 ? '+' : ''}${midDb} dB`;
-    if (valTreble) valTreble.textContent = `${trebleDb > 0 ? '+' : ''}${trebleDb} dB`;
-
-    if (rangeBass) rangeBass.value = bassDb;
-    if (rangeMid) rangeMid.value = midDb;
-    if (rangeTreble) rangeTreble.value = trebleDb;
-
-    // Save in localStorage
-    try {
-      localStorage.setItem("playx_hindi_eq_values", JSON.stringify(currentEqValues));
-      localStorage.setItem("playx_hindi_eq_preset", currentEqPreset);
-    } catch (e) {}
-
-    // Apply to Web Audio API filters
-    if (!audioCtx || !bassFilter) return;
-    if (audioCtx.state === "suspended") {
-      audioCtx.resume().catch(() => {});
-    }
-
-    const t = audioCtx.currentTime;
-    try {
-      bassFilter.gain.setTargetAtTime(bassDb, t, 0.04);
-      midFilter.gain.setTargetAtTime(midDb, t, 0.04);
-      trebleFilter.gain.setTargetAtTime(trebleDb, t, 0.04);
-      if (eqGainNode) eqGainNode.gain.setTargetAtTime(masterGain, t, 0.04);
-    } catch (e) {}
-  }
-
-  function setEqualizerPreset(presetKey, notifyUser = false) {
-    const preset = EQ_PRESETS[presetKey];
-    if (!preset) return;
-
-    currentEqPreset = presetKey;
-    const chips = document.querySelectorAll(".eq-preset-chip");
-    chips.forEach(c => {
-      c.classList.toggle("active", c.getAttribute("data-preset") === presetKey);
-    });
-
-    applyEqualizerGains(preset.bass, preset.mid, preset.treble, preset.gain);
-    if (notifyUser) {
-      showToast(`🎚️ Sound Preset: ${preset.name}`);
-    }
-  }
-
-  function startLiveEqualizerVisualizer() {
-    if (!analyserNode) return;
-    const bars = document.querySelectorAll("#equalizerBars .eq-bar");
-    if (!bars || bars.length === 0) return;
-
-    // Turn off static CSS animation while Web Audio API is driving live spectrum
-    bars.forEach(b => {
-      b.style.animation = "none";
-    });
-
-    const bufferLength = analyserNode.frequencyBinCount;
-    const dataArray = new Uint8Array(bufferLength);
-
-    function renderEqFrame() {
-      visualizerAnimFrame = requestAnimationFrame(renderEqFrame);
-
-      if (!isPlaying || activeAudioSource !== "mp3") {
-        bars.forEach(b => {
-          b.style.height = "3px";
-        });
-        return;
-      }
-
-      analyserNode.getByteFrequencyData(dataArray);
-
-      // Sample 4 frequency bins: sub-bass, mid-bass, vocal-mid, treble
-      const binIndices = [1, 3, 7, 12];
-      binIndices.forEach((binIdx, barIdx) => {
-        if (bars[barIdx]) {
-          const raw = dataArray[binIdx] || 0;
-          // Scale from 0-255 to 3px-15px
-          const barHeight = Math.max(3, Math.min(15, Math.round((raw / 255) * 15)));
-          bars[barIdx].style.height = `${barHeight}px`;
-        }
-      });
-    }
-
-    renderEqFrame();
-  }
-
-  function openEqualizerModal() {
-    initEqualizerEngine();
-    const eqModal = document.getElementById("eqModal");
-    const eqBackdrop = document.getElementById("eqBackdrop");
-    if (eqModal && eqBackdrop) {
-      eqModal.style.display = "block";
-      eqBackdrop.style.display = "block";
-      requestAnimationFrame(() => {
-        eqModal.classList.add("open");
-        eqBackdrop.classList.add("open");
-      });
-    }
-  }
-
-  function closeEqualizerModal() {
-    const eqModal = document.getElementById("eqModal");
-    const eqBackdrop = document.getElementById("eqBackdrop");
-    if (eqModal && eqBackdrop) {
-      eqModal.classList.remove("open");
-      eqBackdrop.classList.remove("open");
-      setTimeout(() => {
-        if (!eqModal.classList.contains("open")) {
-          eqModal.style.display = "none";
-          eqBackdrop.style.display = "none";
-        }
-      }, 250);
-    }
-  }
-
-  function initEqualizerUI() {
-    const eqBtn = document.getElementById("equalizerBtn");
-    const eqBars = document.getElementById("equalizerBars");
-    const eqBackdrop = document.getElementById("eqBackdrop");
-    const eqCloseBtn = document.getElementById("eqCloseBtn");
-    const eqResetBtn = document.getElementById("eqResetBtn");
-    const presetsChips = document.querySelectorAll(".eq-preset-chip");
-
-    const rangeBass = document.getElementById("rangeBass");
-    const rangeMid = document.getElementById("rangeMid");
-    const rangeTreble = document.getElementById("rangeTreble");
-
-    // Load saved settings
-    try {
-      const savedPreset = localStorage.getItem("playx_hindi_eq_preset") || "flat";
-      const savedValues = JSON.parse(localStorage.getItem("playx_hindi_eq_values") || "null");
-      if (savedValues && typeof savedValues.bass === "number") {
-        currentEqValues = savedValues;
-        currentEqPreset = savedPreset;
-      } else if (EQ_PRESETS[savedPreset]) {
-        currentEqPreset = savedPreset;
-        currentEqValues = { ...EQ_PRESETS[savedPreset] };
-      }
-    } catch (e) {}
-
-    // Synchronize initial UI
-    applyEqualizerGains(currentEqValues.bass, currentEqValues.mid, currentEqValues.treble, currentEqValues.gain);
-    presetsChips.forEach(c => {
-      c.classList.toggle("active", c.getAttribute("data-preset") === currentEqPreset);
-    });
-
-    if (eqBtn) eqBtn.addEventListener("click", openEqualizerModal);
-    if (eqBars) eqBars.addEventListener("click", openEqualizerModal);
-    if (eqCloseBtn) eqCloseBtn.addEventListener("click", closeEqualizerModal);
-    if (eqBackdrop) eqBackdrop.addEventListener("click", closeEqualizerModal);
-
-    // Preset chips click
-    presetsChips.forEach(chip => {
-      chip.addEventListener("click", () => {
-        const presetKey = chip.getAttribute("data-preset");
-        setEqualizerPreset(presetKey, true);
-      });
-    });
-
-    // Interactive sliders
-    const handleSliderInput = () => {
-      initEqualizerEngine();
-      const b = parseInt(rangeBass?.value || 0, 10);
-      const m = parseInt(rangeMid?.value || 0, 10);
-      const tr = parseInt(rangeTreble?.value || 0, 10);
-      currentEqPreset = "custom";
-      presetsChips.forEach(c => {
-        c.classList.toggle("active", c.getAttribute("data-preset") === "custom");
-      });
-      // Slight gain attenuation if bass is high to prevent clipping
-      const safeGain = b > 6 ? 0.88 : (b > 3 ? 0.94 : 1.0);
-      applyEqualizerGains(b, m, tr, safeGain);
-    };
-
-    if (rangeBass) rangeBass.addEventListener("input", handleSliderInput);
-    if (rangeMid) rangeMid.addEventListener("input", handleSliderInput);
-    if (rangeTreble) rangeTreble.addEventListener("input", handleSliderInput);
-
-    if (eqResetBtn) {
-      eqResetBtn.addEventListener("click", () => {
-        setEqualizerPreset("flat", true);
-      });
-    }
-
-    // Auto-init on first playback gesture
-    document.addEventListener("click", () => {
-      if (!isEqInitialized && isPlaying) {
-        initEqualizerEngine();
-      }
-    }, { passive: true, once: true });
-  }
-
   /* =========================================================
      STREAMING RESILIENCE: BUFFERING & STALL INDICATOR ENGINE
      ========================================================= */
@@ -3266,7 +2959,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     if (activeTag === "input" || activeTag === "textarea") {
       if (e.key === "Escape") {
         closePlaylist();
-        closeEqualizerModal();
         closeShortcuts();
       }
       return;
@@ -3298,14 +2990,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     } else if (e.key === "q" || e.key === "Q") {
       e.preventDefault();
       toggleQueue();
-    } else if (e.key === "e" || e.key === "E") {
-      e.preventDefault();
-      const eqModal = document.getElementById("eqModal");
-      if (eqModal && eqModal.classList.contains("open")) {
-        closeEqualizerModal();
-      } else {
-        openEqualizerModal();
-      }
     } else if (e.key === "t" || e.key === "T") {
       e.preventDefault();
       cycleTheme();
@@ -3341,7 +3025,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     } else if (e.key === "Escape") {
       closePlaylist();
       closeQueue();
-      closeEqualizerModal();
       closeShortcuts();
       if (speedDropdown) speedDropdown.classList.remove("open");
       if (themeDropdown) themeDropdown.classList.remove("open");
@@ -3355,7 +3038,6 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   setLanguage("en", false);
   loadHindiSongs();
   initHindiSleepTimerUI();
-  initEqualizerUI();
   initVolumeState();
 
   /* Queue Toggle and Modal Listeners */
