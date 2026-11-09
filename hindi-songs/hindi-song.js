@@ -763,6 +763,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     updateFavoriteUI();
     updateCardPlayingState();
+    updateDynamicIslandUI();
   }
 
   /* =========================================================
@@ -2026,6 +2027,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     updateCardPlayingState();
     updateMediaSessionMetadata();
     updateHindiTabTitle();
+    updateDynamicIslandUI();
   }
 
   function startProgressSync() {
@@ -2096,6 +2098,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
           }
           if (currentTime) currentTime.textContent = formatTime(cur);
           updateMediaSessionPosition(cur, dur);
+          updateDynamicIslandProgress(cur, dur);
         } catch (e) {}
       }
       return;
@@ -2115,6 +2118,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
     if (currentTime) currentTime.textContent = formatTime(cur);
     updateMediaSessionPosition(cur, dur);
+    updateDynamicIslandProgress(cur, dur);
 
     // Save playback position periodically
     try {
@@ -2944,6 +2948,211 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   window.openYouTubeVideoModal = openYouTubeVideoModal;
   window.closeYouTubeVideoModal = closeYouTubeVideoModal;
 
+  /* =========================================================
+     APPLE DYNAMIC ISLAND "NOW PLAYING" ENGINE
+     ========================================================= */
+  let isIslandExpanded = false;
+
+  function initDynamicIsland() {
+    const islandContainer = document.getElementById("dynamicIsland");
+    const islandCompact = document.getElementById("islandCompact");
+    const islandExpanded = document.getElementById("islandExpanded");
+    const collapseBtn = document.getElementById("islandCollapseBtn");
+    const playBtn = document.getElementById("islandPlayBtn");
+    const prevBtn = document.getElementById("islandPrevBtn");
+    const nextBtn = document.getElementById("islandNextBtn");
+    const progressTrack = document.getElementById("islandProgressTrack");
+
+    if (!islandContainer || !islandCompact) return;
+
+    // Toggle expand on compact pill click
+    islandCompact.addEventListener("click", () => {
+      expandDynamicIsland();
+    });
+
+    // Collapse on collapse button
+    if (collapseBtn) {
+      collapseBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        collapseDynamicIsland();
+      });
+    }
+
+    // Collapse when clicking outside the island
+    document.addEventListener("click", (e) => {
+      if (isIslandExpanded && !islandContainer.contains(e.target)) {
+        collapseDynamicIsland();
+      }
+    });
+
+    // Controls
+    if (playBtn) {
+      playBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        togglePlayback();
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        playPrevious();
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        playNext();
+      });
+    }
+
+    // Seek track
+    if (progressTrack) {
+      progressTrack.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const rect = progressTrack.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const pct = Math.max(0, Math.min(1, clickX / rect.width));
+        const dur = getHindiActiveDuration();
+        if (dur > 0) {
+          seekToSeconds(pct * dur);
+        }
+      });
+    }
+
+    updateDynamicIslandUI();
+  }
+
+  function expandDynamicIsland() {
+    const compact = document.getElementById("islandCompact");
+    const expanded = document.getElementById("islandExpanded");
+    if (!compact || !expanded) return;
+
+    isIslandExpanded = true;
+    compact.style.display = "none";
+    expanded.style.display = "flex";
+  }
+
+  function collapseDynamicIsland() {
+    const compact = document.getElementById("islandCompact");
+    const expanded = document.getElementById("islandExpanded");
+    if (!compact || !expanded) return;
+
+    isIslandExpanded = false;
+    expanded.style.display = "none";
+    compact.style.display = "flex";
+  }
+
+  function seekToSeconds(targetSec) {
+    const dur = getHindiActiveDuration();
+    if (dur <= 0) return;
+    targetSec = Math.max(0, Math.min(dur, targetSec));
+
+    if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.seekTo === "function") {
+      try {
+        ytAudioPlayer.seekTo(targetSec, true);
+        if (currentTime) currentTime.textContent = formatTime(targetSec);
+      } catch (e) {}
+      return;
+    }
+
+    if (offlineAudio) {
+      try {
+        if ("fastSeek" in offlineAudio) {
+          offlineAudio.fastSeek(targetSec);
+        } else {
+          offlineAudio.currentTime = targetSec;
+        }
+        if (currentTime) currentTime.textContent = formatTime(targetSec);
+        updateLiveProgress();
+      } catch (e) {}
+    }
+  }
+
+  function updateDynamicIslandUI() {
+    const container = document.getElementById("dynamicIsland");
+    if (!container) return;
+
+    const s = songs[currentSong];
+    if (!s) {
+      container.classList.remove("active");
+      return;
+    }
+
+    // Show Dynamic Island when any song is loaded or playing
+    container.classList.add("active");
+
+    const isEn = currentLang === "en";
+    const title = isEn ? (s.nameEn || s.name) : s.name;
+    const singer = isEn ? (s.singerEn || s.singer) : s.singer;
+
+    // Compact elements
+    const songTitleEl = document.getElementById("islandSongTitle");
+    const songSingerEl = document.getElementById("islandSongSinger");
+    const discEl = document.getElementById("islandArtDisc");
+    const waveformEl = document.getElementById("islandWaveform");
+    const artEmoji = document.getElementById("islandArtEmoji");
+    const artImg = document.getElementById("islandArtImg");
+
+    if (songTitleEl) songTitleEl.textContent = title;
+    if (songSingerEl) songSingerEl.textContent = singer || "Bollywood";
+
+    // Expanded elements
+    const expTitleEl = document.getElementById("islandExpandedTitle");
+    const expSingerEl = document.getElementById("islandExpandedSinger");
+    const playIconEl = document.getElementById("islandPlayIcon");
+    const expArtEmoji = document.getElementById("islandExpandedArt");
+    const expArtImg = document.getElementById("islandExpandedImg");
+
+    if (expTitleEl) expTitleEl.textContent = title;
+    if (expSingerEl) expSingerEl.textContent = singer || "Bollywood";
+    if (playIconEl) playIconEl.textContent = isPlaying ? "❚❚" : "▶";
+
+    // Artwork handling
+    const thumbUrl = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : "");
+    if (thumbUrl) {
+      if (artImg) {
+        artImg.src = thumbUrl;
+        artImg.style.display = "block";
+      }
+      if (artEmoji) artEmoji.style.display = "none";
+      if (expArtImg) {
+        expArtImg.src = thumbUrl;
+        expArtImg.style.display = "block";
+      }
+      if (expArtEmoji) expArtEmoji.style.display = "none";
+    } else {
+      if (artImg) artImg.style.display = "none";
+      if (artEmoji) artEmoji.style.display = "block";
+      if (expArtImg) expArtImg.style.display = "none";
+      if (expArtEmoji) expArtEmoji.style.display = "block";
+    }
+
+    // State: Playing vs Paused
+    if (isPlaying) {
+      if (discEl) discEl.classList.add("spinning");
+      if (waveformEl) waveformEl.classList.add("playing");
+    } else {
+      if (discEl) discEl.classList.remove("spinning");
+      if (waveformEl) waveformEl.classList.remove("playing");
+    }
+  }
+
+  function updateDynamicIslandProgress(curTime = 0, duration = 0) {
+    const fill = document.getElementById("islandProgressFill");
+    const curTimeEl = document.getElementById("islandCurrentTime");
+    const totalTimeEl = document.getElementById("islandTotalTime");
+
+    if (fill && duration > 0) {
+      const pct = Math.min(100, Math.max(0, (curTime / duration) * 100));
+      fill.style.width = pct + "%";
+    }
+
+    if (curTimeEl) curTimeEl.textContent = formatTime(curTime);
+    if (totalTimeEl && duration > 0) totalTimeEl.textContent = formatTime(duration);
+  }
+
   /* Real-Time Card Active State Update (Zero DOM Re-rendering) */
   function updateCardPlayingState() {
     const cards = document.querySelectorAll("#songsCardsGrid .song-card");
@@ -3406,6 +3615,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   loadHindiSongs();
   initHindiSleepTimerUI();
   initVolumeState();
+  initDynamicIsland();
 
   /* Queue Toggle and Modal Listeners */
   if (queueToggleBtn) {

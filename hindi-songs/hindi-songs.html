@@ -46,7 +46,7 @@
     href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Yatra+One&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="hindi-song.css?v=73">
+  <link rel="stylesheet" href="hindi-song.css?v=74">
   <link rel="stylesheet" href="../shared/clear-data.css">
   <link rel="stylesheet" href="../shared/playx-dialog.css">
 
@@ -211,6 +211,81 @@
       </div>
     </div>
   </header>
+
+  <!-- Apple Dynamic Island "Now Playing" Widget -->
+  <aside class="dynamic-island-container" id="dynamicIsland" aria-label="Dynamic Island Media Player">
+    <!-- Compact Pill Mode (Default) -->
+    <div class="dynamic-island-compact" id="islandCompact" title="Tap to expand Now Playing">
+      <div class="island-compact-left">
+        <div class="island-art-disc" id="islandArtDisc">
+          <span class="island-art-emoji" id="islandArtEmoji">🎵</span>
+          <img class="island-art-img" id="islandArtImg" alt="Album Art" style="display: none;">
+        </div>
+      </div>
+      <div class="island-compact-center">
+        <span class="island-song-title" id="islandSongTitle">Select a Song</span>
+        <span class="island-separator">•</span>
+        <span class="island-song-singer" id="islandSongSinger">Bollywood Classics</span>
+      </div>
+      <div class="island-compact-right">
+        <!-- Live Audio Waveform Visualizer -->
+        <div class="island-waveform" id="islandWaveform" aria-hidden="true">
+          <span class="island-wave-bar b1"></span>
+          <span class="island-wave-bar b2"></span>
+          <span class="island-wave-bar b3"></span>
+          <span class="island-wave-bar b4"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expanded View Mode (Opened on Tap / Click) -->
+    <div class="dynamic-island-expanded" id="islandExpanded" style="display: none;">
+      <div class="island-expanded-header">
+        <div class="island-expanded-art-box">
+          <div class="island-expanded-art" id="islandExpandedArt">🎵</div>
+          <img class="island-expanded-img" id="islandExpandedImg" alt="Album Art" style="display: none;">
+        </div>
+        <div class="island-expanded-meta">
+          <span class="island-now-playing-tag">NOW PLAYING</span>
+          <h4 class="island-expanded-title" id="islandExpandedTitle">Song Title</h4>
+          <p class="island-expanded-singer" id="islandExpandedSinger">Singer Name</p>
+        </div>
+        <button class="island-collapse-btn" id="islandCollapseBtn" type="button" title="Collapse" aria-label="Collapse Island">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Live Progress Row -->
+      <div class="island-progress-row">
+        <span class="island-time" id="islandCurrentTime">0:00</span>
+        <div class="island-progress-track" id="islandProgressTrack">
+          <div class="island-progress-fill" id="islandProgressFill" style="width: 0%;"></div>
+        </div>
+        <span class="island-time" id="islandTotalTime">0:00</span>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="island-controls-row">
+        <button class="island-ctrl-btn" id="islandPrevBtn" type="button" title="Previous Song" aria-label="Previous Track">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <polygon points="19 20 9 12 19 4 19 20"></polygon>
+            <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></line>
+          </svg>
+        </button>
+        <button class="island-ctrl-btn island-play-btn" id="islandPlayBtn" type="button" title="Play / Pause" aria-label="Play or Pause">
+          <span id="islandPlayIcon">▶</span>
+        </button>
+        <button class="island-ctrl-btn" id="islandNextBtn" type="button" title="Next Song" aria-label="Next Track">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <polygon points="5 4 15 12 5 20 5 4"></polygon>
+            <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </aside>
 
   <div class="app-container">
     <!-- Hero Header Section -->
@@ -696,7 +771,7 @@
   <script src="../offline-manager.js"></script>
   <script src="../shared/playx-dialog.js"></script>
   <script src="../shared/clear-data.js"></script>
-  <script src="hindi-song.js?v=73"></script>
+  <script src="hindi-song.js?v=74"></script>
 </body>
 
 </html>
