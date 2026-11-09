@@ -46,7 +46,7 @@
     href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Yatra+One&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="hindi-song.css?v=55">
+  <link rel="stylesheet" href="hindi-song.css?v=56">
   <link rel="stylesheet" href="../shared/clear-data.css">
   <link rel="stylesheet" href="../shared/playx-dialog.css">
 
@@ -233,6 +233,89 @@
     <!-- Interactive Glassmorphic Audio Player -->
     <section class="player-wrapper" aria-label="Hindi Bollywood Songs Player">
       <div id="offlinePlayer">
+        <!-- 3-Dots More Options Menu (Top Right, directly above Playlist icon) -->
+        <div class="player-top-actions">
+          <div class="player-more-dropdown" id="playerMoreDropdown">
+            <button class="player-more-btn" id="playerMoreBtn" title="More Options (Sleep Timer)" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More Options">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <circle cx="12" cy="5" r="2.2"></circle>
+                <circle cx="12" cy="12" r="2.2"></circle>
+                <circle cx="12" cy="19" r="2.2"></circle>
+              </svg>
+              <span id="playerMoreSleepBadge" class="more-sleep-badge" style="display: inline-block;">30m</span>
+            </button>
+            <div class="player-more-menu" id="playerMoreMenu" role="menu">
+              <!-- Main Options View -->
+              <div class="menu-view main-view" id="menuMainView">
+                <div class="menu-item-row" id="openSleepTimerSubmenu" role="menuitem" tabindex="0">
+                  <div class="menu-item-left">
+                    <span class="menu-item-icon">⏱️</span>
+                    <div class="menu-item-text">
+                      <span class="menu-item-title">Sleep Timer</span>
+                      <span class="menu-item-status" id="moreMenuSleepStatus">Active (30m)</span>
+                    </div>
+                  </div>
+                  <span class="menu-item-arrow">›</span>
+                </div>
+                <div class="menu-divider"></div>
+                <div class="menu-item-row" id="openShortcutsFromMenu" role="menuitem" tabindex="0">
+                  <div class="menu-item-left">
+                    <span class="menu-item-icon">⌨️</span>
+                    <div class="menu-item-text">
+                      <span class="menu-item-title">Keyboard Shortcuts</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="menu-item-row" id="shareSongFromMenu" role="menuitem" tabindex="0">
+                  <div class="menu-item-left">
+                    <span class="menu-item-icon">🔗</span>
+                    <div class="menu-item-text">
+                      <span class="menu-item-title">Share Song</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Sleep Timer Submenu View -->
+              <div class="menu-view sleep-view" id="menuSleepView" style="display: none;">
+                <div class="submenu-header">
+                  <button type="button" class="submenu-back-btn" id="sleepSubmenuBack" title="Back to menu">‹ Back</button>
+                  <span class="submenu-title">Sleep Timer</span>
+                </div>
+                <div class="sleep-options-list" id="sleepOptionsList">
+                  <button type="button" class="sleep-opt-btn" data-val="0">
+                    <span>Turn Off</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="1">
+                    <span>1 Minute</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="2">
+                    <span>2 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="5">
+                    <span>5 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="10">
+                    <span>10 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="15">
+                    <span>15 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn active" data-val="30">
+                    <span>30 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="60">
+                    <span>60 Minutes</span>
+                  </button>
+                  <button type="button" class="sleep-opt-btn" data-val="-1">
+                    <span>End of Song</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="player-main-layout">
           <!-- Vinyl Album Disc Cover -->
           <div class="offline-cover-wrapper">
@@ -301,21 +384,6 @@
                         <button class="mode-btn" id="playerFavBtn" title="Add to Favorites" type="button" aria-label="Like song">
               🤍
             </button>
-
-            <!-- Sleep Timer Dropdown -->
-            <div class="sleep-timer-wrap" id="hindiSleepWrap">
-              <button class="mode-btn active" id="hindiSleepBtn" title="Sleep Timer: 30m" type="button" aria-label="Sleep Timer" aria-expanded="false">
-                🌙<span id="hindiSleepBadge" class="sleep-badge" style="display: inline-block;">30m</span>
-              </button>
-              <div class="sleep-timer-menu" id="hindiSleepMenu" role="menu">
-                <button type="button" class="sleep-menu-item" data-val="0">Off</button>
-                <button type="button" class="sleep-menu-item" data-val="15">15 Minutes</button>
-                <button type="button" class="sleep-menu-item active" data-val="30">30 Minutes</button>
-                <button type="button" class="sleep-menu-item" data-val="45">45 Minutes</button>
-                <button type="button" class="sleep-menu-item" data-val="60">60 Minutes</button>
-                <button type="button" class="sleep-menu-item" data-val="-1">End of Song</button>
-              </div>
-            </div>
           </div>
 
           <!-- Center cluster: Prev, Play/Pause, Next -->
@@ -641,7 +709,7 @@
   <script src="../offline-manager.js"></script>
   <script src="../shared/playx-dialog.js"></script>
   <script src="../shared/clear-data.js"></script>
-  <script src="hindi-song.js?v=55"></script>
+  <script src="hindi-song.js?v=56"></script>
 </body>
 
 </html>

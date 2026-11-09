@@ -1049,47 +1049,116 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     SMART SLEEP TIMER ENGINE FOR HINDI SONGS
+     SMART SLEEP TIMER & 3-DOTS MORE OPTIONS ENGINE
      ========================================================= */
   let hindiSleepTimerBtn = null;
-  let hindiSleepTimerMenu = null;
   let hindiSleepBadge = null;
   let hindiSleepTimerId = null;
   let hindiSleepTimerEndTime = null;
-  let hindiSleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
+  let hindiSleepTimerMode = 30; // 0: off, 1, 2, 5, 10, 15, 30, 60, -1: end of song (Default: 30m)
 
   function initHindiSleepTimerUI() {
-    const wrap = document.getElementById("hindiSleepWrap");
-    hindiSleepTimerBtn = document.getElementById("hindiSleepBtn");
-    hindiSleepBadge = document.getElementById("hindiSleepBadge");
-    hindiSleepTimerMenu = document.getElementById("hindiSleepMenu");
+    const moreDropdown = document.getElementById("playerMoreDropdown");
+    const moreBtn = document.getElementById("playerMoreBtn");
+    hindiSleepTimerBtn = moreBtn;
+    hindiSleepBadge = document.getElementById("playerMoreSleepBadge");
 
-    if (!hindiSleepTimerBtn || !hindiSleepTimerMenu || !wrap) return;
+    const mainView = document.getElementById("menuMainView");
+    const sleepView = document.getElementById("menuSleepView");
+    const openSleepSubmenu = document.getElementById("openSleepTimerSubmenu");
+    const sleepBackBtn = document.getElementById("sleepSubmenuBack");
+    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
+    const shortcutsMenuBtn = document.getElementById("openShortcutsFromMenu");
+    const shareMenuBtn = document.getElementById("shareSongFromMenu");
 
-    hindiSleepTimerBtn.addEventListener("click", (e) => {
+    if (!moreDropdown || !moreBtn) return;
+
+    // Toggle 3-dots menu
+    moreBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const isOpen = wrap.classList.toggle("open");
-      hindiSleepTimerBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      const isOpen = moreDropdown.classList.toggle("open");
+      moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      if (isOpen) {
+        // Reset to main view whenever opened
+        if (mainView) mainView.style.display = "block";
+        if (sleepView) sleepView.style.display = "none";
+      }
     });
 
-    const menuItems = hindiSleepTimerMenu.querySelectorAll(".sleep-menu-item");
-    menuItems.forEach((item) => {
-      const val = parseInt(item.getAttribute("data-val"), 10);
-      item.classList.toggle("active", val === 30);
-      item.addEventListener("click", (e) => {
+    // Open Sleep Timer Submenu
+    if (openSleepSubmenu) {
+      openSleepSubmenu.addEventListener("click", (e) => {
         e.stopPropagation();
-        const selectedVal = parseInt(item.getAttribute("data-val"), 10);
-        menuItems.forEach(m => m.classList.toggle("active", m === item));
-        setHindiSleepTimer(selectedVal, true);
-        wrap.classList.remove("open");
-        hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
+        if (mainView) mainView.style.display = "none";
+        if (sleepView) sleepView.style.display = "block";
+      });
+    }
+
+    // Back to Main Menu from Submenu
+    if (sleepBackBtn) {
+      sleepBackBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (sleepView) sleepView.style.display = "none";
+        if (mainView) mainView.style.display = "block";
+      });
+    }
+
+    // Sleep Timer duration option click
+    sleepOptBtns.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const val = parseInt(btn.getAttribute("data-val"), 10);
+        setHindiSleepTimer(val, true);
+        moreDropdown.classList.remove("open");
+        moreBtn.setAttribute("aria-expanded", "false");
+        if (sleepView) sleepView.style.display = "none";
+        if (mainView) mainView.style.display = "block";
       });
     });
 
+    // Shortcuts from menu
+    if (shortcutsMenuBtn) {
+      shortcutsMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moreDropdown.classList.remove("open");
+        moreBtn.setAttribute("aria-expanded", "false");
+        toggleShortcuts();
+      });
+    }
+
+    // Share Song from menu
+    if (shareMenuBtn) {
+      shareMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        moreDropdown.classList.remove("open");
+        moreBtn.setAttribute("aria-expanded", "false");
+        const curSong = songs[currentSong];
+        const title = curSong ? (currentLang === "en" ? (curSong.nameEn || curSong.name) : curSong.name) : "PlayX Song";
+        const shareUrl = window.location.href;
+        if (navigator.share) {
+          navigator.share({
+            title: `🎵 Listen to ${title} on PlayX`,
+            text: `Stream ${title} on PlayX Music!`,
+            url: shareUrl
+          }).catch(() => {});
+        } else {
+          try {
+            navigator.clipboard.writeText(shareUrl);
+            showToast("🔗 Link copied to clipboard!");
+          } catch (err) {
+            showToast("🔗 Share: " + shareUrl);
+          }
+        }
+      });
+    }
+
+    // Click outside closes dropdown
     document.addEventListener("click", (e) => {
-      if (wrap && !wrap.contains(e.target)) {
-        wrap.classList.remove("open");
-        hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
+      if (moreDropdown && !moreDropdown.contains(e.target)) {
+        moreDropdown.classList.remove("open");
+        moreBtn.setAttribute("aria-expanded", "false");
+        if (sleepView) sleepView.style.display = "none";
+        if (mainView) mainView.style.display = "block";
       }
     });
 
@@ -1103,28 +1172,38 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       hindiSleepTimerId = null;
     }
     hindiSleepTimerMode = val;
-    const badge = document.getElementById("hindiSleepBadge") || hindiSleepBadge;
+    const badge = document.getElementById("playerMoreSleepBadge") || hindiSleepBadge;
+    const statusText = document.getElementById("moreMenuSleepStatus");
+    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
+
+    // Update active highlight on option buttons
+    sleepOptBtns.forEach(btn => {
+      const btnVal = parseInt(btn.getAttribute("data-val"), 10);
+      btn.classList.toggle("active", btnVal === val);
+    });
 
     if (val === 0) {
       hindiSleepTimerEndTime = null;
       if (badge) badge.style.display = "none";
       if (hindiSleepTimerBtn) {
-        hindiSleepTimerBtn.classList.remove("active");
-        hindiSleepTimerBtn.title = "Sleep Timer (Off)";
+        hindiSleepTimerBtn.classList.remove("has-sleep-timer");
+        hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
       }
+      if (statusText) statusText.textContent = "Off";
       if (showToastMsg) showToast("🌙 Sleep Timer turned off");
       return;
     }
 
     if (val === -1) {
       if (badge) {
-        badge.textContent = "1 Song";
+        badge.textContent = "1s";
         badge.style.display = "inline-block";
       }
       if (hindiSleepTimerBtn) {
-        hindiSleepTimerBtn.classList.add("active");
+        hindiSleepTimerBtn.classList.add("has-sleep-timer");
         hindiSleepTimerBtn.title = "Sleep Timer: Stop after current song";
       }
+      if (statusText) statusText.textContent = "End of Song";
       if (showToastMsg) showToast("🌙 Sleep Timer set: Stop after current song");
       return;
     }
@@ -1135,16 +1214,18 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       badge.style.display = "inline-block";
     }
     if (hindiSleepTimerBtn) {
-      hindiSleepTimerBtn.classList.add("active");
+      hindiSleepTimerBtn.classList.add("has-sleep-timer");
       hindiSleepTimerBtn.title = `Sleep Timer: ${val}m remaining`;
     }
-    if (showToastMsg) showToast(`🌙 Sleep Timer set: ${val} minutes`);
+    if (statusText) statusText.textContent = `Active (${val}m)`;
+    if (showToastMsg) showToast(`🌙 Sleep Timer set: ${val} ${val === 1 ? 'minute' : 'minutes'}`);
 
     hindiSleepTimerId = setInterval(() => {
       const remaining = Math.max(0, Math.round((hindiSleepTimerEndTime - Date.now()) / 1000));
       const mins = Math.ceil(remaining / 60);
 
       if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
+      if (statusText) statusText.textContent = mins > 0 ? `Active (${mins}m left)` : "Ending...";
 
       if (remaining <= 7 && remaining > 0) {
         fadeHindiVolumeDown(remaining * 1000);
@@ -1157,9 +1238,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         hindiSleepTimerMode = 0;
         if (badge) badge.style.display = "none";
         if (hindiSleepTimerBtn) {
-          hindiSleepTimerBtn.classList.remove("active");
-          hindiSleepTimerBtn.title = "Sleep Timer (Off)";
+          hindiSleepTimerBtn.classList.remove("has-sleep-timer");
+          hindiSleepTimerBtn.title = "More Options (Sleep Timer: Off)";
         }
+        if (statusText) statusText.textContent = "Off";
+        sleepOptBtns.forEach(btn => {
+          btn.classList.toggle("active", btn.getAttribute("data-val") === "0");
+        });
         pauseHindiWithFadeOut();
         showToast("🌙 Sleep Timer ended. Goodnight! 😴");
       }
@@ -3026,6 +3111,8 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       closePlaylist();
       closeQueue();
       closeShortcuts();
+      const moreDropdown = document.getElementById("playerMoreDropdown");
+      if (moreDropdown) moreDropdown.classList.remove("open");
       if (speedDropdown) speedDropdown.classList.remove("open");
       if (themeDropdown) themeDropdown.classList.remove("open");
       if (shareDropdown) shareDropdown.classList.remove("open");
