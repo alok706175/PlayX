@@ -417,8 +417,9 @@
   let sleepTimerBtn = null;
   let sleepTimerMenu = null;
   let sleepTimerId = null;
-  let sleepTimerEndTime = null;
-  let sleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
+  let sleepTimerMode = 0; // 0: off by default, 15, 30, 45, 60, -1: end of song
+  let sleepTimerRemainingSeconds = 0;
+  let sleepTimerLastActiveTs = null;
 
   function initSleepTimerUI() {
     const parent = document.querySelector(".deck-extra-controls");
@@ -432,8 +433,8 @@
     sleepTimerBtn.id = "playerSleepBtn";
     sleepTimerBtn.className = "btn-speed";
     sleepTimerBtn.type = "button";
-    sleepTimerBtn.title = "Sleep Timer: 30m";
-    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:inline;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;">30m</span>`;
+    sleepTimerBtn.title = "Sleep Timer: Off";
+    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:none;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;"></span>`;
 
     sleepTimerMenu = document.createElement("div");
     sleepTimerMenu.id = "playerSleepMenu";
@@ -491,8 +492,62 @@
       }
     });
 
-    // Default 30 minutes sleep timer active
-    setSleepTimer(30);
+    // Default sleep timer off
+    setSleepTimer(0);
+  }
+
+  function checkFestivalSleepTimerTick() {
+    if (sleepTimerMode <= 0) return;
+    const isScreenOff = document.visibilityState === "hidden";
+    const now = Date.now();
+    const isAudioPlaying = typeof isPlaying !== "undefined" ? isPlaying : true;
+
+    if (isScreenOff && isAudioPlaying) {
+      if (sleepTimerLastActiveTs) {
+        const elapsed = Math.floor((now - sleepTimerLastActiveTs) / 1000);
+        if (elapsed > 0) {
+          sleepTimerRemainingSeconds = Math.max(0, sleepTimerRemainingSeconds - elapsed);
+          sleepTimerLastActiveTs = now;
+        }
+      } else {
+        sleepTimerLastActiveTs = now;
+      }
+
+      if (sleepTimerRemainingSeconds <= 7 && sleepTimerRemainingSeconds > 0) {
+        fadeVolumeDown(sleepTimerRemainingSeconds * 1000);
+      }
+
+      if (sleepTimerRemainingSeconds <= 0) {
+        if (sleepTimerId) {
+          clearInterval(sleepTimerId);
+          sleepTimerId = null;
+        }
+        sleepTimerMode = 0;
+        sleepTimerRemainingSeconds = 0;
+        sleepTimerLastActiveTs = null;
+        const badge = document.getElementById("sleepTimerBadge");
+        if (badge) badge.style.display = "none";
+        if (sleepTimerBtn) {
+          sleepTimerBtn.style.borderColor = "";
+          sleepTimerBtn.title = "Sleep Timer: Off";
+        }
+        pauseWithFadeOut();
+        return;
+      }
+    } else {
+      if (sleepTimerLastActiveTs) {
+        const elapsed = Math.floor((now - sleepTimerLastActiveTs) / 1000);
+        sleepTimerRemainingSeconds = Math.max(0, sleepTimerRemainingSeconds - elapsed);
+        sleepTimerLastActiveTs = null;
+      }
+    }
+
+    const badge = document.getElementById("sleepTimerBadge");
+    if (badge && sleepTimerRemainingSeconds > 0) {
+      const mins = Math.max(1, Math.ceil(sleepTimerRemainingSeconds / 60));
+      badge.textContent = `${mins}m`;
+      badge.style.display = "inline";
+    }
   }
 
   function setSleepTimer(val) {
@@ -501,51 +556,47 @@
       sleepTimerId = null;
     }
     sleepTimerMode = val;
+    sleepTimerLastActiveTs = null;
     const badge = document.getElementById("sleepTimerBadge");
 
     if (val === 0) {
-      sleepTimerEndTime = null;
+      sleepTimerRemainingSeconds = 0;
       if (badge) badge.style.display = "none";
-      if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "";
+      if (sleepTimerBtn) {
+        sleepTimerBtn.style.borderColor = "";
+        sleepTimerBtn.title = "Sleep Timer: Off";
+      }
       return;
     }
 
     if (val === -1) {
+      sleepTimerRemainingSeconds = 0;
       if (badge) {
         badge.textContent = "1 Song";
         badge.style.display = "inline";
       }
-      if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "#38bdf8";
+      if (sleepTimerBtn) {
+        sleepTimerBtn.style.borderColor = "#38bdf8";
+        sleepTimerBtn.title = "Sleep Timer: Stop after current song";
+      }
       return;
     }
 
-    sleepTimerEndTime = Date.now() + (val * 60 * 1000);
+    sleepTimerRemainingSeconds = val * 60;
     if (badge) {
       badge.textContent = `${val}m`;
       badge.style.display = "inline";
     }
-    if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "#38bdf8";
+    if (sleepTimerBtn) {
+      sleepTimerBtn.style.borderColor = "#38bdf8";
+      sleepTimerBtn.title = `Sleep Timer: ${val}m (Starts when screen turns off)`;
+    }
 
-    sleepTimerId = setInterval(() => {
-      const remaining = Math.max(0, Math.round((sleepTimerEndTime - Date.now()) / 1000));
-      const mins = Math.ceil(remaining / 60);
+    if (document.visibilityState === "hidden" && typeof isPlaying !== "undefined" && isPlaying) {
+      sleepTimerLastActiveTs = Date.now();
+    }
 
-      if (badge) badge.textContent = mins > 0 ? `${mins}m` : "0m";
-
-      if (remaining <= 7 && remaining > 0) {
-        fadeVolumeDown(remaining * 1000);
-      }
-
-      if (remaining <= 0) {
-        clearInterval(sleepTimerId);
-        sleepTimerId = null;
-        sleepTimerEndTime = null;
-        sleepTimerMode = 0;
-        if (badge) badge.style.display = "none";
-        if (sleepTimerBtn) sleepTimerBtn.style.borderColor = "";
-        pauseWithFadeOut();
-      }
-    }, 1000);
+    sleepTimerId = setInterval(checkFestivalSleepTimerTick, 1000);
   }
 
   /* =========================================================
@@ -1082,11 +1133,21 @@
           <div class="song-singer-text">${song.singerEn || song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
         </div>
         <div class="song-actions-col">
+          ${rowVid ? `<button class="btn-row-video" type="button" title="Watch Video">Play Video</button>` : ""}
           <button class="fav-icon-btn ${isFav ? "liked" : ""}" data-id="${song.id}" type="button" title="Favorites">${isFav ? "❤️" : "🤍"}</button>
           <span class="song-dur-text">${song.duration || "4:00"}</span>
           <button class="row-play-btn" type="button" title="Play">▶</button>
         </div>
       `;
+
+      // Play Video button click
+      const videoBtn = row.querySelector(".btn-row-video");
+      if (videoBtn) {
+        videoBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          openYouTubeVideoModal(song);
+        });
+      }
 
       row.querySelector(".row-play-btn").addEventListener("click", (e) => {
         e.stopPropagation();
@@ -1116,18 +1177,124 @@
     });
   }
 
+  /* =========================================================
+     YOUTUBE VIDEO EMBED MODAL
+     ========================================================= */
+  function openYouTubeVideoModal(song) {
+    if (!song) return;
+    const videoId = song.videoId || song.youtubeId || (song.embedUrl ? song.embedUrl.split("/").pop().split("?")[0] : "");
+    if (!videoId) {
+      alert("Video not available for this song");
+      return;
+    }
+
+    // Pause audio playback if currently playing
+    if (isPlaying && ytPlayer && ytPlayer.pauseVideo) {
+      ytPlayer.pauseVideo();
+      isPlaying = false;
+      updatePlayBtn();
+      setVinylSpinning(false);
+    }
+
+    let modal = document.getElementById("playxVideoModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.className = "playx-video-modal-overlay";
+      modal.id = "playxVideoModal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", "YouTube Video Player");
+      modal.innerHTML = `
+        <div class="playx-video-modal-card">
+          <div class="playx-video-modal-header">
+            <div class="playx-video-modal-title-box">
+              <span class="video-modal-badge">🎬 Video View</span>
+              <span class="video-modal-song-title" id="videoModalSongTitle"></span>
+            </div>
+            <button class="btn-video-modal-close" id="closeVideoModalBtn" type="button" aria-label="Close video player">✕</button>
+          </div>
+          <div class="playx-video-modal-body" id="videoModalBody"></div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeYouTubeVideoModal();
+        }
+      });
+
+      const closeBtn = modal.querySelector("#closeVideoModalBtn");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closeYouTubeVideoModal);
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+          closeYouTubeVideoModal();
+        }
+      });
+    }
+
+    const titleEl = modal.querySelector("#videoModalSongTitle");
+    if (titleEl) {
+      titleEl.textContent = `${song.nameEn || song.name} • ${song.singerEn || song.singer}`;
+    }
+
+    const bodyEl = modal.querySelector("#videoModalBody");
+    if (bodyEl) {
+      bodyEl.innerHTML = `
+        <iframe 
+          src="https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&modestbranding=1" 
+          title="${song.name || "YouTube Video"}" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>
+      `;
+    }
+
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeYouTubeVideoModal() {
+    const modal = document.getElementById("playxVideoModal");
+    if (!modal) return;
+    modal.classList.remove("active");
+    const bodyEl = modal.querySelector("#videoModalBody");
+    if (bodyEl) {
+      bodyEl.innerHTML = "";
+    }
+    document.body.style.overflow = "";
+  }
+
+  window.openYouTubeVideoModal = openYouTubeVideoModal;
+  window.closeYouTubeVideoModal = closeYouTubeVideoModal;
+
   function initClock() {
     const timeEl = document.getElementById("currentTime");
-    if (!timeEl) return;
+    const dateEl = document.getElementById("currentDate");
+    if (!timeEl && !dateEl) return;
+
     function tick() {
       const now = new Date();
-      timeEl.textContent = now.toLocaleTimeString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true
-      });
+      if (timeEl) {
+        timeEl.textContent = now.toLocaleTimeString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true
+        });
+      }
+      if (dateEl) {
+        dateEl.textContent = now.toLocaleDateString("en-IN", {
+          timeZone: "Asia/Kolkata",
+          weekday: "short",
+          day: "numeric",
+          month: "short"
+        });
+      }
     }
     tick();
     setInterval(tick, 1000);
@@ -1135,9 +1302,11 @@
 
   function initTheme() {
     const themeBtn = document.getElementById("themeToggleBtn");
+    const themeDropdown = document.getElementById("themeDropdown");
+    const themeDropdownMenu = document.getElementById("themeDropdownMenu");
     const themes = ["midnight", "warm-amber", "twilight", "emerald"];
     
-    // Check saved theme from playx_theme or fest_theme
+    // Check saved theme
     let saved = localStorage.getItem("playx_theme");
     if (saved === "light") saved = "warm-amber";
     else if (saved === "dark") saved = "midnight";
@@ -1145,16 +1314,93 @@
       saved = localStorage.getItem("fest_theme");
     }
     let curr = (saved && themes.includes(saved)) ? saved : "midnight";
-    document.documentElement.setAttribute("data-theme", curr);
+    applyTheme(curr);
 
-    if (!themeBtn) return;
-    themeBtn.addEventListener("click", () => {
-      const nextIdx = (themes.indexOf(curr) + 1) % themes.length;
-      curr = themes[nextIdx];
-      document.documentElement.setAttribute("data-theme", curr);
-      localStorage.setItem("fest_theme", curr);
-      localStorage.setItem("playx_theme", curr === "warm-amber" ? "light" : "dark");
+    function applyTheme(name) {
+      curr = name;
+      document.documentElement.setAttribute("data-theme", name);
+      localStorage.setItem("fest_theme", name);
+      localStorage.setItem("playx_theme", name === "warm-amber" ? "light" : "dark");
+
+      if (themeDropdownMenu) {
+        themeDropdownMenu.querySelectorAll(".theme-menu-item").forEach(item => {
+          item.classList.toggle("active", item.getAttribute("data-set-theme") === name);
+        });
+      }
+    }
+
+    if (themeDropdownMenu) {
+      themeDropdownMenu.querySelectorAll(".theme-menu-item").forEach(item => {
+        item.addEventListener("click", () => {
+          const themeName = item.getAttribute("data-set-theme");
+          if (themeName) {
+            applyTheme(themeName);
+            themeDropdownMenu.style.display = "none";
+          }
+        });
+      });
+    }
+
+    if (themeBtn) {
+      themeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (themeDropdownMenu) {
+          const isShown = themeDropdownMenu.style.display === "block";
+          themeDropdownMenu.style.display = isShown ? "none" : "block";
+        } else {
+          // Cycle themes if no dropdown menu present
+          const nextIdx = (themes.indexOf(curr) + 1) % themes.length;
+          applyTheme(themes[nextIdx]);
+        }
+      });
+    }
+
+    // Share Dropdown & More Menu Dropdown handlers
+    const shareBtn = document.getElementById("shareMainBtn");
+    const shareMenu = document.getElementById("shareDropdownMenu");
+    if (shareBtn && shareMenu) {
+      shareBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = shareMenu.style.display === "block";
+        shareMenu.style.display = isOpen ? "none" : "block";
+      });
+    }
+
+    const moreBtn = document.querySelector(".btn-nav-more");
+    const moreMenu = document.querySelector(".nav-more-dropdown");
+    if (moreBtn && moreMenu) {
+      moreBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = moreMenu.style.display === "block";
+        moreMenu.style.display = isOpen ? "none" : "block";
+      });
+    }
+
+    // Global outside click closer
+    document.addEventListener("click", () => {
+      if (themeDropdownMenu) themeDropdownMenu.style.display = "none";
+      if (shareMenu) shareMenu.style.display = "none";
+      if (moreMenu) moreMenu.style.display = "none";
     });
+
+    // Share buttons
+    const whatsappBtn = document.getElementById("whatsappShareBtn");
+    if (whatsappBtn) {
+      whatsappBtn.addEventListener("click", () => {
+        const text = encodeURIComponent(`Listen to hit ${festivalTitle} on PlayX: ${window.location.href}`);
+        window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank");
+      });
+    }
+
+    const copyLinkBtn = document.getElementById("copyLinkBtn");
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener("click", () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(window.location.href);
+          alert("Link copied to clipboard! ✓");
+        }
+      });
+    }
   }
 
   // Register High-Performance Service Worker for instant offline app shell caching

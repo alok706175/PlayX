@@ -8,19 +8,24 @@
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/saawan-songs/saawan-songs.html">
   <link rel="stylesheet" href="../shared/festival-player.css">
   <link rel="stylesheet" href="../shared/clear-data.css">
-  <link rel="icon" type="image/svg+xml" href="../favicon.io/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="images/trishul_damru.svg">
   <link rel="manifest" href="../site.webmanifest">
   <meta name="description" content="Listen to sacred Saawan Monday, Kanwar Yatra, and Lord Shiva Bhajans in 320 Kbps HD audio on PlayX.">
+  <meta name="theme-color" content="#06111a">
   <link rel="stylesheet" href="../shared/playx-dialog.css">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700&family=Yatra+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;600;700&family=Outfit:wght@400;600;700;800&family=Yatra+One&display=swap" rel="stylesheet">
   <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 
-<body data-songs-file="saawan_songs.json" data-festival-title="Saawan Songs">
-  <!-- Navigation Header -->
+<body data-songs-file="saawan_songs.json" data-festival-title="Saawan Songs" data-category="saawan">
+  <!-- Ambient Deep Eye-Care Background Layer -->
+  <div class="bg-layer" id="bgLayer"></div>
+  <div class="bg-overlay"></div>
+
+  <!-- Top Navigation Floating Glass Header -->
   <header class="player-navbar">
     <div class="container navbar-inner">
       <a href="../home.html" class="btn-back-home" title="Go Home" aria-label="Go Home">
@@ -32,15 +37,64 @@
       </a>
 
       <div class="page-title-badge">
-        <span>🔱</span>
+        <img src="images/trishul_damru.svg" alt="Saawan Mahadev Trishul">
         <span>Saawan Shiv Bhajans & Bol Bam</span>
       </div>
 
       <div class="nav-right-actions">
-        <div class="time-box">
+        <!-- Live IST Clock -->
+        <div class="time-box" title="Indian Standard Time (IST)">
+          <span class="live-dot" aria-hidden="true"></span>
           <span id="currentTime">--:-- --</span>
         </div>
-        <button class="btn-theme" id="themeToggleBtn" type="button" title="Theme">🎨 Theme</button>
+
+        <!-- Eye-Care Theme Selector Dropdown -->
+        <div class="theme-dropdown" id="themeDropdown">
+          <button class="btn-theme-toggle" id="themeToggleBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Theme & Eye Comfort">
+            <span>🎨</span>
+            <span>Theme</span>
+          </button>
+          <div class="theme-dropdown-menu" id="themeDropdownMenu" role="menu">
+            <button class="theme-menu-item active" type="button" data-set-theme="midnight" role="menuitem">
+              <span class="theme-color-preview" style="background: #0a0e17;"></span>
+              <span>🌙 Midnight Comfort</span>
+            </button>
+            <button class="theme-menu-item" type="button" data-set-theme="warm-amber" role="menuitem">
+              <span class="theme-color-preview" style="background: #f59e0b;"></span>
+              <span>☕ Warm Amber (Night)</span>
+            </button>
+            <button class="theme-menu-item" type="button" data-set-theme="twilight" role="menuitem">
+              <span class="theme-color-preview" style="background: #a855f7;"></span>
+              <span>🌌 Twilight Aurora</span>
+            </button>
+            <button class="theme-menu-item" type="button" data-set-theme="emerald" role="menuitem">
+              <span class="theme-color-preview" style="background: #10b981;"></span>
+              <span>🌿 Emerald Oasis</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Share Dropdown -->
+        <div class="share-dropdown" id="shareDropdown">
+          <button class="btn-share-main" id="shareMainBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Share" aria-label="Share">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Share</span>
+          </button>
+          <div class="share-dropdown-menu" id="shareDropdownMenu" role="menu">
+            <button class="share-menu-item" id="whatsappShareBtn" type="button" role="menuitem">
+              <span>💬</span> <span>WhatsApp</span>
+            </button>
+            <button class="share-menu-item" id="copyLinkBtn" type="button" role="menuitem">
+              <span>🔗</span> <span>Copy Link</span>
+            </button>
+          </div>
+        </div>
 
         <!-- More Options (3 Vertical Dots) -->
         <div class="nav-more-menu-wrap">
@@ -67,13 +121,30 @@
     </div>
   </header>
 
+  <!-- Hero Header Section -->
+  <section class="hero-section">
+    <div class="hero-badge">🔱 SAAWAN SHIV BHAJANS, KANWAR & BOL BAM</div>
+    <h1 class="main-title">
+      <span class="main-title-gradient">Saawan Shiv Bhajans</span> & Bol Bam
+    </h1>
+    <div class="tagline-wrapper">
+      <p class="tagline">★ Har Har Mahadev • Bol Bam Bhajans • Shiv Tandav & Somwar Vrat ★</p>
+    </div>
+    <div class="hero-features-bar">
+      <span class="hero-feat-pill">🎧 320 Kbps HD Audio</span>
+      <span class="hero-feat-pill eye-care-pill">👁️ Eye Comfort Active</span>
+      <span class="hero-feat-pill">⚡ Fast Cloud Streaming</span>
+      <span class="hero-feat-pill">❤️ Favorites Saved</span>
+    </div>
+  </section>
+
   <!-- Main Player Layout -->
   <main class="container">
     <div class="player-page-grid">
       <!-- Left Audio Deck -->
       <section class="audio-deck-card">
         <!-- View Mode Switcher -->
-        <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch to YouTube Video View">
+        <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch View">
           <span>🎬</span> <span>Video View</span>
         </button>
 
@@ -82,10 +153,10 @@
           <div id="ytFestivalPlayer"></div>
         </div>
 
-        <!-- Vinyl Deck Record -->
+        <!-- Vinyl Record Disc -->
         <div class="vinyl-deck" id="vinylDisc">
           <div class="vinyl-center-label">
-            <span style="font-size: 2rem;">🔱</span>
+            <img src="images/trishul_damru.svg" alt="Saawan Mahadev Trishul">
           </div>
         </div>
 
@@ -122,10 +193,10 @@
         </div>
       </section>
 
-      <!-- Right Playlist Card -->
+      <!-- Right Song Playlist Deck -->
       <section class="playlist-card">
         <div class="playlist-header">
-          <h3>Saawan Shiv Bhajan Collection (<span id="playlistSongCount">0</span>)</h3>
+          <h3>Saawan Shiv Bhajans (<span id="playlistSongCount">0</span>)</h3>
           <div class="playlist-search-box">
             <input type="text" id="playlistSearchInput" placeholder="Search bhajans or singers...">
           </div>
@@ -137,6 +208,12 @@
       </section>
     </div>
   </main>
+
+  <!-- Eye-Care Protected Footer -->
+  <footer class="festival-footer">
+    <p>Made with ❤️ by <strong>Alok</strong> • Eye-Care Protected</p>
+    <p style="margin-top: 4px; font-size: 0.8rem; opacity: 0.7;">© 2026 PlayX Saawan Songs Collection</p>
+  </footer>
 
   <script src="../offline-manager.js"></script>
   <script src="../shared/playx-dialog.js"></script>
