@@ -3265,24 +3265,32 @@
 
 /* =========================================================
    APPLE DYNAMIC ISLAND "NOW PLAYING" (PIXEL-PERFECT MATCH)
+   Applies only to Mobile Phones, Tablets & iPads (Hidden on Laptop/PC)
    ========================================================= */
 .dynamic-island-container {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%) translateY(-28px) scale(0.9);
-  z-index: 10000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Outfit", "Segoe UI", sans-serif;
+  display: none !important;
 }
 
-.dynamic-island-container.active {
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) translateY(0) scale(1);
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  .dynamic-island-container {
+    display: block !important;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-28px) scale(0.9);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Outfit", "Segoe UI", sans-serif;
+  }
+
+  .dynamic-island-container.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
 }
 
 /* Image 2: Compact Pill Mode */
