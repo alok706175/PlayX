@@ -1175,8 +1175,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const moreBtn = document.getElementById("playerMoreBtn");
     hindiSleepTimerBtn = moreBtn;
     hindiSleepBadge = document.getElementById("playerMoreSleepBadge");
-    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
+
+    const mainView = document.getElementById("menuMainView");
+    const sleepView = document.getElementById("menuSleepView");
+    const openSleepSubmenu = document.getElementById("openSleepTimerSubmenu");
+    const sleepBackBtn = document.getElementById("sleepSubmenuBack");
     const sleepSubmenuClose = document.getElementById("sleepSubmenuClose");
+    const sleepOptBtns = document.querySelectorAll("#sleepOptionsList .sleep-opt-btn");
+    const shareMenuBtn = document.getElementById("shareSongFromMenu");
 
     if (!moreDropdown || !moreBtn) return;
 
@@ -1186,23 +1192,74 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       if (moreDropdown) moreDropdown.classList.remove("open");
       if (moreBtn) moreBtn.setAttribute("aria-expanded", "false");
       if (moreMenuEl) moreMenuEl.style.display = "none";
+      if (sleepView) sleepView.style.display = "none";
+      if (mainView) mainView.style.display = "block";
     }
 
-    // Toggle 3-dots menu directly opens the Sleep Timer popup
+    // Toggle 3-dots menu
     moreBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       const isOpen = moreDropdown.classList.toggle("open");
       moreBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
       if (moreMenuEl) moreMenuEl.style.display = isOpen ? "block" : "none";
       if (isOpen) {
+        // Always reset to show only the 2 options: Sleep Timer and Share Song
+        if (mainView) mainView.style.display = "block";
+        if (sleepView) sleepView.style.display = "none";
         updateHindiSleepTimerDisplay();
       }
     });
+
+    // Option 1: Open Sleep Timer Submenu
+    if (openSleepSubmenu) {
+      openSleepSubmenu.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (mainView) mainView.style.display = "none";
+        if (sleepView) sleepView.style.display = "block";
+        updateHindiSleepTimerDisplay();
+      });
+    }
+
+    // Back to the 2 options from Sleep Timer Submenu
+    if (sleepBackBtn) {
+      sleepBackBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (sleepView) sleepView.style.display = "none";
+        if (mainView) mainView.style.display = "block";
+        updateHindiSleepTimerDisplay();
+      });
+    }
 
     if (sleepSubmenuClose) {
       sleepSubmenuClose.addEventListener("click", (e) => {
         e.stopPropagation();
         closeMoreMenu();
+      });
+    }
+
+    // Option 2: Share Song
+    if (shareMenuBtn) {
+      shareMenuBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeMoreMenu();
+        const curSong = songs[currentSong];
+        const title = curSong ? (currentLang === "en" ? (curSong.nameEn || curSong.name) : curSong.name) : "PlayX Song";
+        const singer = curSong?.singer ? ` - ${curSong.singer}` : "";
+        const shareUrl = window.location.href;
+        if (navigator.share) {
+          navigator.share({
+            title: `🎵 ${title}${singer} on PlayX`,
+            text: `Listen to ${title}${singer} on PlayX Hindi Songs!`,
+            url: shareUrl
+          }).catch(() => {});
+        } else {
+          try {
+            navigator.clipboard.writeText(shareUrl);
+            showToast("🔗 Link copied to clipboard!");
+          } catch (err) {
+            showToast("🔗 Share: " + shareUrl);
+          }
+        }
       });
     }
 
