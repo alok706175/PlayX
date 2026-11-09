@@ -2411,36 +2411,33 @@
   height: 30px;
 }
 
-/* YouTube Online Video Button (Replaces Old Stream Badge) */
+/* YouTube Online Video Button (Matches Play Button Styling) */
 .song-card-video-btn,
 .song-card-stream-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 32px;
-  padding: 0 12px;
-  border-radius: 16px;
-  background: rgba(239, 68, 68, 0.14);
-  border: 1px solid rgba(239, 68, 68, 0.38);
-  color: #ff5252;
-  font-size: 11.5px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
   font-family: inherit;
   flex-shrink: 0;
-  letter-spacing: 0.25px;
   user-select: none;
 }
 
 .song-card-video-btn:hover,
 .song-card-stream-badge:hover {
-  background: rgba(239, 68, 68, 0.28);
-  border-color: rgba(239, 68, 68, 0.7);
+  background: var(--bg-surface-elevated, rgba(255, 255, 255, 0.12));
   color: #ffffff;
-  transform: translateY(-1px) scale(1.04);
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  border-color: var(--border-medium, rgba(255, 255, 255, 0.25));
+  transform: translateY(-1px);
 }
 
 .song-card-video-btn:active,
