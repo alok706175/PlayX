@@ -1055,7 +1055,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let hindiSleepBadge = null;
   let hindiSleepTimerId = null;
   let hindiSleepTimerEndTime = null;
-  let hindiSleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
+  let hindiSleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
 
   function initHindiSleepTimerUI() {
     const wrap = document.getElementById("hindiSleepWrap");
@@ -1073,11 +1073,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     const menuItems = hindiSleepTimerMenu.querySelectorAll(".sleep-menu-item");
     menuItems.forEach((item) => {
+      const val = parseInt(item.getAttribute("data-val"), 10);
+      item.classList.toggle("active", val === 30);
       item.addEventListener("click", (e) => {
         e.stopPropagation();
-        const val = parseInt(item.getAttribute("data-val"), 10);
+        const selectedVal = parseInt(item.getAttribute("data-val"), 10);
         menuItems.forEach(m => m.classList.toggle("active", m === item));
-        setHindiSleepTimer(val);
+        setHindiSleepTimer(selectedVal, true);
         wrap.classList.remove("open");
         hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
       });
@@ -1089,9 +1091,12 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         hindiSleepTimerBtn.setAttribute("aria-expanded", "false");
       }
     });
+
+    // Default 30 minutes sleep timer active
+    setHindiSleepTimer(30, false);
   }
 
-  function setHindiSleepTimer(val) {
+  function setHindiSleepTimer(val, showToastMsg = true) {
     if (hindiSleepTimerId) {
       clearInterval(hindiSleepTimerId);
       hindiSleepTimerId = null;
@@ -1106,7 +1111,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         hindiSleepTimerBtn.classList.remove("active");
         hindiSleepTimerBtn.title = "Sleep Timer (Off)";
       }
-      showToast("🌙 Sleep Timer turned off");
+      if (showToastMsg) showToast("🌙 Sleep Timer turned off");
       return;
     }
 
@@ -1119,7 +1124,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         hindiSleepTimerBtn.classList.add("active");
         hindiSleepTimerBtn.title = "Sleep Timer: Stop after current song";
       }
-      showToast("🌙 Sleep Timer set: Stop after current song");
+      if (showToastMsg) showToast("🌙 Sleep Timer set: Stop after current song");
       return;
     }
 
@@ -1132,7 +1137,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       hindiSleepTimerBtn.classList.add("active");
       hindiSleepTimerBtn.title = `Sleep Timer: ${val}m remaining`;
     }
-    showToast(`🌙 Sleep Timer set: ${val} minutes`);
+    if (showToastMsg) showToast(`🌙 Sleep Timer set: ${val} minutes`);
 
     hindiSleepTimerId = setInterval(() => {
       const remaining = Math.max(0, Math.round((hindiSleepTimerEndTime - Date.now()) / 1000));

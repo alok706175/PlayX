@@ -1243,7 +1243,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let chhathSleepTimerMenu = null;
   let chhathSleepTimerId = null;
   let chhathSleepTimerEndTime = null;
-  let chhathSleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
+  let chhathSleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
 
   function initChhathSleepTimerUI() {
     const parent = document.querySelector(".offline-controls");
@@ -1255,31 +1255,44 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     chhathSleepTimerBtn = document.createElement("button");
     chhathSleepTimerBtn.id = "chhathSleepBtn";
-    chhathSleepTimerBtn.className = "offline-speed-btn";
+    chhathSleepTimerBtn.className = "offline-speed-btn active";
     chhathSleepTimerBtn.type = "button";
-    chhathSleepTimerBtn.title = "स्लीप टाइमर / Sleep Timer";
-    chhathSleepTimerBtn.innerHTML = `🌙 <span id="chhathSleepBadge" style="display:none;font-size:0.72rem;margin-left:2px;font-weight:700;color:#f59e0b;"></span>`;
+    chhathSleepTimerBtn.title = "Sleep Timer: 30m";
+    chhathSleepTimerBtn.innerHTML = `🌙 <span id="chhathSleepBadge" style="display:inline;font-size:0.72rem;margin-left:2px;font-weight:700;color:#f59e0b;">30m</span>`;
 
     chhathSleepTimerMenu = document.createElement("div");
     chhathSleepTimerMenu.id = "chhathSleepMenu";
     chhathSleepTimerMenu.style.cssText = "display:none;position:absolute;bottom:calc(100% + 8px);right:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.18);border-radius:12px;padding:6px;min-width:160px;z-index:999;box-shadow:0 12px 30px rgba(0,0,0,0.6);";
 
     const options = [
-      { label: "Off (बंद)", val: 0 },
-      { label: "15 min (15 मिनट)", val: 15 },
-      { label: "30 min (30 मिनट)", val: 30 },
-      { label: "45 min (45 मिनट)", val: 45 },
-      { label: "60 min (1 घंटा)", val: 60 },
-      { label: "End of Song (गाना खत्म होने पर)", val: -1 }
+      { label: "Off", val: 0 },
+      { label: "15 min", val: 15 },
+      { label: "30 min", val: 30 },
+      { label: "45 min", val: 45 },
+      { label: "60 min (1 hour)", val: 60 },
+      { label: "End of Song", val: -1 }
     ];
 
     options.forEach(opt => {
       const item = document.createElement("button");
       item.type = "button";
       item.style.cssText = "display:block;width:100%;text-align:left;background:none;border:none;color:#e2e8f0;padding:8px 12px;font-size:0.8rem;border-radius:8px;cursor:pointer;transition:all 0.15s;font-family:inherit;";
+      if (opt.val === 30) {
+        item.style.background = "rgba(245,158,11,0.2)";
+        item.style.color = "#f59e0b";
+        item.style.fontWeight = "700";
+      }
       item.textContent = opt.label;
       item.addEventListener("mouseenter", () => { item.style.background = "rgba(245,158,11,0.2)"; item.style.color = "#f59e0b"; });
-      item.addEventListener("mouseleave", () => { item.style.background = "none"; item.style.color = "#e2e8f0"; });
+      item.addEventListener("mouseleave", () => {
+        if (chhathSleepTimerMode === opt.val) {
+          item.style.background = "rgba(245,158,11,0.2)";
+          item.style.color = "#f59e0b";
+        } else {
+          item.style.background = "none";
+          item.style.color = "#e2e8f0";
+        }
+      });
       item.addEventListener("click", (e) => {
         e.stopPropagation();
         setChhathSleepTimer(opt.val);
@@ -1302,6 +1315,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         chhathSleepTimerMenu.style.display = "none";
       }
     });
+
+    // Default 30 minutes sleep timer active
+    setChhathSleepTimer(30);
   }
 
   function setChhathSleepTimer(val) {

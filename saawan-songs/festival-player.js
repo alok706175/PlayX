@@ -418,7 +418,7 @@
   let sleepTimerMenu = null;
   let sleepTimerId = null;
   let sleepTimerEndTime = null;
-  let sleepTimerMode = 0; // 0: off, 15, 30, 45, 60, -1: end of song
+  let sleepTimerMode = 30; // 0: off, 15, 30, 45, 60, -1: end of song (Default: 30m)
 
   function initSleepTimerUI() {
     const parent = document.querySelector(".deck-extra-controls");
@@ -432,8 +432,8 @@
     sleepTimerBtn.id = "playerSleepBtn";
     sleepTimerBtn.className = "btn-speed";
     sleepTimerBtn.type = "button";
-    sleepTimerBtn.title = "Sleep Timer";
-    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:none;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;"></span>`;
+    sleepTimerBtn.title = "Sleep Timer: 30m";
+    sleepTimerBtn.innerHTML = `🌙 <span id="sleepTimerBadge" style="display:inline;font-size:0.75rem;margin-left:3px;font-weight:700;color:#38bdf8;">30m</span>`;
 
     sleepTimerMenu = document.createElement("div");
     sleepTimerMenu.id = "playerSleepMenu";
@@ -452,9 +452,22 @@
       const item = document.createElement("button");
       item.type = "button";
       item.style.cssText = "display:block;width:100%;text-align:left;background:none;border:none;color:#e2e8f0;padding:8px 12px;font-size:0.8rem;border-radius:8px;cursor:pointer;transition:all 0.15s;font-family:inherit;";
+      if (opt.val === 30) {
+        item.style.background = "rgba(56,189,248,0.15)";
+        item.style.color = "#38bdf8";
+        item.style.fontWeight = "700";
+      }
       item.textContent = opt.label;
       item.addEventListener("mouseenter", () => { item.style.background = "rgba(56,189,248,0.15)"; item.style.color = "#38bdf8"; });
-      item.addEventListener("mouseleave", () => { item.style.background = "none"; item.style.color = "#e2e8f0"; });
+      item.addEventListener("mouseleave", () => {
+        if (sleepTimerMode === opt.val) {
+          item.style.background = "rgba(56,189,248,0.15)";
+          item.style.color = "#38bdf8";
+        } else {
+          item.style.background = "none";
+          item.style.color = "#e2e8f0";
+        }
+      });
       item.addEventListener("click", (e) => {
         e.stopPropagation();
         setSleepTimer(opt.val);
@@ -477,6 +490,9 @@
         sleepTimerMenu.style.display = "none";
       }
     });
+
+    // Default 30 minutes sleep timer active
+    setSleepTimer(30);
   }
 
   function setSleepTimer(val) {

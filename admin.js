@@ -1017,6 +1017,28 @@
           url: rawVid || `https://www.youtube.com/watch?v=${videoId}`
         };
 
+        // Client-side Duplicate Check
+        if (cachedCategorySongs && cachedCategorySongs.length > 0 && videoId && videoId.length === 11) {
+          const existing = cachedCategorySongs.find(s => {
+            const vid = s.videoId || (s.url && window.PlayXUrlParser ? window.PlayXUrlParser.parseYouTubeUrl(s.url)?.videoId : '');
+            return vid === videoId;
+          });
+          if (existing) {
+            const existingTitle = existing.name || existing.title || 'a song';
+            const warnText = `Duplicate Song: This track already exists in ${activeCategory?.name || 'this category'} as "${existingTitle}" (ID: ${existing.id || videoId}). It does not need to be saved again.`;
+            if (formMsg) {
+              formMsg.className = 'form-alert-msg error';
+              formMsg.textContent = warnText;
+              formMsg.style.display = 'block';
+            }
+            showToast('error', `⚠️ Song already exists in ${activeCategory?.name || 'playlist'}!`);
+            saveBtn.disabled = false;
+            saveIcon.textContent = '💾';
+            saveText.textContent = 'Save Song to Database';
+            return;
+          }
+        }
+
         saveBtn.disabled = true;
         saveIcon.textContent = '⏳';
         saveText.textContent = 'Saving to Database...';
@@ -1105,13 +1127,18 @@
               openSongListPage(activeCategory, 'edit-song-name');
             }, 1200);
           } else {
+            if (backendErrorMessage && (backendErrorMessage.toLowerCase().includes('duplicate') || backendErrorMessage.toLowerCase().includes('already exists'))) {
+              throw new Error(backendErrorMessage);
+            }
             let detail = '';
             if (backendErrorMessage) {
-              detail = `Server error: ${backendErrorMessage}.`;
+              detail = `${backendErrorMessage}. `;
             } else {
-              detail = 'Backend server is unreachable or waking up (Render takes ~40s).';
+              detail = 'Backend server is unreachable or waking up (Render takes ~40s). ';
             }
-            throw new Error(`${detail} Tip: Add your GitHub PAT in Settings (⚙️) to save directly without backend dependency.`);
+            const hasPat = Boolean(localStorage.getItem('playx_token') || localStorage.getItem('playx_github_token'));
+            const patTip = hasPat ? '' : 'Tip: Add your GitHub PAT in Settings (⚙️) to save directly without backend dependency.';
+            throw new Error(`${detail}${patTip}`.trim());
           }
         } catch (err) {
           if (formMsg) {
