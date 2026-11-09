@@ -2524,6 +2524,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   let gridCurrentRenderedCount = 0;
   let gridCurrentFilteredList = [];
   let gridIntersectionObserver = null;
+  let gridIsLoadingBatch = false;
 
   function createSongCardElement(s, isEn) {
     const card = document.createElement("div");
@@ -2580,22 +2581,21 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   function renderSongCardsBatch() {
+    if (gridIsLoadingBatch) return;
     const grid = document.getElementById("songsCardsGrid");
     if (!grid) return;
 
-    const isEn = currentLang === "en";
     const total = gridCurrentFilteredList.length;
     const startIndex = gridCurrentRenderedCount;
-    const endIndex = Math.min(total, startIndex + GRID_PAGE_SIZE);
 
     if (startIndex >= total) {
       updateGridSentinel(false);
       return;
     }
 
-    // Temporarily remove sentinel before appending fragment
-    const oldSentinel = document.getElementById("gridInfiniteSentinel");
-    if (oldSentinel) oldSentinel.remove();
+    gridIsLoadingBatch = true;
+    const isEn = currentLang === "en";
+    const endIndex = Math.min(total, startIndex + GRID_PAGE_SIZE);
 
     const fragment = document.createDocumentFragment();
     for (let i = startIndex; i < endIndex; i++) {
@@ -2617,20 +2617,27 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     }
 
-    // Attach sentinel if more items remain
+    // Attach / update sentinel if more items remain
     if (gridCurrentRenderedCount < total) {
       updateGridSentinel(true, total - gridCurrentRenderedCount);
     } else {
       updateGridSentinel(false);
     }
+
+    setTimeout(() => {
+      gridIsLoadingBatch = false;
+    }, 60);
   }
 
   function updateGridSentinel(hasMore, remainingCount = 0) {
     const gridSection = document.getElementById("songsGridSection");
+    if (!gridSection) return;
     let sentinel = document.getElementById("gridInfiniteSentinel");
 
     if (!hasMore) {
-      if (sentinel) sentinel.remove();
+      if (sentinel) {
+        sentinel.style.display = "none";
+      }
       if (gridIntersectionObserver) {
         gridIntersectionObserver.disconnect();
         gridIntersectionObserver = null;
@@ -2642,9 +2649,10 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       sentinel = document.createElement("div");
       sentinel.id = "gridInfiniteSentinel";
       sentinel.className = "grid-infinite-sentinel";
-      if (gridSection) gridSection.appendChild(sentinel);
+      gridSection.appendChild(sentinel);
     }
 
+    sentinel.style.display = "flex";
     sentinel.innerHTML = `
       <div class="sentinel-content">
         <span class="sentinel-spinner"></span>
@@ -2660,19 +2668,36 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       });
     }
 
-    if (!gridIntersectionObserver && "IntersectionObserver" in window) {
+    // Always re-attach observer to newly positioned/updated sentinel
+    if (gridIntersectionObserver) {
+      gridIntersectionObserver.disconnect();
+      gridIntersectionObserver = null;
+    }
+
+    if ("IntersectionObserver" in window) {
       gridIntersectionObserver = new IntersectionObserver((entries) => {
         if (entries[0] && entries[0].isIntersecting) {
           renderSongCardsBatch();
         }
       }, {
         root: null,
-        rootMargin: "350px", // Trigger early for imperceptible, zero-jank loading
-        threshold: 0.05
+        rootMargin: "650px", // Trigger 650px early before reaching bottom for seamless auto-load
+        threshold: 0
       });
       gridIntersectionObserver.observe(sentinel);
     }
   }
+
+  // Automatic Infinite Scroll fallback on window scroll
+  window.addEventListener("scroll", () => {
+    if (gridIsLoadingBatch) return;
+    if (gridCurrentRenderedCount >= gridCurrentFilteredList.length) return;
+    const scrollPos = window.innerHeight + window.scrollY;
+    const threshold = document.documentElement.scrollHeight - 750;
+    if (scrollPos >= threshold) {
+      renderSongCardsBatch();
+    }
+  }, { passive: true });
 
   /* Render Song Cards Grid Section */
   function renderSongCardsGrid() {
@@ -2684,7 +2709,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       gridIntersectionObserver = null;
     }
     const oldSentinel = document.getElementById("gridInfiniteSentinel");
-    if (oldSentinel) oldSentinel.remove();
+    if (oldSentinel) oldSentinel.style.display = "none";
 
     grid.innerHTML = "";
     gridCurrentRenderedCount = 0;
