@@ -46,7 +46,7 @@
     href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Yatra+One&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="hindi-song.css">
+  <link rel="stylesheet" href="hindi-song.css?v=53">
   <link rel="stylesheet" href="../shared/clear-data.css">
   <link rel="stylesheet" href="../shared/playx-dialog.css">
 
@@ -322,6 +322,11 @@
                 <button type="button" class="sleep-menu-item" data-val="-1">End of Song</button>
               </div>
             </div>
+
+            <!-- Real Web Audio API Equalizer Button -->
+            <button class="mode-btn" id="equalizerBtn" title="Audio Equalizer & Bass Boost (E)" type="button" aria-label="Audio Equalizer">
+              🎚️
+            </button>
           </div>
 
           <!-- Center cluster: Prev, Play/Pause, Next -->
@@ -581,6 +586,94 @@
     </div>
   </div>
 
+  <!-- Real Audio Equalizer & Sound FX Modal (Web Audio API) -->
+  <div class="eq-backdrop" id="eqBackdrop"></div>
+  <div class="eq-modal" id="eqModal" role="dialog" aria-modal="true" aria-labelledby="eqModalTitle">
+    <div class="eq-header">
+      <div class="eq-title-wrap">
+        <span class="eq-icon">🎚️</span>
+        <div>
+          <h3 id="eqModalTitle" class="eq-title">Audio Equalizer & Sound FX</h3>
+          <p class="eq-subtitle">Real-Time Web Audio API DSP Engine</p>
+        </div>
+      </div>
+      <button class="playlist-close" id="eqCloseBtn" aria-label="Close Equalizer" title="Close">✕</button>
+    </div>
+
+    <!-- Presets Quick Bar -->
+    <div class="eq-presets-section">
+      <span class="eq-section-label">Sound Presets:</span>
+      <div class="eq-presets-chips" id="eqPresetsChips">
+        <button type="button" class="eq-preset-chip active" data-preset="flat">🎵 Flat (Normal)</button>
+        <button type="button" class="eq-preset-chip" data-preset="bass">🔊 Bass Boost</button>
+        <button type="button" class="eq-preset-chip" data-preset="vocal">🎙️ Vocal Clarity</button>
+        <button type="button" class="eq-preset-chip" data-preset="party">🔥 Party / Club</button>
+        <button type="button" class="eq-preset-chip" data-preset="treble">📻 Treble Boost</button>
+        <button type="button" class="eq-preset-chip" data-preset="custom">🎛️ Custom</button>
+      </div>
+    </div>
+
+    <!-- Frequency Bands Sliders -->
+    <div class="eq-sliders-grid">
+      <!-- Bass (Low-shelf 100 Hz) -->
+      <div class="eq-slider-card">
+        <div class="eq-slider-header">
+          <span class="eq-band-name">Bass (100 Hz)</span>
+          <span class="eq-band-value" id="valBass">0 dB</span>
+        </div>
+        <div class="eq-range-wrapper">
+          <input type="range" class="eq-range" id="rangeBass" min="-10" max="12" step="1" value="0">
+        </div>
+        <div class="eq-range-scale">
+          <span>-10dB</span>
+          <span>0dB</span>
+          <span>+12dB</span>
+        </div>
+      </div>
+
+      <!-- Mid (Peaking 1 kHz) -->
+      <div class="eq-slider-card">
+        <div class="eq-slider-header">
+          <span class="eq-band-name">Mid / Vocals (1 kHz)</span>
+          <span class="eq-band-value" id="valMid">0 dB</span>
+        </div>
+        <div class="eq-range-wrapper">
+          <input type="range" class="eq-range" id="rangeMid" min="-10" max="10" step="1" value="0">
+        </div>
+        <div class="eq-range-scale">
+          <span>-10dB</span>
+          <span>0dB</span>
+          <span>+10dB</span>
+        </div>
+      </div>
+
+      <!-- Treble (High-shelf 3.5 kHz) -->
+      <div class="eq-slider-card">
+        <div class="eq-slider-header">
+          <span class="eq-band-name">Treble (3.5 kHz)</span>
+          <span class="eq-band-value" id="valTreble">0 dB</span>
+        </div>
+        <div class="eq-range-wrapper">
+          <input type="range" class="eq-range" id="rangeTreble" min="-10" max="10" step="1" value="0">
+        </div>
+        <div class="eq-range-scale">
+          <span>-10dB</span>
+          <span>0dB</span>
+          <span>+10dB</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer with Reset and Status -->
+    <div class="eq-footer">
+      <div class="eq-status-indicator">
+        <span class="eq-status-dot"></span>
+        <span id="eqEngineStatus">Web Audio API Active</span>
+      </div>
+      <button type="button" class="eq-reset-btn" id="eqResetBtn">Reset to Flat</button>
+    </div>
+  </div>
+
   <!-- Keyboard Shortcuts Modal -->
   <div class="shortcuts-modal" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsTitle">
     <div class="shortcuts-header">
@@ -588,6 +681,10 @@
       <button class="playlist-close" id="shortcutsCloseBtn" title="Close">✕</button>
     </div>
     <div class="shortcuts-list">
+      <div class="shortcut-row">
+        <span>Audio Equalizer & FX</span>
+        <span class="shortcut-key">E</span>
+      </div>
       <div class="shortcut-row">
         <span>Play / Pause</span>
         <span class="shortcut-key">Space</span>
@@ -647,7 +744,7 @@
   <script src="../offline-manager.js"></script>
   <script src="../shared/playx-dialog.js"></script>
   <script src="../shared/clear-data.js"></script>
-  <script src="hindi-song.js?v=52"></script>
+  <script src="hindi-song.js?v=53"></script>
 </body>
 
 </html>
