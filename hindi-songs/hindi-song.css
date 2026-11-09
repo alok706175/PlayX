@@ -2172,6 +2172,14 @@
         font-size: 10.5px;
         padding: 3px 8px;
       }
+      #offlinePlayer {
+        padding: 16px 14px;
+        border-radius: 18px;
+      }
+      .offline-cover {
+        width: 84px;
+        height: 84px;
+      }
       .offline-volume {
         display: none !important;
       }
@@ -2201,6 +2209,9 @@
         width: 34px;
         height: 34px;
       }
+      .player-more-menu {
+        max-width: calc(100vw - 24px);
+      }
       .mini-player-dock {
         bottom: 12px;
         width: calc(100% - 16px);
@@ -2222,8 +2233,43 @@
       }
     }
 
-    /* Ultra-compact phones (<= 380px) */
+    /* Small Mobile Phones (<= 440px) */
+    @media (max-width: 440px) {
+      .song-card {
+        padding: 13px 14px;
+        border-radius: 15px;
+      }
+      .song-card-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .song-card-duration {
+        font-size: 11px;
+      }
+      .song-card-actions {
+        gap: 6px;
+      }
+      .song-card-video-btn {
+        padding: 5px 9px;
+        font-size: 11px;
+      }
+      .song-card-play-btn {
+        padding: 5px 11px;
+        font-size: 11px;
+      }
+      .song-card-queue-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+    }
+
+    /* Ultra-compact phones (<= 380px, e.g. iPhone SE, Galaxy Fold) */
     @media (max-width: 380px) {
+      .app-container {
+        padding-left: 6px;
+        padding-right: 6px;
+      }
       .top-bar {
         padding: 5px 6px;
         gap: 3px;
@@ -2241,6 +2287,38 @@
       .btn-lang-toggle {
         padding: 4px 7px !important;
         font-size: 10.5px !important;
+      }
+      #offlinePlayer {
+        padding: 12px 10px;
+        border-radius: 16px;
+      }
+      .offline-cover {
+        width: 72px;
+        height: 72px;
+      }
+      .offline-title {
+        font-size: 15px !important;
+      }
+      .offline-play-btn {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 20px !important;
+      }
+      .controls-center-cluster {
+        gap: 10px;
+      }
+      .song-card {
+        padding: 11px 12px;
+      }
+      .song-card-title {
+        font-size: 14px;
+      }
+      .song-card-singer {
+        font-size: 12px;
+      }
+      .song-card-actions {
+        width: 100%;
+        justify-content: flex-end;
       }
     }
 

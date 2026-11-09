@@ -1450,6 +1450,10 @@ body {
 }
 
 @media (max-width: 360px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+
   .btn-back-home span {
     display: none;
   }
@@ -1458,7 +1462,115 @@ body {
     font-size: 0.95rem;
   }
 
+  .page-title-badge img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .btn-theme-toggle,
+  .btn-theme,
+  .btn-share-main {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .vinyl-deck {
+    width: 130px;
+    height: 130px;
+    border-width: 5px;
+    margin-bottom: 1rem;
+  }
+
+  .vinyl-center-label {
+    width: 48px;
+    height: 48px;
+  }
+
+  .deck-title {
+    font-size: 1.15rem;
+  }
+
+  .deck-controls-row {
+    gap: 0.4rem;
+  }
+
+  .control-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+
+  .btn-main-play {
+    width: 46px;
+    height: 46px;
+    font-size: 1.05rem;
+  }
+
+  .volume-slider {
+    width: 55px;
+  }
+
+  .playlist-card {
+    padding: 1rem 0.65rem;
+  }
+
+  .song-item-row {
+    padding: 0.55rem 0.55rem;
+    gap: 0.5rem;
+  }
+
   .song-num {
     display: none;
+  }
+
+  .song-dur-text {
+    display: none;
+  }
+
+  .song-thumb-col {
+    width: 36px;
+    height: 36px;
+  }
+
+  .btn-row-video {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .row-play-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 0.7rem;
+  }
+}
+
+/* Ultra-Narrow Foldable Screens (<= 330px, e.g. Galaxy Z Fold Outer Screen) */
+@media (max-width: 330px) {
+  .container {
+    padding: 0 0.35rem;
+  }
+
+  .page-title-badge span {
+    font-size: 0.82rem;
+  }
+
+  .btn-theme-toggle span:last-child,
+  .btn-share-main span:last-child {
+    display: none;
+  }
+
+  .btn-theme-toggle,
+  .btn-share-main {
+    padding: 0.3rem 0.45rem;
+  }
+
+  .btn-main-play {
+    width: 42px;
+    height: 42px;
+  }
+
+  .control-btn {
+    width: 30px;
+    height: 30px;
   }
 }
