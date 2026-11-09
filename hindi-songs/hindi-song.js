@@ -2535,14 +2535,17 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
 
     const title = isEn ? (s.nameEn || s.name) : s.name;
     const singer = isEn ? (s.singerEn || s.singer) : s.singer;
-    const isYtSong = Boolean(s.videoId || s.youtubeId);
+    const isYtSong = Boolean(s.videoId || s.youtubeId || s.embedUrl);
     const isLiked = likedSongs.has(s.id);
     const songKey = window.OfflineManager ? window.OfflineManager.getSongKey(s) : s.file;
     const isDownloaded = !isYtSong && downloadedHindiSongs.has(songKey);
 
     const actionBtnHtml = isYtSong ? `
-          <button class="song-card-stream-badge" type="button" title="Online Streaming Track (Click to Stream)" aria-label="Stream ${title}">
-            <span class="stream-dot"></span>Stream
+          <button class="song-card-video-btn" type="button" title="Play Video (Watch YouTube Video)" aria-label="Play Video for ${title}">
+            <svg class="video-btn-icon" viewBox="0 0 24 24" width="13" height="13" fill="currentColor">
+              <path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/>
+            </svg>
+            <span>Play Video</span>
           </button>
     ` : `
           <button class="song-card-download-btn ${isDownloaded ? 'downloaded' : ''}" type="button" title="${isDownloaded ? 'Downloaded ✓' : 'Download for offline listening'}" aria-label="Download ${title}">
@@ -2794,15 +2797,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         return;
       }
 
-      // 3. YouTube Stream Button
-      const streamBtn = e.target.closest(".song-card-stream-badge");
-      if (streamBtn) {
+      // 3. YouTube Play Video Button (Opens Embedded Video Player)
+      const videoBtn = e.target.closest(".song-card-video-btn");
+      if (videoBtn) {
         e.stopPropagation();
-        if (songIdx === currentSong && isPlaying) {
-          togglePlayback();
-        } else {
-          playSong(songIdx);
-        }
+        openYouTubeVideoModal(song);
         return;
       }
 
@@ -2846,6 +2845,107 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       }
     });
   }
+
+  /* =========================================================
+     YOUTUBE EMBED VIDEO MODAL ENGINE (PLAY VIDEO)
+     ========================================================= */
+  function openYouTubeVideoModal(song) {
+    if (!song) return;
+    const videoId = song.videoId || song.youtubeId || (song.embedUrl ? song.embedUrl.split("/").pop().split("?")[0] : "");
+    if (!videoId) {
+      showToast("Video not available for this song");
+      return;
+    }
+
+    // Pause audio playback if currently active so audio does not overlap with video
+    if (isPlaying) {
+      togglePlayback();
+    }
+
+    let modal = document.getElementById("playxVideoModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.className = "playx-video-modal-overlay";
+      modal.id = "playxVideoModal";
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", "YouTube Video Player");
+      modal.innerHTML = `
+        <div class="playx-video-modal-card">
+          <div class="playx-video-modal-header">
+            <div class="playx-video-modal-title-box">
+              <span class="video-modal-badge">🎬 YouTube HD Video</span>
+              <h3 class="playx-video-modal-title" id="playxVideoModalTitle"></h3>
+              <p class="playx-video-modal-artist" id="playxVideoModalArtist"></p>
+            </div>
+            <button class="playx-video-modal-close" id="playxVideoModalClose" type="button" title="Close Video" aria-label="Close Video">✕</button>
+          </div>
+          <div class="playx-video-modal-player-wrap">
+            <iframe
+              id="playxVideoModalIframe"
+              src=""
+              title="YouTube Video Player"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      const closeBtn = modal.querySelector("#playxVideoModalClose");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closeYouTubeVideoModal);
+      }
+
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeYouTubeVideoModal();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("active")) {
+          closeYouTubeVideoModal();
+        }
+      });
+    }
+
+    const isEn = currentLang === "en";
+    const songTitle = isEn ? (song.nameEn || song.name) : song.name;
+    const songSinger = isEn ? (song.singerEn || song.singer) : song.singer;
+
+    const titleEl = modal.querySelector("#playxVideoModalTitle");
+    const artistEl = modal.querySelector("#playxVideoModalArtist");
+    const iframe = modal.querySelector("#playxVideoModalIframe");
+
+    if (titleEl) titleEl.textContent = songTitle;
+    if (artistEl) artistEl.textContent = "🎤 " + (songSinger || "Bollywood Hit");
+
+    const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
+    const embedSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1&rel=0&origin=${encodeURIComponent(origin)}`;
+    if (iframe) {
+      iframe.src = embedSrc;
+    }
+
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeYouTubeVideoModal() {
+    const modal = document.getElementById("playxVideoModal");
+    if (!modal) return;
+    modal.classList.remove("active");
+    document.body.style.overflow = "";
+
+    const iframe = modal.querySelector("#playxVideoModalIframe");
+    if (iframe) {
+      iframe.src = "";
+    }
+  }
+
+  window.openYouTubeVideoModal = openYouTubeVideoModal;
+  window.closeYouTubeVideoModal = closeYouTubeVideoModal;
 
   /* Real-Time Card Active State Update (Zero DOM Re-rendering) */
   function updateCardPlayingState() {
