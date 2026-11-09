@@ -70,5 +70,23 @@
     "addedAt": "2026-10-31T09:41:38.320Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 5,
+    "name": "80 Lakh",
+    "nameEn": "80 Lakh",
+    "singer": "Shiva Choudhary, D Naveen",
+    "singerEn": "Shiva Choudhary, D Naveen",
+    "category": "Haryanvi Songs",
+    "tag": "Hits",
+    "videoId": "uOrhBw3N3NM",
+    "youtubeId": "uOrhBw3N3NM",
+    "embedUrl": "https://www.youtube.com/embed/uOrhBw3N3NM",
+    "originalUrl": "https://www.youtube.com/watch?v=uOrhBw3N3NM",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/uOrhBw3N3NM/hqdefault.jpg",
+    "addedAt": "2026-11-09T10:07:37.644Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
