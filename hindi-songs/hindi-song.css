@@ -742,6 +742,19 @@
       color: var(--accent-color);
     }
 
+    #playerFavBtn,
+    #playerFavBtn.active {
+      background: var(--bg-surface) !important;
+      border-color: var(--border-subtle) !important;
+      color: inherit;
+      box-shadow: none !important;
+    }
+
+    #playerFavBtn:hover {
+      background: var(--bg-surface-hover) !important;
+      border-color: var(--border-medium) !important;
+    }
+
     /* Big Glowing Center Play Button */
     .offline-play-btn {
       width: 52px;
