@@ -46,7 +46,7 @@
     href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Yatra+One&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="hindi-song.css?v=58">
+  <link rel="stylesheet" href="hindi-song.css?v=59">
   <link rel="stylesheet" href="../shared/clear-data.css">
   <link rel="stylesheet" href="../shared/playx-dialog.css">
 
@@ -243,9 +243,13 @@
                 <circle cx="12" cy="19" r="2.2"></circle>
               </svg>
             </button>
-            <div class="player-more-menu" id="playerMoreMenu" role="menu" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; min-width: 235px; background: #161b26; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 18px; padding: 8px; box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100;">
+            <div class="player-more-menu" id="playerMoreMenu" role="menu" style="display: none; position: absolute; top: calc(100% + 8px); right: 0; width: 280px; max-width: calc(100vw - 32px); background: #161b26; border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 18px; padding: 10px; box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 100;">
               <!-- Main Options View -->
               <div class="menu-view main-view" id="menuMainView">
+                <div class="submenu-header">
+                  <span class="submenu-title">⚙️ Player Options</span>
+                  <button type="button" class="submenu-close-btn" id="mainMenuClose" title="Close">✕</button>
+                </div>
                 <div class="menu-item-row" id="openSleepTimerSubmenu" role="menuitem" tabindex="0">
                   <div class="menu-item-left">
                     <span class="menu-item-icon">⏱️</span>
@@ -279,36 +283,30 @@
               <div class="menu-view sleep-view" id="menuSleepView" style="display: none;">
                 <div class="submenu-header">
                   <button type="button" class="submenu-back-btn" id="sleepSubmenuBack" title="Back to menu">‹ Back</button>
-                  <span class="submenu-title">Sleep Timer</span>
+                  <span class="submenu-title">⏱️ Sleep Timer</span>
+                  <button type="button" class="submenu-close-btn" id="sleepSubmenuClose" title="Close">✕</button>
                 </div>
-                <div class="sleep-options-list" id="sleepOptionsList">
-                  <button type="button" class="sleep-opt-btn active" data-val="0">
-                    <span>Turn Off</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="1">
-                    <span>1 Minute</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="2">
-                    <span>2 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="5">
-                    <span>5 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="10">
-                    <span>10 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="15">
-                    <span>15 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="30">
-                    <span>30 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="60">
-                    <span>60 Minutes</span>
-                  </button>
-                  <button type="button" class="sleep-opt-btn" data-val="-1">
-                    <span>End of Song</span>
-                  </button>
+                <div class="sleep-grid-container" id="sleepOptionsList">
+                  <!-- Special Actions Row -->
+                  <div class="sleep-special-row">
+                    <button type="button" class="sleep-opt-btn sleep-opt-special active" data-val="0">
+                      <span>✕ Turn Off</span>
+                    </button>
+                    <button type="button" class="sleep-opt-btn sleep-opt-special" data-val="-1">
+                      <span>🎵 End of Song</span>
+                    </button>
+                  </div>
+                  <!-- Quick Duration Chips (Grid 4x2) -->
+                  <div class="sleep-chips-grid">
+                    <button type="button" class="sleep-opt-btn" data-val="1">1 min</button>
+                    <button type="button" class="sleep-opt-btn" data-val="2">2 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="5">5 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="10">10 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="15">15 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="30">30 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="45">45 mins</button>
+                    <button type="button" class="sleep-opt-btn" data-val="60">60 mins</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -708,7 +706,7 @@
   <script src="../offline-manager.js"></script>
   <script src="../shared/playx-dialog.js"></script>
   <script src="../shared/clear-data.js"></script>
-  <script src="hindi-song.js?v=58"></script>
+  <script src="hindi-song.js?v=59"></script>
 </body>
 
 </html>

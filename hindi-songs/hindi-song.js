@@ -1158,6 +1158,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       });
     }
 
+    const mainMenuClose = document.getElementById("mainMenuClose");
+    const sleepSubmenuClose = document.getElementById("sleepSubmenuClose");
+    if (mainMenuClose) mainMenuClose.addEventListener("click", (e) => { e.stopPropagation(); closeMoreMenu(); });
+    if (sleepSubmenuClose) sleepSubmenuClose.addEventListener("click", (e) => { e.stopPropagation(); closeMoreMenu(); });
+
     // Click outside closes dropdown
     document.addEventListener("click", (e) => {
       if (moreDropdown && !moreDropdown.contains(e.target)) {
