@@ -3037,137 +3037,14 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   function initDynamicIsland() {
     const islandContainer = document.getElementById("dynamicIsland");
     const islandCompact = document.getElementById("islandCompact");
-    const islandExpanded = document.getElementById("islandExpanded");
-    const playBtn = document.getElementById("islandPlayBtn");
-    const prevBtn = document.getElementById("islandPrevBtn");
-    const nextBtn = document.getElementById("islandNextBtn");
-    const favBtn = document.getElementById("islandFavBtn");
-    const castBtn = document.getElementById("islandCastBtn");
-    const progressTrack = document.getElementById("islandProgressTrack");
-
     if (!islandContainer || !islandCompact) return;
 
-    // Expand on compact pill click
+    // Tap compact pill to toggle play/pause
     islandCompact.addEventListener("click", () => {
-      expandDynamicIsland();
+      togglePlayback();
     });
-
-    // Collapse when clicking on the expanded card (except on buttons / seekbar)
-    if (islandExpanded) {
-      islandExpanded.addEventListener("click", (e) => {
-        if (!e.target.closest("button") && !e.target.closest(".island-track-wrap")) {
-          collapseDynamicIsland();
-        }
-      });
-    }
-
-    // Collapse when clicking anywhere outside the island
-    document.addEventListener("click", (e) => {
-      if (isIslandExpanded && !islandContainer.contains(e.target)) {
-        collapseDynamicIsland();
-      }
-    });
-
-    // Controls
-    if (playBtn) {
-      playBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        togglePlayback();
-      });
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        playPrevious();
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        playNext();
-      });
-    }
-
-    if (favBtn) {
-      favBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        if (songs[currentSong]) {
-          toggleSongFavorite(songs[currentSong].id, e);
-          updateDynamicIslandUI();
-        }
-      });
-    }
-
-    if (castBtn) {
-      castBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        showToast("🎧 HD Audio Output Active");
-      });
-    }
-
-    // Seek track
-    if (progressTrack) {
-      progressTrack.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const rect = progressTrack.getBoundingClientRect();
-        const clickX = e.clientX - rect.left;
-        const pct = Math.max(0, Math.min(1, clickX / rect.width));
-        const dur = getHindiActiveDuration();
-        if (dur > 0) {
-          seekToSeconds(pct * dur);
-        }
-      });
-    }
 
     updateDynamicIslandUI();
-  }
-
-  function expandDynamicIsland() {
-    const compact = document.getElementById("islandCompact");
-    const expanded = document.getElementById("islandExpanded");
-    if (!compact || !expanded) return;
-
-    isIslandExpanded = true;
-    compact.style.display = "none";
-    expanded.style.display = "flex";
-  }
-
-  function collapseDynamicIsland() {
-    const compact = document.getElementById("islandCompact");
-    const expanded = document.getElementById("islandExpanded");
-    if (!compact || !expanded) return;
-
-    isIslandExpanded = false;
-    expanded.style.display = "none";
-    compact.style.display = "flex";
-  }
-
-  function seekToSeconds(targetSec) {
-    const dur = getHindiActiveDuration();
-    if (dur <= 0) return;
-    targetSec = Math.max(0, Math.min(dur, targetSec));
-
-    if (activeAudioSource === "youtube" && ytAudioPlayer && typeof ytAudioPlayer.seekTo === "function") {
-      try {
-        ytAudioPlayer.seekTo(targetSec, true);
-        if (currentTime) currentTime.textContent = formatTime(targetSec);
-      } catch (e) {}
-      return;
-    }
-
-    if (offlineAudio) {
-      try {
-        if ("fastSeek" in offlineAudio) {
-          offlineAudio.fastSeek(targetSec);
-        } else {
-          offlineAudio.currentTime = targetSec;
-        }
-        if (currentTime) currentTime.textContent = formatTime(targetSec);
-        updateLiveProgress();
-      } catch (e) {}
-    }
   }
 
   function updateDynamicIslandUI() {
@@ -3180,21 +3057,13 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       return;
     }
 
-    // Show Dynamic Island when any song is loaded or playing
+    // Show compact pill when any song is loaded or playing
     container.classList.add("active");
 
-    const isEn = currentLang === "en";
-    const title = isEn ? (s.nameEn || s.name) : s.name;
-    const singer = isEn ? (s.singerEn || s.singer) : s.singer;
-
-    // Artwork handling: Compact pill always shows PlayX app logo; expanded sheet shows song cover
-    const thumbUrl = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : "images/hindi_song_icon.png");
     const compactArtImg = document.getElementById("islandArtImg");
-    const expArtImg = document.getElementById("islandExpandedImg");
     if (compactArtImg) compactArtImg.src = "../images/playx_icon.png";
-    if (expArtImg) expArtImg.src = thumbUrl;
 
-    // Waveform state (Image 2: Pink Bars)
+    // Waveform state (Pink Bars)
     const waveformEl = document.getElementById("islandWaveform");
     if (waveformEl) {
       if (isPlaying) {
@@ -3203,46 +3072,10 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
         waveformEl.classList.remove("playing");
       }
     }
-
-    // Expanded elements (Image 1)
-    const expTitleEl = document.getElementById("islandExpandedTitle");
-    const expSingerEl = document.getElementById("islandExpandedSinger");
-    const playIconSvg = document.getElementById("islandPlayIconSvg");
-    const favBtn = document.getElementById("islandFavBtn");
-
-    if (expTitleEl) expTitleEl.textContent = title;
-    if (expSingerEl) expSingerEl.textContent = singer || "Bollywood";
-
-    if (playIconSvg) {
-      if (isPlaying) {
-        // Pause ❚❚ icon
-        playIconSvg.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-      } else {
-        // Play ▶ icon
-        playIconSvg.innerHTML = '<path d="M8 5v14l11-7z"/>';
-      }
-    }
-
-    // Favorite / Checkmark state
-    const isLiked = likedSongs.has(s.id);
-    if (favBtn) {
-      favBtn.classList.toggle("active", isLiked);
-      favBtn.style.color = isLiked ? "#22c55e" : "#ffffff";
-    }
   }
 
   function updateDynamicIslandProgress(curTime = 0, duration = 0) {
-    const fill = document.getElementById("islandProgressFill");
-    const curTimeEl = document.getElementById("islandCurrentTime");
-    const totalTimeEl = document.getElementById("islandTotalTime");
-
-    if (fill && duration > 0) {
-      const pct = Math.min(100, Math.max(0, (curTime / duration) * 100));
-      fill.style.width = pct + "%";
-    }
-
-    if (curTimeEl) curTimeEl.textContent = formatIslandTime(curTime);
-    if (totalTimeEl && duration > 0) totalTimeEl.textContent = formatIslandTime(duration);
+    // No-op: expanded pill removed
   }
 
   /* Real-Time Card Active State Update (Zero DOM Re-rendering) */

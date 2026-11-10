@@ -212,12 +212,12 @@
     </div>
   </header>
 
-  <!-- Apple Dynamic Island "Now Playing" Widget -->
-  <aside class="dynamic-island-container" id="dynamicIsland" aria-label="Dynamic Island Media Player">
-    <!-- Compact Pill Mode (Image 2: Left Album Art, Right Pink Waveform) -->
-    <div class="dynamic-island-compact" id="islandCompact" title="Tap to expand Now Playing">
+  <!-- Vivo Origin Island Compact Pill -->
+  <aside class="dynamic-island-container" id="dynamicIsland" aria-label="Origin Island Media Player">
+    <!-- Compact Pill Mode (PlayX Logo on Left, Pink Waveform on Right) -->
+    <div class="dynamic-island-compact" id="islandCompact" title="PlayX Origin Island (Tap to Play/Pause)">
       <div class="island-compact-art-box">
-        <img class="island-compact-art" id="islandArtImg" src="images/hindi_song_icon.png" alt="Album Art">
+        <img class="island-compact-art" id="islandArtImg" src="../images/playx_icon.png" alt="PlayX">
       </div>
       <div class="island-compact-waveform" id="islandWaveform" aria-hidden="true">
         <span class="island-wave-bar b1"></span>
@@ -227,67 +227,7 @@
         <span class="island-wave-bar b5"></span>
       </div>
     </div>
-
-    <!-- Expanded Card Mode (Image 1: Full Card) -->
-    <div class="dynamic-island-expanded" id="islandExpanded" style="display: none;">
-      <!-- Row 1: Album Art + Song Title + Singers + Headphone Icon -->
-      <div class="island-expanded-top">
-        <img class="island-expanded-art" id="islandExpandedImg" src="images/hindi_song_icon.png" alt="Album Art">
-        <div class="island-expanded-info">
-          <div class="island-expanded-title" id="islandExpandedTitle">Song Title</div>
-          <div class="island-expanded-singer" id="islandExpandedSinger">Singer Name</div>
-        </div>
-        <div class="island-expanded-headphone" title="Audio Output">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
-            <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
-          </svg>
-        </div>
-      </div>
-
-      <!-- Row 2: Time Left + Progress Bar + Time Right -->
-      <div class="island-expanded-seekbar">
-        <span class="island-time-left" id="islandCurrentTime">00:00</span>
-        <div class="island-track-wrap" id="islandProgressTrack" title="Seek Track">
-          <div class="island-track-fill" id="islandProgressFill" style="width: 0%;"></div>
-        </div>
-        <span class="island-time-right" id="islandTotalTime">00:00</span>
-      </div>
-
-      <!-- Row 3: Checkmark + Previous + Pause/Play + Next + Cast/Waves -->
-      <div class="island-expanded-controls">
-        <button class="island-btn-fav" id="islandFavBtn" type="button" title="Favorite / Added" aria-label="Favorite">
-          <svg id="islandFavCheckSvg" viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-          </svg>
-        </button>
-
-        <button class="island-btn-prev" id="islandPrevBtn" type="button" title="Previous Track" aria-label="Previous">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-          </svg>
-        </button>
-
-        <button class="island-btn-play" id="islandPlayBtn" type="button" title="Play or Pause" aria-label="Play or Pause">
-          <svg id="islandPlayIconSvg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor">
-            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-          </svg>
-        </button>
-
-        <button class="island-btn-next" id="islandNextBtn" type="button" title="Next Track" aria-label="Next">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
-          </svg>
-        </button>
-
-        <button class="island-btn-cast" id="islandCastBtn" type="button" title="Audio Device" aria-label="Audio Output">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2.5" fill="currentColor"></circle>
-            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
+  </aside>
   </aside>
 
   <div class="app-container">
