@@ -604,13 +604,56 @@
      ========================================================= */
   const MEDIA_SESSION_SUPPORTED = typeof navigator !== "undefined" && "mediaSession" in navigator;
   let silentAudioKeeper = null;
+  let silentAudioBlobUrl = null;
+
+  function getSilentAudioUrl() {
+    if (silentAudioBlobUrl) return silentAudioBlobUrl;
+    try {
+      const sampleRate = 8000;
+      const numChannels = 1;
+      const duration = 10;
+      const numSamples = sampleRate * duration;
+      const buffer = new ArrayBuffer(44 + numSamples);
+      const view = new DataView(buffer);
+
+      function writeString(offset, string) {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      }
+
+      writeString(0, "RIFF");
+      view.setUint32(4, 36 + numSamples, true);
+      writeString(8, "WAVE");
+      writeString(12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // PCM
+      view.setUint16(22, numChannels, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * numChannels, true);
+      view.setUint16(32, numChannels, true);
+      view.setUint16(34, 8, true); // 8-bit
+      writeString(36, "data");
+      view.setUint32(40, numSamples, true);
+
+      const bytes = new Uint8Array(buffer, 44, numSamples);
+      bytes.fill(128); // Pure silence in 8-bit PCM
+
+      const blob = new Blob([buffer], { type: "audio/wav" });
+      silentAudioBlobUrl = URL.createObjectURL(blob);
+      return silentAudioBlobUrl;
+    } catch (e) {
+      return "data:audio/wav;base64,UklGRigAAABXQVZFRm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+    }
+  }
 
   function initSilentAudioKeeper() {
     if (silentAudioKeeper) return;
     try {
-      silentAudioKeeper = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFRm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+      silentAudioKeeper = new Audio(getSilentAudioUrl());
       silentAudioKeeper.loop = true;
-      silentAudioKeeper.volume = 0.001;
+      silentAudioKeeper.volume = 0.01; // Non-zero volume (>0) allows Chrome on Android to register active media session
+      silentAudioKeeper.preload = "auto";
     } catch (e) {}
   }
 

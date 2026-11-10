@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v102";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v102";
+const CACHE_NAME = "chhath-pwa-v103";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v103";
 
 const STATIC_ASSETS = [
   "./",
@@ -16,6 +16,7 @@ const STATIC_ASSETS = [
   "./dark-light-mode.js",
   "./shared/festival-player.css",
   "./shared/festival-player.js",
+  "./shared/silence-10s.wav",
   "./shared/clear-data.css",
   "./shared/clear-data.js",
   "./shared/playx-dialog.css",
