@@ -86,9 +86,9 @@
             </svg>
             <input type="password" id="gateAdminPassword" name="password" placeholder="Enter security password" required autocomplete="current-password" autofocus>
             <button type="button" class="gate-eye-toggle" id="gateTogglePwdBtn" aria-label="Toggle password visibility" title="Show password">
-              <svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7Z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
+              <svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z"></path>
+                <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path>
               </svg>
             </button>
           </div>
@@ -858,10 +858,7 @@
             <div class="token-input-wrapper">
               <input type="password" id="settingsGhTokenInput" class="settings-input" placeholder="Enter PLAYX_TOKEN (ghp_... or github_pat_...)">
               <button type="button" class="btn-toggle-token-eye" id="settingsToggleTokenVis" title="Toggle visibility">
-                <svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
-                  <circle cx="12" cy="12" r="3"></circle>
-                </svg>
+                <svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z"></path><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>
               </button>
             </div>
             <button type="button" class="btn-save-token" id="settingsSaveTokenBtn">Save Token</button>
@@ -896,7 +893,7 @@
   <script src="shared/clear-data.js"></script>
   <script src="backend/url-parser.js"></script>
   <script src="backend/category-detector.js"></script>
-  <script src="admin.js?v=3.2"></script>
+  <script src="admin.js?v=3.3"></script>
 </body>
 
 </html>

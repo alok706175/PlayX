@@ -274,8 +274,8 @@
     const msgEl = document.getElementById('gateLoginMsg');
 
     if (eyeBtn && pwdInput) {
-      const eyeSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
-      const eyeOffSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path><line x1="2" y1="2" x2="22" y2="22"></line></svg>`;
+      const eyeSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z"></path><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>`;
+      const eyeOffSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.98 8.223A10.477 10.477 0 0 0 2.036 11.68a1.012 1.012 0 0 0 0 .644C3.423 16.49 7.36 19.5 12 19.5c1.928 0 3.73-.526 5.286-1.446"></path><path d="M6.228 6.228A10.45 10.45 0 0 1 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639a10.454 10.454 0 0 1-4.07 4.962"></path><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><line x1="3" y1="3" x2="21" y2="21"></line></svg>`;
 
       eyeBtn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1937,8 +1937,13 @@
     if (closeBottomBtn) closeBottomBtn.addEventListener('click', closeSettings);
 
     if (eyeBtn && tokenInput) {
+      const tokenEyeSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.036 12.322a1.012 1.012 0 0 1 0-.644C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178Z"></path><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg>`;
+      const tokenEyeOffSvg = `<svg class="gate-eye-svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.98 8.223A10.477 10.477 0 0 0 2.036 11.68a1.012 1.012 0 0 0 0 .644C3.423 16.49 7.36 19.5 12 19.5c1.928 0 3.73-.526 5.286-1.446"></path><path d="M6.228 6.228A10.45 10.45 0 0 1 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639a10.454 10.454 0 0 1-4.07 4.962"></path><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path><line x1="3" y1="3" x2="21" y2="21"></line></svg>`;
       eyeBtn.addEventListener('click', () => {
-        tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
+        const isPwd = tokenInput.type === 'password';
+        tokenInput.type = isPwd ? 'text' : 'password';
+        eyeBtn.innerHTML = isPwd ? tokenEyeOffSvg : tokenEyeSvg;
+        eyeBtn.title = isPwd ? 'Hide token' : 'Show token';
       });
     }
 
