@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v107";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v107";
+const CACHE_NAME = "chhath-pwa-v108";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v108";
 
 const STATIC_ASSETS = [
   "./",
@@ -30,9 +30,7 @@ const STATIC_ASSETS = [
   "./favicon.io/android-chrome-192x192.png",
   "./favicon.io/android-chrome-512x512.png",
   "./favicon.io/favicon.svg",
-  "./favicon.io/favicon.ico",
   "./images/playx_icon.png",
-  "./images/playx_icon.svg",
   "./images/playx_full_logo.png",
   "./chhath-puja/chhath-puja.html",
   "./chhath-puja/style.css",
