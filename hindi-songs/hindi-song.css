@@ -3399,10 +3399,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #141416;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   flex-shrink: 0;
-  padding: 2px;
+  padding: 0;
 }
 
 .island-compact-art {
