@@ -489,6 +489,16 @@
 
     window.updateAdminAuthState = function () {
       var isLoggedIn = localStorage.getItem("playx_admin_logged_in") === "true";
+      if (isLoggedIn) {
+        var lastActive = parseInt(localStorage.getItem("playx_admin_last_active") || "0", 10);
+        if (lastActive && (Date.now() - lastActive >= 10 * 60 * 1000)) {
+          localStorage.removeItem("playx_admin_logged_in");
+          localStorage.removeItem("playx_admin_token");
+      localStorage.removeItem("playx_admin_last_active");
+          localStorage.removeItem("playx_admin_last_active");
+          isLoggedIn = false;
+        }
+      }
       var storedUser = localStorage.getItem("playx_admin_user");
       var userName = (storedUser && storedUser !== "Admin" && storedUser !== "Playx") ? storedUser : "Deepak Singh Rajput";
       if (isLoggedIn && storedUser !== userName) {
@@ -533,6 +543,7 @@
       localStorage.removeItem("playx_admin_user");
       localStorage.removeItem("playx_admin_email");
       localStorage.removeItem("playx_admin_token");
+      localStorage.removeItem("playx_admin_last_active");
       try { sessionStorage.removeItem("playx_admin_secret"); } catch (err) { }
       window.closeAdminMenu();
       window.updateAdminAuthState();
@@ -1389,6 +1400,7 @@
               msg.textContent = "✅ Welcome " + userName + "! Admin login successful.";
             }
             localStorage.setItem("playx_admin_logged_in", "true");
+            localStorage.setItem("playx_admin_last_active", Date.now().toString());
             localStorage.setItem("playx_admin_user", userName);
             localStorage.setItem("playx_admin_email", userEmail);
             if (token) localStorage.setItem("playx_admin_token", token);

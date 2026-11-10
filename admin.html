@@ -26,11 +26,20 @@
 </head>
 
 <body>
-  <!-- Instant Hydration Script: Guarantees zero black screen flash -->
+  <!-- Instant Hydration Script: Guarantees zero black screen flash & validates 10-minute session inactivity -->
   <script>
     (function() {
       try {
         var isAuth = localStorage.getItem('playx_admin_logged_in') === 'true';
+        if (isAuth) {
+          var lastActive = parseInt(localStorage.getItem('playx_admin_last_active') || '0', 10);
+          if (lastActive && (Date.now() - lastActive >= 10 * 60 * 1000)) {
+            localStorage.removeItem('playx_admin_logged_in');
+            localStorage.removeItem('playx_admin_token');
+            localStorage.removeItem('playx_admin_last_active');
+            isAuth = false;
+          }
+        }
         document.documentElement.classList.add(isAuth ? 'admin-authed' : 'admin-locked');
       } catch (e) {}
     })();

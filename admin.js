@@ -99,6 +99,113 @@
   const brokenVideoIds = new Set(); // Video IDs flagged as dead/unavailable
 
   /* =========================================================
+     INACTIVITY AUTO-LOGOUT ENGINE (10 MINUTES IDLE LOCK)
+     ========================================================= */
+  const INACTIVITY_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes in milliseconds
+  let inactivityTimer = null;
+  let inactivityCheckInterval = null;
+  let lastActivityTimestamp = Date.now();
+  let isListeningForActivity = false;
+
+  const ACTIVITY_EVENTS = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click', 'input', 'wheel'];
+
+  function recordAdminActivity() {
+    if (!isAuthenticated()) return;
+    const now = Date.now();
+
+    // Throttle writing to localStorage to once every 3 seconds to preserve performance
+    if (now - lastActivityTimestamp > 3000) {
+      try {
+        localStorage.setItem('playx_admin_last_active', now.toString());
+      } catch (e) {}
+    }
+    lastActivityTimestamp = now;
+
+    // Reset primary inactivity timer
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+    }
+    inactivityTimer = setTimeout(triggerAutoLogout, INACTIVITY_TIMEOUT_MS);
+  }
+
+  function checkInactivity() {
+    if (!isAuthenticated()) {
+      stopInactivityTracker();
+      return;
+    }
+    const storedLast = parseInt(localStorage.getItem('playx_admin_last_active') || '0', 10);
+    const effectiveLast = Math.max(lastActivityTimestamp, storedLast || 0);
+    const elapsed = Date.now() - effectiveLast;
+
+    if (elapsed >= INACTIVITY_TIMEOUT_MS) {
+      triggerAutoLogout();
+    }
+  }
+
+  function triggerAutoLogout() {
+    if (!isAuthenticated()) return;
+    console.warn('[PlayX Admin] Auto-logging out due to 10 minutes of inactivity.');
+
+    // Clear session credentials and active tracker
+    localStorage.removeItem('playx_admin_logged_in');
+    localStorage.removeItem('playx_admin_token');
+    localStorage.removeItem('playx_admin_last_active');
+
+    stopInactivityTracker();
+    lockDashboard();
+
+    // Inform admin on the login gate
+    showGateMsg('error', '🔒 Session Expired: You were automatically logged out due to 10 minutes of inactivity. Please log in again.');
+
+    if (typeof showToast === 'function') {
+      showToast('warning', 'Logged out automatically due to 10 minutes of inactivity.');
+    }
+  }
+
+  function startInactivityTracker() {
+    stopInactivityTracker();
+    lastActivityTimestamp = Date.now();
+    try {
+      localStorage.setItem('playx_admin_last_active', lastActivityTimestamp.toString());
+    } catch (e) {}
+
+    // Primary timer
+    inactivityTimer = setTimeout(triggerAutoLogout, INACTIVITY_TIMEOUT_MS);
+
+    // Periodic interval check (every 10s) handles tab backgrounding and sleep mode
+    inactivityCheckInterval = setInterval(checkInactivity, 10000);
+
+    if (!isListeningForActivity) {
+      ACTIVITY_EVENTS.forEach(ev => {
+        window.addEventListener(ev, recordAdminActivity, { passive: true });
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+          checkInactivity();
+        }
+      });
+
+      window.addEventListener('focus', () => {
+        checkInactivity();
+      });
+
+      isListeningForActivity = true;
+    }
+  }
+
+  function stopInactivityTracker() {
+    if (inactivityTimer) {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = null;
+    }
+    if (inactivityCheckInterval) {
+      clearInterval(inactivityCheckInterval);
+      inactivityCheckInterval = null;
+    }
+  }
+
+  /* =========================================================
      1. INITIALIZATION & AUTHENTICATION GATE
      ========================================================= */
   document.addEventListener('DOMContentLoaded', () => {
@@ -111,7 +218,12 @@
     initActionModals();
 
     if (isAuthenticated()) {
-      unlockDashboard();
+      const storedLast = parseInt(localStorage.getItem('playx_admin_last_active') || '0', 10);
+      if (storedLast && (Date.now() - storedLast >= INACTIVITY_TIMEOUT_MS)) {
+        triggerAutoLogout();
+      } else {
+        unlockDashboard();
+      }
     } else {
       lockDashboard();
     }
@@ -122,6 +234,11 @@
   }
 
   function lockDashboard() {
+    stopInactivityTracker();
+    if (document.documentElement) {
+      document.documentElement.classList.remove('admin-authed');
+      document.documentElement.classList.add('admin-locked');
+    }
     const gate = document.getElementById('adminLoginGate');
     const dash = document.getElementById('adminDashboardLayout');
     if (gate) gate.style.display = 'flex';
@@ -129,6 +246,11 @@
   }
 
   function unlockDashboard() {
+    startInactivityTracker();
+    if (document.documentElement) {
+      document.documentElement.classList.remove('admin-locked');
+      document.documentElement.classList.add('admin-authed');
+    }
     const gate = document.getElementById('adminLoginGate');
     const dash = document.getElementById('adminDashboardLayout');
     if (gate) gate.style.display = 'none';
@@ -239,6 +361,8 @@
         if (ok) {
           localStorage.removeItem('playx_admin_logged_in');
           localStorage.removeItem('playx_admin_token');
+          localStorage.removeItem('playx_admin_last_active');
+          stopInactivityTracker();
           lockDashboard();
           showToast('info', 'Logged out successfully.');
         }
