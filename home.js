@@ -465,64 +465,10 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     4. FESTIVE PARTICLE CANVAS ANIMATION
+     4. FESTIVE PARTICLE CANVAS ANIMATION (DISABLED)
      ========================================================= */
   function initCanvas() {
-    const canvas = document.getElementById("particleCanvas");
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
-
-    window.addEventListener("resize", () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
-
-    const particles = [];
-    const count = Math.min(width < 768 ? 35 : 75, 90);
-    const colors = ["#ffb800", "#ff5722", "#e91e63", "#ffdd59", "#38bdf8"];
-
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 2 + 0.8,
-        color: colors[Math.floor(Math.random() * colors.length)],
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -Math.random() * 0.6 - 0.2, // Upward drifting sparks
-        alpha: Math.random() * 0.7 + 0.2
-      });
-    }
-
-    function render() {
-      ctx.clearRect(0, 0, width, height);
-
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.y < 0) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
-        }
-        if (p.x < 0) p.x = width;
-        if (p.x > width) p.x = 0;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-      });
-
-      requestAnimationFrame(render);
-    }
-
-    render();
+    return; // Upward drifting particles removed as requested
   }
 
   /* =========================================================
