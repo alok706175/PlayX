@@ -47,6 +47,7 @@
     initClock();
     initTheme();
     loadSongs();
+    injectOriginIslandDOM();
   });
 
   function initElements() {
@@ -249,11 +250,13 @@
               startKeepAlive();
               updateMediaSession();
               updateTabTitle();
+              updateOriginIslandUI();
             } else if (event.data === YT.PlayerState.BUFFERING) {
               handleBufferStall();
               try {
                 if (MEDIA_SESSION_SUPPORTED) navigator.mediaSession.playbackState = "paused";
               } catch (e) {}
+              updateOriginIslandUI();
             } else if (event.data === YT.PlayerState.PAUSED) {
               isPlaying = false;
               clearBufferStall();
@@ -263,6 +266,7 @@
               stopKeepAlive();
               updateMediaSession();
               updateTabTitle();
+              updateOriginIslandUI();
             } else if (event.data === YT.PlayerState.ENDED) {
               // Keep silent audio keeper active across song transition so Android doesn't revoke audio focus in pocket
               onSongEnded();
@@ -987,6 +991,7 @@
         startKeepAlive();
         updateMediaSession();
         updateTabTitle();
+        updateOriginIslandUI();
       } else {
         ytPlayer.cueVideoById(songVid);
         isPlaying = false;
@@ -994,6 +999,7 @@
         setVinylSpinning(false);
         updateMediaSession();
         updateTabTitle();
+        updateOriginIslandUI();
       }
     } else {
       if (autoPlay) {
@@ -1003,6 +1009,7 @@
         startKeepAlive();
         updateMediaSession();
         updateTabTitle();
+        updateOriginIslandUI();
       }
     }
   }
@@ -1376,6 +1383,120 @@
 
   window.openYouTubeVideoModal = openYouTubeVideoModal;
   window.closeYouTubeVideoModal = closeYouTubeVideoModal;
+
+  /* =========================================================
+     VIVO ORIGIN ISLAND / DYNAMIC COMPACT PILL
+     ========================================================= */
+  function injectOriginIslandDOM() {
+    if (document.getElementById("dynamicIsland")) return;
+    const aside = document.createElement("aside");
+    aside.className = "dynamic-island-container";
+    aside.id = "dynamicIsland";
+    aside.setAttribute("aria-label", "Origin Island Media Player");
+    aside.innerHTML = `
+      <div class="dynamic-island-compact" id="islandCompact" title="Tap to expand Origin Island">
+        <div class="island-compact-art-box">
+          <img class="island-compact-art" id="islandArtImg" src="../images/playx_icon.png" alt="Album Art">
+        </div>
+        <div class="island-compact-waveform" id="islandWaveform" aria-hidden="true">
+          <span class="island-wave-bar b1"></span>
+          <span class="island-wave-bar b2"></span>
+          <span class="island-wave-bar b3"></span>
+          <span class="island-wave-bar b4"></span>
+          <span class="island-wave-bar b5"></span>
+        </div>
+      </div>
+      <div class="dynamic-island-expanded" id="islandExpanded" style="display: none;">
+        <div class="island-expanded-top">
+          <img class="island-expanded-art" id="islandExpandedImg" src="../images/playx_icon.png" alt="Album Art">
+          <div class="island-expanded-info">
+            <div class="island-expanded-title" id="islandExpandedTitle">Song Title</div>
+            <div class="island-expanded-singer" id="islandExpandedSinger">Singer Name</div>
+          </div>
+        </div>
+        <div class="island-expanded-controls">
+          <button type="button" id="islandPrevBtn" aria-label="Previous Song">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+          </button>
+          <button type="button" id="islandPlayBtn" aria-label="Play or Pause">
+            <svg id="islandPlaySvg" viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <button type="button" id="islandNextBtn" aria-label="Next Song">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="m6 18 8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(aside);
+
+    const compact = document.getElementById("islandCompact");
+    const expanded = document.getElementById("islandExpanded");
+    if (compact && expanded) {
+      compact.addEventListener("click", () => {
+        compact.style.display = "none";
+        expanded.style.display = "flex";
+      });
+      expanded.addEventListener("click", (e) => {
+        if (!e.target.closest("button")) {
+          expanded.style.display = "none";
+          compact.style.display = "flex";
+        }
+      });
+      document.addEventListener("click", (e) => {
+        if (!aside.contains(e.target)) {
+          expanded.style.display = "none";
+          compact.style.display = "flex";
+        }
+      });
+    }
+
+    const prevBtnEl = document.getElementById("islandPrevBtn");
+    const nextBtnEl = document.getElementById("islandNextBtn");
+    const playBtnEl = document.getElementById("islandPlayBtn");
+    if (prevBtnEl) prevBtnEl.addEventListener("click", (e) => { e.stopPropagation(); playPrev(); });
+    if (nextBtnEl) nextBtnEl.addEventListener("click", (e) => { e.stopPropagation(); playNext(); });
+    if (playBtnEl) playBtnEl.addEventListener("click", (e) => { e.stopPropagation(); togglePlay(); });
+  }
+
+  function updateOriginIslandUI() {
+    const container = document.getElementById("dynamicIsland");
+    if (!container) return;
+    const song = songs[currentIndex];
+    if (!song) {
+      container.classList.remove("active");
+      return;
+    }
+    container.classList.add("active");
+
+    const songVid = song.youtubeId || song.videoId;
+    const coverUrl = songVid ? `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg` : (song.thumbnail || "../images/playx_icon.png");
+
+    const compactArt = document.getElementById("islandArtImg");
+    const expArt = document.getElementById("islandExpandedImg");
+    if (compactArt) compactArt.src = coverUrl;
+    if (expArt) expArt.src = coverUrl;
+
+    const titleEl = document.getElementById("islandExpandedTitle");
+    const singerEl = document.getElementById("islandExpandedSinger");
+    if (titleEl) titleEl.textContent = song.nameEn || song.name || festivalTitle;
+    if (singerEl) singerEl.textContent = song.singerEn || song.singer || "PlayX Festival Hits";
+
+    const waveform = document.getElementById("islandWaveform");
+    if (waveform) {
+      if (isPlaying) {
+        waveform.classList.add("playing");
+      } else {
+        waveform.classList.remove("playing");
+      }
+    }
+
+    const playSvg = document.getElementById("islandPlaySvg");
+    if (playSvg) {
+      playSvg.innerHTML = isPlaying 
+        ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
+        : '<path d="M8 5v14l11-7z"/>';
+    }
+  }
 
   function initClock() {
     const timeEl = document.getElementById("currentTime");
