@@ -859,6 +859,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
                   updateHindiTabTitle();
                 } else if (e.data === YT.PlayerState.BUFFERING) {
                   setBufferingState(true);
+                  try {
+                    if (MEDIA_SESSION_SUPPORTED) navigator.mediaSession.playbackState = "paused";
+                  } catch (err) {}
                 } else if (e.data === YT.PlayerState.PAUSED) {
                   setBufferingState(false);
                   setPlaybackState(false);
@@ -883,6 +886,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
               },
               onError: (err) => {
                 console.warn("YouTube embed audio notice:", err);
+                const errCode = (err && (err.data || err)) || 0;
+                if (errCode === 150 || errCode === 101 || errCode === 100) {
+                  console.warn(`[PlayX Hindi] Video blocked/restricted (code ${errCode}). Auto-skipping to next song...`);
+                  playNext();
+                }
               }
             }
           });

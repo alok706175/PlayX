@@ -251,6 +251,9 @@
               updateTabTitle();
             } else if (event.data === YT.PlayerState.BUFFERING) {
               handleBufferStall();
+              try {
+                if (MEDIA_SESSION_SUPPORTED) navigator.mediaSession.playbackState = "paused";
+              } catch (e) {}
             } else if (event.data === YT.PlayerState.PAUSED) {
               isPlaying = false;
               clearBufferStall();
@@ -261,13 +264,19 @@
               updateMediaSession();
               updateTabTitle();
             } else if (event.data === YT.PlayerState.ENDED) {
-              stopKeepAlive();
+              // Keep silent audio keeper active across song transition so Android doesn't revoke audio focus in pocket
               onSongEnded();
             }
           },
           onError: (err) => {
             console.warn("YouTube Player notice:", err);
-            handleBufferStall();
+            const errCode = (err && (err.data || err)) || 0;
+            if (errCode === 150 || errCode === 101 || errCode === 100) {
+              console.warn(`[PlayX] Video restricted/unavailable (code ${errCode}). Auto-skipping to next song...`);
+              playNext();
+            } else {
+              handleBufferStall();
+            }
           }
         }
       });
@@ -373,20 +382,30 @@
   let stallTimeout = null;
 
   function handleBufferStall() {
-    if (!isPlaying) return;
     clearTimeout(stallTimeout);
     updateTabTitle("buffering");
 
     stallTimeout = setTimeout(() => {
-      if (!isPlaying || !ytPlayer) return;
+      if (!ytPlayer) return;
       if (networkRetryCount < 3) {
         networkRetryCount++;
         console.warn(`[PlayX] Network stall detected in background. Auto-reconnecting attempt ${networkRetryCount}/3...`);
         const cur = (ytPlayer.getCurrentTime && ytPlayer.getCurrentTime()) || 0;
+        const song = songs[currentIndex];
+        const vid = song ? (song.youtubeId || song.videoId) : "";
         try {
-          ytPlayer.seekTo(cur, true);
-          ytPlayer.playVideo();
+          if (vid && typeof ytPlayer.loadVideoById === "function") {
+            ytPlayer.loadVideoById({ videoId: vid, startSeconds: Math.max(0, Math.floor(cur)) });
+            ytPlayer.playVideo();
+          } else if (ytPlayer.seekTo) {
+            ytPlayer.seekTo(cur, true);
+            ytPlayer.playVideo();
+          }
         } catch (e) {}
+      } else {
+        console.warn("[PlayX] Track stalled after 3 attempts. Auto-recovering to next track...");
+        clearBufferStall();
+        playNext();
       }
     }, 4500);
   }
