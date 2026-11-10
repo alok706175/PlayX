@@ -147,9 +147,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     initTheme();
     initLanguage();
     initClock();
-    initCanvas();
     initCategoryFilters();
-    initSearch();
     initPreviewAudio();
   }
 
@@ -465,14 +463,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     4. FESTIVE PARTICLE CANVAS ANIMATION (DISABLED)
-     ========================================================= */
-  function initCanvas() {
-    return; // Upward drifting particles removed as requested
-  }
-
-  /* =========================================================
-     5. CATEGORY FILTER NAVIGATION (BUTTONS)
+     4. CATEGORY FILTER NAVIGATION (BUTTONS)
      ========================================================= */
   function initCategoryFilters() {
     const buttons = document.querySelectorAll(".cat-btn");
@@ -509,157 +500,7 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
   }
 
   /* =========================================================
-     6. UNIFIED GLOBAL SEARCH ENGINE (SONGS & CATEGORIES)
-     ========================================================= */
-  const SONG_CATALOG_SOURCES = [
-    { name: "Hindi Songs", page: "hindi-songs/hindi-songs.html", file: "hindi-songs/hindi_songs.json" },
-    { name: "Chhath Puja", page: "chhath-puja/chhath-puja.html", file: "chhath-puja/songs.json" },
-    { name: "Bhojpuri Songs", page: "bhojpuri-songs/bhojpuri-songs.html", file: "bhojpuri-songs/bhojpuri_songs.json" },
-    { name: "Punjabi Songs", page: "punjabi-songs/punjabi-songs.html", file: "punjabi-songs/punjabi_songs.json" },
-    { name: "Haryanvi Songs", page: "haryanvi-songs/haryanvi-songs.html", file: "haryanvi-songs/haryanvi_songs.json" },
-    { name: "Holi Songs", page: "holi-songs/holi-songs.html", file: "holi-songs/holi_songs.json" },
-    { name: "Durga Puja", page: "durga-puja-songs/durga-puja-songs.html", file: "durga-puja-songs/durga_puja_songs.json" },
-    { name: "Saawan Songs", page: "saawan-songs/saawan-songs.html", file: "saawan-songs/saawan_songs.json" }
-  ];
-
-  let cachedSongCatalog = [];
-  let isCatalogLoaded = false;
-  let isCatalogLoading = false;
-
-  async function loadGlobalCatalog() {
-    if (isCatalogLoaded || isCatalogLoading) return;
-    isCatalogLoading = true;
-    try {
-      const promises = SONG_CATALOG_SOURCES.map(async (src) => {
-        try {
-          const res = await fetch(src.file);
-          if (res.ok) {
-            const list = await res.json();
-            return list.map(item => ({
-              ...item,
-              _categoryName: src.name,
-              _categoryPage: src.page
-            }));
-          }
-        } catch (e) {}
-        return [];
-      });
-      const results = await Promise.all(promises);
-      cachedSongCatalog = results.flat();
-      isCatalogLoaded = true;
-    } finally {
-      isCatalogLoading = false;
-    }
-  }
-
-  function initSearch() {
-    const searchInput = document.getElementById("heroSearchInput");
-    const clearBtn = document.getElementById("searchClearBtn");
-    const resultsContainer = document.getElementById("globalSearchResults");
-    const categoryCards = document.querySelectorAll(".category-card-btn");
-
-    if (!searchInput) return;
-
-    // Preload song catalog when user focuses or hovers search bar
-    searchInput.addEventListener("focus", loadGlobalCatalog);
-    searchInput.addEventListener("mouseenter", loadGlobalCatalog);
-
-    searchInput.addEventListener("input", async () => {
-      const q = searchInput.value.trim().toLowerCase();
-      if (clearBtn) clearBtn.style.display = q ? "block" : "none";
-
-      // 1. Filter Category Cards on DOM
-      categoryCards.forEach((card) => {
-        const text = card.textContent.toLowerCase();
-        if (!q || text.includes(q)) {
-          card.style.display = "flex";
-          card.style.opacity = "1";
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      // 2. Query Global Songs Catalog
-      if (!resultsContainer) return;
-
-      if (!q || q.length < 2) {
-        resultsContainer.style.display = "none";
-        resultsContainer.innerHTML = "";
-        return;
-      }
-
-      if (!isCatalogLoaded) {
-        await loadGlobalCatalog();
-      }
-
-      const matches = cachedSongCatalog.filter(song => {
-        const name = (song.nameEn || song.name || song.titleEn || song.title || "").toLowerCase();
-        const singer = (song.singerEn || song.singer || song.artistEn || song.artist || "").toLowerCase();
-        const tag = (song.tag || song.category || "").toLowerCase();
-        return name.includes(q) || singer.includes(q) || tag.includes(q);
-      }).slice(0, 12);
-
-      if (matches.length === 0) {
-        resultsContainer.innerHTML = `
-          <div style="padding: 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem;">
-            No songs matching "<strong>${searchInput.value.replace(/</g, "&lt;")}</strong>".
-          </div>
-        `;
-        resultsContainer.style.display = "block";
-        return;
-      }
-
-      resultsContainer.innerHTML = matches.map(song => {
-        const title = song.nameEn || song.name || song.titleEn || song.title;
-        const singer = song.singerEn || song.singer || song.artistEn || song.artist || "PlayX Artist";
-        const vid = song.youtubeId || song.videoId;
-        const thumb = vid ? `https://i.ytimg.com/vi/${vid}/default.jpg` : (song.thumbnail || song.cover || "images/playx_icon.png");
-        const playUrl = `${song._categoryPage}?play=${encodeURIComponent(song.id || vid)}`;
-
-        return `
-          <a href="${playUrl}" class="search-result-item" title="Play ${title}">
-            <img src="${thumb}" alt="${title}" class="search-result-thumb" loading="lazy" onerror="this.src='images/playx_icon.png'">
-            <div class="search-result-info">
-              <div class="search-result-title">${title}</div>
-              <div class="search-result-meta">
-                <span>${singer}</span>
-                <span>•</span>
-                <span class="search-result-badge">${song._categoryName}</span>
-              </div>
-            </div>
-            <div class="search-result-play-icon">▶</div>
-          </a>
-        `;
-      }).join("");
-
-      resultsContainer.style.display = "block";
-    });
-
-    // Close dropdown on outside click
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".hero-search-box") && resultsContainer) {
-        resultsContainer.style.display = "none";
-      }
-    });
-
-    if (clearBtn) {
-      clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        clearBtn.style.display = "none";
-        if (resultsContainer) {
-          resultsContainer.style.display = "none";
-          resultsContainer.innerHTML = "";
-        }
-        categoryCards.forEach((c) => {
-          c.style.display = "flex";
-          c.style.opacity = "1";
-        });
-      });
-    }
-  }
-
-  /* =========================================================
-     7. INSTANT AUDIO PREVIEWER DOCK
+     5. INSTANT AUDIO PREVIEWER DOCK
      ========================================================= */
   function initPreviewAudio() {
     const dock = document.getElementById("miniPlayerDock");

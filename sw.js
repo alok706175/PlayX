@@ -3,8 +3,8 @@
    App Shell Cache-First & Offline Resilience (v3)
    ========================================================= */
 
-const CACHE_NAME = "chhath-pwa-v106";
-const DYNAMIC_CACHE_NAME = "chhath-dynamic-v106";
+const CACHE_NAME = "chhath-pwa-v107";
+const DYNAMIC_CACHE_NAME = "chhath-dynamic-v107";
 
 const STATIC_ASSETS = [
   "./",
@@ -31,7 +31,6 @@ const STATIC_ASSETS = [
   "./favicon.io/android-chrome-512x512.png",
   "./favicon.io/favicon.svg",
   "./favicon.io/favicon.ico",
-  "./favicon.io/site.webmanifest",
   "./images/playx_icon.png",
   "./images/playx_icon.svg",
   "./images/playx_full_logo.png",
@@ -56,30 +55,18 @@ const STATIC_ASSETS = [
   "./hindi-songs/favicon.io/hindi-icon-512x512.png",
   "./hindi-songs/favicon.io/hindi-apple-touch-icon.png",
   "./saawan-songs/saawan-songs.html",
-  "./saawan-songs/festival-player.css",
-  "./saawan-songs/festival-player.js",
   "./saawan-songs/saawan_songs.json",
   "./saawan-songs/images/trishul_damru.svg",
   "./durga-puja-songs/durga-puja-songs.html",
-  "./durga-puja-songs/festival-player.css",
-  "./durga-puja-songs/festival-player.js",
   "./durga-puja-songs/durga_puja_songs.json",
   "./durga-puja-songs/images/durga_puja_logo.png",
   "./holi-songs/holi-songs.html",
-  "./holi-songs/festival-player.css",
-  "./holi-songs/festival-player.js",
   "./holi-songs/holi_songs.json",
   "./bhojpuri-songs/bhojpuri-songs.html",
-  "./bhojpuri-songs/festival-player.css",
-  "./bhojpuri-songs/festival-player.js",
   "./bhojpuri-songs/bhojpuri_songs.json",
   "./haryanvi-songs/haryanvi-songs.html",
-  "./haryanvi-songs/festival-player.css",
-  "./haryanvi-songs/festival-player.js",
   "./haryanvi-songs/haryanvi_songs.json",
   "./punjabi-songs/punjabi-songs.html",
-  "./punjabi-songs/festival-player.css",
-  "./punjabi-songs/festival-player.js",
   "./punjabi-songs/punjabi_songs.json",
   "./backend/admin-song-importer.css",
   "./backend/url-parser.js",

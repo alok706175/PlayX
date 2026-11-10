@@ -3187,11 +3187,11 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const title = isEn ? (s.nameEn || s.name) : s.name;
     const singer = isEn ? (s.singerEn || s.singer) : s.singer;
 
-    // Artwork handling
+    // Artwork handling: Compact pill always shows PlayX app logo; expanded sheet shows song cover
     const thumbUrl = s.thumbnail || (s.videoId ? `https://i.ytimg.com/vi/${s.videoId}/hqdefault.jpg` : "images/hindi_song_icon.png");
     const compactArtImg = document.getElementById("islandArtImg");
     const expArtImg = document.getElementById("islandExpandedImg");
-    if (compactArtImg) compactArtImg.src = thumbUrl;
+    if (compactArtImg) compactArtImg.src = "../images/playx_icon.png";
     if (expArtImg) expArtImg.src = thumbUrl;
 
     // Waveform state (Image 2: Pink Bars)

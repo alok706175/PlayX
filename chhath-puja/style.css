@@ -3037,3 +3037,193 @@ body.live-video-active .bg-overlay {
   margin-left: 6px;
   vertical-align: middle;
 }
+
+/* =========================================================
+   VIVO ORIGIN ISLAND / COMPACT PILL MEDIA PLAYER
+   ========================================================= */
+.dynamic-island-container {
+  display: none !important;
+}
+
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+  .dynamic-island-container {
+    display: block !important;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-28px) scale(0.9);
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Outfit", "Segoe UI", sans-serif;
+  }
+
+  .dynamic-island-container.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+/* Compact Pill Mode (Pixel-perfect Vivo Origin Island) */
+.dynamic-island-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 182px;
+  height: 38px;
+  padding: 0 14px 0 6px;
+  background: #000000;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dynamic-island-compact:active {
+  transform: scale(0.96);
+}
+
+.island-compact-art-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8.5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #141416;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+  padding: 2px;
+}
+
+.island-compact-art {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Neon Coral-Pink / Magenta Live Waveform Visualizer */
+.island-compact-waveform {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+  padding-right: 2px;
+}
+
+.island-compact-waveform .island-wave-bar {
+  width: 3.6px;
+  height: 4px;
+  border-radius: 999px;
+  background: #ff1352;
+  transition: height 0.18s ease, opacity 0.18s ease;
+}
+
+.island-compact-waveform.playing .island-wave-bar {
+  animation: islandWaveformBlink 0.72s ease-in-out infinite alternate;
+}
+
+.island-compact-waveform .island-wave-bar.b1 { animation-delay: 0.12s; }
+.island-compact-waveform .island-wave-bar.b2 { animation-delay: 0.32s; }
+.island-compact-waveform .island-wave-bar.b3 { animation-delay: 0.08s; }
+.island-compact-waveform .island-wave-bar.b4 { animation-delay: 0.42s; }
+.island-compact-waveform .island-wave-bar.b5 { animation-delay: 0.22s; }
+
+@keyframes islandWaveformBlink {
+  0% { height: 4px; }
+  50% { height: 20px; }
+  100% { height: 7px; }
+}
+
+.island-compact-waveform:not(.playing) .island-wave-bar {
+  height: 4px;
+  opacity: 0.45;
+}
+
+/* Expanded Card Mode */
+.dynamic-island-expanded {
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  background: #000000;
+  border-radius: 28px;
+  padding: 16px 18px 14px 18px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.98), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: islandSpringOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+@keyframes islandSpringOpen {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.island-expanded-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.island-expanded-art {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #1c1c1e;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.island-expanded-info {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.island-expanded-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.island-expanded-singer {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #8e8e93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.25;
+}
+
+.island-expanded-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.island-expanded-controls button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

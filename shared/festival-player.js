@@ -1473,7 +1473,7 @@
 
     const compactArt = document.getElementById("islandArtImg");
     const expArt = document.getElementById("islandExpandedImg");
-    if (compactArt) compactArt.src = coverUrl;
+    if (compactArt) compactArt.src = "../images/playx_icon.png";
     if (expArt) expArt.src = coverUrl;
 
     const titleEl = document.getElementById("islandExpandedTitle");

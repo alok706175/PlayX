@@ -147,19 +147,6 @@
   color: #d97706;
 }
 
-[data-theme="light"] .search-input-wrapper {
-  background: #ffffff;
-  border: 1.5px solid rgba(245, 158, 11, 0.45);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-}
-
-[data-theme="light"] .hero-search-input {
-  color: #0f172a;
-}
-
-[data-theme="light"] .hero-search-input::placeholder {
-  color: #94a3b8;
-}
 
 [data-theme="light"] .stat-item {
   background: rgba(255, 255, 255, 0.85);
@@ -448,13 +435,6 @@ body {
   overflow: hidden;
 }
 
-#particleCanvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.65;
-}
 
 .bg-ambient-layer {
   position: absolute;
@@ -914,78 +894,6 @@ body {
   color: #ffdd59;
 }
 
-/* Quick Search in Hero */
-.hero-search-box {
-  max-width: 600px;
-  margin: 0 auto 2.5rem;
-  position: relative;
-}
-
-.search-input-wrapper {
-  display: flex;
-  align-items: center;
-  background: rgba(22, 15, 40, 0.85);
-  border: 1.5px solid var(--border-glow);
-  border-radius: 999px;
-  padding: 0.35rem 0.5rem 0.35rem 1.25rem;
-  box-shadow: var(--shadow-md), var(--glow-gold);
-  transition: all 0.3s;
-}
-
-.search-input-wrapper:focus-within {
-  border-color: #ffd32a;
-  box-shadow: 0 0 30px rgba(255, 211, 42, 0.45);
-  transform: scale(1.01);
-}
-
-.search-icon {
-  width: 20px;
-  height: 20px;
-  color: var(--text-muted);
-  margin-right: 0.75rem;
-  flex-shrink: 0;
-}
-
-.hero-search-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #fff;
-  font-size: 1rem;
-  width: 100%;
-  font-family: var(--font-body);
-}
-
-.hero-search-input::placeholder {
-  color: var(--text-dim);
-}
-
-.search-clear-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  cursor: pointer;
-  padding: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-.search-clear-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ef4444;
-}
-
-[data-theme="light"] .search-clear-btn:hover {
-  background: rgba(0, 0, 0, 0.08);
-}
 
 /* Quick Stat Counters */
 .hero-stats-row {
@@ -1992,10 +1900,6 @@ body {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
   }
-
-  .hero-search-box {
-    max-width: 540px;
-  }
 }
 
 @media (max-width: 920px) {
@@ -2071,12 +1975,6 @@ body {
   .hero-subtitle {
     font-size: 0.92rem;
     padding: 0 0.5rem;
-  }
-
-  .hero-search-box {
-    max-width: 100%;
-    padding: 0 0.25rem;
-    margin-bottom: 2rem;
   }
 
   .category-grid {
