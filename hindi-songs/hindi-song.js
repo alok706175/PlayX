@@ -3338,9 +3338,9 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     }
     list.push(
       { src: makeUrl("../images/playx_icon.png"), sizes: "512x512", type: "image/png" },
-      { src: makeUrl("images/hindi_song_icon.png"), sizes: "512x512", type: "image/png" },
-      { src: makeUrl("favicon.io/hindi-icon-512x512.png"), sizes: "512x512", type: "image/png" },
-      { src: makeUrl("favicon.io/hindi-icon-192x192.png"), sizes: "192x192", type: "image/png" }
+      { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" },
+      { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
+      { src: makeUrl("../favicon.io/favicon-32x32.png"), sizes: "32x32", type: "image/png" }
     );
     return list;
   }
