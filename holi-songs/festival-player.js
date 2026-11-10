@@ -629,21 +629,42 @@
 
   function getFestivalArtwork(song) {
     const list = [];
+    const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
+    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf("/") + 1);
+    const makeUrl = (rel) => new URL(rel, origin + basePath).href;
+
     const songVid = song ? (song.youtubeId || song.videoId) : "";
-    if (songVid) {
+    const songImg = song ? (song.thumbnail || song.cover || song.image) : "";
+
+    if (songImg && songImg.startsWith("http")) {
+      list.push(
+        { src: songImg, sizes: "512x512", type: "image/jpeg" },
+        { src: songImg, sizes: "384x384", type: "image/jpeg" },
+        { src: songImg, sizes: "256x256", type: "image/jpeg" },
+        { src: songImg, sizes: "192x192", type: "image/jpeg" },
+        { src: songImg, sizes: "128x128", type: "image/jpeg" },
+        { src: songImg, sizes: "96x96", type: "image/jpeg" }
+      );
+    } else if (songVid) {
       list.push(
         { src: `https://i.ytimg.com/vi/${songVid}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
         { src: `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" },
-        { src: `https://i.ytimg.com/vi/${songVid}/mqdefault.jpg`, sizes: "320x180", type: "image/jpeg" }
+        { src: `https://i.ytimg.com/vi/${songVid}/mqdefault.jpg`, sizes: "320x180", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg`, sizes: "512x512", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg`, sizes: "192x192", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${songVid}/hqdefault.jpg`, sizes: "96x96", type: "image/jpeg" }
       );
-    } else if (song && song.thumbnail) {
-      list.push({ src: song.thumbnail, sizes: "512x512", type: "image/jpeg" });
     }
-    const origin = window.location.origin || (window.location.protocol + "//" + window.location.host);
-    list.push(
-      { src: new URL("../images/playx_icon.png", origin + window.location.pathname).href, sizes: "512x512", type: "image/png" },
-      { src: new URL("../favicon.io/android-chrome-512x512.png", origin + window.location.pathname).href, sizes: "512x512", type: "image/png" }
-    );
+
+    try {
+      list.push(
+        { src: makeUrl("../images/playx_icon.png"), sizes: "512x512", type: "image/png" },
+        { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" },
+        { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
+        { src: makeUrl("../favicon.io/favicon-32x32.png"), sizes: "32x32", type: "image/png" }
+      );
+    } catch (e) {}
+
     return list;
   }
 

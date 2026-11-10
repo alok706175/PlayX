@@ -11,6 +11,7 @@
   "background_color": "#24080a",
   "categories": [
     "music",
+    "audio",
     "entertainment",
     "lifestyle"
   ],
@@ -18,29 +19,59 @@
     {
       "src": "favicon.io/favicon-16x16.png",
       "sizes": "16x16",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "favicon.io/favicon-32x32.png",
       "sizes": "32x32",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "favicon.io/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "favicon.io/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.io/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "favicon.io/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Play Hindi Songs",
+      "short_name": "Hindi Songs",
+      "description": "Stream 200+ Bollywood Hindi Classics",
+      "url": "./hindi-songs/hindi-songs.html",
+      "icons": [{ "src": "hindi-songs/favicon.io/hindi-icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Chhath Puja Mahaparv",
+      "short_name": "Chhath Songs",
+      "description": "Stream Chhath Geet in 320 Kbps",
+      "url": "./chhath-puja/chhath-puja.html",
+      "icons": [{ "src": "favicon.io/android-chrome-192x192.png", "sizes": "192x192" }]
     }
   ],
   "share_target": {

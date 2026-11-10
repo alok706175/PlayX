@@ -2379,17 +2379,29 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
       const artwork = [];
       const vid = s.videoId || s.youtubeId;
       if (s.cover && !s.cover.includes("favicon")) {
-        artwork.push({ src: s.cover.startsWith("http") ? s.cover : makeUrl(s.cover), sizes: "512x512", type: "image/jpeg" });
+        const coverUrl = s.cover.startsWith("http") ? s.cover : makeUrl(s.cover);
+        artwork.push(
+          { src: coverUrl, sizes: "512x512", type: "image/jpeg" },
+          { src: coverUrl, sizes: "384x384", type: "image/jpeg" },
+          { src: coverUrl, sizes: "256x256", type: "image/jpeg" },
+          { src: coverUrl, sizes: "192x192", type: "image/jpeg" },
+          { src: coverUrl, sizes: "128x128", type: "image/jpeg" },
+          { src: coverUrl, sizes: "96x96", type: "image/jpeg" }
+        );
       } else if (vid) {
         artwork.push(
           { src: `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
-          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" }
+          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" },
+          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "512x512", type: "image/jpeg" },
+          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "192x192", type: "image/jpeg" },
+          { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "96x96", type: "image/jpeg" }
         );
       }
       artwork.push(
         { src: makeUrl("../images/playx_icon.png"), sizes: "512x512", type: "image/png" },
         { src: makeUrl("../favicon.io/android-chrome-512x512.png"), sizes: "512x512", type: "image/png" },
-        { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" }
+        { src: makeUrl("../favicon.io/android-chrome-192x192.png"), sizes: "192x192", type: "image/png" },
+        { src: makeUrl("../favicon.io/favicon-32x32.png"), sizes: "32x32", type: "image/png" }
       );
 
       navigator.mediaSession.metadata = new MediaMetadata({

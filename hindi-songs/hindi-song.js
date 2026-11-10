@@ -3411,17 +3411,29 @@ try { localStorage.setItem("playx_lang", "en"); } catch(e){}
     const list = [];
     const vid = s ? (s.videoId || s.youtubeId) : "";
     if (s && s.image) {
-      list.push({ src: s.image.startsWith("http") ? s.image : makeUrl(s.image), sizes: "512x512", type: "image/jpeg" });
+      const imgUrl = s.image.startsWith("http") ? s.image : makeUrl(s.image);
+      list.push(
+        { src: imgUrl, sizes: "512x512", type: "image/jpeg" },
+        { src: imgUrl, sizes: "384x384", type: "image/jpeg" },
+        { src: imgUrl, sizes: "256x256", type: "image/jpeg" },
+        { src: imgUrl, sizes: "192x192", type: "image/jpeg" },
+        { src: imgUrl, sizes: "128x128", type: "image/jpeg" },
+        { src: imgUrl, sizes: "96x96", type: "image/jpeg" }
+      );
     } else if (vid) {
       list.push(
         { src: `https://i.ytimg.com/vi/${vid}/maxresdefault.jpg`, sizes: "1280x720", type: "image/jpeg" },
-        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" }
+        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "480x360", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "512x512", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "192x192", type: "image/jpeg" },
+        { src: `https://i.ytimg.com/vi/${vid}/hqdefault.jpg`, sizes: "96x96", type: "image/jpeg" }
       );
     }
     list.push(
       { src: makeUrl("images/hindi_song_icon.png"), sizes: "512x512", type: "image/png" },
       { src: makeUrl("favicon.io/hindi-icon-512x512.png"), sizes: "512x512", type: "image/png" },
       { src: makeUrl("favicon.io/hindi-icon-192x192.png"), sizes: "192x192", type: "image/png" },
+      { src: makeUrl("favicon.io/hindi-icon-96x96.png"), sizes: "96x96", type: "image/png" },
       { src: makeUrl("favicon.io/hindi-icon-32x32.png"), sizes: "32x32", type: "image/png" }
     );
     return list;
