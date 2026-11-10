@@ -666,17 +666,40 @@
     }
   }
 
+  function ensureNotificationPermission() {
+    if (typeof Notification !== "undefined" && Notification.permission === "default") {
+      try {
+        Notification.requestPermission().catch(() => {});
+      } catch (e) {}
+    }
+  }
+
   function initSilentAudioKeeper() {
-    if (silentAudioKeeper) return;
+    if (silentAudioKeeper && document.getElementById("playxMediaAnchor")) return;
     try {
-      silentAudioKeeper = new Audio(getSilentAudioUrl());
-      silentAudioKeeper.loop = true;
-      silentAudioKeeper.volume = 0.01; // Non-zero volume (>0) allows Chrome on Android to register active media session
-      silentAudioKeeper.preload = "auto";
+      let el = document.getElementById("playxMediaAnchor");
+      if (!el) {
+        el = document.createElement("audio");
+        el.id = "playxMediaAnchor";
+        el.setAttribute("playsinline", "");
+        el.setAttribute("webkit-playsinline", "");
+        el.setAttribute("aria-hidden", "true");
+        el.setAttribute("title", "PlayX Media Service");
+        el.style.cssText = "position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;opacity:0.01;pointer-events:none;";
+        document.body.appendChild(el);
+      }
+      el.src = getSilentAudioUrl();
+      el.loop = true;
+      el.volume = 0.01; // Non-zero volume allows Android & WebAPK to register active foreground media session
+      el.preload = "auto";
+      el.onplay = () => { updateMediaSession(); };
+      el.onplaying = () => { updateMediaSession(); };
+      silentAudioKeeper = el;
     } catch (e) {}
   }
 
   function startKeepAlive() {
+    ensureNotificationPermission();
     initSilentAudioKeeper();
     if (silentAudioKeeper && silentAudioKeeper.paused) {
       silentAudioKeeper.play().catch(() => {});
