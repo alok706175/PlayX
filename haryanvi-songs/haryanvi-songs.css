@@ -5,9 +5,9 @@
 
 :root {
   --bg-deep: #070a10;
-  --bg-card: rgba(15, 23, 42, 0.75);
-  --bg-card-hover: rgba(22, 33, 58, 0.85);
-  --bg-glass: rgba(10, 15, 26, 0.82);
+  --bg-card: rgba(15, 23, 42, 0.78);
+  --bg-card-hover: rgba(22, 33, 58, 0.88);
+  --bg-glass: rgba(10, 15, 26, 0.88);
   --border-subtle: rgba(255, 255, 255, 0.09);
   --border-glow: rgba(16, 185, 129, 0.35);
   --border-focus: #10b981;
@@ -33,9 +33,9 @@
    ========================================================= */
 [data-theme="warm-amber"] {
   --bg-deep: #0c0906;
-  --bg-card: rgba(28, 20, 14, 0.78);
-  --bg-card-hover: rgba(38, 27, 18, 0.88);
-  --bg-glass: rgba(18, 13, 8, 0.86);
+  --bg-card: rgba(28, 20, 14, 0.82);
+  --bg-card-hover: rgba(38, 27, 18, 0.9);
+  --bg-glass: rgba(18, 13, 8, 0.9);
   --border-subtle: rgba(245, 158, 11, 0.16);
   --border-glow: rgba(245, 158, 11, 0.45);
   --accent: #f59e0b;
@@ -47,9 +47,9 @@
 
 [data-theme="twilight"] {
   --bg-deep: #0b0914;
-  --bg-card: rgba(22, 18, 40, 0.78);
-  --bg-card-hover: rgba(32, 26, 56, 0.88);
-  --bg-glass: rgba(14, 11, 24, 0.86);
+  --bg-card: rgba(22, 18, 40, 0.82);
+  --bg-card-hover: rgba(32, 26, 56, 0.9);
+  --bg-glass: rgba(14, 11, 24, 0.9);
   --border-subtle: rgba(168, 85, 247, 0.16);
   --border-glow: rgba(168, 85, 247, 0.45);
   --accent: #a855f7;
@@ -61,10 +61,10 @@
 
 [data-theme="emerald"] {
   --bg-deep: #040e0b;
-  --bg-card: rgba(8, 28, 20, 0.78);
-  --bg-card-hover: rgba(12, 40, 28, 0.88);
-  --bg-glass: rgba(5, 18, 13, 0.86);
-  --border-subtle: rgba(16, 185, 129, 0.18);
+  --bg-card: rgba(8, 28, 20, 0.82);
+  --bg-card-hover: rgba(12, 40, 28, 0.9);
+  --bg-glass: rgba(5, 18, 13, 0.9);
+  --border-subtle: rgba(168, 185, 129, 0.18);
   --border-glow: rgba(16, 185, 129, 0.5);
   --accent: #10b981;
   --accent-secondary: #14b8a6;
@@ -94,7 +94,15 @@ body {
   transition: background-color var(--transition-normal);
 }
 
-/* Background Layers */
+/* Disable Any Overlapping Floating Pill on Mobile */
+.dynamic-island-container {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+}
+
+/* Ambient Background Layers */
 .bg-layer {
   position: fixed;
   inset: 0;
@@ -123,7 +131,7 @@ body {
 }
 
 /* =========================================================
-   TOP NAVIGATION FLOATING GLASS NAVBAR (FLAWLESS MOBILE ALIGN)
+   TOP NAVIGATION FLOATING GLASS NAVBAR (FLAWLESS 3-ZONE LAYOUT)
    ========================================================= */
 .player-navbar {
   position: sticky;
@@ -142,7 +150,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.85rem;
+  gap: 0.75rem;
   width: 100%;
 }
 
@@ -150,14 +158,14 @@ body {
 .btn-back-home {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.42rem 0.9rem;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
   color: var(--text-main);
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
@@ -175,18 +183,18 @@ body {
   flex-shrink: 0;
 }
 
-/* Brand Logo Badge */
+/* Center Brand Logo & Title Badge */
 .page-title-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--text-main);
   white-space: nowrap;
   letter-spacing: -0.2px;
-  min-width: 0;
+  flex-shrink: 0;
 }
 
 .page-title-badge img {
@@ -198,16 +206,11 @@ body {
   filter: drop-shadow(0 0 8px var(--accent-glow));
 }
 
-.page-title-badge span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* Right Actions Cluster */
 .nav-right-actions {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: 0.5rem;
   flex-shrink: 0;
 }
 
@@ -215,7 +218,7 @@ body {
 .time-box {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.42rem;
   padding: 0.38rem 0.75rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
@@ -241,7 +244,7 @@ body {
   50% { transform: scale(1.35); opacity: 0.5; }
 }
 
-/* Navbar Icon Action Buttons (Theme, Share, More) */
+/* Action Buttons (Theme, Share, More) */
 .btn-theme-toggle,
 .btn-share-main,
 .btn-nav-more {
@@ -362,7 +365,7 @@ body {
    ========================================================= */
 .hero-section {
   text-align: center;
-  padding: 2.2rem 1rem 1.4rem;
+  padding: 2rem 1rem 1.25rem;
   max-width: 860px;
   margin: 0 auto;
 }
@@ -380,16 +383,16 @@ body {
   letter-spacing: 0.8px;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.8rem;
   box-shadow: 0 2px 14px rgba(16, 185, 129, 0.15);
 }
 
 .main-title {
   font-family: 'Outfit', sans-serif;
-  font-size: 2.65rem;
+  font-size: 2.6rem;
   font-weight: 800;
   line-height: 1.18;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.5rem;
   letter-spacing: -0.5px;
   color: var(--text-main);
 }
@@ -402,7 +405,7 @@ body {
 }
 
 .tagline-wrapper {
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 .tagline {
@@ -416,14 +419,14 @@ body {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
 }
 
 .hero-feat-pill {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  padding: 0.32rem 0.8rem;
+  padding: 0.3rem 0.75rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
@@ -446,22 +449,22 @@ body {
   display: grid;
   grid-template-columns: 410px 1fr;
   gap: 2rem;
-  padding: 1.5rem 0 3.5rem;
+  padding: 1.25rem 0 3.5rem;
   align-items: start;
 }
 
 /* =========================================================
-   LEFT AUDIO / VIDEO DECK CARD
+   LEFT AUDIO & VIDEO DECK CARD
    ========================================================= */
 .audio-deck-card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-lg);
-  padding: 1.85rem 1.75rem;
+  padding: 1.75rem 1.6rem;
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
   position: sticky;
-  top: 5.25rem;
+  top: 5rem;
   box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
@@ -476,14 +479,26 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-bottom: 1.15rem;
+  margin-bottom: 1.1rem;
+}
+
+.deck-tag {
+  display: inline-block;
+  padding: 0.24rem 0.85rem;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--accent);
 }
 
 .btn-view-toggle {
   display: inline-flex !important;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.38rem 0.85rem;
+  padding: 0.35rem 0.8rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-full);
@@ -509,7 +524,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 210px;
 }
 
 /* Inline Video Stage */
@@ -537,7 +551,7 @@ body {
   top: auto !important;
   z-index: 10 !important;
   border-radius: var(--radius-md);
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.25rem;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.16);
   background: #000;
@@ -552,8 +566,8 @@ body {
 
 /* Rotating Vinyl Record Deck */
 .vinyl-deck {
-  width: 200px;
-  height: 200px;
+  width: 195px;
+  height: 195px;
   border-radius: 50%;
   background: 
     radial-gradient(circle at center, transparent 33px, rgba(0, 0, 0, 0.65) 34px),
@@ -563,7 +577,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.25rem;
   animation: rotateDisc 14s linear infinite;
   animation-play-state: paused;
   position: relative;
@@ -576,8 +590,8 @@ body {
 }
 
 .vinyl-center-label {
-  width: 76px;
-  height: 76px;
+  width: 74px;
+  height: 74px;
   border-radius: 50%;
   background: #090d16;
   border: 2px solid rgba(255, 255, 255, 0.22);
@@ -599,20 +613,7 @@ body {
 /* Track Information */
 .deck-track-info {
   width: 100%;
-  margin-bottom: 1.25rem;
-}
-
-.deck-tag {
-  display: inline-block;
-  padding: 0.24rem 0.85rem;
-  background: rgba(16, 185, 129, 0.12);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: var(--radius-full);
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  color: var(--accent);
-  margin-bottom: 0.55rem;
+  margin-bottom: 1.15rem;
 }
 
 .deck-title {
@@ -640,7 +641,7 @@ body {
 /* Seek Bar & Timestamps */
 .deck-seek-wrap {
   width: 100%;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.15rem;
 }
 
 .seek-slider {
@@ -667,14 +668,14 @@ body {
   margin-top: 0.45rem;
 }
 
-/* Deck Playback Controls Row (5 Perfectly Spaced Buttons) */
+/* Deck Playback Controls Row (5 Symmetrical Buttons) */
 .deck-controls-row {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 1rem;
   width: 100%;
-  margin-bottom: 1.35rem;
+  margin-bottom: 1.25rem;
 }
 
 .control-btn {
@@ -729,7 +730,7 @@ body {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-top: 1.15rem;
+  padding-top: 1.1rem;
   border-top: 1px solid var(--border-subtle);
   gap: 0.75rem;
 }
@@ -1220,27 +1221,27 @@ body {
 }
 
 /* =========================================================
-   RESPONSIVE LAYOUT & MOBILE UX ALIGNMENT
-   (NOTHING HIDDEN, PERFECT TOUCH ERGONOMICS)
+   MOBILE RESPONSIVE UX ENGINE
+   (ALL BUTTONS VISIBLE, ZERO CLIPPING, ERGONOMIC TOUCH SCREEN)
    ========================================================= */
 
 /* Tablets & Laptops (<= 1024px) */
 @media (max-width: 1024px) {
   .player-page-grid {
     grid-template-columns: 1fr;
-    gap: 1.75rem;
-    padding: 1.25rem 0 3rem;
+    gap: 1.5rem;
+    padding: 1rem 0 3rem;
   }
 
   .audio-deck-card {
     position: static;
-    max-width: 580px;
+    max-width: 540px;
     width: 100%;
     margin: 0 auto;
   }
 
   .playlist-card {
-    max-width: 580px;
+    max-width: 540px;
     width: 100%;
     margin: 0 auto;
   }
@@ -1252,39 +1253,40 @@ body {
     padding: 0 0.85rem;
   }
 
+  .hero-section {
+    padding: 1.25rem 0.5rem 0.85rem;
+  }
+
   .main-title {
-    font-size: 2.1rem;
+    font-size: 1.95rem;
   }
 
   .tagline {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .audio-deck-card {
-    padding: 1.6rem 1.25rem;
+    padding: 1.35rem 1.15rem;
   }
 
   .vinyl-deck {
-    width: 175px;
-    height: 175px;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 1rem;
   }
 
   .vinyl-center-label {
-    width: 66px;
-    height: 66px;
-  }
-
-  .playlist-card {
-    padding: 1.5rem 1.15rem;
+    width: 60px;
+    height: 60px;
   }
 }
 
-/* Small Screens (<= 600px) */
-@media (max-width: 600px) {
+/* Standard Mobile Devices (<= 640px) */
+@media (max-width: 640px) {
   .playlist-header {
     flex-direction: column;
     align-items: stretch;
-    gap: 0.85rem;
+    gap: 0.75rem;
   }
 
   .playlist-header h3 {
@@ -1295,36 +1297,24 @@ body {
     max-width: 100%;
   }
 
-  .song-item-row {
-    padding: 0.65rem 0.8rem;
-    gap: 0.7rem;
-  }
-}
-
-/* Standard Mobile Phones (<= 480px, e.g. iPhone, Pixel, Galaxy) */
-@media (max-width: 480px) {
-  .container {
-    padding: 0 0.65rem;
-  }
-
+  /* Compact Navbar */
   .player-navbar {
-    padding: 0.5rem 0;
+    padding: 0.45rem 0;
   }
 
   .navbar-inner {
     gap: 0.45rem;
   }
 
-  /* Compact Home Button - Icon + Short text */
   .btn-back-home {
     padding: 0.35rem 0.65rem;
     font-size: 0.78rem;
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   .page-title-badge {
-    font-size: 1rem;
-    gap: 0.4rem;
+    font-size: 0.98rem;
+    gap: 0.35rem;
   }
 
   .page-title-badge img {
@@ -1332,84 +1322,128 @@ body {
     height: 24px;
   }
 
-  /* Right Action Buttons: compact icon pills, ZERO hidden buttons */
+  /* Right Action Cluster */
   .nav-right-actions {
-    gap: 0.38rem;
+    gap: 0.4rem;
   }
 
-  /* Keep time visible in compact format */
-  .time-box {
-    display: inline-flex !important;
-    padding: 0.32rem 0.55rem;
-    font-size: 0.72rem;
-    gap: 0.35rem;
+  /* Hide navbar time-box on phone so title never truncates */
+  .navbar-inner .time-box {
+    display: none !important;
   }
 
+  /* 3 Icon Buttons on Right: 34px round targets */
   .btn-theme-toggle,
   .btn-share-main {
-    padding: 0.35rem 0.55rem;
-    font-size: 0.76rem;
-    gap: 0.3rem;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0.95rem;
   }
 
-  /* Hide verbose text label on small mobile, keep icon */
   .btn-theme-toggle span:last-child,
   .btn-share-main span:last-child {
-    display: none;
+    display: none !important;
   }
 
   .btn-nav-more {
-    width: 32px;
-    height: 32px;
+    width: 34px;
+    height: 34px;
   }
 
-  /* Hero Section Mobile Compression */
+  /* Compact Hero: Gives 250px vertical space back to screen! */
   .hero-section {
-    padding: 1.5rem 0.5rem 1rem;
+    padding: 0.85rem 0.5rem 0.65rem;
+  }
+
+  .hero-badge {
+    padding: 0.22rem 0.75rem;
+    font-size: 0.72rem;
+    margin-bottom: 0.35rem;
   }
 
   .main-title {
-    font-size: 1.85rem;
+    font-size: 1.55rem;
+    line-height: 1.22;
+    margin-bottom: 0.25rem;
+  }
+
+  .tagline-wrapper {
+    margin-bottom: 0.5rem;
+  }
+
+  .tagline {
+    font-size: 0.82rem;
   }
 
   .hero-features-bar {
-    gap: 0.45rem;
+    gap: 0.35rem;
   }
 
   .hero-feat-pill {
-    padding: 0.25rem 0.65rem;
+    padding: 0.2rem 0.55rem;
     font-size: 0.72rem;
   }
 
-  /* Deck Card Responsive Sizing */
+  /* Compact Audio Deck: Controls fit on single screen! */
   .audio-deck-card {
-    padding: 1.35rem 1rem;
+    padding: 1rem 0.85rem;
     border-radius: var(--radius-md);
   }
 
+  .deck-header-bar {
+    margin-bottom: 0.5rem;
+  }
+
+  .deck-tag {
+    font-size: 0.72rem;
+    padding: 0.18rem 0.65rem;
+  }
+
+  .btn-view-toggle {
+    font-size: 0.74rem;
+    padding: 0.28rem 0.65rem;
+  }
+
+  /* Responsive Vinyl: Fits seamlessly above controls */
   .vinyl-deck {
-    width: 155px;
-    height: 155px;
-    margin-bottom: 1.15rem;
+    width: 140px;
+    height: 140px;
+    margin-bottom: 0.75rem;
+    border-width: 4px;
   }
 
   .vinyl-center-label {
-    width: 58px;
-    height: 58px;
+    width: 52px;
+    height: 52px;
+  }
+
+  .deck-track-info {
+    margin-bottom: 0.65rem;
   }
 
   .deck-title {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.15rem;
   }
 
   .deck-singer {
-    font-size: 0.86rem;
+    font-size: 0.82rem;
   }
 
-  /* Playback Controls Row: 5 Touch-Friendly Buttons Perfectly Centered */
+  .deck-seek-wrap {
+    margin-bottom: 0.75rem;
+  }
+
+  .seek-time-row {
+    font-size: 0.74rem;
+  }
+
+  /* 5 Playback Buttons: Centered & Touch-Friendly */
   .deck-controls-row {
-    gap: 0.65rem;
-    margin-bottom: 1.15rem;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
   }
 
   .control-btn {
@@ -1426,24 +1460,28 @@ body {
 
   /* Extra Controls Row: Volume, Speed, Sleep Timer */
   .deck-extra-controls {
-    padding-top: 0.95rem;
+    padding-top: 0.75rem;
     gap: 0.5rem;
     justify-content: space-between;
   }
 
+  .volume-group {
+    gap: 0.4rem;
+  }
+
   .volume-slider {
-    width: 62px;
+    width: 58px;
   }
 
   .btn-speed,
   #playerSleepBtn {
-    padding: 0.32rem 0.65rem;
+    padding: 0.3rem 0.65rem;
     font-size: 0.76rem;
   }
 
-  /* Song Row Fluid Alignment - NOTHING HIDDEN! */
+  /* Playlist Deck */
   .playlist-card {
-    padding: 1.25rem 0.85rem;
+    padding: 1.15rem 0.75rem;
     border-radius: var(--radius-md);
   }
 
@@ -1481,9 +1519,9 @@ body {
     gap: 0.45rem;
   }
 
-  /* Compact Video Icon Pill - Saves space while keeping video 100% accessible */
+  /* Compact Video Icon Pill - Keeps Video 100% accessible */
   .btn-row-video {
-    padding: 0.3rem 0.45rem;
+    padding: 0.28rem 0.45rem;
     font-size: 0.72rem;
   }
 
@@ -1510,19 +1548,14 @@ body {
   }
 }
 
-/* Ultra-Narrow Screens (<= 360px, e.g. iPhone SE, Fold Outer) */
+/* Ultra-Compact Screens (<= 360px, e.g. iPhone SE, Fold) */
 @media (max-width: 360px) {
   .container {
-    padding: 0 0.45rem;
-  }
-
-  .btn-back-home {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.72rem;
+    padding: 0 0.4rem;
   }
 
   .page-title-badge {
-    font-size: 0.92rem;
+    font-size: 0.9rem;
   }
 
   .page-title-badge img {
@@ -1530,8 +1563,9 @@ body {
     height: 20px;
   }
 
-  .time-box {
-    display: none !important;
+  .btn-back-home {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.74rem;
   }
 
   .deck-controls-row {
@@ -1551,12 +1585,12 @@ body {
   }
 
   .volume-slider {
-    width: 50px;
+    width: 46px;
   }
 
   .song-item-row {
-    padding: 0.55rem 0.45rem;
-    gap: 0.45rem;
+    padding: 0.5rem 0.45rem;
+    gap: 0.4rem;
   }
 
   .song-num {
@@ -1574,8 +1608,8 @@ body {
   }
 
   .btn-row-video {
-    padding: 0.25rem 0.4rem;
-    font-size: 0.7rem;
+    padding: 0.22rem 0.38rem;
+    font-size: 0.68rem;
   }
 
   .row-play-btn {

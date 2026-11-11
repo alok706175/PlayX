@@ -1388,6 +1388,7 @@
      VIVO ORIGIN ISLAND / DYNAMIC COMPACT PILL
      ========================================================= */
   function injectOriginIslandDOM() {
+    return; // Disabled to prevent blocking mobile navbar
     if (document.getElementById("dynamicIsland")) return;
     const aside = document.createElement("aside");
     aside.className = "dynamic-island-container";
