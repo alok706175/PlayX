@@ -1246,7 +1246,7 @@
           <div class="song-singer-text">${song.singerEn || song.singer} • <span class="tag-pill">${song.tag || song.category}</span></div>
         </div>
         <div class="song-actions-col">
-          ${rowVid ? `<button class="btn-row-video" type="button" title="Watch Video">Play Video</button>` : ""}
+          ${rowVid ? `<button class="btn-row-video" type="button" title="Watch Video" aria-label="Watch Video"><span class="btn-video-icon">🎬</span><span class="btn-video-text">Video</span></button>` : ""}
           <button class="fav-icon-btn ${isFav ? "liked" : ""}" data-id="${song.id}" type="button" title="Favorites">${isFav ? "❤️" : "🤍"}</button>
           <span class="song-dur-text">${song.duration || "4:00"}</span>
           <button class="row-play-btn" type="button" title="Play">▶</button>

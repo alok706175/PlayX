@@ -7,11 +7,12 @@
   <title>Haryanvi Hit Songs | Top DJ & Folk Tracks - PlayX</title>
   <link rel="canonical" href="https://www.mahaparvchhathpuja.me/haryanvi-songs/haryanvi-songs.html">
   <link rel="stylesheet" href="../shared/festival-player.css">
+  <link rel="stylesheet" href="haryanvi-songs.css">
   <link rel="stylesheet" href="../shared/clear-data.css">
   <link rel="icon" type="image/svg+xml" href="images/haryanvi_logo.svg">
   <link rel="manifest" href="../site.webmanifest">
   <meta name="description" content="Listen to all-time hit Haryanvi DJ songs, dance numbers, and bass-boosted tracks in 320 Kbps HD audio on PlayX.">
-  <meta name="theme-color" content="#0d1117">
+  <meta name="theme-color" content="#070a10">
   <!-- Fonts -->
   <link rel="stylesheet" href="../shared/playx-dialog.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,24 +29,27 @@
   <!-- Top Navigation Floating Glass Header -->
   <header class="player-navbar">
     <div class="container navbar-inner">
-      <a href="../home.html" class="btn-back-home" title="Go Home" aria-label="Go Home">
+      <!-- Go Home Button -->
+      <a href="../home.html" class="btn-back-home" title="Go to PlayX Home" aria-label="Go to Home">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="19" y1="12" x2="5" y2="12"></line>
           <polyline points="12 19 5 12 12 5"></polyline>
         </svg>
-        <span>Go Home</span>
+        <span>Home</span>
       </a>
 
+      <!-- Page Logo & Title Badge -->
       <div class="page-title-badge">
         <img src="images/haryanvi_logo.svg" alt="Haryanvi Hits Logo">
-        <span>Haryanvi Hit Songs</span>
+        <span>Haryanvi Hits</span>
       </div>
 
+      <!-- Right Actions: Time, Theme, Share, More -->
       <div class="nav-right-actions">
         <!-- Live IST Clock -->
         <div class="time-box" title="Indian Standard Time (IST)">
           <span class="live-dot" aria-hidden="true"></span>
-          <span id="currentTime">--:-- --</span>
+          <span id="currentTime">--:--</span>
         </div>
 
         <!-- Eye-Care Theme Selector Dropdown -->
@@ -57,27 +61,27 @@
           <div class="theme-dropdown-menu" id="themeDropdownMenu" role="menu">
             <button class="theme-menu-item active" type="button" data-set-theme="midnight" role="menuitem">
               <span class="theme-color-preview" style="background: #0a0e17;"></span>
-              <span>🌙 Midnight Comfort</span>
+              <span>🌙 Midnight</span>
             </button>
             <button class="theme-menu-item" type="button" data-set-theme="warm-amber" role="menuitem">
               <span class="theme-color-preview" style="background: #f59e0b;"></span>
-              <span>☕ Warm Amber (Night)</span>
+              <span>☕ Warm Amber</span>
             </button>
             <button class="theme-menu-item" type="button" data-set-theme="twilight" role="menuitem">
               <span class="theme-color-preview" style="background: #a855f7;"></span>
-              <span>🌌 Twilight Aurora</span>
+              <span>🌌 Twilight</span>
             </button>
             <button class="theme-menu-item" type="button" data-set-theme="emerald" role="menuitem">
               <span class="theme-color-preview" style="background: #10b981;"></span>
-              <span>🌿 Emerald Oasis</span>
+              <span>🌿 Emerald</span>
             </button>
           </div>
         </div>
 
         <!-- Share Dropdown -->
         <div class="share-dropdown" id="shareDropdown">
-          <button class="btn-share-main" id="shareMainBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Share" aria-label="Share">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <button class="btn-share-main" id="shareMainBtn" type="button" aria-haspopup="true" aria-expanded="false" title="Share Songs" aria-label="Share">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="18" cy="5" r="3"></circle>
               <circle cx="6" cy="12" r="3"></circle>
               <circle cx="18" cy="19" r="3"></circle>
@@ -99,7 +103,7 @@
         <!-- More Options (3 Vertical Dots) -->
         <div class="nav-more-menu-wrap">
           <button class="btn-nav-more" type="button" aria-haspopup="true" aria-expanded="false" title="More Options" aria-label="More Options">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
               <circle cx="12" cy="5" r="2.2"></circle>
               <circle cx="12" cy="12" r="2.2"></circle>
               <circle cx="12" cy="19" r="2.2"></circle>
@@ -107,7 +111,7 @@
           </button>
           <div class="nav-more-dropdown" role="menu">
             <button class="nav-more-item btn-clear-data" type="button" onclick="window.handleClearPlayXData(event)" role="menuitem">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M3 6h18"></path>
                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                 <line x1="10" y1="11" x2="10" y2="17"></line>
@@ -134,71 +138,80 @@
       <span class="hero-feat-pill">🎧 320 Kbps HD Audio</span>
       <span class="hero-feat-pill eye-care-pill">👁️ Eye Comfort Active</span>
       <span class="hero-feat-pill">⚡ Fast Cloud Streaming</span>
-      <span class="hero-feat-pill">❤️ Favorites Saved</span>
+      <span class="hero-feat-pill">❤️ 5 Superhit Tracks</span>
     </div>
   </section>
 
   <!-- Main Player Layout -->
   <main class="container">
     <div class="player-page-grid">
-      <!-- Left Audio Deck -->
-      <section class="audio-deck-card">
-        <!-- View Mode Switcher -->
-        <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch View">
-          <span>🎬</span> <span>Video View</span>
-        </button>
-
-        <!-- Video Stage (YouTube Player) -->
-        <div class="video-stage" id="videoStage">
-          <div id="ytFestivalPlayer"></div>
+      <!-- Left Audio & Video Deck -->
+      <section class="audio-deck-card" aria-label="Media Player Deck">
+        <!-- Deck Header with View Mode Switcher -->
+        <div class="deck-header-bar">
+          <span class="deck-tag" id="playerTrackTag">🔥 DJ Hits</span>
+          <button class="btn-view-toggle" id="viewToggleBtn" type="button" title="Switch to Video View" aria-label="Switch between Vinyl and Video view">
+            <span>🎬</span> <span>Video View</span>
+          </button>
         </div>
 
-        <!-- Vinyl Record Disc -->
-        <div class="vinyl-deck" id="vinylDisc">
-          <div class="vinyl-center-label">
-            <img src="images/haryanvi_logo.svg" alt="Haryanvi Music Disc">
+        <!-- Media Stage (Vinyl Disc & Inline YouTube Player) -->
+        <div class="media-stage-box">
+          <!-- Video Stage (YouTube Player) -->
+          <div class="video-stage" id="videoStage">
+            <div id="ytFestivalPlayer"></div>
+          </div>
+
+          <!-- Vinyl Record Disc -->
+          <div class="vinyl-deck" id="vinylDisc">
+            <div class="vinyl-center-label">
+              <img src="images/haryanvi_logo.svg" alt="Haryanvi Music Disc">
+            </div>
           </div>
         </div>
 
+        <!-- Track Info -->
         <div class="deck-track-info">
-          <span class="deck-tag" id="playerTrackTag">⏳ Coming Soon</span>
-          <h2 class="deck-title" id="playerTrackTitle">Songs Coming Soon</h2>
-          <div class="deck-singer" id="playerTrackSinger">PlayX Music Library</div>
+          <h2 class="deck-title" id="playerTrackTitle">Loading Track...</h2>
+          <div class="deck-singer" id="playerTrackSinger">PlayX Haryanvi Collection</div>
         </div>
 
+        <!-- Seekbar & Timestamps -->
         <div class="deck-seek-wrap">
-          <input type="range" class="seek-slider" id="playerSeekSlider" min="0" max="100" value="0">
+          <input type="range" class="seek-slider" id="playerSeekSlider" min="0" max="100" value="0" aria-label="Seek track">
           <div class="seek-time-row">
             <span id="playerCurrentTime">00:00</span>
             <span id="playerDuration">00:00</span>
           </div>
         </div>
 
+        <!-- Playback Controls (5 Touch-Friendly Buttons Perfectly Centered) -->
         <div class="deck-controls-row">
-          <button class="control-btn" id="playerShuffleBtn" type="button" title="Shuffle">🔀</button>
-          <button class="control-btn" id="playerPrevBtn" type="button" title="Previous">⏮</button>
-          <button class="control-btn btn-main-play" id="playerPlayBtn" type="button" title="Play/Pause">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <button class="control-btn" id="playerShuffleBtn" type="button" title="Shuffle Mode" aria-label="Shuffle Mode">🔀</button>
+          <button class="control-btn" id="playerPrevBtn" type="button" title="Previous Track" aria-label="Previous Track">⏮</button>
+          <button class="control-btn btn-main-play" id="playerPlayBtn" type="button" title="Play or Pause" aria-label="Play or Pause">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </button>
-          <button class="control-btn" id="playerNextBtn" type="button" title="Next">⏭</button>
-          <button class="control-btn" id="playerRepeatBtn" type="button" title="Repeat">🔁</button>
+          <button class="control-btn" id="playerNextBtn" type="button" title="Next Track" aria-label="Next Track">⏭</button>
+          <button class="control-btn" id="playerRepeatBtn" type="button" title="Repeat Mode" aria-label="Repeat Mode">🔁</button>
         </div>
 
+        <!-- Extra Controls Row (Volume, Speed, Sleep Timer) -->
         <div class="deck-extra-controls">
           <div class="volume-group">
-            <button class="btn-mute" id="playerMuteBtn" type="button" title="Mute">🔊</button>
-            <input type="range" class="volume-slider" id="playerVolumeSlider" min="0" max="100" value="85">
+            <button class="btn-mute" id="playerMuteBtn" type="button" title="Mute Volume" aria-label="Mute Volume">🔊</button>
+            <input type="range" class="volume-slider" id="playerVolumeSlider" min="0" max="100" value="85" aria-label="Volume Slider">
           </div>
-          <button class="btn-speed" id="playerSpeedBtn" type="button" title="Speed">1x</button>
+          <button class="btn-speed" id="playerSpeedBtn" type="button" title="Playback Speed" aria-label="Playback Speed">1x</button>
         </div>
       </section>
 
       <!-- Right Song Playlist Deck -->
-      <section class="playlist-card">
+      <section class="playlist-card" aria-label="Song Playlist">
         <div class="playlist-header">
-          <h3>Haryanvi Songs Collection (<span id="playlistSongCount">0</span>)</h3>
+          <h3><span>🎵</span> Haryanvi Songs Collection (<span id="playlistSongCount">0</span>)</h3>
           <div class="playlist-search-box">
-            <input type="text" id="playlistSearchInput" placeholder="Search songs or singers...">
+            <input type="text" id="playlistSearchInput" placeholder="Search songs or singers..." aria-label="Search songs or singers">
           </div>
         </div>
 

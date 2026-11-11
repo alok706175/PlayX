@@ -645,7 +645,7 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Video Stage (Hidden for pure audio streaming) */
+/* Video Stage (Hidden for pure audio streaming, visible when toggled) */
 .video-stage {
   position: absolute !important;
   width: 1px !important;
@@ -658,8 +658,52 @@ body {
   z-index: -9999 !important;
 }
 
+.video-stage.visible-video {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9 !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  overflow: hidden !important;
+  left: auto !important;
+  top: auto !important;
+  z-index: 10 !important;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.35rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #000;
+}
+
+.video-stage.visible-video iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none;
+  display: block;
+}
+
 .btn-view-toggle {
-  display: none !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.btn-view-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: var(--accent);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* Vinyl Record Deck with Concentric Grooves */
@@ -1302,7 +1346,9 @@ body {
   }
 
   .time-box {
-    display: none;
+    display: inline-flex;
+    padding: 0.32rem 0.6rem;
+    font-size: 0.74rem;
   }
 
   .main-title {
@@ -1520,10 +1566,18 @@ body {
   }
 
   .song-num {
-    display: none;
+    display: inline-block;
+    width: 20px;
+    font-size: 0.74rem;
   }
 
   .song-dur-text {
+    display: inline-block;
+    font-size: 0.74rem;
+    min-width: 32px;
+  }
+
+  .btn-row-video .btn-video-text {
     display: none;
   }
 
