@@ -2228,5 +2228,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-12T13:30:30.125Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 212,
+    "name": "Bahut Jatate Ho Pyar",
+    "nameEn": "Bahut Jatate Ho Pyar",
+    "singer": "Alka Yagnik",
+    "singerEn": "Alka Yagnik",
+    "category": "Romantic",
+    "tag": "Hits",
+    "videoId": "9L-7_3Z6E84",
+    "youtubeId": "9L-7_3Z6E84",
+    "embedUrl": "https://www.youtube.com/embed/9L-7_3Z6E84",
+    "originalUrl": "https://www.youtube.com/watch?v=9L-7_3Z6E84",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/9L-7_3Z6E84/hqdefault.jpg",
+    "addedAt": "2026-11-12T13:32:41.694Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
