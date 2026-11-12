@@ -2246,5 +2246,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-12T13:32:41.694Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 213,
+    "name": "Mohabbat Ho Na Jaye Dekha Jo Tumko",
+    "nameEn": "Mohabbat Ho Na Jaye Dekha Jo Tumko",
+    "singer": "Alka Yagnik & Kumar Sanu",
+    "singerEn": "Alka Yagnik & Kumar Sanu",
+    "category": "Romantic",
+    "tag": "Hits",
+    "videoId": "3R13sEZkEBE",
+    "youtubeId": "3R13sEZkEBE",
+    "embedUrl": "https://www.youtube.com/embed/3R13sEZkEBE",
+    "originalUrl": "https://www.youtube.com/watch?v=3R13sEZkEBE",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/3R13sEZkEBE/hqdefault.jpg",
+    "addedAt": "2026-11-12T13:37:04.519Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
