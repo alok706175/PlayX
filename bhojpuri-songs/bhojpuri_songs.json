@@ -88,5 +88,23 @@
     "addedAt": "2026-11-02T21:26:02.029Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 9,
+    "name": "Aara Ke Sara",
+    "nameEn": "Aara Ke Sara",
+    "singer": "Shivani Singh & Pawan Singh",
+    "singerEn": "Shivani Singh & Pawan Singh",
+    "category": "Bhojpuri Songs",
+    "tag": "Hits",
+    "videoId": "_O0M3Hans5k",
+    "youtubeId": "_O0M3Hans5k",
+    "embedUrl": "https://www.youtube.com/embed/_O0M3Hans5k",
+    "originalUrl": "https://www.youtube.com/watch?v=_O0M3Hans5k",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/_O0M3Hans5k/hqdefault.jpg",
+    "addedAt": "2026-11-12T05:48:20.361Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
