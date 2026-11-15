@@ -2266,24 +2266,6 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "source": "youtube"
   },
   {
-    "id": 214,
-    "name": "New Trending Songs 2026 ❤️ Best Hindi Love Songs",
-    "nameEn": "New Trending Songs 2026 ❤️ Best Hindi Love Songs",
-    "singer": "Latest Romantic Songs Playlist",
-    "singerEn": "Latest Romantic Songs Playlist",
-    "category": "Romantic",
-    "tag": "Bollywood Hits",
-    "videoId": "njKfXaaToXk",
-    "youtubeId": "njKfXaaToXk",
-    "embedUrl": "https://www.youtube.com/embed/njKfXaaToXk",
-    "originalUrl": "https://www.youtube.com/watch?v=njKfXaaToXk",
-    "duration": "--:--",
-    "thumbnail": "https://i.ytimg.com/vi/njKfXaaToXk/hqdefault.jpg",
-    "addedAt": "2026-11-15T06:45:18.717Z",
-    "status": "approved",
-    "source": "youtube"
-  },
-  {
     "id": 216,
     "name": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
     "nameEn": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
