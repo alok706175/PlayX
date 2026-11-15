@@ -2284,24 +2284,6 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "source": "youtube"
   },
   {
-    "id": 215,
-    "name": "Swalla (feat. Nicki Minaj & Ty Dolla $ign)",
-    "nameEn": "Swalla (feat. Nicki Minaj & Ty Dolla $ign)",
-    "singer": "Jason Derulo",
-    "singerEn": "Jason Derulo",
-    "category": "Romantic",
-    "tag": "Bollywood Hits",
-    "videoId": "NGLxoKOvzu4",
-    "youtubeId": "NGLxoKOvzu4",
-    "embedUrl": "https://www.youtube.com/embed/NGLxoKOvzu4",
-    "originalUrl": "https://www.youtube.com/watch?v=NGLxoKOvzu4",
-    "duration": "--:--",
-    "thumbnail": "https://i.ytimg.com/vi/NGLxoKOvzu4/hqdefault.jpg",
-    "addedAt": "2026-11-15T06:45:21.843Z",
-    "status": "approved",
-    "source": "youtube"
-  },
-  {
     "id": 216,
     "name": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
     "nameEn": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
