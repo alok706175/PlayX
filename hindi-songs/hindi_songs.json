@@ -2299,5 +2299,23 @@
     "addedAt": "2026-11-15T06:45:21.843Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 216,
+    "name": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
+    "nameEn": "Vaaste Song: Dhvani Bhanushali, Tanishk Bagchi",
+    "singer": "Nikhil D'Souza",
+    "singerEn": "Nikhil D'Souza",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "BBAyRBTfsOU",
+    "youtubeId": "BBAyRBTfsOU",
+    "embedUrl": "https://www.youtube.com/embed/BBAyRBTfsOU",
+    "originalUrl": "https://www.youtube.com/watch?v=BBAyRBTfsOU",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/BBAyRBTfsOU/hqdefault.jpg",
+    "addedAt": "2026-11-15T06:45:25.026Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
