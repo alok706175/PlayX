@@ -2336,5 +2336,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-15T06:28:42.468Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 218,
+    "name": "Chatpate Gaane 😋🔥",
+    "nameEn": "Chatpate Gaane 😋🔥",
+    "singer": "Fun & Trending Songs for Instagram Reels",
+    "singerEn": "Fun & Trending Songs for Instagram Reels",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "8LbM9DIS4K0",
+    "youtubeId": "8LbM9DIS4K0",
+    "embedUrl": "https://www.youtube.com/embed/8LbM9DIS4K0",
+    "originalUrl": "https://www.youtube.com/watch?v=8LbM9DIS4K0",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/8LbM9DIS4K0/hqdefault.jpg",
+    "addedAt": "2026-11-15T06:28:45.150Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
