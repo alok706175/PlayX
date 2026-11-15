@@ -2318,5 +2318,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-15T06:45:25.026Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 217,
+    "name": "Bollywood New Hit Songs",
+    "nameEn": "Bollywood New Hit Songs",
+    "singer": "Hindi Songs",
+    "singerEn": "Hindi Songs",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "ThFEPB24gl8",
+    "youtubeId": "ThFEPB24gl8",
+    "embedUrl": "https://www.youtube.com/embed/ThFEPB24gl8",
+    "originalUrl": "https://www.youtube.com/watch?v=ThFEPB24gl8",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/ThFEPB24gl8/hqdefault.jpg",
+    "addedAt": "2026-11-15T06:45:38.115Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
