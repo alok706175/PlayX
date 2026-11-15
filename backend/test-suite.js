@@ -270,16 +270,16 @@ async function runTests() {
   console.log('\n📦 Test Suite 9: Automated Trending & Viral Song Harvester');
   const trendingService = require('./trending-service');
 
-  // 9.1 Filter short videos (< 60s)
-  const shortCheck = trendingService.validateSongCandidate({
+  // 9.1 Filter short videos (< 90s)
+  const shortCheck = await trendingService.validateSongCandidate({
     cleanTitle: 'Short Reel Teaser',
     singer: 'Artist',
     duration: '0:35'
   }, 'abc12345678');
-  assert(!shortCheck.valid && shortCheck.reason.includes('Skipped Short'), 'Filter out short videos (< 60s)');
+  assert(!shortCheck.valid && shortCheck.reason.includes('Skipped Short'), 'Filter out short videos (< 90s)');
 
   // 9.2 Filter long compilations (> 11 mins)
-  const longCheck = trendingService.validateSongCandidate({
+  const longCheck = await trendingService.validateSongCandidate({
     cleanTitle: '1 Hour Jukebox Collection Nonstop',
     singer: 'Artist',
     duration: '58:20'
@@ -287,7 +287,7 @@ async function runTests() {
   assert(!longCheck.valid && longCheck.reason.includes('Skipped Long'), 'Filter out long compilations (> 11 mins)');
 
   // 9.3 Accept valid standard song (3:45)
-  const validCheck = trendingService.validateSongCandidate({
+  const validCheck = await trendingService.validateSongCandidate({
     cleanTitle: 'Fresh Trending Song 2026',
     singer: 'Famous Artist',
     duration: '03:45',
@@ -296,12 +296,20 @@ async function runTests() {
   assert(validCheck.valid === true, 'Accept standard valid trending song (03:45 duration, embeddable)');
 
   // 9.4 Duplicate rejection
-  const dupCheck = trendingService.validateSongCandidate({
+  const dupCheck = await trendingService.validateSongCandidate({
     cleanTitle: 'Sample Chhath Song',
     singer: 'Singer',
     duration: '03:45'
   }, knownChhathId);
   assert(!dupCheck.valid && dupCheck.reason.includes('Duplicate'), 'Reject trending candidates that already exist in database');
+
+  // 9.5 Reject YouTube Shorts & Reel hashtags
+  const hashtagCheck = await trendingService.validateSongCandidate({
+    cleanTitle: 'Viral Dance Performance #shorts #reels',
+    singer: 'Dancer',
+    duration: '03:15'
+  }, 'shrt1234567');
+  assert(!hashtagCheck.valid && hashtagCheck.reason.includes('Skipped Short/Reel Clip'), 'Strictly reject videos with #shorts, #reels, or dance clip hashtags');
 
   // Summary
   console.log('\n===============================================================');

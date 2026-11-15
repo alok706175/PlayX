@@ -11,6 +11,7 @@
  */
 
 const https = require('https');
+const zlib = require('zlib');
 const urlParser = require('./url-parser');
 const categoryDetector = require('./category-detector');
 
@@ -115,28 +116,40 @@ function fetchYouTubeDuration(videoId) {
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept-Language': 'en-US,en;q=0.9'
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip'
       }
     };
 
     const req = https.request(options, (res) => {
+      let stream = res;
+      if (res.headers['content-encoding'] === 'gzip') {
+        const gunzip = zlib.createGunzip();
+        res.pipe(gunzip);
+        stream = gunzip;
+      }
+
       let html = '';
-      res.on('data', (chunk) => {
-        html += chunk;
-        if (html.length > 300 * 1024) { // First 300KB contains the duration metadata
+      stream.on('data', (chunk) => {
+        html += chunk.toString('utf8');
+        const dur = extractDurationFromHtml(html);
+        if (dur) {
           req.destroy();
-          safeResolve(extractDurationFromHtml(html));
+          safeResolve(dur);
+        } else if (html.length > 500 * 1024) {
+          req.destroy();
+          safeResolve(null);
         }
       });
-      res.on('end', () => {
+      stream.on('end', () => {
         safeResolve(extractDurationFromHtml(html));
       });
-      res.on('close', () => {
-        safeResolve(extractDurationFromHtml(html));
+      stream.on('error', () => {
+        safeResolve(null);
       });
     });
 
-    req.setTimeout(4000, () => {
+    req.setTimeout(6000, () => {
       req.destroy();
       safeResolve(null);
     });

@@ -16,13 +16,13 @@ const metadataFetcher = require('./metadata-fetcher');
 const categoryDetector = require('./category-detector');
 const songDbManager = require('./song-db-manager');
 
-// Target search queries to discover trending Instagram Reels & viral audio across categories
+// Target search queries to discover trending FULL songs & tracks (excluding shorts)
 const VIRAL_SEARCH_QUERIES = [
-  { query: 'trending reels songs hindi', category: 'hindi', hint: 'Instagram Reels Hindi Viral Hits' },
-  { query: 'viral bollywood songs reels trending', category: 'hindi', hint: 'Trending Bollywood Reels' },
-  { query: 'viral bhojpuri reels songs trending', category: 'bhojpuri', hint: 'Trending Bhojpuri Reels' },
-  { query: 'punjabi trending reels song', category: 'punjabi', hint: 'Trending Punjabi Reels' },
-  { query: 'haryanvi viral song reels trending', category: 'haryanvi', hint: 'Trending Haryanvi Reels' }
+  { query: 'trending hindi songs full audio official', category: 'hindi', hint: 'Trending Hindi Full Songs' },
+  { query: 'bollywood viral songs full video song official', category: 'hindi', hint: 'Trending Bollywood Full Songs' },
+  { query: 'bhojpuri trending songs full video song official', category: 'bhojpuri', hint: 'Trending Bhojpuri Full Songs' },
+  { query: 'punjabi trending songs full track official', category: 'punjabi', hint: 'Trending Punjabi Full Songs' },
+  { query: 'haryanvi viral songs full audio official', category: 'haryanvi', hint: 'Trending Haryanvi Full Songs' }
 ];
 
 /**
@@ -184,14 +184,53 @@ async function fetchTrendingFromDataApi(apiKey, maxResults = 30) {
 }
 
 /**
- * Scrapes video IDs from YouTube search results for viral social media queries
+ * Checks whether a YouTube video ID corresponds to a YouTube Short format.
+ * Regular full videos redirect (302/303) with Location: /watch?v=...
+ * True YouTube Shorts return 200 on /shorts/ or redirect to /shorts/
+ * @param {string} videoId 
+ * @returns {Promise<boolean>}
+ */
+function isYouTubeShort(videoId) {
+  return new Promise((resolve) => {
+    const req = https.request({
+      hostname: 'www.youtube.com',
+      path: `/shorts/${encodeURIComponent(videoId)}`,
+      method: 'HEAD',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      }
+    }, (res) => {
+      const loc = (res.headers.location || '').toLowerCase();
+      // Regular videos redirect to /watch?v=
+      if (loc.includes('/watch')) {
+        resolve(false);
+      } else if (res.statusCode === 200 || loc.includes('/shorts/')) {
+        resolve(true); // Confirmed YouTube Short!
+      } else {
+        resolve(false);
+      }
+    });
+
+    req.setTimeout(4000, () => {
+      req.destroy();
+      resolve(false);
+    });
+
+    req.on('error', () => resolve(false));
+    req.end();
+  });
+}
+
+/**
+ * Scrapes video IDs from YouTube search results for viral queries (Strictly FULL videos only)
  * @param {string} query 
  * @returns {Promise<Array<{ videoId: string, title: string }>>}
  */
 async function fetchTrendingFromSearchScrape(query) {
   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+
   try {
-    const html = await fetchHttp(searchUrl, 10000);
+    const html = await fetchHttp(searchUrl, 12000);
     const found = [];
     const seen = new Set();
 
@@ -272,14 +311,15 @@ async function discoverCandidates(options = {}) {
 /**
  * Validates whether a song is suitable for PlayX:
  * - Checks duplicate in all playlists
- * - Verifies duration is standard song length (60s - 600s)
+ * - Strictly rejects YouTube Shorts and Reel dance/status clips
+ * - Verifies duration is a full song track length (90s - 660s)
  * - Checks embeddability
  * @param {object} metadata 
  * @param {string} videoId 
- * @returns {{ valid: boolean, reason?: string, duplicateDetails?: object }}
+ * @returns {Promise<{ valid: boolean, reason?: string, duplicateDetails?: object }>}
  */
-function validateSongCandidate(metadata, videoId) {
-  // Check duplicate first
+async function validateSongCandidate(metadata, videoId) {
+  // 1. Check duplicate first
   const dupCheck = songDbManager.checkDuplicate(
     videoId,
     metadata.originalUrl || `https://www.youtube.com/watch?v=${videoId}`,
@@ -295,18 +335,57 @@ function validateSongCandidate(metadata, videoId) {
     };
   }
 
-  // Check duration (Skip shorts < 60s and compilations/jukeboxes > 600s = 10 mins)
-  const durationSec = durationToSeconds(metadata.duration);
-  if (durationSec > 0) {
-    if (durationSec < 60) {
-      return { valid: false, reason: `Skipped Short/Teaser (${metadata.duration} < 1:00)` };
-    }
-    if (durationSec > 660) { // 11 mins
-      return { valid: false, reason: `Skipped Long Compilation/Jukebox (${metadata.duration} > 11:00)` };
+  // 2. Strict Keyword / Hashtag Filter: Reject Shorts, Reels, Statuses & Jukebox Compilations
+  const combinedText = `${metadata.cleanTitle || ''} ${metadata.title || ''} ${metadata.singer || ''} ${metadata.channelTitle || ''} ${(metadata.tags || []).join(' ')}`.toLowerCase();
+  
+  // Reject YouTube Shorts & Reel Snippets
+  const shortsBlacklist = [
+    '#shorts', '#short', '#ytshorts', '#viralshort', '#shortvideo',
+    '#reels', '#reel', '#viralreel', 'dance short', 'dance performance',
+    'whatsapp status', 'status video', 'reels video', 'dance video'
+  ];
+
+  for (const badWord of shortsBlacklist) {
+    if (combinedText.includes(badWord)) {
+      return { valid: false, reason: `Skipped Short/Reel Clip (matched short indicator "${badWord}")` };
     }
   }
 
-  // Check embeddability
+  // Reject Jukebox / Nonstop / Full Album Compilations (Only single full song tracks allowed)
+  const jukeboxBlacklist = [
+    'jukebox', 'audio jukebox', 'video jukebox', 'nonstop', 'non-stop',
+    'full album', 'complete album', 'top 10', 'top 20', 'top 50', 'all songs',
+    'songs collection', 'mashup collection'
+  ];
+
+  for (const jukeWord of jukeboxBlacklist) {
+    if (combinedText.includes(jukeWord)) {
+      return { valid: false, reason: `Skipped Jukebox/Compilation (${jukeWord} - single full song track required)` };
+    }
+  }
+
+  // 3. Strict Duration Filter: Full song tracks are at least 1:30 min (90s) and under 11 mins (660s)
+  const durationSec = durationToSeconds(metadata.duration);
+  if (durationSec > 0) {
+    if (durationSec < 90) {
+      return { valid: false, reason: `Skipped Short/Teaser (${metadata.duration} < 1:30 min - Full track required)` };
+    }
+    if (durationSec > 660) {
+      return { valid: false, reason: `Skipped Long Compilation/Jukebox (${metadata.duration} > 11:00 mins)` };
+    }
+  }
+
+  // 4. Verify directly via YouTube /shorts/ endpoint (Shorts return 200, full videos redirect to /watch)
+  try {
+    const isShort = await isYouTubeShort(videoId);
+    if (isShort) {
+      return { valid: false, reason: 'Skipped: Verified as YouTube Shorts format' };
+    }
+  } catch (e) {
+    // Non-blocking on network hiccup
+  }
+
+  // 5. Check embeddability
   if (metadata.embeddable === false) {
     return { valid: false, reason: 'Embedding disabled by video owner' };
   }
@@ -383,8 +462,8 @@ async function crawlAndAddTrendingSongs(options = {}) {
 
     const { metadata, categorySuggestion } = metaResult;
 
-    // Validate (duplicate check, length check, privacy check)
-    const validation = validateSongCandidate(metadata, videoId);
+    // Validate (duplicate check, length check, privacy check, shorts check)
+    const validation = await validateSongCandidate(metadata, videoId);
     if (!validation.valid) {
       console.log(`   ⏭️  ${validation.reason}`);
       if (validation.duplicateDetails) {
