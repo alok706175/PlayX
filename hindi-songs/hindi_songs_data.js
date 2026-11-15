@@ -2300,23 +2300,5 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-15T06:28:35.930Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 216,
-    "name": "Top 5 Viral Songs of 2026 🔥🎶",
-    "nameEn": "Top 5 Viral Songs of 2026 🔥🎶",
-    "singer": "YouTube & Instagram Trending Hits@DbFactboy",
-    "singerEn": "YouTube & Instagram Trending Hits@DbFactboy",
-    "category": "Romantic",
-    "tag": "Bollywood Hits",
-    "videoId": "-5fA8djzKKI",
-    "youtubeId": "-5fA8djzKKI",
-    "embedUrl": "https://www.youtube.com/embed/-5fA8djzKKI",
-    "originalUrl": "https://www.youtube.com/watch?v=-5fA8djzKKI",
-    "duration": "--:--",
-    "thumbnail": "https://i.ytimg.com/vi/-5fA8djzKKI/hqdefault.jpg",
-    "addedAt": "2026-11-15T06:28:38.827Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ];
