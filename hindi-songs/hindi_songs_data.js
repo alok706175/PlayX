@@ -2264,23 +2264,5 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-12T13:37:04.519Z",
     "status": "approved",
     "source": "youtube"
-  },
-  {
-    "id": 214,
-    "name": "Shanivar Raati",
-    "nameEn": "Shanivar Raati",
-    "singer": "Dance Video",
-    "singerEn": "Dance Video",
-    "category": "Romantic",
-    "tag": "Bollywood Hits",
-    "videoId": "ahFim1aHsx8",
-    "youtubeId": "ahFim1aHsx8",
-    "embedUrl": "https://www.youtube.com/embed/ahFim1aHsx8",
-    "originalUrl": "https://www.youtube.com/watch?v=ahFim1aHsx8",
-    "duration": "--:--",
-    "thumbnail": "https://i.ytimg.com/vi/ahFim1aHsx8/hqdefault.jpg",
-    "addedAt": "2026-11-15T06:28:28.352Z",
-    "status": "approved",
-    "source": "youtube"
   }
 ];
