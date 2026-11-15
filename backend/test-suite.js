@@ -266,6 +266,43 @@ async function runTests() {
     console.warn(`  ⚠️ Live network test notice: ${err.message}`);
   }
 
+  // TEST SUITE 9: Automated Trending & Viral Song Harvester
+  console.log('\n📦 Test Suite 9: Automated Trending & Viral Song Harvester');
+  const trendingService = require('./trending-service');
+
+  // 9.1 Filter short videos (< 60s)
+  const shortCheck = trendingService.validateSongCandidate({
+    cleanTitle: 'Short Reel Teaser',
+    singer: 'Artist',
+    duration: '0:35'
+  }, 'abc12345678');
+  assert(!shortCheck.valid && shortCheck.reason.includes('Skipped Short'), 'Filter out short videos (< 60s)');
+
+  // 9.2 Filter long compilations (> 11 mins)
+  const longCheck = trendingService.validateSongCandidate({
+    cleanTitle: '1 Hour Jukebox Collection Nonstop',
+    singer: 'Artist',
+    duration: '58:20'
+  }, 'def12345678');
+  assert(!longCheck.valid && longCheck.reason.includes('Skipped Long'), 'Filter out long compilations (> 11 mins)');
+
+  // 9.3 Accept valid standard song (3:45)
+  const validCheck = trendingService.validateSongCandidate({
+    cleanTitle: 'Fresh Trending Song 2026',
+    singer: 'Famous Artist',
+    duration: '03:45',
+    embeddable: true
+  }, 'xyz99988877');
+  assert(validCheck.valid === true, 'Accept standard valid trending song (03:45 duration, embeddable)');
+
+  // 9.4 Duplicate rejection
+  const dupCheck = trendingService.validateSongCandidate({
+    cleanTitle: 'Sample Chhath Song',
+    singer: 'Singer',
+    duration: '03:45'
+  }, knownChhathId);
+  assert(!dupCheck.valid && dupCheck.reason.includes('Duplicate'), 'Reject trending candidates that already exist in database');
+
   // Summary
   console.log('\n===============================================================');
   console.log(`📊 Test Results: ${passedTests}/${totalTests} Passed (${failedTests} Failed)`);

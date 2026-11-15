@@ -1,0 +1,80 @@
+name: PlayX Auto Trending & Viral Songs Crawler
+
+on:
+  schedule:
+    # Runs daily at 06:00 UTC (11:30 AM IST) automatically
+    - cron: '0 6 * * *'
+
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: '🔢 Number of trending songs to add (e.g. 3, 5, 10)'
+        required: false
+        default: '5'
+        type: string
+      category:
+        description: '📁 Target Category (auto = intelligent category detection)'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - 'auto'
+          - 'hindi'
+          - 'bhojpuri'
+          - 'punjabi'
+          - 'haryanvi'
+          - 'chhath'
+          - 'durga'
+          - 'holi'
+          - 'saawan'
+      dry_run:
+        description: '🧪 Dry Run (Simulate only, do not write to files)'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  crawl-trending:
+    name: Discover & Add Viral Songs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git Author
+        run: |
+          git config --global user.name "PlayX Trending Bot"
+          git config --global user.email "playx-bot@users.noreply.github.com"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run Trending Crawler
+        env:
+          INPUT_LIMIT: ${{ github.event.inputs.limit || '5' }}
+          INPUT_CATEGORY: ${{ github.event.inputs.category || 'auto' }}
+          INPUT_DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY || vars.YOUTUBE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+          PLAYX_TOKEN: ${{ secrets.PLAYX_TOKEN || vars.PLAYX_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          node backend/cli-auto-trending.js
+
+      - name: Commit and Push Playlists
+        run: |
+          git add -A
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No new trending songs needed committing (already up-to-date or limit reached)."
+          else
+            git commit -m "🔥 Auto-add daily trending & viral songs to PlayX [skip ci]"
+            git push origin main
+          fi

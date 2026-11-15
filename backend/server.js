@@ -20,6 +20,7 @@ const urlParser = require('./url-parser');
 const metadataFetcher = require('./metadata-fetcher');
 const categoryDetector = require('./category-detector');
 const songDbManager = require('./song-db-manager');
+const trendingService = require('./trending-service');
 
 // Load environment variables from .env file if present
 (function loadEnv() {
@@ -780,6 +781,64 @@ const server = http.createServer(async (req, res) => {
   }
 
   // -------------------------------------------------------------
+  // API ROUTE 8: Trending Candidates Preview
+  // GET /api/trending/preview?category=...&limit=...
+  // -------------------------------------------------------------
+  if (pathname === '/api/trending/preview' && method === 'GET') {
+    try {
+      const category = reqUrl.searchParams.get('category') || 'auto';
+      const limit = parseInt(reqUrl.searchParams.get('limit') || '10', 10);
+      const candidates = await trendingService.discoverCandidates({ category, limit });
+      sendJsonResponse(res, 200, {
+        success: true,
+        count: candidates.length,
+        candidates
+      });
+    } catch (err) {
+      sendJsonResponse(res, 500, {
+        success: false,
+        error: 'Failed to discover trending candidates: ' + err.message
+      });
+    }
+    return;
+  }
+
+  // -------------------------------------------------------------
+  // API ROUTE 9: Trigger Auto-Crawl & Add Trending Songs
+  // POST /api/trending/crawl
+  // -------------------------------------------------------------
+  if (pathname === '/api/trending/crawl' && method === 'POST') {
+    if (!isAuthorizedAdmin(req)) {
+      sendJsonResponse(res, 401, {
+        success: false,
+        error: 'Unauthorized: Admin authentication required to trigger trending crawler.'
+      });
+      return;
+    }
+
+    try {
+      const body = await parseRequestBody(req);
+      const limit = parseInt(body.limit || '5', 10);
+      const category = body.category || 'auto';
+      const dryRun = Boolean(body.dryRun);
+
+      const result = await trendingService.crawlAndAddTrendingSongs({
+        limit,
+        category,
+        dryRun
+      });
+
+      sendJsonResponse(res, 200, result);
+    } catch (err) {
+      sendJsonResponse(res, 500, {
+        success: false,
+        error: 'Error running trending crawler: ' + err.message
+      });
+    }
+    return;
+  }
+
+  // -------------------------------------------------------------
   // Web Share Target Redirect Handler
   // GET /share-target?title=...&text=...&url=...
   // -------------------------------------------------------------
@@ -861,6 +920,39 @@ server.listen(PORT, '0.0.0.0', () => {
 =================================================================
 `);
 });
+
+// Automatic Background Trending Crawler (when enabled in environment)
+if (process.env.AUTO_TRENDING_ENABLED === 'true') {
+  const intervalHours = parseFloat(process.env.AUTO_TRENDING_HOURS || '12');
+  const intervalMs = Math.max(1, intervalHours) * 60 * 60 * 1000;
+  console.log(`⏰ [Auto-Trending Scheduler] Background crawler enabled: runs every ${intervalHours} hour(s).`);
+
+  // First run 15 seconds after server start
+  setTimeout(async () => {
+    try {
+      console.log('⏰ [Auto-Trending Scheduler] Running initial automated trending crawl...');
+      await trendingService.crawlAndAddTrendingSongs({
+        limit: parseInt(process.env.AUTO_TRENDING_LIMIT || '5', 10),
+        category: process.env.AUTO_TRENDING_CATEGORY || 'auto'
+      });
+    } catch (err) {
+      console.warn('⏰ [Auto-Trending Scheduler] Crawler notice:', err.message);
+    }
+  }, 15000);
+
+  // Periodic recurring interval
+  setInterval(async () => {
+    try {
+      console.log('⏰ [Auto-Trending Scheduler] Running periodic automated trending crawl...');
+      await trendingService.crawlAndAddTrendingSongs({
+        limit: parseInt(process.env.AUTO_TRENDING_LIMIT || '5', 10),
+        category: process.env.AUTO_TRENDING_CATEGORY || 'auto'
+      });
+    } catch (err) {
+      console.warn('⏰ [Auto-Trending Scheduler] Periodic crawler notice:', err.message);
+    }
+  }, intervalMs);
+}
 
 module.exports = {
   server,
