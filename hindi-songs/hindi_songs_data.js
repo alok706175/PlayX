@@ -2300,5 +2300,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-15T06:45:40.634Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 219,
+    "name": "Trending Songs 2026 ❤️ Best Hindi Love Songs",
+    "nameEn": "Trending Songs 2026 ❤️ Best Hindi Love Songs",
+    "singer": "Latest Romantic Songs Playlist",
+    "singerEn": "Latest Romantic Songs Playlist",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "njKfXaaToXk",
+    "youtubeId": "njKfXaaToXk",
+    "embedUrl": "https://www.youtube.com/embed/njKfXaaToXk",
+    "originalUrl": "https://www.youtube.com/watch?v=njKfXaaToXk",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/njKfXaaToXk/hqdefault.jpg",
+    "addedAt": "2026-11-16T15:21:32.344Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
