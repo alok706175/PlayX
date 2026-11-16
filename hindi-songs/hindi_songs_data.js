@@ -2318,5 +2318,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-16T15:21:32.344Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 220,
+    "name": "Swalla (feat. Nicki Minaj & Ty Dolla $ign)",
+    "nameEn": "Swalla (feat. Nicki Minaj & Ty Dolla $ign)",
+    "singer": "Jason Derulo",
+    "singerEn": "Jason Derulo",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "NGLxoKOvzu4",
+    "youtubeId": "NGLxoKOvzu4",
+    "embedUrl": "https://www.youtube.com/embed/NGLxoKOvzu4",
+    "originalUrl": "https://www.youtube.com/watch?v=NGLxoKOvzu4",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/NGLxoKOvzu4/hqdefault.jpg",
+    "addedAt": "2026-11-16T15:21:37.193Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
