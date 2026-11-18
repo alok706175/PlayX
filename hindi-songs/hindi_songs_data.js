@@ -2462,5 +2462,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-18T15:26:20.447Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 228,
+    "name": "Teri Baaton Mein",
+    "nameEn": "Teri Baaton Mein",
+    "singer": "Shahid Kapoor,Kriti Sanon",
+    "singerEn": "Shahid Kapoor,Kriti Sanon",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "j2CwTtriRUw",
+    "youtubeId": "j2CwTtriRUw",
+    "embedUrl": "https://www.youtube.com/embed/j2CwTtriRUw",
+    "originalUrl": "https://www.youtube.com/watch?v=j2CwTtriRUw",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/j2CwTtriRUw/hqdefault.jpg",
+    "addedAt": "2026-11-18T15:26:22.184Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
