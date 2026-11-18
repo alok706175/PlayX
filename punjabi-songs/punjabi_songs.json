@@ -52,5 +52,23 @@
     "addedAt": "2026-10-31T09:41:38.319Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 5,
+    "name": "Tauba Tauba",
+    "nameEn": "Tauba Tauba",
+    "singer": "Bad Newz",
+    "singerEn": "Bad Newz",
+    "category": "Punjabi Songs",
+    "tag": "Bhangra Beats",
+    "videoId": "LK7-_dgAVQE",
+    "youtubeId": "LK7-_dgAVQE",
+    "embedUrl": "https://www.youtube.com/embed/LK7-_dgAVQE",
+    "originalUrl": "https://www.youtube.com/watch?v=LK7-_dgAVQE",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/LK7-_dgAVQE/hqdefault.jpg",
+    "addedAt": "2026-11-18T15:26:18.741Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
