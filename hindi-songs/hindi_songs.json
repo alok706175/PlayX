@@ -2425,5 +2425,23 @@
     "addedAt": "2026-11-18T15:26:06.343Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 226,
+    "name": "RAID 2: NASHA (Song)",
+    "nameEn": "RAID 2: NASHA (Song)",
+    "singer": "Tamannaah B, Ajay D, Riteish D",
+    "singerEn": "Tamannaah B, Ajay D, Riteish D",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "QPSAjqjylTc",
+    "youtubeId": "QPSAjqjylTc",
+    "embedUrl": "https://www.youtube.com/embed/QPSAjqjylTc",
+    "originalUrl": "https://www.youtube.com/watch?v=QPSAjqjylTc",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/QPSAjqjylTc/hqdefault.jpg",
+    "addedAt": "2026-11-18T15:26:16.175Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
