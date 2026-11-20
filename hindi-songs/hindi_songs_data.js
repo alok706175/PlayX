@@ -2552,5 +2552,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-20T15:10:48.328Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 233,
+    "name": "Manike (Full Video): Thank God",
+    "nameEn": "Manike (Full Video): Thank God",
+    "singer": "Nora,Sidharth| Tanishk,Yohani,Jubin,Surya R |Rashmi Virag|Bhushan K",
+    "singerEn": "Nora,Sidharth| Tanishk,Yohani,Jubin,Surya R |Rashmi Virag|Bhushan K",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "zqHUMF9syFA",
+    "youtubeId": "zqHUMF9syFA",
+    "embedUrl": "https://www.youtube.com/embed/zqHUMF9syFA",
+    "originalUrl": "https://www.youtube.com/watch?v=zqHUMF9syFA",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/zqHUMF9syFA/hqdefault.jpg",
+    "addedAt": "2026-11-20T15:10:51.574Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
