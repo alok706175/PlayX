@@ -2570,5 +2570,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-20T15:10:51.574Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 234,
+    "name": "8K/4K Music Video | Nidhhi Agerwal | Meet Bros Ft. Kanika Kapoor | Munna Michael",
+    "nameEn": "8K/4K Music Video | Nidhhi Agerwal | Meet Bros Ft. Kanika Kapoor | Munna Michael",
+    "singer": "Shake Karaan",
+    "singerEn": "Shake Karaan",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "O4GorB4N2Kg",
+    "youtubeId": "O4GorB4N2Kg",
+    "embedUrl": "https://www.youtube.com/embed/O4GorB4N2Kg",
+    "originalUrl": "https://www.youtube.com/watch?v=O4GorB4N2Kg",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/O4GorB4N2Kg/hqdefault.jpg",
+    "addedAt": "2026-11-20T15:10:53.763Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
