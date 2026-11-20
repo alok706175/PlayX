@@ -2515,5 +2515,23 @@
     "addedAt": "2026-11-20T15:10:41.560Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 231,
+    "name": "Trending Songs 2026",
+    "nameEn": "Trending Songs 2026",
+    "singer": "Latest Romantic Song Playlist",
+    "singerEn": "Latest Romantic Song Playlist",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "mCeYN9dx1io",
+    "youtubeId": "mCeYN9dx1io",
+    "embedUrl": "https://www.youtube.com/embed/mCeYN9dx1io",
+    "originalUrl": "https://www.youtube.com/watch?v=mCeYN9dx1io",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/mCeYN9dx1io/hqdefault.jpg",
+    "addedAt": "2026-11-20T15:10:43.728Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
