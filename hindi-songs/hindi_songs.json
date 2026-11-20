@@ -2497,5 +2497,23 @@
     "addedAt": "2026-11-19T15:32:15.850Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 230,
+    "name": "Certified Desi Bangers",
+    "nameEn": "Certified Desi Bangers",
+    "singer": "Best of Bollywood Desi Girl Playlist",
+    "singerEn": "Best of Bollywood Desi Girl Playlist",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "5dcZmdoYXS0",
+    "youtubeId": "5dcZmdoYXS0",
+    "embedUrl": "https://www.youtube.com/embed/5dcZmdoYXS0",
+    "originalUrl": "https://www.youtube.com/watch?v=5dcZmdoYXS0",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/5dcZmdoYXS0/hqdefault.jpg",
+    "addedAt": "2026-11-20T15:10:41.560Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
