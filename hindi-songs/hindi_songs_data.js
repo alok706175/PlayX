@@ -2588,5 +2588,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-20T15:10:53.763Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 235,
+    "name": "🔥INSTAGRAM Trending Songs Mashup 2026",
+    "nameEn": "🔥INSTAGRAM Trending Songs Mashup 2026",
+    "singer": "Romantic Hits",
+    "singerEn": "Romantic Hits",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "Tj2dTvvfAWU",
+    "youtubeId": "Tj2dTvvfAWU",
+    "embedUrl": "https://www.youtube.com/embed/Tj2dTvvfAWU",
+    "originalUrl": "https://www.youtube.com/watch?v=Tj2dTvvfAWU",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/Tj2dTvvfAWU/hqdefault.jpg",
+    "addedAt": "2026-11-21T14:27:43.403Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
