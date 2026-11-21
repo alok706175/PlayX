@@ -1,5 +1,26 @@
 [
   {
+    "id": 7,
+    "name": "MF GABHRU! KARAN AUJLA",
+    "nameEn": "MF GABHRU! KARAN AUJLA",
+    "singer": "IKKY",
+    "singerEn": "IKKY",
+    "category": "Punjabi Songs",
+    "tag": "Bhangra Beats",
+    "videoId": "Fbv6-50S1lc",
+    "youtubeId": "Fbv6-50S1lc",
+    "embedUrl": "https://www.youtube.com/embed/Fbv6-50S1lc",
+    "originalUrl": "https://www.youtube.com/watch?v=Fbv6-50S1lc",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/Fbv6-50S1lc/hqdefault.jpg",
+    "addedAt": "2026-11-21T14:28:24.119Z",
+    "status": "approved",
+    "source": "youtube",
+    "categoryKey": "punjabi",
+    "categoryName": "Punjabi Songs",
+    "savedTo": "punjabi-songs/punjabi_songs.json"
+  },
+  {
     "id": 6,
     "name": "For A Reason Karan Aujla",
     "nameEn": "For A Reason Karan Aujla",
