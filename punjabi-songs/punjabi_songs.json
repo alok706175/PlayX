@@ -70,5 +70,23 @@
     "addedAt": "2026-11-18T15:26:18.741Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 6,
+    "name": "For A Reason Karan Aujla",
+    "nameEn": "For A Reason Karan Aujla",
+    "singer": "Tania",
+    "singerEn": "Tania",
+    "category": "Punjabi Songs",
+    "tag": "Bhangra Beats",
+    "videoId": "-YlmnPh-6rE",
+    "youtubeId": "-YlmnPh-6rE",
+    "embedUrl": "https://www.youtube.com/embed/-YlmnPh-6rE",
+    "originalUrl": "https://www.youtube.com/watch?v=-YlmnPh-6rE",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/-YlmnPh-6rE/hqdefault.jpg",
+    "addedAt": "2026-11-21T14:28:22.582Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
