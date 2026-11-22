@@ -268,5 +268,23 @@
     "addedAt": "2026-11-21T14:28:03.135Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 19,
+    "name": "🎵 BARATI MEIN DHUAA DHUAA",
+    "nameEn": "🎵 BARATI MEIN DHUAA DHUAA",
+    "singer": "GUNJAN SINGH & SHILPI RAJ",
+    "singerEn": "GUNJAN SINGH & SHILPI RAJ",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "5HUNW0Ocgl0",
+    "youtubeId": "5HUNW0Ocgl0",
+    "embedUrl": "https://www.youtube.com/embed/5HUNW0Ocgl0",
+    "originalUrl": "https://www.youtube.com/watch?v=5HUNW0Ocgl0",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/5HUNW0Ocgl0/hqdefault.jpg",
+    "addedAt": "2026-11-22T14:23:31.680Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
