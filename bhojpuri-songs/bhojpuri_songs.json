@@ -286,5 +286,23 @@
     "addedAt": "2026-11-22T14:23:31.680Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 20,
+    "name": "#Pawan Singh | आरा के बबुआन | #Srishti Bharti | Aara Ke Babuaan | Bhojpuri Song 2026",
+    "nameEn": "#Pawan Singh | आरा के बबुआन | #Srishti Bharti | Aara Ke Babuaan | Bhojpuri Song 2026",
+    "singer": "#Video",
+    "singerEn": "#Video",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "LdwHOFZHZRs",
+    "youtubeId": "LdwHOFZHZRs",
+    "embedUrl": "https://www.youtube.com/embed/LdwHOFZHZRs",
+    "originalUrl": "https://www.youtube.com/watch?v=LdwHOFZHZRs",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/LdwHOFZHZRs/hqdefault.jpg",
+    "addedAt": "2026-11-22T14:23:34.133Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
