@@ -304,5 +304,23 @@
     "addedAt": "2026-11-22T14:23:34.133Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 21,
+    "name": "Pawan Singh New Song 2026",
+    "nameEn": "Pawan Singh New Song 2026",
+    "singer": "Bihari Ke Dum",
+    "singerEn": "Bihari Ke Dum",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "hpNimBHa1zI",
+    "youtubeId": "hpNimBHa1zI",
+    "embedUrl": "https://www.youtube.com/embed/hpNimBHa1zI",
+    "originalUrl": "https://www.youtube.com/watch?v=hpNimBHa1zI",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/hpNimBHa1zI/hqdefault.jpg",
+    "addedAt": "2026-11-22T14:23:35.805Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
