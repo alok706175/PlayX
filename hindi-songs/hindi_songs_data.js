@@ -2660,5 +2660,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-24T17:20:03.209Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 239,
+    "name": "Kamariya 8K Video Song",
+    "nameEn": "Kamariya 8K Video Song",
+    "singer": "STREE",
+    "singerEn": "STREE",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "VAb-J6uIGkc",
+    "youtubeId": "VAb-J6uIGkc",
+    "embedUrl": "https://www.youtube.com/embed/VAb-J6uIGkc",
+    "originalUrl": "https://www.youtube.com/watch?v=VAb-J6uIGkc",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/VAb-J6uIGkc/hqdefault.jpg",
+    "addedAt": "2026-11-24T17:20:06.931Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
