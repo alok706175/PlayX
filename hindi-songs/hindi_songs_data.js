@@ -2696,5 +2696,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-24T17:20:09.505Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 241,
+    "name": "Kusu Kusu 8K Video Song",
+    "nameEn": "Kusu Kusu 8K Video Song",
+    "singer": "Nora Fatehi",
+    "singerEn": "Nora Fatehi",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "ibwcsrdrUt8",
+    "youtubeId": "ibwcsrdrUt8",
+    "embedUrl": "https://www.youtube.com/embed/ibwcsrdrUt8",
+    "originalUrl": "https://www.youtube.com/watch?v=ibwcsrdrUt8",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/ibwcsrdrUt8/hqdefault.jpg",
+    "addedAt": "2026-11-24T17:20:11.776Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
