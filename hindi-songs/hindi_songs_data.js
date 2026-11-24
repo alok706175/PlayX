@@ -2624,5 +2624,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-21T14:27:45.673Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 237,
+    "name": "Tere Bin",
+    "nameEn": "Tere Bin",
+    "singer": "Superhit Love Songs",
+    "singerEn": "Superhit Love Songs",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "IPF9AaQdID4",
+    "youtubeId": "IPF9AaQdID4",
+    "embedUrl": "https://www.youtube.com/embed/IPF9AaQdID4",
+    "originalUrl": "https://www.youtube.com/watch?v=IPF9AaQdID4",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/IPF9AaQdID4/hqdefault.jpg",
+    "addedAt": "2026-11-24T17:20:00.065Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
