@@ -2768,5 +2768,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-25T16:59:23.609Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 245,
+    "name": "Breakup Mashup",
+    "nameEn": "Breakup Mashup",
+    "singer": "@HSVisual  x @bollymoodlofi",
+    "singerEn": "@HSVisual  x @bollymoodlofi",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "Nwdkj0U5-Fw",
+    "youtubeId": "Nwdkj0U5-Fw",
+    "embedUrl": "https://www.youtube.com/embed/Nwdkj0U5-Fw",
+    "originalUrl": "https://www.youtube.com/watch?v=Nwdkj0U5-Fw",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/Nwdkj0U5-Fw/hqdefault.jpg",
+    "addedAt": "2026-11-25T16:59:25.822Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
