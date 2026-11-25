@@ -2731,5 +2731,23 @@
     "addedAt": "2026-11-25T16:59:17.321Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 243,
+    "name": "Trending Songs Of 2026",
+    "nameEn": "Trending Songs Of 2026",
+    "singer": "Bairan|Mashooqa|Kalyani|Boyfriend|Tere Liye|Tum Ho Toh|Zulfein",
+    "singerEn": "Bairan|Mashooqa|Kalyani|Boyfriend|Tere Liye|Tum Ho Toh|Zulfein",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "8B89edexS9M",
+    "youtubeId": "8B89edexS9M",
+    "embedUrl": "https://www.youtube.com/embed/8B89edexS9M",
+    "originalUrl": "https://www.youtube.com/watch?v=8B89edexS9M",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/8B89edexS9M/hqdefault.jpg",
+    "addedAt": "2026-11-25T16:59:21.341Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
