@@ -484,5 +484,23 @@
     "addedAt": "2026-11-26T16:40:43.389Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 31,
+    "name": "VIDEO",
+    "nameEn": "VIDEO",
+    "singer": "नागिन बना देब",
+    "singerEn": "नागिन बना देब",
+    "category": "Bhojpuri Songs",
+    "tag": "Desi Hits",
+    "videoId": "n2gGOiiswyE",
+    "youtubeId": "n2gGOiiswyE",
+    "embedUrl": "https://www.youtube.com/embed/n2gGOiiswyE",
+    "originalUrl": "https://www.youtube.com/watch?v=n2gGOiiswyE",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/n2gGOiiswyE/hqdefault.jpg",
+    "addedAt": "2026-11-26T16:40:46.600Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
