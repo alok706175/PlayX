@@ -2786,5 +2786,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-25T16:59:25.822Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 246,
+    "name": "New Hindi Love Songs 2026",
+    "nameEn": "New Hindi Love Songs 2026",
+    "singer": "Latest Bollywood Romantic Songs Playlist",
+    "singerEn": "Latest Bollywood Romantic Songs Playlist",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "RK5vEdGmTxk",
+    "youtubeId": "RK5vEdGmTxk",
+    "embedUrl": "https://www.youtube.com/embed/RK5vEdGmTxk",
+    "originalUrl": "https://www.youtube.com/watch?v=RK5vEdGmTxk",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/RK5vEdGmTxk/hqdefault.jpg",
+    "addedAt": "2026-11-27T16:25:57.988Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
