@@ -2822,5 +2822,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-27T16:26:01.672Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 248,
+    "name": "Mere Mehboob",
+    "nameEn": "Mere Mehboob",
+    "singer": "Vicky Vidya Ka Woh Wala Video",
+    "singerEn": "Vicky Vidya Ka Woh Wala Video",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "UdsO4SM4wKI",
+    "youtubeId": "UdsO4SM4wKI",
+    "embedUrl": "https://www.youtube.com/embed/UdsO4SM4wKI",
+    "originalUrl": "https://www.youtube.com/watch?v=UdsO4SM4wKI",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/UdsO4SM4wKI/hqdefault.jpg",
+    "addedAt": "2026-11-27T16:26:13.425Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
