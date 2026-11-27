@@ -106,5 +106,23 @@
     "addedAt": "2026-11-21T14:28:24.119Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 8,
+    "name": "New Punjabi Songs 2026",
+    "nameEn": "New Punjabi Songs 2026",
+    "singer": "Unbreakable",
+    "singerEn": "Unbreakable",
+    "category": "Punjabi Songs",
+    "tag": "Bhangra Beats",
+    "videoId": "d7uq7Jr35f0",
+    "youtubeId": "d7uq7Jr35f0",
+    "embedUrl": "https://www.youtube.com/embed/d7uq7Jr35f0",
+    "originalUrl": "https://www.youtube.com/watch?v=d7uq7Jr35f0",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/d7uq7Jr35f0/hqdefault.jpg",
+    "addedAt": "2026-11-27T16:26:25.416Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ]
