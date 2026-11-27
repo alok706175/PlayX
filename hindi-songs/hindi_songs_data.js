@@ -2804,5 +2804,23 @@ window.PLAYX_HINDI_SONGS_DATA = [
     "addedAt": "2026-11-27T16:25:57.988Z",
     "status": "approved",
     "source": "youtube"
+  },
+  {
+    "id": 247,
+    "name": "💝 New Hindi Songs 2025  Best of Arijit Singh, Jubin Nautiyal, Atif Aslam &  Darshan Raval 💦",
+    "nameEn": "💝 New Hindi Songs 2025  Best of Arijit Singh, Jubin Nautiyal, Atif Aslam &  Darshan Raval 💦",
+    "singer": "HINDI FUSION WAVES",
+    "singerEn": "HINDI FUSION WAVES",
+    "category": "Romantic",
+    "tag": "Bollywood Hits",
+    "videoId": "KPQ5xozhPa0",
+    "youtubeId": "KPQ5xozhPa0",
+    "embedUrl": "https://www.youtube.com/embed/KPQ5xozhPa0",
+    "originalUrl": "https://www.youtube.com/watch?v=KPQ5xozhPa0",
+    "duration": "--:--",
+    "thumbnail": "https://i.ytimg.com/vi/KPQ5xozhPa0/hqdefault.jpg",
+    "addedAt": "2026-11-27T16:26:01.672Z",
+    "status": "approved",
+    "source": "youtube"
   }
 ];
